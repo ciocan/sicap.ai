@@ -23,7 +23,7 @@ export function Link({ db, id, text, icon, entity, size, ...rest }) {
 
 Link.propTypes = {
   db: PropTypes.string.isRequired,
-  id: PropTypes.number.isRequired,
+  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   text: PropTypes.string.isRequired,
   icon: PropTypes.func,
   entity: PropTypes.string.isRequired,
