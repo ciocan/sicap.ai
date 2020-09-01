@@ -18,7 +18,7 @@ export async function getDirectContracts({ page = 1, query }) {
       query: {
         multi_match: {
           query,
-          type: "best_fields",
+          type: "cross_fields",
           lenient: true,
         },
       },
