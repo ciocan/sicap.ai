@@ -17,7 +17,7 @@ import Router from "next/router"
 
 import { initializeApollo } from "@services/apollo"
 import { moneyRon, date } from "@utils"
-import { Meta, Alert } from "@components"
+import { Meta, Alert, Error404 } from "@components"
 import { Report, ActionItem, Link } from "@components/pages"
 import { DIRECT_CONTRACT } from "@services/queries"
 import { useBookmarks } from "@hooks"
@@ -35,8 +35,7 @@ function Contract() {
 
   if (loading) return <Text>se incarca...</Text>
   if (!data?.directContract) {
-    // TODO: redirect to 404
-    return <Text>404</Text>
+    return <Error404 />
   }
 
   const {
