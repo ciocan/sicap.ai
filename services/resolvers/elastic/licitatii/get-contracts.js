@@ -19,7 +19,7 @@ export async function getContracts({ page = 1, query }) {
       query: {
         multi_match: {
           query,
-          type: "cross_fields",
+          type: "phrase",
           lenient: true,
         },
       },
