@@ -7,6 +7,10 @@ export default class MyDocument extends Document {
         <Head>
           <link rel="stylesheet" type="text/css" href="/nprogress.css" />
           <link rel="stylesheet" type="text/css" href="/default.css" />
+          <meta
+            name="google-site-verification"
+            content="fdmCl-8Tvc9OQfW6GvntMnlkcvMk0IJcY-4UG-tC9m0"
+          />
           <meta name="application-name" content="SICAP.ai" />
           <meta name="apple-mobile-web-app-capable" content="yes" />
           <meta
