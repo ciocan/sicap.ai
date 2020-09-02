@@ -16,6 +16,11 @@ Contractele de licitatii publice si achizitii directe se actualizeaza zilnic iar
 
 Scopul acestui proiect este de a aduce mai multa transparenta pentru cheltuielile publice si de a putea detecta eventualele suspiciuni de frauda cu ajutorul comunitatii si inteligentei artificiale.
 
+Codul este open source pe github la adresa
+[arhiva-sicap/sicap.ai](https://github.com/arhiva-sicap/sicap.ai)
+
+Pentru analiza avansata unde se pot raspunde la intrebari de genul - Cati lei au fost cheltuiti in Brasov in ultimii 3 ani pe lucrari de constructii de drumuri, sau care este lista cu toate companiile din judetul Ialomita ordonata dupa valoarea contractelor,
+exista un proiect separat la adresa [arhiva-sicap/sicap-explorer](https://github.com/arhiva-sicap/sicap-explorer)
 `
 
 export default function Despre() {
