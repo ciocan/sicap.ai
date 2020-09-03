@@ -108,8 +108,18 @@ export const ListItem = ({ data, isBookmarked, db, ...rest }) => {
             <Flex fontSize="xs" color="selected" direction="column" mt="2">
               <Text>Tipul contractului: {contractType}</Text>
               {assigmentType && <Text>{assigmentType}</Text>}
-              {contractState && <Text>{contractState}</Text>}
               {procedureType && <Text>Tip procedura: {procedureType}</Text>}
+              {contractState && (
+                <Text>
+                  Stare:{" "}
+                  <Text
+                    as="span"
+                    color={contractState.id === 3 ? "red" : "black"}
+                  >
+                    {contractState.text}
+                  </Text>
+                </Text>
+              )}
             </Flex>
           </Box>
         </Flex>
