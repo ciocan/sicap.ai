@@ -97,6 +97,7 @@ const contractDetailsFragment = gql`
       text
     }
     sysProcedureType {
+      id
       text
     }
     sysContractAssigmentType {
@@ -250,6 +251,7 @@ const directContractDetailsFragment = gql`
     directAcquisitionId
     directAcquisitionName
     sysDirectAcquisitionState {
+      id
       text
     }
     uniqueIdentificationCode
@@ -292,6 +294,7 @@ const directContractDetailsSearchFragment = gql`
     directAcquisitionId
     directAcquisitionName
     sysDirectAcquisitionState {
+      id
       text
     }
     uniqueIdentificationCode
