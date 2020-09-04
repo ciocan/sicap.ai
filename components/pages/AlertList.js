@@ -7,7 +7,7 @@ import { GET_ALERTS, SAVE_ALERT } from "@services/queries"
 
 export function AlertList() {
   const [session] = useSession()
-  const { data } = useQuery(GET_ALERTS, { skip: !session })
+  const { data, loading } = useQuery(GET_ALERTS, { skip: !session })
   const [cui, setCui] = useState("")
   const toast = useToast()
 
@@ -15,7 +15,7 @@ export function AlertList() {
 
   useEffect(() => setCui(data?.alerts.join("\n")), [data])
 
-  const [saveAlert] = useMutation(SAVE_ALERT)
+  const [saveAlert, { loading: mutationLoading }] = useMutation(SAVE_ALERT)
 
   const handleSave = async () => {
     const { data } = await saveAlert({
@@ -64,6 +64,7 @@ export function AlertList() {
         padding="4"
         width={["100%", "50%"]}
         height="300px"
+        disabled={loading}
       />
       <Button
         aria-label="salveaza"
@@ -71,6 +72,7 @@ export function AlertList() {
         width={["100%", "20%"]}
         onClick={handleSave}
         disabled={!cui}
+        isLoading={mutationLoading}
       >
         Salveaza
       </Button>
