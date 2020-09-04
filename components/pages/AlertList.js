@@ -1,5 +1,13 @@
 import { useState, useEffect } from "react"
-import { Text, Stack, Button, Input, Textarea, useToast } from "@chakra-ui/core"
+import {
+  Text,
+  Stack,
+  Button,
+  Input,
+  Textarea,
+  useToast,
+  Skeleton,
+} from "@chakra-ui/core"
 import { useQuery, useMutation } from "@apollo/react-hooks"
 import { useSession } from "next-auth/client"
 
@@ -57,15 +65,16 @@ export function AlertList() {
         </Text>
       </Text>
       <Input value={session.user.email} isReadOnly width={["100%", "50%"]} />
-      <Textarea
-        value={cui}
-        onChange={(e) => setCui(e.target.value)}
-        placeholder={`123456\n77665544\n323456`}
-        padding="4"
-        width={["100%", "50%"]}
-        height="300px"
-        disabled={loading}
-      />
+      <Skeleton isLoaded={!loading} width={["100%", "50%"]}>
+        <Textarea
+          value={cui}
+          onChange={(e) => setCui(e.target.value)}
+          placeholder={`123456\n77665544\n323456`}
+          padding="4"
+          height="300px"
+          disabled={loading}
+        />
+      </Skeleton>
       <Button
         aria-label="salveaza"
         color="blue"
