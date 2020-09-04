@@ -21,6 +21,8 @@ Codul este open source pe github la adresa
 
 Pentru analiza avansata unde se pot raspunde la intrebari de genul - Cati lei au fost cheltuiti in Brasov in ultimii 3 ani pe lucrari de constructii de drumuri, sau care este lista cu toate companiile din judetul Ialomita ordonata dupa valoarea contractelor,
 exista un proiect separat la adresa [arhiva-sicap/sicap-explorer](https://github.com/arhiva-sicap/sicap-explorer)
+
+Ai sugestii sau recomandari? Foloseste acest [link](https://github.com/arhiva-sicap/sicap.ai/issues)
 `
 
 export default function Despre() {
