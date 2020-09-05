@@ -86,6 +86,10 @@ String.prototype.capitalize = function () {
   return this.charAt(0).toUpperCase() + this.slice(1)
 }
 
+String.prototype.slugify = function () {
+  return this.toLowerCase().replace(" ", "-")
+}
+
 export const decode = (str) =>
   typeof btoa === "undefined"
     ? Buffer.from(str, "base64").toString("binary")
