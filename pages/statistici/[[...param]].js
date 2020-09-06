@@ -1,21 +1,30 @@
 import { Box, Tabs, TabList, Tab, TabPanels, TabPanel } from "@chakra-ui/core"
 import { useRouter } from "next/router"
+import { getUnixTime } from "date-fns"
 
-import { Meta } from "@components"
+import { Meta, DatePicker } from "@components"
 import { Stats } from "@components/pages"
 
 const tabIndex = (tab, data) => data.find((t) => t.slug === tab)?.i
 
+const defaultStartDate = getUnixTime(new Date("2007/01/01"))
+const defaultEndDate = getUnixTime(new Date())
+
 const MakeTabs = ({ data, level = 0, ...rest }) => {
   const router = useRouter()
-  const [db, stat = "firme"] = router.query?.param || ["licitatii"]
+  const [
+    db,
+    stat = "firme",
+    start = defaultStartDate,
+    end = defaultEndDate,
+  ] = router.query?.param || ["licitatii"]
 
   const handleTabChange = (id) => {
     router.push(
       `/statistici/[[...param]]`,
       level === 0
-        ? `/statistici/${data[id].slug}/${stat}`
-        : `/statistici/${db}/${data[id].slug}`,
+        ? `/statistici/${data[id].slug}/${stat}/${start}/${end}`
+        : `/statistici/${db}/${data[id].slug}/${start}/${end}`,
       {
         shallow: true,
       }
@@ -64,10 +73,14 @@ const dbTabs = [
 
 export default function Statistici() {
   const router = useRouter()
-  const [db, stat = "firme"] = router.query?.param || ["licitatii"]
+  const [db, stat = "firme", start, end] = router.query?.param || ["licitatii"]
 
   const dbName = dbTabs.find((d) => d.slug === db).name.toLowerCase()
   const statName = statTabs.find((d) => d.slug === stat).name.toLowerCase()
+
+  const handleDateChange = (start, end) => {
+    router.push(`/statistici/[[...param]]`, `${db}/${stat}/${start}/${end}`)
+  }
 
   return (
     <>
@@ -76,6 +89,7 @@ export default function Statistici() {
         description={`Top cheltuieli ${statName} din sistemul de ${dbName}`}
       />
       <Box>
+        <DatePicker onChange={handleDateChange} start={start} end={end} />
         <MakeTabs data={dbTabs} />
       </Box>
     </>

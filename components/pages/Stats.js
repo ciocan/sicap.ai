@@ -1,5 +1,6 @@
 import { useMemo } from "react"
 import { useRouter } from "next/router"
+
 import namor from "namor"
 
 import { Table } from "@components"
