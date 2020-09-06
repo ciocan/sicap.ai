@@ -1,5 +1,6 @@
 export { FrappeChart } from "./FrappeChart"
 export { LoginButton } from "./LoginButton"
+export { DatePicker } from "./DatePicker"
 export { LoginModal } from "./LoginModal"
 export { SearchBar } from "./SearchBar"
 export { Paginator } from "./Paginator"

@@ -8,10 +8,8 @@ import {
   BiRightArrowAlt,
 } from "react-icons/bi"
 
-const Container = styled(Box)`
-  display: block;
+const Container = styled.div`
   max-width: 100%;
-  width: 100%;
 
   table {
     width: 100%;
