@@ -7,7 +7,7 @@ import { getUnixTime, fromUnixTime } from "date-fns"
 const CustomInput = ({ value, onClick }) => (
   <InputGroup>
     <InputLeftElement zIndex="2" children={<CalendarIcon />} />
-    <Input onClick={onClick} onChange={() => {}} value={value} />
+    <Input onClick={onClick} value={value} />
   </InputGroup>
 )
 
@@ -31,6 +31,7 @@ export function DatePicker({ onChange, start, end }) {
         startDate={startDate}
         endDate={endDate}
         dateFormat="dd/MM/yyyy"
+        showMonthDropdown
         showYearDropdown
         locale="ro"
       />
@@ -43,6 +44,7 @@ export function DatePicker({ onChange, start, end }) {
         endDate={endDate}
         minDate={startDate}
         dateFormat="dd/MM/yyyy"
+        showMonthDropdown
         showYearDropdown
         locale="ro"
       />

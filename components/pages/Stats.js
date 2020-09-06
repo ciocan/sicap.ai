@@ -1,44 +1,20 @@
 import { useMemo } from "react"
 import { useRouter } from "next/router"
-
-import namor from "namor"
+import { useQuery } from "@apollo/react-hooks"
+import { Skeleton } from "@chakra-ui/core"
 
 import { Table } from "@components"
 import { moneyRon } from "@utils"
 
-const range = (len) => {
-  const arr = []
-  for (let i = 0; i < len; i++) {
-    arr.push(i)
-  }
-  return arr
-}
-
-const newRow = () => {
-  return {
-    name: <a href="#">{namor.generate({ words: 4, numbers: 0 })}</a>,
-    contracts: Math.floor(Math.random() * 1000 + 500),
-    value: moneyRon(Math.floor(Math.random() * 100000 + 10000)),
-  }
-}
-
-export default function makeData(...lens) {
-  const makeDataLevel = (depth = 0) => {
-    const len = lens[depth]
-    return range(len).map(() => {
-      return {
-        ...newRow(),
-        subRows: lens[depth + 1] ? makeDataLevel(depth + 1) : undefined,
-      }
-    })
-  }
-
-  return makeDataLevel()
-}
+import { STATS } from "@services/queries"
 
 export function Stats() {
   const router = useRouter()
-  const [db, stat = "firme"] = router.query?.param || ["licitatii"]
+  const [db, stat = "firme", start, end] = router.query?.param || ["licitatii"]
+
+  const { data: statData, loading } = useQuery(STATS, {
+    variables: { db, stat, start: Number(start), end: Number(end) },
+  })
 
   const columns = useMemo(
     () => [
@@ -48,11 +24,11 @@ export function Stats() {
       },
       {
         Header: " ",
-        accessor: "name",
+        accessor: "key",
       },
       {
         Header: "Contracte",
-        accessor: "contracts",
+        accessor: "count",
       },
       {
         Header: "Valoare",
@@ -62,7 +38,18 @@ export function Stats() {
     []
   )
 
-  const data = useMemo(() => makeData(1000), [])
-
-  return <Table columns={columns} data={data} />
+  return (
+    <Skeleton isLoaded={!loading} height="400px">
+      <Table
+        columns={columns}
+        data={
+          statData?.getEntityList?.map(({ key, count, value }) => ({
+            key,
+            count,
+            value: moneyRon(value),
+          })) || []
+        }
+      />
+    </Skeleton>
+  )
 }

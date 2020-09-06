@@ -1,14 +1,14 @@
 import { Box, Tabs, TabList, Tab, TabPanels, TabPanel } from "@chakra-ui/core"
 import { useRouter } from "next/router"
-import { getUnixTime } from "date-fns"
 
 import { Meta, DatePicker } from "@components"
 import { Stats } from "@components/pages"
+import { initializeApollo } from "@services/apollo"
+import { defaultStartDate, defaultEndDate } from "@utils/constants"
+
+import { STATS } from "@services/queries"
 
 const tabIndex = (tab, data) => data.find((t) => t.slug === tab)?.i
-
-const defaultStartDate = getUnixTime(new Date("2007/01/01"))
-const defaultEndDate = getUnixTime(new Date())
 
 const MakeTabs = ({ data, level = 0, ...rest }) => {
   const router = useRouter()
@@ -94,4 +94,24 @@ export default function Statistici() {
       </Box>
     </>
   )
+}
+
+export const getServerSideProps = async (context) => {
+  const [
+    db,
+    stat = "firme",
+    start = defaultStartDate,
+    end = defaultEndDate,
+  ] = context.query?.param || ["licitatii"]
+
+  const variables = { db, stat, start: Number(start), end: Number(end) }
+
+  const apolloClient = initializeApollo()
+  await apolloClient.query({ query: STATS, variables })
+
+  return {
+    props: {
+      initialApolloState: apolloClient.cache.extract(),
+    },
+  }
 }

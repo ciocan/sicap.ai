@@ -431,3 +431,13 @@ export const BOOKMARKED_CONTRACTS_A = gql`
     ${directContractDetailsSearchFragment}
   }
 `
+
+export const STATS = gql`
+  query getEntityList($db: String!, $stat: String!, $start: Int, $end: Int) {
+    getEntityList(db: $db, stat: $stat, start: $start, end: $end) {
+      key
+      count
+      value
+    }
+  }
+`
