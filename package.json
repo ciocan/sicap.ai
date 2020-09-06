@@ -53,6 +53,7 @@
     "jose": "^1.27.3",
     "lodash": "^4.17.19",
     "micro-cors": "^0.1.1",
+    "namor": "^2.0.2",
     "nanoid": "^3.1.12",
     "next": "9.5.2",
     "next-auth": "^3.1.0",
@@ -71,6 +72,7 @@
     "react-markdown": "^4.3.1",
     "react-table": "^7.5.0",
     "react-window": "^1.8.5",
+    "styled-components": "^5.2.0",
     "use-clipboard-copy": "^0.1.2"
   },
   "devDependencies": {
