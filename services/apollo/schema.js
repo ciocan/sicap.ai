@@ -84,6 +84,7 @@ export const typeDefs = gql`
     key: String
     count: Int
     value: Float
+    entityId: String
   }
 
   type User {

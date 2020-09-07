@@ -11,6 +11,11 @@ const dbMap = {
   licitatii: {
     index: ES_INDEX,
     date: "item.noticeStateDate",
+    id: {
+      firme: "noticeContracts.items.winners.entityId",
+      autoritati: "publicNotice.entityId",
+      "coduri-cpv": "item.cpvCode.keyword",
+    },
     field: {
       firme: "noticeContracts.items.winners.name.keyword",
       autoritati: "item.contractingAuthorityNameAndFN.keyword",
@@ -25,6 +30,11 @@ const dbMap = {
   achizitii: {
     index: ES_INDEX_DIRECT,
     date: "item.publicationDate",
+    id: {
+      firme: "supplier.entityId",
+      autoritati: "authority.entityId",
+      "coduri-cpv": "item.cpvCode.keyword",
+    },
     field: {
       firme: "item.supplier.keyword",
       autoritati: "item.contractingAuthority.keyword",
@@ -70,6 +80,17 @@ export async function getEntityList({ db, stat, start, end }) {
                 field: dbMap[db].sum,
               },
             },
+            id: {
+              top_hits: {
+                docvalue_fields: [
+                  {
+                    field: dbMap[db].id[stat],
+                  },
+                ],
+                _source: dbMap[db].id[stat],
+                size: 1,
+              },
+            },
           },
         },
       },
@@ -92,9 +113,14 @@ export async function getEntityList({ db, stat, start, end }) {
     },
   })
 
-  return result.aggregations.list.buckets.map(({ key, doc_count, total }) => ({
-    key,
-    count: doc_count,
-    value: total.value,
-  }))
+  return result.aggregations.list.buckets.map(
+    ({ key, doc_count, total, id }) => {
+      return {
+        key,
+        count: doc_count,
+        value: total.value,
+        entityId: id.hits.hits[0]?.fields?.[dbMap[db].id[stat]]?.[0] || null,
+      }
+    }
+  )
 }
