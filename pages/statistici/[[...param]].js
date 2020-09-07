@@ -1,4 +1,12 @@
-import { Box, Tabs, TabList, Tab, TabPanels, TabPanel } from "@chakra-ui/core"
+import {
+  Box,
+  Text,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanels,
+  TabPanel,
+} from "@chakra-ui/core"
 import { useRouter } from "next/router"
 
 import { Meta, DatePicker } from "@components"
@@ -90,6 +98,12 @@ export default function Statistici() {
       />
       <Box>
         <DatePicker onChange={handleDateChange} start={start} end={end} />
+        <Box my="8">
+          <Text fontStyle="italic">
+            <b>Nota:</b> Valoarea totala este aproximativa pentru unele
+            categorii pentru ca sunt date eronate introduse in sistem.
+          </Text>
+        </Box>
         <MakeTabs data={dbTabs} />
       </Box>
     </>
