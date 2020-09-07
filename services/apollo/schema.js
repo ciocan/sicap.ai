@@ -24,6 +24,8 @@ import {
   getReports,
 } from "@services/resolvers/user"
 
+import { getEntityList } from "@services/resolvers/elastic/stats"
+
 export const typeDefs = gql`
   union ContractResult = Contracts | DirectContracts
 
@@ -44,6 +46,7 @@ export const typeDefs = gql`
       page: Int
       db: String
     ): ContractResult
+    getEntityList(db: String!, stat: String!, start: Int, end: Int): [Stat]
   }
 
   type Mutation {
@@ -81,6 +84,7 @@ export const typeDefs = gql`
     key: String
     count: Int
     value: Float
+    entityId: String
   }
 
   type User {
@@ -282,6 +286,7 @@ export const resolvers = {
     directCompany: async (_, args, ctx) => await getDirectCompany(args, ctx),
     directContract: async (_, args, ctx) => await getDirectContract(args, ctx),
     bookmarkedContracts: async (_, args) => await getBookmarkedContracts(args),
+    getEntityList: async (_, args) => await getEntityList(args),
   },
   Mutation: {
     toggleBookmark: async (_, args, ctx) => await toggleBookmark(args, ctx),

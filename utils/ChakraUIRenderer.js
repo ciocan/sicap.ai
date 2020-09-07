@@ -34,7 +34,9 @@ export const defaults = {
   },
   delete: ({ children }) => <Text as="del">{children}</Text>,
   thematicBreak: Divider,
-  link: (props) => <Link {...props} textDecoration="underline" />,
+  link: (props) => (
+    <Link textDecoration="underline" rel="nofollow" {...props} />
+  ),
   img: Image,
   linkReference: Link,
   imageReference: Image,

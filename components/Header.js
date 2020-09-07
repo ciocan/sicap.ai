@@ -9,8 +9,10 @@ import {
   Text,
   Stack,
   Avatar,
+  HStack,
 } from "@chakra-ui/core"
 import { BsQuestionSquare as AboutIcon } from "react-icons/bs"
+import { ImStatsBars as StatsIcon } from "react-icons/im"
 import { FaUserNinja } from "react-icons/fa"
 import { useSession } from "next-auth/client"
 
@@ -46,6 +48,7 @@ export function Header() {
     >
       {!isHome && <Logo />}
       <Box mx="8">{!isHome && <SearchBar query={query} hide />}</Box>
+      <Stats />
       <About />
       <User />
     </Grid>
@@ -77,6 +80,25 @@ const About = () => {
           display={{ sm: "block", md: "none" }}
         />
         <Text display={["none", "none", "block"]}>Despre</Text>
+      </ChakraLink>
+    </Link>
+  )
+}
+
+const Stats = () => {
+  return (
+    <Link href="/statistici/[[...param]]" as="/statistici" passHref>
+      <ChakraLink
+        _hover={{ textDecoration: "underline" }}
+        justifySelf="end"
+        color="black"
+        outline="none"
+        mr="4"
+      >
+        <HStack>
+          <Box as={StatsIcon} color="blue" boxSize="1.5em" />
+          <Text display={["none", "none", "block"]}>Statistici</Text>
+        </HStack>
       </ChakraLink>
     </Link>
   )
