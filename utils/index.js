@@ -6,6 +6,7 @@ import { format } from "date-fns"
 import { ro } from "date-fns/locale"
 import { SHA3, enc } from "crypto-js"
 import numeral from "numeral"
+import { Base64 } from "js-base64"
 
 import ChakraUIRenderer from "./ChakraUIRenderer"
 
@@ -86,22 +87,9 @@ String.prototype.capitalize = function () {
   return this.charAt(0).toUpperCase() + this.slice(1)
 }
 
-export const decode = (str) =>
-  typeof btoa === "undefined"
-    ? Buffer.from(str, "base64").toString("binary")
-    : atob(str)
-
-export const encode = (str) =>
-  typeof atob === "undefined"
-    ? Buffer.from(str, "binary").toString("base64")
-    : btoa(str)
-
-export const isBase64 = (str) => {
-  if (!!str.trim() === false) return false
-
-  try {
-    return encode(decode(str)) === str
-  } catch {
-    return false
-  }
+String.prototype.slugify = function () {
+  return this.toLowerCase().replace(" ", "-")
 }
+
+export const decode = Base64.decode
+export const encode = Base64.encode

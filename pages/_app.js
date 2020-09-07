@@ -6,12 +6,19 @@ import Router from "next/router"
 import { setOptions, getSession, Provider, providers } from "next-auth/client"
 import { ApolloProvider } from "@apollo/react-hooks"
 import { init as initApm } from "@elastic/apm-rum"
+import { setDefaultLocale, registerLocale } from "react-datepicker"
+import ro from "date-fns/locale/ro"
+
+import "react-datepicker/dist/react-datepicker.css"
 
 import { useApollo } from "@services/apollo"
 import { Layout, LoginModal } from "@components"
 import { ModalContext } from "@utils"
 import { SITE_URL, APM_RUM_URL, isDev } from "@utils/config"
 import theme from "../theme"
+
+registerLocale("ro", ro)
+setDefaultLocale("ro", ro)
 
 NProgress.configure({ showSpinner: false })
 Router.events.on("routeChangeStart", () => NProgress.start())
