@@ -25,6 +25,7 @@ export const section2_2_New = ["descriptionList"]
 export const _source = [
   "item.caNoticeId",
   "item.noticeNo",
+  "item.sysProcedureState",
   "item.contractingAuthorityNameAndFN",
   "item.contractTitle",
   "item.sysAcquisitionContractType",

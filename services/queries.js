@@ -438,6 +438,7 @@ export const STATS = gql`
       key
       count
       value
+      entityId
     }
   }
 `
