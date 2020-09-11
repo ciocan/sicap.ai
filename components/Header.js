@@ -14,6 +14,7 @@ import {
 import { BsQuestionSquare as AboutIcon } from "react-icons/bs"
 import { ImStatsBars as StatsIcon } from "react-icons/im"
 import { FaUserNinja } from "react-icons/fa"
+import { GiTick as TickIcon } from "react-icons/gi"
 import { useSession } from "next-auth/client"
 
 import { SearchBar } from "@components"
@@ -43,11 +44,12 @@ export function Header() {
       py="4"
       px="4"
       {...gridProps}
-      gridTemplateColumns="auto 1fr auto auto auto"
+      gridTemplateColumns="auto 1fr auto auto auto auto"
       alignItems="center"
     >
       {!isHome && <Logo />}
       <Box mx="8">{!isHome && <SearchBar query={query} hide />}</Box>
+      <Capusa />
       <Stats />
       <About />
       <User />
@@ -98,6 +100,25 @@ const Stats = () => {
         <HStack>
           <Box as={StatsIcon} color="blue" boxSize="1.5em" />
           <Text display={["none", "none", "block"]}>Statistici</Text>
+        </HStack>
+      </ChakraLink>
+    </Link>
+  )
+}
+
+const Capusa = () => {
+  return (
+    <Link href="/firme-capusa/[[...param]]" as="/firme-capusa" passHref>
+      <ChakraLink
+        _hover={{ textDecoration: "underline" }}
+        justifySelf="end"
+        color="black"
+        outline="none"
+        mr="4"
+      >
+        <HStack>
+          <Box as={TickIcon} color="blue" boxSize="1.5em" />
+          <Text display={["none", "none", "block"]}>Firme căpuşă</Text>
         </HStack>
       </ChakraLink>
     </Link>

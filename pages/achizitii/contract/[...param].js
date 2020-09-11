@@ -170,7 +170,7 @@ function Contract() {
           />
           <RowItem
             description="Tipul contractului"
-            content={sysAcquisitionContractType.text}
+            content={sysAcquisitionContractType?.text}
           />
           <RowItem description="Cod CPV" content={cpvCode} />
           <RowItem
