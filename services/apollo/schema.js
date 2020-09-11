@@ -267,6 +267,7 @@ export const typeDefs = gql`
 
   type CapusaList {
     total: Int
+    value: Float
     list: [Capusa]
   }
 
