@@ -6,6 +6,7 @@ import {
   Tab,
   TabPanels,
   TabPanel,
+  Heading,
 } from "@chakra-ui/core"
 import { useRouter } from "next/router"
 import { useQuery } from "@apollo/react-hooks"
@@ -57,6 +58,9 @@ export default function FirmeCapusa() {
         description={`Lisata firmelor capusa din sistemul de ${name}`}
       />
       <Box>
+        <Heading as="h1" fontSize="xl" mt="4">
+          Lista firmelor căpuşă
+        </Heading>
         <Box my="8">
           <Text fontStyle="italic">
             <b>Nota:</b> O firma este considerata căpuşă atunci cand cifra de

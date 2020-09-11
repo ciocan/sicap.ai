@@ -8,6 +8,21 @@ import { Paginator } from "@components"
 
 import { moneyRon } from "@utils"
 
+const Note = ({ n, total }) => (
+  <Text px="4" pb="4" fontStyle="italic" fontSize="xs">
+    <Text fontWeight="bold" color="red" as="span">
+      Nota:
+    </Text>{" "}
+    un numar de <b>{n}</b> din <b>{total}</b> firme nu au fost analizate pentru
+    ca lipsesc datele financiare din portalul data.gov.ro{" "}
+  </Text>
+)
+
+const infoMap = {
+  licitatii: <Note n="13,099" total="22,808" />,
+  achizitii: <Note n="38,362" total="113,370" />,
+}
+
 export function Capusa({ data, loading }) {
   const router = useRouter()
   const [db, opt = "options", page = 1] = router.query?.param || ["licitatii"]
@@ -18,6 +33,7 @@ export function Capusa({ data, loading }) {
 
   return (
     <Box>
+      {infoMap[db]}
       <Text p="4">
         Pagina {page} din <b>{total}</b> firme gasite cu valoare totala a
         contractelor de <b>{moneyRon(value)}</b>
