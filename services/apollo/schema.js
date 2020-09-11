@@ -24,7 +24,7 @@ import {
   getReports,
 } from "@services/resolvers/user"
 
-import { getEntityList } from "@services/resolvers/elastic/stats"
+import { getEntityList, getCapusaList } from "@services/resolvers/elastic/stats"
 
 export const typeDefs = gql`
   union ContractResult = Contracts | DirectContracts
@@ -47,6 +47,7 @@ export const typeDefs = gql`
       db: String
     ): ContractResult
     getEntityList(db: String!, stat: String!, start: Int, end: Int): [Stat]
+    getCapusaList(db: String!, page: Int, opt: String): CapusaList
   }
 
   type Mutation {
@@ -263,6 +264,37 @@ export const typeDefs = gql`
     list: [DirectContract]
     stats: Stats
   }
+
+  type CapusaList {
+    total: Int
+    list: [Capusa]
+  }
+
+  type Capusa {
+    entityId: Int
+    fiscalNumber: Int
+    entityName: String
+    city: String
+    county: String
+    stats: CapusaStats
+  }
+
+  type CapusaStats {
+    contracts: Int
+    employees: Int
+    value: Float
+    data: [CapusaData]
+  }
+
+  type CapusaSeries {
+    primary: Int
+    secondary: Float
+  }
+
+  type CapusaData {
+    label: String
+    data: [CapusaSeries]
+  }
 `
 
 export const resolvers = {
@@ -287,6 +319,7 @@ export const resolvers = {
     directContract: async (_, args, ctx) => await getDirectContract(args, ctx),
     bookmarkedContracts: async (_, args) => await getBookmarkedContracts(args),
     getEntityList: async (_, args) => await getEntityList(args),
+    getCapusaList: async (_, args) => await getCapusaList(args),
   },
   Mutation: {
     toggleBookmark: async (_, args, ctx) => await toggleBookmark(args, ctx),

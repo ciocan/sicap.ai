@@ -57,7 +57,7 @@ export function SearchBar({ query, onChangeDb, hide }) {
       onSubmit={handleSubmit}
       method="GET"
       maxWidth="42rem"
-      minWidth={[0, "50vw"]}
+      minWidth={[0, hide ? "20vw" : "50vw"]}
       color="black"
       display={[hide ? "none" : "block", "block"]}
     >

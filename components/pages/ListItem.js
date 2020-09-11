@@ -40,7 +40,7 @@ export const ListItem = ({ data, isBookmarked, db, ...rest }) => {
       `/${db}/contract/${id}/raporteaza`
     )
   }
-
+  console.log(data)
   return (
     <>
       <Alert
@@ -114,7 +114,7 @@ export const ListItem = ({ data, isBookmarked, db, ...rest }) => {
                   Stare:{" "}
                   <Text
                     as="span"
-                    color={contractState.id === 3 ? "red" : "black"}
+                    color={[5, 7].includes(contractState.id) ? "black" : "red"}
                   >
                     {contractState.text}
                   </Text>

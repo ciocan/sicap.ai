@@ -5,15 +5,15 @@ import { Stack, Box, Text } from "@chakra-ui/core"
 
 import { RESULTS_PER_PAGE } from "@utils/constants"
 
-export function Paginator({ route, tab, hits }) {
+export function Paginator({ route, opt, hits }) {
   const router = useRouter()
-  const [query, strPage = 1, tabPage] = router.query?.param || [tab, 1, 1]
+  const [query, strPage = 1, tabPage] = router.query?.param || [opt, 1, 1]
 
-  const page = tab ? parseInt(tabPage || 1) : parseInt(strPage || 1)
-  const href = tab ? `/${route}/[[...param]]` : `/${route}/[...param]`
+  const page = opt ? parseInt(tabPage || 1) : parseInt(strPage || 1)
+  const href = opt ? `/${route}/[[...param]]` : `/${route}/[...param]`
   const getPage = (n) =>
-    tab
-      ? `/${route}/${query}/${tab}/${page + n}`
+    opt
+      ? `/${route}/${query}/${opt}/${page + n}`
       : `/${route}/${query}/${page + n}`
 
   return (
@@ -41,5 +41,5 @@ export function Paginator({ route, tab, hits }) {
 Paginator.propTypes = {
   hits: PropTypes.number.isRequired,
   route: PropTypes.string.isRequired,
-  tab: PropTypes.string,
+  opt: PropTypes.string,
 }
