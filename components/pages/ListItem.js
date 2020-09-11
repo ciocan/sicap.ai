@@ -40,7 +40,7 @@ export const ListItem = ({ data, isBookmarked, db, ...rest }) => {
       `/${db}/contract/${id}/raporteaza`
     )
   }
-  console.log(data)
+
   return (
     <>
       <Alert
