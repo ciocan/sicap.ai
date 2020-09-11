@@ -15,13 +15,17 @@ const dbMap = {
   },
 }
 
+const THRESHOLD = 70
+const PAGE_SIZE = 20
+
 export async function getCapusaList({ db, page, opt }) {
   console.log("getCapusaList: ", opt)
+
   const result = await client.search({
     index: [dbMap[db].index],
     body: {
-      size: 10,
-      from: (parseInt(page) - 1) * 10,
+      size: PAGE_SIZE,
+      from: (parseInt(page) - 1) * PAGE_SIZE,
       sort: [
         {
           _score: {
@@ -35,6 +39,13 @@ export async function getCapusaList({ db, page, opt }) {
           },
         },
       ],
+      aggs: {
+        totalValue: {
+          sum: {
+            field: "stats.value",
+          },
+        },
+      },
       query: {
         bool: {
           filter: [
@@ -49,7 +60,7 @@ export async function getCapusaList({ db, page, opt }) {
             {
               range: {
                 "stats.ratio.2019": {
-                  gte: 65,
+                  gte: THRESHOLD,
                   lt: 300,
                 },
               },
@@ -57,7 +68,7 @@ export async function getCapusaList({ db, page, opt }) {
             {
               range: {
                 "stats.ratio.2018": {
-                  gte: 65,
+                  gte: THRESHOLD,
                   lt: 300,
                 },
               },
@@ -140,6 +151,7 @@ export async function getCapusaList({ db, page, opt }) {
 
   return {
     total: result.hits.total.value,
+    value: result.aggregations.totalValue.value,
     list,
   }
 }

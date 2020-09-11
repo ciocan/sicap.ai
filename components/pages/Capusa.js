@@ -14,12 +14,13 @@ export function Capusa({ data, loading }) {
 
   if (loading || !data) return <Box>Se incarca...</Box>
 
-  const { list, total } = data
+  const { list, total, value } = data
 
   return (
     <Box>
       <Text p="4">
-        {page && `Pagina ${page} din`} {total} firme gasite
+        Pagina {page} din <b>{total}</b> firme gasite cu valoare totala a
+        contractelor de <b>{moneyRon(value)}</b>
       </Text>
       <VStack alignItems="flex-start">
         {list?.map((props, k) => (
