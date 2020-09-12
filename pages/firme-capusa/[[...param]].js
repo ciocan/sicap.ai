@@ -12,8 +12,15 @@ import { useRouter } from "next/router"
 import { useQuery } from "@apollo/react-hooks"
 
 import { initializeApollo } from "@services/apollo"
+
 import { Meta } from "@components"
-import { Capusa, Filter, defaultFilterEncoded } from "@components/pages"
+import {
+  Capusa,
+  Filter,
+  defaultFilterEncoded,
+  decodeFilter,
+} from "@components/pages"
+import { counties } from "@utils/constants"
 
 import { CAPUSA } from "@services/queries"
 
@@ -38,6 +45,7 @@ export default function FirmeCapusa() {
 
   const tab = tabs.find((d) => d.slug === db)
   const name = tab.name?.toLowerCase()
+  const filter = decodeFilter(opt)
 
   const { data, loading } = useQuery(CAPUSA, {
     variables: { db, page: Number(page), opt },
@@ -46,7 +54,7 @@ export default function FirmeCapusa() {
   const handleTabChange = (id) => {
     router.push(
       `/firme-capusa/[[...param]]`,
-      `/firme-capusa/${tabs[id].slug}`,
+      `/firme-capusa/${tabs[id].slug}/${opt}`,
       {
         shallow: true,
       }
@@ -71,7 +79,8 @@ export default function FirmeCapusa() {
       />
       <Box>
         <Heading as="h1" fontSize="xl" mt="4">
-          Lista firmelor căpuşă
+          Lista firmelor căpuşă{" "}
+          {filter.county !== counties[0] && `din judetul ${filter.county}`}
         </Heading>
         <Box my="8">
           <Text fontStyle="italic">
@@ -80,7 +89,7 @@ export default function FirmeCapusa() {
             valoarea contractelor de achizitii publice.
           </Text>
         </Box>
-        <Filter onChange={handleFilterChange} />
+        <Filter onChange={handleFilterChange} data={opt} />
         <Tabs colorScheme="tab" index={tab.i || 0} onChange={handleTabChange}>
           <TabList>
             <Tab>{tabs[0].name}</Tab>

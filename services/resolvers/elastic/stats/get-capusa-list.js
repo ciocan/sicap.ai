@@ -3,6 +3,7 @@ import elasticsearch from "elasticsearch"
 import { ES_HOST } from "@utils/config"
 import { isBase64, decode } from "@utils"
 import { defaultFilterEncoded } from "@components/pages"
+import { counties } from "@utils/constants"
 
 const client = new elasticsearch.Client({
   host: ES_HOST,
@@ -11,9 +12,11 @@ const client = new elasticsearch.Client({
 const dbMap = {
   licitatii: {
     index: "firme-licitatii",
+    county: "data.address.county.text.keyword",
   },
   achizitii: {
     index: "firme",
+    county: "data.county.keyword",
   },
 }
 
@@ -23,7 +26,7 @@ export async function getCapusaList({ db, page, opt }) {
   const filter = isBase64(opt)
     ? JSON.parse(decode(opt))
     : JSON.parse(decode(defaultFilterEncoded))
-
+  console.log(filter)
   const range = filter.y.map((year) => ({
     range: {
       [`stats.ratio.${year}`]: {
@@ -32,6 +35,24 @@ export async function getCapusaList({ db, page, opt }) {
       },
     },
   }))
+
+  const filterQuery =
+    filter.c === counties[0]
+      ? {
+          match_all: {},
+        }
+      : {
+          bool: {
+            should: [
+              {
+                match: {
+                  [dbMap[db].county]: filter.c,
+                },
+              },
+            ],
+            minimum_should_match: 1,
+          },
+        }
 
   const result = await client.search({
     index: [dbMap[db].index],
@@ -61,9 +82,7 @@ export async function getCapusaList({ db, page, opt }) {
       query: {
         bool: {
           filter: [
-            {
-              match_all: {},
-            },
+            { ...filterQuery },
             {
               exists: {
                 field: "stats.totalRatio",
