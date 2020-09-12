@@ -93,3 +93,13 @@ String.prototype.slugify = function () {
 
 export const decode = Base64.decode
 export const encode = Base64.encode
+
+export const isBase64 = (str) => {
+  if (!!str.trim() === false) return false
+
+  try {
+    return encode(decode(str)) === str
+  } catch {
+    return false
+  }
+}
