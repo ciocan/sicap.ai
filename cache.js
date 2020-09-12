@@ -22,7 +22,7 @@ module.exports = [
       cacheName: "start-url",
       expiration: {
         maxEntries: 1,
-        maxAgeSeconds: age["1h"],
+        maxAgeSeconds: age["7d"],
       },
     },
   },
@@ -66,7 +66,7 @@ module.exports = [
       cacheName: "static-image-assets",
       expiration: {
         maxEntries: 64,
-        maxAgeSeconds: age["1d"],
+        maxAgeSeconds: age["1y"],
       },
     },
   },
@@ -77,7 +77,7 @@ module.exports = [
       cacheName: "static-js-assets",
       expiration: {
         maxEntries: 16,
-        maxAgeSeconds: age["1h"],
+        maxAgeSeconds: age["7d"],
       },
     },
   },
@@ -88,7 +88,7 @@ module.exports = [
       cacheName: "static-style-assets",
       expiration: {
         maxEntries: 16,
-        maxAgeSeconds: age["1h"],
+        maxAgeSeconds: age["7d"],
       },
     },
   },
@@ -99,7 +99,7 @@ module.exports = [
       cacheName: "static-data-assets",
       expiration: {
         maxEntries: 16,
-        maxAgeSeconds: age["1h"],
+        maxAgeSeconds: age["7d"],
       },
     },
   },
@@ -149,7 +149,7 @@ module.exports = [
       cacheName: "others",
       expiration: {
         maxEntries: 16,
-        maxAgeSeconds: age["1h"],
+        maxAgeSeconds: age["7d"],
       },
     },
   },
