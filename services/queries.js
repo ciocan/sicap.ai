@@ -444,8 +444,8 @@ export const STATS = gql`
 `
 
 export const CAPUSA = gql`
-  query getCapusaList($db: String!, $page: Int, $opt: String) {
-    getCapusaList(db: $db, page: $page, opt: $opt) {
+  query getCapusaList($db: String!, $page: Int, $filter: String) {
+    getCapusaList(db: $db, page: $page, filter: $filter) {
       total
       value
       list {

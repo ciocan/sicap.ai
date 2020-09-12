@@ -47,7 +47,7 @@ export const typeDefs = gql`
       db: String
     ): ContractResult
     getEntityList(db: String!, stat: String!, start: Int, end: Int): [Stat]
-    getCapusaList(db: String!, page: Int, opt: String): CapusaList
+    getCapusaList(db: String!, page: Int, filter: String): CapusaList
   }
 
   type Mutation {

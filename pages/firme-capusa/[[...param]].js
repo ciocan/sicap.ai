@@ -39,22 +39,21 @@ const tabs = [
 
 export default function FirmeCapusa() {
   const router = useRouter()
-  const [db, opt = defaultFilterEncoded, page = 1] = router.query?.param || [
-    "licitatii",
-  ]
+  const [db, filterEncoded = defaultFilterEncoded, page = 1] = router.query
+    ?.param || ["licitatii"]
 
   const tab = tabs.find((d) => d.slug === db)
   const name = tab.name?.toLowerCase()
-  const filter = decodeFilter(opt)
+  const filter = decodeFilter(filterEncoded)
 
   const { data, loading } = useQuery(CAPUSA, {
-    variables: { db, page: Number(page), opt },
+    variables: { db, page: Number(page), filter: filterEncoded },
   })
 
   const handleTabChange = (id) => {
     router.push(
       `/firme-capusa/[[...param]]`,
-      `/firme-capusa/${tabs[id].slug}/${opt}`,
+      `/firme-capusa/${tabs[id].slug}/${filterEncoded}`,
       {
         shallow: true,
       }
@@ -89,7 +88,7 @@ export default function FirmeCapusa() {
             valoarea contractelor de achizitii publice.
           </Text>
         </Box>
-        <Filter onChange={handleFilterChange} data={opt} />
+        <Filter onChange={handleFilterChange} data={filter} />
         <Tabs colorScheme="tab" index={tab.i || 0} onChange={handleTabChange}>
           <TabList>
             <Tab>{tabs[0].name}</Tab>
@@ -110,11 +109,10 @@ export default function FirmeCapusa() {
 }
 
 export const getServerSideProps = async (context) => {
-  const [db, opt = defaultFilterEncoded, page = 1] = context.query?.param || [
-    "licitatii",
-  ]
+  const [db, filter = defaultFilterEncoded, page = 1] = context.query
+    ?.param || ["licitatii"]
 
-  const variables = { db, page: Number(page), opt }
+  const variables = { db, page: Number(page), filter }
 
   const apolloClient = initializeApollo()
   await apolloClient.query({ query: CAPUSA, variables })

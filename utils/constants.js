@@ -47,7 +47,6 @@ export const counties = [
   "Maramures",
   "Mehedinti",
   "Mures",
-  "NA",
   "Neamt",
   "Olt",
   "Prahova",
