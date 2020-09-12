@@ -442,3 +442,31 @@ export const STATS = gql`
     }
   }
 `
+
+export const CAPUSA = gql`
+  query getCapusaList($db: String!, $page: Int, $opt: String) {
+    getCapusaList(db: $db, page: $page, opt: $opt) {
+      total
+      value
+      list {
+        entityId
+        entityName
+        fiscalNumber
+        city
+        county
+        stats {
+          contracts
+          employees
+          value
+          data {
+            label
+            data {
+              primary
+              secondary
+            }
+          }
+        }
+      }
+    }
+  }
+`

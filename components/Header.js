@@ -14,6 +14,7 @@ import {
 import { BsQuestionSquare as AboutIcon } from "react-icons/bs"
 import { ImStatsBars as StatsIcon } from "react-icons/im"
 import { FaUserNinja } from "react-icons/fa"
+import { GiTick as TickIcon } from "react-icons/gi"
 import { useSession } from "next-auth/client"
 
 import { SearchBar } from "@components"
@@ -43,13 +44,14 @@ export function Header() {
       py="4"
       px="4"
       {...gridProps}
-      gridTemplateColumns="auto 1fr auto auto auto"
+      gridTemplateColumns="auto 1fr auto auto auto auto"
       alignItems="center"
     >
       {!isHome && <Logo />}
       <Box mx="8">{!isHome && <SearchBar query={query} hide />}</Box>
-      <Stats />
-      <About />
+      <Capusa selected={route.includes("firme-capusa")} />
+      <Stats selected={route.includes("statistici")} />
+      <About selected={route.includes("despre")} />
       <User />
     </Grid>
   )
@@ -64,7 +66,7 @@ const Logo = () => (
   </Link>
 )
 
-const About = () => {
+const About = ({ selected }) => {
   return (
     <Link href="/despre" as="/despre" passHref>
       <ChakraLink
@@ -79,13 +81,18 @@ const About = () => {
           boxSize="1.5em"
           display={{ sm: "block", md: "none" }}
         />
-        <Text display={["none", "none", "block"]}>Despre</Text>
+        <Text
+          display={["none", "none", "block"]}
+          color={selected ? "blue" : "black"}
+        >
+          Despre
+        </Text>
       </ChakraLink>
     </Link>
   )
 }
 
-const Stats = () => {
+const Stats = ({ selected }) => {
   return (
     <Link href="/statistici/[[...param]]" as="/statistici" passHref>
       <ChakraLink
@@ -97,7 +104,36 @@ const Stats = () => {
       >
         <HStack>
           <Box as={StatsIcon} color="blue" boxSize="1.5em" />
-          <Text display={["none", "none", "block"]}>Statistici</Text>
+          <Text
+            display={["none", "none", "block"]}
+            color={selected ? "blue" : "black"}
+          >
+            Statistici
+          </Text>
+        </HStack>
+      </ChakraLink>
+    </Link>
+  )
+}
+
+const Capusa = ({ selected }) => {
+  return (
+    <Link href="/firme-capusa/[[...param]]" as="/firme-capusa" passHref>
+      <ChakraLink
+        _hover={{ textDecoration: "underline" }}
+        justifySelf="end"
+        color="black"
+        outline="none"
+        mr="4"
+      >
+        <HStack>
+          <Box as={TickIcon} color="blue" boxSize="1.5em" />
+          <Text
+            display={["none", "none", "block"]}
+            color={selected ? "blue" : "black"}
+          >
+            Firme căpuşă
+          </Text>
         </HStack>
       </ChakraLink>
     </Link>

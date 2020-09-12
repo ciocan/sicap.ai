@@ -110,7 +110,7 @@ function ContractsList({ db }) {
           )
         })}
       </Stack>
-      <Paginator route="contul-meu" tab={db} hits={hits} />
+      <Paginator route="contul-meu" opt={db} hits={hits} />
     </>
   )
 }
