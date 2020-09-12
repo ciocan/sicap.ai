@@ -26,7 +26,7 @@ const infoMap = {
 
 export function Capusa({ data, loading }) {
   const router = useRouter()
-  const [db, opt = defaultFilterEncoded, page = 1] = router.query?.param || [
+  const [db, filter = defaultFilterEncoded, page = 1] = router.query?.param || [
     "licitatii",
   ]
 
@@ -45,7 +45,7 @@ export function Capusa({ data, loading }) {
         {list?.map((props, k) => (
           <Company key={k} db={db} {...props} />
         ))}
-        <Paginator route="firme-capusa" hits={total} opt={opt} />
+        <Paginator route="firme-capusa" hits={total} opt={filter} />
       </VStack>
     </Box>
   )

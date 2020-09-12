@@ -13,6 +13,7 @@ import {
   SliderTrack,
   SliderFilledTrack,
 } from "@chakra-ui/core"
+import { clone } from "ramda"
 import { BiFilter } from "react-icons/bi"
 
 import { encode, decode } from "@utils"
@@ -42,9 +43,7 @@ export const defaultFilterEncoded = encodeFilter(defaultFilter)
 
 export function Filter({ onChange, data }) {
   const [show, setShow] = useState(false)
-  const [filter, setFilter] = useState(
-    data ? decodeFilter(data) : defaultFilter
-  )
+  const [filter, setFilter] = useState(data || defaultFilter)
 
   const handleYearFilter = useCallback(
     (year) => {
@@ -52,27 +51,27 @@ export function Filter({ onChange, data }) {
 
       if (filter.years.includes(year)) {
         setFilter({
-          ...filter,
+          ...clone(filter),
           years: filter.years.filter((y) => y !== year),
         })
       } else {
         setFilter({
-          ...filter,
+          ...clone(filter),
           years: [...filter.years, year],
         })
       }
     },
-    [filter.years]
+    [filter]
   )
 
   const handleThresholdFilter = useCallback(
-    (value) => setFilter({ ...filter, threshold: value }),
-    [filter.threshold]
+    (value) => setFilter({ ...clone(filter), threshold: value }),
+    [filter]
   )
 
   const handleCountyFilter = useCallback(
-    (e) => setFilter({ ...filter, county: e.target.value }),
-    [filter.county]
+    (e) => setFilter({ ...clone(filter), county: e.target.value }),
+    [filter]
   )
 
   const handleFilter = () => {
@@ -107,7 +106,7 @@ export function Filter({ onChange, data }) {
           >
             <Flex width={["100%", "30%"]}>
               <Slider
-                defaultValue={filter.threshold}
+                value={filter.threshold}
                 min={50}
                 max={100}
                 step={5}

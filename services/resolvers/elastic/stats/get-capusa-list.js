@@ -22,9 +22,9 @@ const dbMap = {
 
 const PAGE_SIZE = 20
 
-export async function getCapusaList({ db, page, opt }) {
-  const filter = isBase64(opt)
-    ? JSON.parse(decode(opt))
+export async function getCapusaList({ db, page, filter: filterEncoded }) {
+  const filter = isBase64(filterEncoded)
+    ? JSON.parse(decode(filterEncoded))
     : JSON.parse(decode(defaultFilterEncoded))
   console.log(filter)
   const range = filter.y.map((year) => ({
