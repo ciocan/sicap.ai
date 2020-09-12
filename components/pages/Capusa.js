@@ -6,7 +6,8 @@ import { Box, VStack, Stack, HStack, Text, Link } from "@chakra-ui/core"
 import { HiExternalLink } from "react-icons/hi"
 
 import { Paginator } from "@components"
-import { defaultFilterEncoded } from "@components/pages"
+import { defaultFilterEncoded, decodeFilter } from "@components/pages"
+import { counties } from "@utils/constants"
 import { moneyRon } from "@utils"
 
 const Note = ({ n, total }) => (
@@ -26,9 +27,11 @@ const infoMap = {
 
 export function Capusa({ data, loading }) {
   const router = useRouter()
-  const [db, opt = defaultFilterEncoded, page = 1] = router.query?.param || [
-    "licitatii",
-  ]
+  const [db, filterEncoded = defaultFilterEncoded, page = 1] = router.query
+    ?.param || ["licitatii"]
+
+  const filter = decodeFilter(filterEncoded)
+  const hasCounty = filter.county !== counties[0]
 
   if (loading || !data) return <Box>Se incarca...</Box>
 
@@ -37,6 +40,16 @@ export function Capusa({ data, loading }) {
   return (
     <Box>
       {infoMap[db]}
+      <Text px="4" pt="4">
+        Rezultate pentru filtru: an(i){" "}
+        {filter.years.sort().map((y) => (
+          <Text as="span" key={y}>
+            {`${y}, `}
+          </Text>
+        ))}{" "}
+        procent {filter.threshold}%
+        {hasCounty ? `, judetul ${filter.county}` : ""}
+      </Text>
       <Text p="4">
         Pagina {page} din <b>{total}</b> firme gasite cu valoare totala a
         contractelor de <b>{moneyRon(value)}</b>
@@ -45,7 +58,7 @@ export function Capusa({ data, loading }) {
         {list?.map((props, k) => (
           <Company key={k} db={db} {...props} />
         ))}
-        <Paginator route="firme-capusa" hits={total} opt={opt} />
+        <Paginator route="firme-capusa" hits={total} opt={filterEncoded} />
       </VStack>
     </Box>
   )
