@@ -4,8 +4,9 @@ import { useRouter } from "next/router"
 import { Box, VStack, Stack, HStack, Text, Link } from "@chakra-ui/core"
 
 import { HiExternalLink } from "react-icons/hi"
-import { Paginator } from "@components"
 
+import { Paginator } from "@components"
+import { defaultFilterEncoded } from "@components/pages"
 import { moneyRon } from "@utils"
 
 const Note = ({ n, total }) => (
@@ -25,7 +26,9 @@ const infoMap = {
 
 export function Capusa({ data, loading }) {
   const router = useRouter()
-  const [db, opt = "options", page = 1] = router.query?.param || ["licitatii"]
+  const [db, opt = defaultFilterEncoded, page = 1] = router.query?.param || [
+    "licitatii",
+  ]
 
   if (loading || !data) return <Box>Se incarca...</Box>
 

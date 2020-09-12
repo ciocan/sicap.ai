@@ -13,7 +13,7 @@ import { useQuery } from "@apollo/react-hooks"
 
 import { initializeApollo } from "@services/apollo"
 import { Meta } from "@components"
-import { Capusa, Filter } from "@components/pages"
+import { Capusa, Filter, defaultFilterEncoded } from "@components/pages"
 
 import { CAPUSA } from "@services/queries"
 
@@ -32,7 +32,9 @@ const tabs = [
 
 export default function FirmeCapusa() {
   const router = useRouter()
-  const [db, opt = "options", page = 1] = router.query?.param || ["licitatii"]
+  const [db, opt = defaultFilterEncoded, page = 1] = router.query?.param || [
+    "licitatii",
+  ]
 
   const tab = tabs.find((d) => d.slug === db)
   const name = tab.name?.toLowerCase()
@@ -51,8 +53,14 @@ export default function FirmeCapusa() {
     )
   }
 
-  const handleFilterChange = (value) => {
-    console.log(value)
+  const handleFilterChange = (filter) => {
+    router.push(
+      `/firme-capusa/[[...param]]`,
+      `/firme-capusa/${tab.slug}/${filter}/${page}`,
+      {
+        shallow: true,
+      }
+    )
   }
 
   return (
@@ -93,7 +101,9 @@ export default function FirmeCapusa() {
 }
 
 export const getServerSideProps = async (context) => {
-  const [db, opt = "options", page = 1] = context.query?.param || ["licitatii"]
+  const [db, opt = defaultFilterEncoded, page = 1] = context.query?.param || [
+    "licitatii",
+  ]
 
   const variables = { db, page: Number(page), opt }
 
