@@ -13,7 +13,7 @@ import { useQuery } from "@apollo/react-hooks"
 
 import { initializeApollo } from "@services/apollo"
 import { Meta } from "@components"
-import { Capusa } from "@components/pages"
+import { Capusa, Filter } from "@components/pages"
 
 import { CAPUSA } from "@services/queries"
 
@@ -51,6 +51,10 @@ export default function FirmeCapusa() {
     )
   }
 
+  const handleFilterChange = (value) => {
+    console.log(value)
+  }
+
   return (
     <>
       <Meta
@@ -68,6 +72,7 @@ export default function FirmeCapusa() {
             valoarea contractelor de achizitii publice.
           </Text>
         </Box>
+        <Filter onChange={handleFilterChange} />
         <Tabs colorScheme="tab" index={tab.i || 0} onChange={handleTabChange}>
           <TabList>
             <Tab>{tabs[0].name}</Tab>
