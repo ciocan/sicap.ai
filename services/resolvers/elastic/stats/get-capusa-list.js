@@ -1,6 +1,8 @@
 import elasticsearch from "elasticsearch"
 
 import { ES_HOST } from "@utils/config"
+import { isBase64, decode } from "@utils"
+import { defaultFilterEncoded } from "@components/pages"
 
 const client = new elasticsearch.Client({
   host: ES_HOST,
@@ -15,11 +17,21 @@ const dbMap = {
   },
 }
 
-const THRESHOLD = 70
 const PAGE_SIZE = 20
 
 export async function getCapusaList({ db, page, opt }) {
-  console.log("getCapusaList: ", opt)
+  const filter = isBase64(opt)
+    ? JSON.parse(decode(opt))
+    : JSON.parse(decode(defaultFilterEncoded))
+
+  const range = filter.y.map((year) => ({
+    range: {
+      [`stats.ratio.${year}`]: {
+        gte: filter.t,
+        lt: 300,
+      },
+    },
+  }))
 
   const result = await client.search({
     index: [dbMap[db].index],
@@ -57,22 +69,7 @@ export async function getCapusaList({ db, page, opt }) {
                 field: "stats.totalRatio",
               },
             },
-            {
-              range: {
-                "stats.ratio.2019": {
-                  gte: THRESHOLD,
-                  lt: 300,
-                },
-              },
-            },
-            {
-              range: {
-                "stats.ratio.2018": {
-                  gte: THRESHOLD,
-                  lt: 300,
-                },
-              },
-            },
+            ...range,
           ],
         },
       },

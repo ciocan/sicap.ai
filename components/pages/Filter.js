@@ -20,6 +20,11 @@ const defaultFilter = {
   threshold: 70,
 }
 
+const encodeFilter = (filter) =>
+  encode(JSON.stringify({ y: filter.years, t: filter.threshold }))
+
+export const defaultFilterEncoded = encodeFilter(defaultFilter)
+
 export function Filter({ onChange }) {
   const [show, setShow] = useState(false)
   const [filter, setFilter] = useState(defaultFilter)
@@ -49,7 +54,7 @@ export function Filter({ onChange }) {
   )
 
   const handleFilter = () => {
-    onChange(encode(JSON.stringify({ y: filter.years, t: filter.threshold })))
+    onChange(encodeFilter(filter))
   }
 
   return (
@@ -57,7 +62,7 @@ export function Filter({ onChange }) {
       {show && (
         <Stack width="100%" direction={["column", "row"]}>
           <HStack>
-            {[2017, 2018, 2019].map((year, key) => (
+            {[2015, 2016, 2017, 2018, 2019].map((year, key) => (
               <Year
                 key={key}
                 label={year}
@@ -112,7 +117,9 @@ const Year = ({ label, onClick, selected }) => (
   <Button
     onClick={() => onClick(label)}
     color={selected ? "blue" : "grey"}
-    borderRadius="20px"
+    borderRadius={["15px", "20px"]}
+    fontSize={["xs", "s"]}
+    px={[2, 4]}
   >
     {label}
   </Button>
