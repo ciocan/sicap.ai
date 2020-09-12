@@ -64,7 +64,7 @@ export default function FirmeCapusa() {
   const handleFilterChange = (filter) => {
     router.push(
       `/firme-capusa/[[...param]]`,
-      `/firme-capusa/${tab.slug}/${filter}/${page}`,
+      `/firme-capusa/${tab.slug}/${filter}`,
       {
         shallow: true,
       }
