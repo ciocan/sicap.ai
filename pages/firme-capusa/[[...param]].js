@@ -45,6 +45,7 @@ export default function FirmeCapusa() {
   const tab = tabs.find((d) => d.slug === db)
   const name = tab.name?.toLowerCase()
   const filter = decodeFilter(filterEncoded)
+  const hasCounty = filter.county !== counties[0]
 
   const { data, loading } = useQuery(CAPUSA, {
     variables: { db, page: Number(page), filter: filterEncoded },
@@ -73,13 +74,14 @@ export default function FirmeCapusa() {
   return (
     <>
       <Meta
-        title={`Firme capusa | ${name} | SICAP.ai`}
+        title={`Firme capusa ${
+          hasCounty ? filter.county : ""
+        } | ${name} | SICAP.ai`}
         description={`Lisata firmelor capusa din sistemul de ${name}`}
       />
       <Box>
         <Heading as="h1" fontSize="xl" mt="4">
-          Lista firmelor căpuşă{" "}
-          {filter.county !== counties[0] && `din judetul ${filter.county}`}
+          Lista firmelor căpuşă {hasCounty && `din judetul ${filter.county}`}
         </Heading>
         <Box my="8">
           <Text fontStyle="italic">
