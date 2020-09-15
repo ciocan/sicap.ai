@@ -50,12 +50,6 @@ export default class MyDocument extends Document {
           <meta name="theme-color" content="#FFF" />
           <link rel="manifest" href="/manifest.json" />
           <link rel="shortcut icon" href="/favicon.png" />
-          <meta property="og:type" content="website" />
-          <meta property="og:title" content="SICAP.ai" />
-          <meta
-            property="og:description"
-            content="Detector de achizitii frauduloase cu ajutorul inteligentei artificiale"
-          />
           <link
             rel="apple-touch-icon"
             sizes="180x180"
