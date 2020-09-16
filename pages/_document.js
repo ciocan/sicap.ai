@@ -55,8 +55,6 @@ export default class MyDocument extends Document {
             sizes="180x180"
             href="/apple-touch-icon.png"
           />
-          <meta property="og:site_name" content="SICAP.ai" />
-          <meta property="og:url" content="https://sicap.ai" />
         </Head>
         <body>
           <Main />
