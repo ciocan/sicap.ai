@@ -2,11 +2,17 @@
 
 import PropTypes from "prop-types"
 import Head from "next/head"
+import { useRouter } from "next/router"
+
+import { SITE_URL } from "@utils/config"
 
 const defaultDescription =
   "Detector de achizitii frauduloase cu ajutorul inteligentei artificiale"
 
 export function Meta({ title, description, url }) {
+  const router = useRouter()
+  const pageUrl = `${SITE_URL}${router.asPath}`
+
   return (
     <Head>
       <title>{title}</title>
@@ -17,8 +23,9 @@ export function Meta({ title, description, url }) {
         content={description || defaultDescription}
       />
       <meta property="og:site_name" content="SICAP.ai" />
-      <meta property="og:url" content={url || "https://sicap.ai"} />
+      <meta property="og:url" content={url || pageUrl} />
       <meta property="og:type" content="website" />
+      <meta property="og:image" content="/icon-512x512.png" />
     </Head>
   )
 }
