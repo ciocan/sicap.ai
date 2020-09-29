@@ -47,8 +47,7 @@ export async function getContracts({ page = 1, query }) {
     hits: result.hits.total.value,
     list: result.hits.hits.map((res) => {
       res._source.item.contractTitle =
-        (res.highlight["item.contractTitle"] &&
-          res.highlight["item.contractTitle"][0]) ||
+        res?.highlight?.["item.contractTitle"]?.[0] ||
         res._source.item.contractTitle
 
       return {
