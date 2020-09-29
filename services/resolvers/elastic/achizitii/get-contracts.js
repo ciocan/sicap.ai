@@ -46,8 +46,7 @@ export async function getDirectContracts({ page = 1, query }) {
     hits: result.hits.total.value,
     list: result.hits.hits.map((res) => {
       res._source.item.directAcquisitionName =
-        (res.highlight["item.directAcquisitionName"] &&
-          res.highlight["item.directAcquisitionName"][0]) ||
+        res?.highlight?.["item.directAcquisitionName"]?.[0] ||
         res._source.item.directAcquisitionName
 
       return {
