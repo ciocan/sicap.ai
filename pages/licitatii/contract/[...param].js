@@ -114,7 +114,7 @@ function Contract() {
             />
             <Box>
               <ChakraLink
-                href={`https://www.${
+                href={`https://${
                   istoric ? "istoric." : ""
                 }e-licitatie.ro/pub/notices/ca-notices/view-c/${caNoticeId}`}
                 isExternal
