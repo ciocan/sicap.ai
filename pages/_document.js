@@ -55,6 +55,7 @@ export default class MyDocument extends Document {
             sizes="180x180"
             href="/apple-touch-icon.png"
           />
+        <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "9005de8a0047412ab3b279def36918d9"}'></script>
         </Head>
         <body>
           <Main />
