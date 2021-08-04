@@ -48,6 +48,7 @@
     "date-fns": "^2.15.0",
     "elastic-apm-node": "^3.7.0",
     "elasticsearch": "^16.7.1",
+    "fathom-client": "^3.1.0",
     "frappe-charts": "^1.5.2",
     "graphql": "^15.3.0",
     "graphql-tag": "^2.11.0",

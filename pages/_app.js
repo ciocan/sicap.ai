@@ -2,19 +2,20 @@ import { useEffect } from "react"
 import PropTypes from "prop-types"
 import { ChakraProvider, CSSReset, useDisclosure } from "@chakra-ui/core"
 import NProgress from "nprogress"
-import Router from "next/router"
+import Router, {useRouter} from "next/router";
 import { setOptions, getSession, Provider, providers } from "next-auth/client"
 import { ApolloProvider } from "@apollo/react-hooks"
 import { init as initApm } from "@elastic/apm-rum"
 import { setDefaultLocale, registerLocale } from "react-datepicker"
 import ro from "date-fns/locale/ro"
+import * as Fathom from "fathom-client";
 
 import "react-datepicker/dist/react-datepicker.css"
 
 import { useApollo } from "@services/apollo"
 import { Layout, LoginModal } from "@components"
 import { ModalContext } from "@utils"
-import { SITE_URL, APM_RUM_URL, isDev } from "@utils/config"
+import {SITE_URL, APM_RUM_URL, isDev, FATHOM_CODE} from "@utils/config";
 import theme from "../theme"
 
 registerLocale("ro", ro)
@@ -26,10 +27,11 @@ Router.events.on("routeChangeComplete", () => NProgress.done())
 Router.events.on("routeChangeError", () => NProgress.done())
 
 export default function MyApp(props) {
-  const { Component, pageProps, ...rest } = props
-  const { session } = pageProps
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const apolloClient = useApollo(pageProps.initialApolloState)
+  const {Component, pageProps, ...rest} = props;
+  const {session} = pageProps;
+  const {isOpen, onOpen, onClose} = useDisclosure();
+  const apolloClient = useApollo(pageProps.initialApolloState);
+  const router = useRouter();
 
   useEffect(() => {
     initApm({
@@ -38,11 +40,30 @@ export default function MyApp(props) {
       serviceVersion: "1",
       breakdownMetrics: true,
       environment: isDev ? "development" : "production",
-    })
-  }, [])
+    });
+
+    Fathom.load(FATHOM_CODE, {
+      includedDomains: [SITE_URL],
+    });
+
+    function onRouteChangeComplete() {
+      Fathom.trackPageview();
+    }
+    router.events.on("routeChangeComplete", onRouteChangeComplete);
+
+    return () => {
+      router.events.off("routeChangeComplete", onRouteChangeComplete);
+    };
+  }, []);
 
   return (
-    <Provider session={session} options={{ clientMaxAge: 0, keepAlive: 0 }}>
+    <Provider
+      session={session}
+      options={{
+        clientMaxAge: 0,
+        keepAlive: 0,
+      }}
+    >
       <ChakraProvider theme={theme}>
         <CSSReset />
         <ModalContext.Provider value={onOpen}>
@@ -59,7 +80,7 @@ export default function MyApp(props) {
         </ModalContext.Provider>
       </ChakraProvider>
     </Provider>
-  )
+  );
 }
 
 MyApp.propTypes = {

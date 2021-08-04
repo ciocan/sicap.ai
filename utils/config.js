@@ -14,3 +14,5 @@ export const auth = {
   GOOGLE_SECRET: process.env.GOOGLE_SECRET,
   SECRET: process.env.SECRET,
 }
+
+export const FATHOM_CODE = process.env.FATHOM_CODE;
