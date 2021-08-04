@@ -43,7 +43,7 @@ export default function MyApp(props) {
     });
 
     Fathom.load(FATHOM_CODE, {
-      includedDomains: [SITE_URL],
+      includedDomains: ["sicap.ai", "www.sicap.ai"],
     });
 
     function onRouteChangeComplete() {
