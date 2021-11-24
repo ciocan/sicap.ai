@@ -68,22 +68,22 @@ async function getBookmarkedContractsL({ bookmarks, page = 1 }) {
           ...pick(
             caNoticeEdit_New,
             res._source.publicNotice.caNoticeEdit_New?.section2_New
-              ?.section2_1_New || {}
+              ?.section2_1_New || {},
           ),
           ...pick(["contractDate"], res._source.noticeContracts),
           winner: {
             ...pick(
               ["name", "fiscalNumber", "fiscalNumberInt", "entityId"],
-              res._source.noticeContracts?.items[0]?.winner || {}
+              res._source.noticeContracts?.items[0]?.winner || {},
             ),
           },
           winners: res._source.noticeContracts?.items[0]?.winners?.map(
             (winner) => ({
               ...pick(
                 ["entityId", "name", "fiscalNumber", "fiscalNumberInt"],
-                winner || {}
+                winner || {},
               ),
-            })
+            }),
           ),
         },
       }
@@ -148,11 +148,11 @@ async function getBookmarkedContractsA({ bookmarks, page = 1 }) {
             "publicationDate",
             "closingValue",
           ],
-          res._source.item
+          res._source.item,
         ),
         ...pick(
           ["sysAcquisitionContractType"],
-          res._source.publicDirectAcquisition
+          res._source.publicDirectAcquisition,
         ),
         supplier: {
           ...pick(
@@ -165,7 +165,7 @@ async function getBookmarkedContractsA({ bookmarks, page = 1 }) {
               "country",
               "postalCode",
             ],
-            res._source.supplier
+            res._source.supplier,
           ),
         },
         contractingAuthority: {
@@ -179,7 +179,7 @@ async function getBookmarkedContractsA({ bookmarks, page = 1 }) {
               "country",
               "postalCode",
             ],
-            res._source.authority
+            res._source.authority,
           ),
         },
       }

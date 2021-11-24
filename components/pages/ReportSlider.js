@@ -26,7 +26,7 @@ export function ReportSlider({ defaultValue = 50, onChange }) {
       onChange(value)
       setConfidence(value)
     },
-    [confidence]
+    [confidence],
   )
 
   return (

@@ -5,7 +5,7 @@ import { Flex, Stack, Text } from "@chakra-ui/core"
 import { SearchBar, Meta } from "@components"
 import { shuffle, take, flow } from "lodash/fp"
 import { initializeApollo } from "@services/apollo"
-import { useQuery } from "@apollo/react-hooks"
+import { useQuery } from "@apollo/client"
 
 import { searchTerms } from "@utils/constants"
 import { number } from "@utils"

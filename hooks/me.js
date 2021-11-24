@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/react-hooks"
+import { useQuery } from "@apollo/client"
 import { useSession } from "next-auth/client"
 
 import { ME } from "@services/queries"

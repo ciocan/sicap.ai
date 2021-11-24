@@ -27,7 +27,7 @@ import {
 const tabs = ["favorite/licitatii", "raportate", "alerte", "setari"]
 const tabsMap = zipObject(
   tabs,
-  tabs.map((v, i) => i)
+  tabs.map((v, i) => i),
 )
 
 export default function ContulMeu({ session }) {

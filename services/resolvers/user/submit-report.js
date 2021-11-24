@@ -2,21 +2,21 @@ import { getSession } from "@utils"
 
 export async function submitReport(
   { contractId, confidence, comment, db },
-  context
+  context,
 ) {
   const { prisma, req, apm } = context
   const session = await getSession(req)
 
   if (!session) {
-    await prisma.disconnect()
+    await prisma.$disconnect()
     return false
   }
 
   const tx = apm.startTransaction("submitReport")
 
-  await prisma.connect()
+  await prisma.$connect()
 
-  const user = await prisma.user.findOne({
+  const user = await prisma.user.findUnique({
     where: { hashId: session.user.hashId },
     select: {
       id: true,

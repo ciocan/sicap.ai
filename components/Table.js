@@ -76,7 +76,7 @@ export function Table({ columns, data }) {
       data,
       initialState: { pageIndex: 0 },
     },
-    usePagination
+    usePagination,
   )
 
   return (

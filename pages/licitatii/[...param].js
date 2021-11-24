@@ -1,7 +1,7 @@
 import PropTypes from "prop-types"
 import { useRouter } from "next/router"
 import { Stack, Box, Text } from "@chakra-ui/core"
-import { useQuery } from "@apollo/react-hooks"
+import { useQuery } from "@apollo/client"
 
 import { Paginator, Meta } from "@components"
 import { initializeApollo } from "@services/apollo"

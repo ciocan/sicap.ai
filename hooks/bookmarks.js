@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from "@apollo/react-hooks"
+import { useQuery, useMutation } from "@apollo/client"
 import { useSession } from "next-auth/client"
 
 import { BOOKMARKS, TOGGLE_BOOKMARK } from "@services/queries"
@@ -6,11 +6,12 @@ import { BOOKMARKS, TOGGLE_BOOKMARK } from "@services/queries"
 export function useBookmarks(db) {
   const [session] = useSession()
   const { data } = useQuery(BOOKMARKS, { skip: !session })
+
   const bookmarks = data?.bookmarks
     .filter((b) => b.db === db)
-    .map((b) => b.contractId)
+    .map((b) => b.contractId) || []
 
-  const [toggleBookmark, { loading }] = useMutation(TOGGLE_BOOKMARK, {
+  const [toggleBookmark, { loading, error }] = useMutation(TOGGLE_BOOKMARK, {
     update(cache, { data: { toggleBookmark } }) {
       cache.writeQuery({
         query: BOOKMARKS,
@@ -29,7 +30,7 @@ export function useBookmarks(db) {
     const optimisticBookmarks = isBookmarked
       ? [
           ...bookmarks?.filter(
-            (b) => b.contractId !== contractId && b.db === db
+            (b) => b.contractId !== contractId && b.db === db,
           ),
         ]
       : [...bookmarks, { contractId, db, __typename: "Bookmark" }]
@@ -40,6 +41,8 @@ export function useBookmarks(db) {
           toggleBookmark: optimisticBookmarks,
         }
       : null
+
+    console.log("handleBookmarkToggle", contractId, bookmarks, db, error)
 
     toggleBookmark({
       variables: { contractId, db },

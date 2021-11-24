@@ -57,26 +57,26 @@ export async function getContracts({ page = 1, query }) {
           ...pick(
             caNoticeEdit_New,
             res._source?.publicNotice?.caNoticeEdit_New?.section2_New
-              ?.section2_1_New || {}
+              ?.section2_1_New || {},
           ),
           ...pick(["contractDate"], res._source.noticeContracts.items[0] || {}),
           ...pick(
             ["contractValue"],
-            res._source.noticeContracts.items[0] || {}
+            res._source.noticeContracts.items[0] || {},
           ),
           winner: {
             ...pick(
               ["name", "fiscalNumber", "fiscalNumberInt", "entityId"],
-              res._source.noticeContracts?.items[0]?.winner || {}
+              res._source.noticeContracts?.items[0]?.winner || {},
             ),
           },
           winners: res._source.noticeContracts?.items[0]?.winners?.map(
             (winner) => ({
               ...pick(
                 ["entityId", "name", "fiscalNumber", "fiscalNumberInt"],
-                winner || {}
+                winner || {},
               ),
-            })
+            }),
           ),
         },
       }

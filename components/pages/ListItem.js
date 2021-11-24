@@ -37,7 +37,7 @@ export const ListItem = ({ data, isBookmarked, db, ...rest }) => {
   const handleReport = () => {
     Router.push(
       `/${db}/contract/[...param]`,
-      `/${db}/contract/${id}/raporteaza`
+      `/${db}/contract/${id}/raporteaza`,
     )
   }
 

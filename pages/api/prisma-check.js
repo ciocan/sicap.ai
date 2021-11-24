@@ -13,8 +13,8 @@ export default async (req, res) => {
 
   users = await prisma.user.findMany({}).catch((e) => (error = e))
 
-  await prisma.disconnect()
+  await prisma.$disconnect()
   res.end(
-    JSON.stringify({ ms: getDurationInMilliseconds(start), users, error })
+    JSON.stringify({ ms: getDurationInMilliseconds(start), users, error }),
   )
 }

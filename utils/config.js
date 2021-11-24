@@ -15,4 +15,4 @@ export const auth = {
   SECRET: process.env.SECRET,
 }
 
-export const FATHOM_CODE = process.env.NEXT_PUBLIC_FATHOM_CODE;
+export const FATHOM_CODE = process.env.NEXT_PUBLIC_FATHOM_CODE

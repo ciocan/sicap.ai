@@ -1,6 +1,6 @@
 import { initializeApollo } from "@services/apollo"
 import { TOTAL } from "@services/queries"
-import { useQuery } from "@apollo/react-hooks"
+import { useQuery } from "@apollo/client"
 import { Box } from "@chakra-ui/core"
 
 import { Meta } from "@components"

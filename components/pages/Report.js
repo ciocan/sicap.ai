@@ -10,7 +10,7 @@ import {
   useToast,
 } from "@chakra-ui/core"
 
-import { useMutation } from "@apollo/react-hooks"
+import { useMutation } from "@apollo/client"
 import { ReportSlider } from "@components/pages"
 import { SUBMIT_REPORT } from "@services/queries"
 

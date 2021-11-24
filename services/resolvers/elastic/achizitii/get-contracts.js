@@ -60,7 +60,7 @@ export async function getDirectContracts({ page = 1, query }) {
             "publicationDate",
             "closingValue",
           ],
-          res._source.item
+          res._source.item,
         ),
         ...pick(
           [
@@ -68,7 +68,7 @@ export async function getDirectContracts({ page = 1, query }) {
             "sysAcquisitionContractType",
             "directAcquisitionItems",
           ],
-          res._source.publicDirectAcquisition
+          res._source.publicDirectAcquisition,
         ),
         supplier: {
           ...pick(
@@ -81,7 +81,7 @@ export async function getDirectContracts({ page = 1, query }) {
               "country",
               "postalCode",
             ],
-            res._source.supplier
+            res._source.supplier,
           ),
         },
         contractingAuthority: {
@@ -95,7 +95,7 @@ export async function getDirectContracts({ page = 1, query }) {
               "country",
               "postalCode",
             ],
-            res._source.authority
+            res._source.authority,
           ),
         },
       }

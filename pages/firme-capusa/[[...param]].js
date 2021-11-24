@@ -9,7 +9,7 @@ import {
   Heading,
 } from "@chakra-ui/core"
 import { useRouter } from "next/router"
-import { useQuery } from "@apollo/react-hooks"
+import { useQuery } from "@apollo/client"
 
 import { initializeApollo } from "@services/apollo"
 
@@ -57,7 +57,7 @@ export default function FirmeCapusa() {
       `/firme-capusa/${tabs[id].slug}/${filterEncoded}`,
       {
         shallow: true,
-      }
+      },
     )
   }
 
@@ -67,7 +67,7 @@ export default function FirmeCapusa() {
       `/firme-capusa/${tab.slug}/${filter}`,
       {
         shallow: true,
-      }
+      },
     )
   }
 

@@ -7,12 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "migrate": "npx prisma migrate save --experimental && npx prisma migrate up --experimental",
+    "migrate": "npx prisma migrate dev && npx prisma migrate deploy",
     "generate": "npx prisma generate",
     "studio": "npx prisma studio --experimental",
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "prisma generate",
-    "setenv": "export $(grep -v '^#' .env | xargs)"
+    "setenv": "export $(grep -v '^#' .env | xargs)",
+    "prettier": "prettier ./ --write"
   },
   "repository": {
     "type": "git",
@@ -25,20 +26,19 @@
   },
   "homepage": "https://sicap.ai",
   "dependencies": {
+    "@apollo/client": "^3.5.5",
     "@apollo/react-common": "^3.1.4",
-    "@apollo/react-hooks": "^4.0.0",
     "@chakra-ui/core": "1.0.0-rc.3",
     "@chakra-ui/icons": "^1.0.0-rc.3",
     "@chakra-ui/media-query": "^1.0.0-rc.3",
     "@chakra-ui/theme": "^1.0.0-rc.3",
     "@chakra-ui/theme-tools": "1.0.0-rc.3",
-    "@elastic/apm-rum": "^5.5.0",
+    "@elastic/apm-rum": "^5.9.1",
     "@elastic/apm-rum-react": "^1.2.3",
     "@elastic/eui": "^27.3.1",
     "@nexus/schema": "^0.14.0",
-    "@prisma/client": "^2.3.0",
+    "@prisma/client": "^3.5.0",
     "apollo-cache-inmemory": "^1.6.6",
-    "apollo-client": "^2.6.10",
     "apollo-link-http": "^1.5.17",
     "apollo-link-schema": "^1.2.5",
     "apollo-server-micro": "^2.16.1",
@@ -85,7 +85,6 @@
   "devDependencies": {
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.10.4",
     "@babel/plugin-proposal-optional-chaining": "^7.11.0",
-    "@prisma/cli": "^2.4.0",
     "babel-eslint": "^10.1.0",
     "babel-plugin-graphql-tag": "^3.0.0",
     "babel-plugin-module-resolver": "^4.0.0",
@@ -94,6 +93,7 @@
     "prettier": "^2.0.5",
     "prettier-eslint": "^11.0.0",
     "prettier-eslint-cli": "^5.0.0",
+    "prisma": "^3.5.0",
     "webpack": "^4.44.1"
   }
 }

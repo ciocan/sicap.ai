@@ -5,18 +5,18 @@ export async function getMe(context) {
   const session = await getSession(req)
 
   if (!session) {
-    await prisma.disconnect()
+    await prisma.$disconnect()
     return null
   }
 
   const tx = apm.startTransaction("getMe")
 
-  await prisma.connect()
+  await prisma.$connect()
 
   let user = null
 
   try {
-    user = await prisma.user.findOne({
+    user = await prisma.user.findUnique({
       where: { hashId: session.user.hashId },
       include: {
         bookmarks: {
