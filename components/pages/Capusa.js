@@ -79,7 +79,7 @@ const Company = (props) => {
     () => ({
       type: "area",
     }),
-    []
+    [],
   )
 
   const axes = useMemo(
@@ -87,7 +87,7 @@ const Company = (props) => {
       { primary: true, position: "bottom", type: "ordinal" },
       { position: "left", type: "linear", stacked: false },
     ],
-    []
+    [],
   )
 
   return (

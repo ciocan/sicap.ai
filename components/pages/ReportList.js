@@ -46,7 +46,7 @@ export function ReportList() {
               <Text>{comment}</Text>
             </Box>
           )
-        }
+        },
       )}
     </Stack>
   )

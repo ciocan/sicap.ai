@@ -8,7 +8,7 @@ import {
   useToast,
   Skeleton,
 } from "@chakra-ui/core"
-import { useQuery, useMutation } from "@apollo/react-hooks"
+import { useQuery, useMutation } from "@apollo/client"
 import { useSession } from "next-auth/client"
 
 import { GET_ALERTS, SAVE_ALERT } from "@services/queries"

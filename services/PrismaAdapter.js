@@ -25,7 +25,7 @@ const PrismaAdapter = () => {
       const prisma = new PrismaClient()
       const hashId = enc.Hex.stringify(SHA3(profile.email))
 
-      const userFromDb = await prisma.user.findOne({ where: { hashId } })
+      const userFromDb = await prisma.user.findFirst({ where: { hashId } })
 
       if (!userFromDb) {
         await prisma.user.create({ data: { hashId } })
@@ -36,7 +36,7 @@ const PrismaAdapter = () => {
         })
       }
 
-      await prisma.disconnect()
+      await prisma.$disconnect()
       return { hashId, ...profile }
     }
 
@@ -47,7 +47,7 @@ const PrismaAdapter = () => {
       providerAccountId,
       refreshToken,
       accessToken,
-      accessTokenExpires
+      accessTokenExpires,
     ) {
       _debug(
         "linkAccount",
@@ -57,7 +57,7 @@ const PrismaAdapter = () => {
         providerAccountId,
         refreshToken,
         accessToken,
-        accessTokenExpires
+        accessTokenExpires,
       )
       return null
     }

@@ -5,12 +5,12 @@ export async function toggleBookmark({ contractId, db }, context) {
   const session = await getSession(req)
 
   if (!session) {
-    await prisma.disconnect()
+    await prisma.$disconnect()
     return null
   }
 
   const tx = apm.startTransaction("toggleBookmark")
-  await prisma.connect()
+  await prisma.$connect()
 
   const userSpec = {
     where: { hashId: session.user.hashId },
@@ -21,9 +21,9 @@ export async function toggleBookmark({ contractId, db }, context) {
     },
   }
 
-  const user = await prisma.user.findOne(userSpec)
+  const user = await prisma.user.findUnique(userSpec)
   const isBookmarked = !!user.bookmarks.find(
-    (b) => b.contractId === contractId && b.db === db
+    (b) => b.contractId === contractId && b.db === db,
   )
 
   if (isBookmarked) {
@@ -54,7 +54,7 @@ export async function toggleBookmark({ contractId, db }, context) {
       })
   }
 
-  const u = await prisma.user.findOne(userSpec)
+  const u = await prisma.user.findUnique(userSpec)
 
   await prisma.disconnect()
   tx.end()

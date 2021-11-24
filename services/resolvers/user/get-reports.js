@@ -5,16 +5,16 @@ export async function getReports(context) {
   const session = await getSession(req)
 
   if (!session) {
-    await prisma.disconnect()
+    await prisma.$disconnect()
     return []
   }
 
   const tx = apm.startTransaction("getReports")
 
-  await prisma.connect()
+  await prisma.$connect()
 
   const user = await prisma.user
-    .findOne({
+    .findUnique({
       where: { hashId: session.user.hashId },
       include: {
         reports: {

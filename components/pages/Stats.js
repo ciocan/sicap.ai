@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 import { useRouter } from "next/router"
-import { useQuery } from "@apollo/react-hooks"
+import { useQuery } from "@apollo/client"
 import { Skeleton, Link as ChakraLink } from "@chakra-ui/core"
 
 import { Table } from "@components"
@@ -36,7 +36,7 @@ export function Stats() {
         accessor: "value",
       },
     ],
-    []
+    [],
   )
 
   return (

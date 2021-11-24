@@ -9,7 +9,7 @@ import {
   HStack,
   Grid,
 } from "@chakra-ui/core"
-import { useQuery } from "@apollo/react-hooks"
+import { useQuery } from "@apollo/client"
 import { FiExternalLink } from "react-icons/fi"
 import { MdReportProblem } from "react-icons/md"
 import { GoBookmark } from "react-icons/go"
@@ -66,7 +66,7 @@ function Contract() {
   const handleReport = () => {
     Router.push(
       `/licitatii/contract/[...param]`,
-      `/licitatii/contract/${caNoticeId}/raporteaza`
+      `/licitatii/contract/${caNoticeId}/raporteaza`,
     )
   }
 
@@ -212,7 +212,7 @@ function Contract() {
                   <Box>{contractTitle}</Box>
                   <Box>{shortDescription}</Box>
                 </Stack>
-              )
+              ),
             )}
           />
         </Grid>

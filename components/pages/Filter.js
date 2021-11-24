@@ -27,7 +27,7 @@ const defaultFilter = {
 
 const encodeFilter = (filter) =>
   encode(
-    JSON.stringify({ y: filter.years, t: filter.threshold, c: filter.county })
+    JSON.stringify({ y: filter.years, t: filter.threshold, c: filter.county }),
   )
 
 export const decodeFilter = (filter) => {
@@ -61,17 +61,17 @@ export function Filter({ onChange, data }) {
         })
       }
     },
-    [filter]
+    [filter],
   )
 
   const handleThresholdFilter = useCallback(
     (value) => setFilter({ ...clone(filter), threshold: value }),
-    [filter]
+    [filter],
   )
 
   const handleCountyFilter = useCallback(
     (e) => setFilter({ ...clone(filter), county: e.target.value }),
-    [filter]
+    [filter],
   )
 
   const handleFilter = () => {

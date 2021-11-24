@@ -43,3 +43,13 @@ export const _source = [
   "noticeContracts.items.contractDate",
   "noticeContracts.items.contractValue",
 ]
+
+export const searchFields = [
+  "*.contractingAuthorityNameAndFN",
+  "*.contractTitle",
+  "*.winner",
+  "*.shortDescription",
+  "*.title",
+  "*.winnerCaption",
+  "*.fiscalNumber",
+]

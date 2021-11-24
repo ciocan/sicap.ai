@@ -121,6 +121,6 @@ export async function getEntityList({ db, stat, start, end }) {
         value: total.value,
         entityId: id.hits.hits[0]?.fields?.[dbMap[db].id[stat]]?.[0] || null,
       }
-    }
+    },
   )
 }

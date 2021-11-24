@@ -20,12 +20,8 @@ const tabIndex = (tab, data) => data.find((t) => t.slug === tab)?.i
 
 const MakeTabs = ({ data, level = 0, ...rest }) => {
   const router = useRouter()
-  const [
-    db,
-    stat = "firme",
-    start = defaultStartDate,
-    end = defaultEndDate,
-  ] = router.query?.param || ["licitatii"]
+  const [db, stat = "firme", start = defaultStartDate, end = defaultEndDate] =
+    router.query?.param || ["licitatii"]
 
   const handleTabChange = (id) => {
     router.push(
@@ -35,7 +31,7 @@ const MakeTabs = ({ data, level = 0, ...rest }) => {
         : `/statistici/${db}/${data[id].slug}/${start}/${end}`,
       {
         shallow: true,
-      }
+      },
     )
   }
 
@@ -111,12 +107,8 @@ export default function Statistici() {
 }
 
 export const getServerSideProps = async (context) => {
-  const [
-    db,
-    stat = "firme",
-    start = defaultStartDate,
-    end = defaultEndDate,
-  ] = context.query?.param || ["licitatii"]
+  const [db, stat = "firme", start = defaultStartDate, end = defaultEndDate] =
+    context.query?.param || ["licitatii"]
 
   const variables = { db, stat, start: Number(start), end: Number(end) }
 

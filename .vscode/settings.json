@@ -1,20 +1,8 @@
 {
-  "search.exclude": {
-    "**/.next": true
-  },
-  "[javascript]": {
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": true
-    }
-  },
   "window.zoomLevel": 2,
-  "editor.fontSize": 20,
+  "editor.fontSize": 18,
   "terminal.integrated.fontSize": 14,
-  "files.watcherExclude": {
-    "**/.git/objects/**": true,
-    "**/.git/subtree-cache/**": true,
-    "**/.hg/store/**": true
-  }
+  "editor.formatOnSaveMode": "modifications",
+  "prettier.useEditorConfig": false,
+  "prettier.enable": false
 }

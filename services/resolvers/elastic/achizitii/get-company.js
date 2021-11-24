@@ -102,7 +102,7 @@ export async function getDirectCompany(args) {
             "publicationDate",
             "closingValue",
           ],
-          res._source.item
+          res._source.item,
         ),
         ...pick(
           [
@@ -110,7 +110,7 @@ export async function getDirectCompany(args) {
             "sysAcquisitionContractType",
             "directAcquisitionItems",
           ],
-          res._source.publicDirectAcquisition
+          res._source.publicDirectAcquisition,
         ),
         supplier: {
           ...pick(
@@ -123,7 +123,7 @@ export async function getDirectCompany(args) {
               "country",
               "postalCode",
             ],
-            res._source.supplier
+            res._source.supplier,
           ),
         },
         contractingAuthority: {
@@ -137,7 +137,7 @@ export async function getDirectCompany(args) {
               "country",
               "postalCode",
             ],
-            res._source.authority
+            res._source.authority,
           ),
         },
       }

@@ -13,7 +13,7 @@ const CustomInput = ({ value, onClick }) => (
 
 export function DatePicker({ onChange, start, end }) {
   const [startDate, setStartDate] = useState(
-    start ? fromUnixTime(start) : new Date("2007/01/01")
+    start ? fromUnixTime(start) : new Date("2007/01/01"),
   )
   const [endDate, setEndDate] = useState(end ? fromUnixTime(end) : new Date())
 

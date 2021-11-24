@@ -7,7 +7,7 @@ import {
   TabPanels,
   TabPanel,
 } from "@chakra-ui/core"
-import { useQuery } from "@apollo/react-hooks"
+import { useQuery } from "@apollo/client"
 import { useRouter } from "next/router"
 import { useSession } from "next-auth/client"
 
@@ -78,7 +78,7 @@ function ContractsList({ db }) {
           bookmarks?.filter((b) => b.db === db).map((b) => b.contractId) || [],
       },
       skip: !session && !bookmarks,
-    }
+    },
   )
 
   const { hits = 0, list = [] } = data?.bookmarkedContracts || {}
