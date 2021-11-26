@@ -42,8 +42,6 @@ export function useBookmarks(db) {
         }
       : null
 
-    console.log("handleBookmarkToggle", contractId, bookmarks, db, error)
-
     toggleBookmark({
       variables: { contractId, db },
       optimisticResponse,
