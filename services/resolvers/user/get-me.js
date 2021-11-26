@@ -33,6 +33,6 @@ export async function getMe(context) {
   }
 
   tx.end()
-  await prisma.disconnect()
+  await prisma.$disconnect()
   return user
 }

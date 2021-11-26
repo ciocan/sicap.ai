@@ -1,7 +1,6 @@
-import { PrismaClient } from "@prisma/client"
 import apm from "elastic-apm-node/start"
 
-const prisma = new PrismaClient()
+import prisma from "@services/prisma"
 
 export function createContext(context) {
   return { prisma, apm, ...context }

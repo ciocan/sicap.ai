@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "migrate": "npx prisma migrate dev && npx prisma migrate deploy",
     "generate": "npx prisma generate",
-    "studio": "npx prisma studio --experimental",
+    "studio": "npx prisma studio",
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "prisma generate",
     "setenv": "export $(grep -v '^#' .env | xargs)",

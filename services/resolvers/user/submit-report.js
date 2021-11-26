@@ -37,7 +37,7 @@ export async function submitReport(
       apm.captureError(e)
     })
 
-  await prisma.disconnect()
+  await prisma.$disconnect()
   tx.end()
   return report
 }

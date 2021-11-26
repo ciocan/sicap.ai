@@ -33,7 +33,7 @@ export async function getReports(context) {
       apm.captureError(e)
     })
 
-  await prisma.disconnect()
+  await prisma.$disconnect()
   tx.end()
 
   return user.reports || []
