@@ -10,6 +10,7 @@ import {
   Stack,
   Avatar,
   HStack,
+  Icon,
 } from "@chakra-ui/react"
 import { BsQuestionSquare as AboutIcon } from "react-icons/bs"
 import { ImStatsBars as StatsIcon } from "react-icons/im"
@@ -74,8 +75,9 @@ const About = ({ selected }) => {
         justifySelf="end"
         color="black"
         outline="none"
+        as={HStack}
       >
-        <Box
+        <Icon
           as={AboutIcon}
           color="blue"
           boxSize="1.5em"
