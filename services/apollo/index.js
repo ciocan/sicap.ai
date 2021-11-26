@@ -1,19 +1,19 @@
 import { useMemo } from "react"
-import { ApolloClient, InMemoryCache } from "@apollo/client"
-import { SchemaLink } from "@apollo/client/link/schema"
+import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client"
 
 import { SITE_URL } from "@utils/config"
-import { schema } from "./schema"
 
 let apolloClient
 
 function createApolloClient() {
   return new ApolloClient({
-    link: new SchemaLink({ schema }),
     ssrMode: typeof window === "undefined",
     cache: new InMemoryCache(),
-    uri: `${SITE_URL}/api/graphql`,
     connectToDevTools: true,
+    link: new HttpLink({
+      uri: `${SITE_URL}/api/graphql`,
+      credentials: "same-origin",
+    }),
   })
 }
 
