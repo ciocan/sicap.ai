@@ -9,7 +9,7 @@ import {
   ListItem,
   Heading,
   Image,
-} from "@chakra-ui/core"
+} from "@chakra-ui/react"
 
 function getCoreProps(props) {
   return props["data-sourcepos"]

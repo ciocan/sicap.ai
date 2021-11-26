@@ -8,7 +8,7 @@ import {
   ModalCloseButton,
   ModalBody,
   ModalFooter,
-} from "@chakra-ui/core"
+} from "@chakra-ui/react"
 
 import { LoginButton } from "@components"
 import { AccountBenefits } from "@components/pages"

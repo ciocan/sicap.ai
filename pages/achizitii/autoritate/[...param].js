@@ -1,5 +1,5 @@
 import { useRouter } from "next/router"
-import { Box, Text, Heading, Stack } from "@chakra-ui/core"
+import { Box, Text, Heading, Stack } from "@chakra-ui/react"
 import { useQuery } from "@apollo/client"
 
 import { Paginator, Meta } from "@components"

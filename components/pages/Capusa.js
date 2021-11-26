@@ -1,7 +1,7 @@
 import { useMemo } from "react"
 import { Chart } from "react-charts"
 import { useRouter } from "next/router"
-import { Box, VStack, Stack, HStack, Text, Link } from "@chakra-ui/core"
+import { Box, VStack, Stack, HStack, Text, Link } from "@chakra-ui/react"
 
 import { HiExternalLink } from "react-icons/hi"
 

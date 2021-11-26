@@ -8,7 +8,7 @@ import {
   AlertDialogFooter,
   AlertDialogBody,
   Button,
-} from "@chakra-ui/core"
+} from "@chakra-ui/react"
 
 export function Alert({ isOpen, onClose, onConfirm }) {
   return (

@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-import { Stack, Box, Text, RadioGroup, Radio } from "@chakra-ui/core"
+import { Stack, Box, Text, RadioGroup, Radio } from "@chakra-ui/react"
 import { dateFormat, moneyRon } from "@utils"
 import { FrappeChart } from "@components"
 

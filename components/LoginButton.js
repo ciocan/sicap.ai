@@ -1,4 +1,4 @@
-import { Button, Box } from "@chakra-ui/core"
+import { Button, Box } from "@chakra-ui/react"
 import { FcGoogle } from "react-icons/fc"
 import { signIn } from "next-auth/client"
 

@@ -8,7 +8,7 @@ import {
   Button,
   Textarea,
   useToast,
-} from "@chakra-ui/core"
+} from "@chakra-ui/react"
 
 import { useMutation } from "@apollo/client"
 import { ReportSlider } from "@components/pages"

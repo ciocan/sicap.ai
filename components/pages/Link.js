@@ -1,6 +1,6 @@
 import PropTypes from "prop-types"
 import NextLink from "next/link"
-import { Stack, Box, Text, Link as ChakraLink } from "@chakra-ui/core"
+import { Stack, Box, Text, Link as ChakraLink } from "@chakra-ui/react"
 import ReactHtmlParser from "react-html-parser"
 
 export function Link({ db, id, text, icon, entity, size, ...rest }) {

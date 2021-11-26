@@ -1,7 +1,7 @@
 import { useMemo } from "react"
 import { useRouter } from "next/router"
 import { useQuery } from "@apollo/client"
-import { Skeleton, Link as ChakraLink } from "@chakra-ui/core"
+import { Skeleton, Link as ChakraLink } from "@chakra-ui/react"
 
 import { Table } from "@components"
 import { moneyRon, encode } from "@utils"

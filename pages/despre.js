@@ -1,7 +1,7 @@
 import { initializeApollo } from "@services/apollo"
 import { TOTAL } from "@services/queries"
 import { useQuery } from "@apollo/client"
-import { Box } from "@chakra-ui/core"
+import { Box } from "@chakra-ui/react"
 
 import { Meta } from "@components"
 import { MD, number } from "@utils"

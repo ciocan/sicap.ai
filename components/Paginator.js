@@ -1,7 +1,7 @@
 import PropTypes from "prop-types"
 import { useRouter } from "next/router"
 import Link from "next/link"
-import { Stack, Box, Text } from "@chakra-ui/core"
+import { Stack, Box, Text } from "@chakra-ui/react"
 
 import { RESULTS_PER_PAGE } from "@utils/constants"
 
