@@ -6,7 +6,7 @@ import {
   ListIcon,
   Text,
   Link,
-} from "@chakra-ui/core"
+} from "@chakra-ui/react"
 import { MdCheckCircle } from "react-icons/md"
 
 export function AccountBenefits() {

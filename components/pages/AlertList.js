@@ -7,7 +7,7 @@ import {
   Textarea,
   useToast,
   Skeleton,
-} from "@chakra-ui/core"
+} from "@chakra-ui/react"
 import { useQuery, useMutation } from "@apollo/client"
 import { useSession } from "next-auth/client"
 

@@ -1,7 +1,7 @@
 import { useState } from "react"
 import PropTypes from "prop-types"
 import Link from "next/link"
-import { Flex, Stack, Text } from "@chakra-ui/core"
+import { Flex, Stack, Text } from "@chakra-ui/react"
 import { SearchBar, Meta } from "@components"
 import { shuffle, take, flow } from "lodash/fp"
 import { initializeApollo } from "@services/apollo"

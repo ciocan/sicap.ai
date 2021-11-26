@@ -8,7 +8,7 @@ import {
   SliderTrack,
   SliderFilledTrack,
   SliderThumb,
-} from "@chakra-ui/core"
+} from "@chakra-ui/react"
 
 import { MdReportProblem } from "react-icons/md"
 import { CONFIDENCE_LEVELS, colors, confidenceRange } from "@utils"

@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Text, Stack, Box, Link as ChakraLink } from "@chakra-ui/core"
+import { Text, Stack, Box, Link as ChakraLink } from "@chakra-ui/react"
 
 import { dateTime, CONFIDENCE_LEVELS, colors, confidenceRange } from "@utils"
 import { useMe } from "@hooks"

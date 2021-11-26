@@ -12,7 +12,7 @@ import {
   SliderThumb,
   SliderTrack,
   SliderFilledTrack,
-} from "@chakra-ui/core"
+} from "@chakra-ui/react"
 import { clone } from "ramda"
 import { BiFilter } from "react-icons/bi"
 

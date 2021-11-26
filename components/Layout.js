@@ -1,6 +1,6 @@
 import PropTypes from "prop-types"
 import Head from "next/head"
-import { Grid, Flex } from "@chakra-ui/core"
+import { Grid, Flex } from "@chakra-ui/react"
 import { useRouter } from "next/router"
 
 import { Footer, Header } from "@components"

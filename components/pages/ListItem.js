@@ -3,7 +3,7 @@ import Router from "next/router"
 import { MdReportProblem } from "react-icons/md"
 import { GoBookmark } from "react-icons/go"
 import { FaBriefcase, FaRegBuilding } from "react-icons/fa"
-import { Grid, Flex, Box, Text, useDisclosure } from "@chakra-ui/core"
+import { Grid, Flex, Box, Text, useDisclosure } from "@chakra-ui/react"
 
 import { moneyRon, moneyEur, dateFormat } from "@utils"
 import { Alert } from "@components"

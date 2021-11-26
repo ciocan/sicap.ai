@@ -6,7 +6,7 @@ import {
   Tab,
   TabPanels,
   TabPanel,
-} from "@chakra-ui/core"
+} from "@chakra-ui/react"
 import { useRouter } from "next/router"
 
 import { Meta, DatePicker } from "@components"

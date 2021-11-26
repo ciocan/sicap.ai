@@ -8,7 +8,7 @@ import {
   Stack,
   HStack,
   Grid,
-} from "@chakra-ui/core"
+} from "@chakra-ui/react"
 import { useQuery } from "@apollo/client"
 import { FiExternalLink } from "react-icons/fi"
 import { MdReportProblem } from "react-icons/md"

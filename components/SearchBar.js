@@ -10,7 +10,7 @@ import {
   InputRightElement,
   IconButton,
   Box,
-} from "@chakra-ui/core"
+} from "@chakra-ui/react"
 
 import { GoSearch } from "react-icons/go"
 

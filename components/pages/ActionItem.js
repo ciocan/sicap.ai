@@ -1,5 +1,5 @@
 import PropTypes from "prop-types"
-import { Box, Tooltip } from "@chakra-ui/core"
+import { Box, Tooltip } from "@chakra-ui/react"
 import { useContext } from "react"
 import { useSession } from "next-auth/client"
 

@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import PropTypes from "prop-types"
-import { ChakraProvider, CSSReset, useDisclosure } from "@chakra-ui/core"
+import { ChakraProvider, CSSReset, useDisclosure } from "@chakra-ui/react"
 import NProgress from "nprogress"
 import Router, { useRouter } from "next/router"
 import { setOptions, getSession, Provider, providers } from "next-auth/client"

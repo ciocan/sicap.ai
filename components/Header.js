@@ -10,7 +10,7 @@ import {
   Stack,
   Avatar,
   HStack,
-} from "@chakra-ui/core"
+} from "@chakra-ui/react"
 import { BsQuestionSquare as AboutIcon } from "react-icons/bs"
 import { ImStatsBars as StatsIcon } from "react-icons/im"
 import { FaUserNinja } from "react-icons/fa"

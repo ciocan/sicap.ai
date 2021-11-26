@@ -1,6 +1,6 @@
 import styled from "styled-components"
 import { useTable, usePagination } from "react-table"
-import { Text, Select, Input, Box, Stack, IconButton } from "@chakra-ui/core"
+import { Text, Select, Input, Box, Stack, IconButton } from "@chakra-ui/react"
 import {
   BiArrowToLeft,
   BiArrowToRight,

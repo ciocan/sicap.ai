@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import ReactDatePicker from "react-datepicker"
-import { Input, InputGroup, InputLeftElement, Stack } from "@chakra-ui/core"
+import { Input, InputGroup, InputLeftElement, Stack } from "@chakra-ui/react"
 import { CalendarIcon } from "@chakra-ui/icons"
 import { getUnixTime, fromUnixTime } from "date-fns"
 
