@@ -9,6 +9,7 @@ import { init as initApm } from "@elastic/apm-rum"
 import { setDefaultLocale, registerLocale } from "react-datepicker"
 import ro from "date-fns/locale/ro"
 import * as Fathom from "fathom-client"
+import dynamic from "next/dynamic"
 
 import "react-datepicker/dist/react-datepicker.css"
 
@@ -20,6 +21,10 @@ import theme from "../theme"
 
 registerLocale("ro", ro)
 setDefaultLocale("ro")
+
+const CrispWithNoSSR = dynamic(() => import("../components/CrispChat"), {
+  ssr: false,
+})
 
 NProgress.configure({ showSpinner: false })
 Router.events.on("routeChangeStart", () => NProgress.start())
@@ -79,6 +84,7 @@ export default function MyApp(props) {
           />
         </ModalContext.Provider>
       </ChakraProvider>
+      <CrispWithNoSSR />
     </Provider>
   )
 }

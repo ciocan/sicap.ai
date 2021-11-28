@@ -16,3 +16,5 @@ export const auth = {
 }
 
 export const FATHOM_CODE = process.env.NEXT_PUBLIC_FATHOM_CODE
+
+export const CRISP_WEBSITE_ID = process.env.NEXT_PUBLIC_CRISP_WEBSITE_ID
