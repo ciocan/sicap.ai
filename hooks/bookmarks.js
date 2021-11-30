@@ -7,9 +7,8 @@ export function useBookmarks(db) {
   const [session] = useSession()
   const { data } = useQuery(BOOKMARKS, { skip: !session })
 
-  const bookmarks = data?.bookmarks
-    .filter((b) => b.db === db)
-    .map((b) => b.contractId) || []
+  const bookmarks =
+    data?.bookmarks.filter((b) => b.db === db).map((b) => b.contractId) || []
 
   const [toggleBookmark, { loading, error }] = useMutation(TOGGLE_BOOKMARK, {
     update(cache, { data: { toggleBookmark } }) {

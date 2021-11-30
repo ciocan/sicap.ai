@@ -2,7 +2,7 @@ import { useRouter } from "next/router"
 import { Box, Text, Heading, Stack } from "@chakra-ui/react"
 import { useQuery } from "@apollo/client"
 
-import { Paginator, Meta } from "@components"
+import { Paginator, Meta, Error404 } from "@components"
 import { initializeApollo } from "@services/apollo"
 import { ListItem, Chart } from "@components/pages"
 import { DIRECT_COMPANY } from "@services/queries"
@@ -20,6 +20,9 @@ function CompanyPage() {
   })
 
   if (loading) return <Text>se incarca...</Text>
+  if (!data?.directCompany) {
+    return <Error404 />
+  }
 
   const {
     hits,
@@ -80,7 +83,11 @@ export const getServerSideProps = async (context) => {
   const variables = { company: id, page: parseInt(page) }
 
   const apolloClient = initializeApollo()
-  await apolloClient.query({ query: DIRECT_COMPANY, variables })
+  try {
+    await apolloClient.query({ query: DIRECT_COMPANY, variables })
+  } catch (e) {
+    console.error(e)
+  }
 
   return {
     props: {

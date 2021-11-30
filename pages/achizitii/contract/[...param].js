@@ -245,10 +245,15 @@ export const getServerSideProps = async (context) => {
   const variables = { id }
 
   const apolloClient = initializeApollo()
-  await apolloClient.query({
-    query: DIRECT_CONTRACT,
-    variables,
-  })
+
+  try {
+    await apolloClient.query({
+      query: DIRECT_CONTRACT,
+      variables,
+    })
+  } catch (e) {
+    console.error(e)
+  }
 
   return {
     props: {
