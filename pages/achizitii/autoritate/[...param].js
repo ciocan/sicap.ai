@@ -2,7 +2,7 @@ import { useRouter } from "next/router"
 import { Box, Text, Heading, Stack } from "@chakra-ui/react"
 import { useQuery } from "@apollo/client"
 
-import { Paginator, Meta } from "@components"
+import { Paginator, Meta, Error404 } from "@components"
 import { initializeApollo } from "@services/apollo"
 import { ListItem, Chart } from "@components/pages"
 import { DIRECT_AUTHORITY } from "@services/queries"
@@ -20,7 +20,9 @@ function AuthorityPage() {
   })
 
   if (loading) return <Text>se incarca...</Text>
-
+  if (!data?.directCompany) {
+    return <Error404 />
+  }
   const {
     hits,
     contractingAuthority: { city, county, numericFiscalNumber, entityName },
@@ -28,7 +30,7 @@ function AuthorityPage() {
     list,
   } = data?.directCompany || { contractingAuthority: {} }
 
-  const totalValue = stats.years.map((y) => y.value).reduce((a, b) => a + b, 0)
+  const totalValue = stats?.years.map((y) => y.value).reduce((a, b) => a + b, 0)
   const totalValueRon = moneyRon(totalValue)
 
   const name = ` ${numericFiscalNumber} / ${entityName} / ${city}, ${county}`
@@ -80,7 +82,12 @@ export const getServerSideProps = async (context) => {
   const variables = { authority: id, page: parseInt(page) }
 
   const apolloClient = initializeApollo()
-  await apolloClient.query({ query: DIRECT_AUTHORITY, variables })
+
+  try {
+    await apolloClient.query({ query: DIRECT_AUTHORITY, variables })
+  } catch (e) {
+    console.error(e)
+  }
 
   return {
     props: {
