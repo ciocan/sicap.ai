@@ -280,7 +280,10 @@ const directContractDetailsFragment = gql`
       itemClosingPrice
       itemQuantity
       itemMeasureUnit
-      cpvCode
+      cpvCode {
+        id
+        text
+      }
     }
     sysAcquisitionContractType {
       text
@@ -393,7 +396,7 @@ export const DIRECT_COMPANY = gql`
 `
 
 export const DIRECT_CONTRACT = gql`
-  query directContract($id: String!) {
+  query directContract($id: Int!) {
     directContract(id: $id) {
       ms
       ...DirectContractDetails
