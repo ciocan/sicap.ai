@@ -30,7 +30,7 @@ function Contract() {
   const isReport = feature === "raporteaza"
 
   const { data, loading } = useQuery(DIRECT_CONTRACT, {
-    variables: { id },
+    variables: { id: Number(id) },
   })
 
   if (loading) return <Text>se incarca...</Text>
@@ -242,7 +242,7 @@ const RowItem = ({ description, content, color }) => (
 export const getServerSideProps = async (context) => {
   const [id] = context.query?.param || []
 
-  const variables = { id }
+  const variables = { id: Number(id) }
 
   const apolloClient = initializeApollo()
 
