@@ -5,17 +5,15 @@ export const Footer = () => (
   <Flex
     as="footer"
     py="1rem"
-    h="3rem"
     justifyContent="center"
     borderTop="1px"
     borderTopColor="border.alt"
   >
-    <Stack spacing={4} direction="row" align="center">
-      <Box>
-        <Link as="/confidentialitate" href="/confidentialitate">
-          <ChakraLink>Politica de confidentialitate</ChakraLink>
-        </Link>
-      </Box>
+    <Stack spacing={2} direction="column" align="center">
+      <Link as="/confidentialitate" href="/confidentialitate">
+        <ChakraLink>Politica de confidentialitate</ChakraLink>
+      </Link>
+      <ChakraLink fontSize="0.85rem" target="_blank" href="https://cloudify.ro">Hosting oferit de <Box as="span" color="blue" fontWeight="semibold">Cloudify.ro</Box></ChakraLink>
     </Stack>
   </Flex>
 )
