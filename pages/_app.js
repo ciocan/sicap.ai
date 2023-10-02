@@ -1,30 +1,22 @@
-import { useEffect } from "react"
 import PropTypes from "prop-types"
 import { ChakraProvider, CSSReset, useDisclosure } from "@chakra-ui/react"
 import NProgress from "nprogress"
-import Router, { useRouter } from "next/router"
+import Router from "next/router"
 import { setOptions, getSession, Provider, providers } from "next-auth/client"
 import { ApolloProvider } from "@apollo/client"
-import { init as initApm } from "@elastic/apm-rum"
 import { setDefaultLocale, registerLocale } from "react-datepicker"
 import ro from "date-fns/locale/ro"
-import * as Fathom from "fathom-client"
-import dynamic from "next/dynamic"
 
 import "react-datepicker/dist/react-datepicker.css"
 
 import { useApollo } from "@services/apollo"
 import { Layout, LoginModal } from "@components"
 import { ModalContext } from "@utils"
-import { SITE_URL, APM_RUM_URL, isDev, FATHOM_CODE } from "@utils/config"
+import { SITE_URL } from "@utils/config"
 import theme from "../theme"
 
 registerLocale("ro", ro)
 setDefaultLocale("ro")
-
-const CrispWithNoSSR = dynamic(() => import("../components/CrispChat"), {
-  ssr: false,
-})
 
 NProgress.configure({ showSpinner: false })
 Router.events.on("routeChangeStart", () => NProgress.start())
@@ -36,30 +28,6 @@ export default function MyApp(props) {
   const { session } = pageProps
   const { isOpen, onOpen, onClose } = useDisclosure()
   const apolloClient = useApollo(pageProps.initialApolloState)
-  const router = useRouter()
-
-  useEffect(() => {
-    initApm({
-      serviceName: "sicap",
-      serverUrl: APM_RUM_URL,
-      serviceVersion: "1",
-      breakdownMetrics: true,
-      environment: isDev ? "development" : "production",
-    })
-
-    Fathom.load(FATHOM_CODE, {
-      includedDomains: ["sicap.ai", "www.sicap.ai"],
-    })
-
-    function onRouteChangeComplete() {
-      Fathom.trackPageview()
-    }
-    router.events.on("routeChangeComplete", onRouteChangeComplete)
-
-    return () => {
-      router.events.off("routeChangeComplete", onRouteChangeComplete)
-    }
-  }, [])
 
   return (
     <Provider
@@ -84,7 +52,6 @@ export default function MyApp(props) {
           />
         </ModalContext.Provider>
       </ChakraProvider>
-      <CrispWithNoSSR />
     </Provider>
   )
 }
