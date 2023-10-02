@@ -1,7 +1,7 @@
 import { getSession } from "@utils"
 
 export async function getMe(context) {
-  const { prisma, req, apm } = context
+  const { prisma, req } = context
   const session = await getSession(req)
 
   if (!session) {
@@ -9,13 +9,10 @@ export async function getMe(context) {
     return null
   }
 
-  const tx = apm.startTransaction("getMe")
-
   await prisma.$connect()
 
   let user = null
 
-  try {
     user = await prisma.user.findUnique({
       where: { hashId: session.user.hashId },
       include: {
@@ -26,13 +23,6 @@ export async function getMe(context) {
       },
     })
 
-    tx.result = "success"
-  } catch (err) {
-    tx.result = "error"
-    apm.captureError(err)
-  }
-
-  tx.end()
   await prisma.$disconnect()
   return user
 }

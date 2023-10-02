@@ -1,7 +1,7 @@
 import { getSession } from "@utils"
 
 export async function getBookmarks(context) {
-  const { prisma, req, apm } = context
+  const { prisma, req } = context
   const session = await getSession(req)
 
   if (!session) {
@@ -9,12 +9,9 @@ export async function getBookmarks(context) {
     return []
   }
 
-  const tx = apm.startTransaction("getBookmarks")
-
   await prisma.$connect()
   let user = null
 
-  try {
     user = await prisma.user.findUnique({
       where: {
         hashId: session.user.hashId,
@@ -29,12 +26,5 @@ export async function getBookmarks(context) {
       },
     })
 
-    tx.result = "success"
-  } catch (err) {
-    tx.result = "error"
-    apm.captureError(err)
-  }
-
-  tx.end()
   return user?.bookmarks || []
 }
