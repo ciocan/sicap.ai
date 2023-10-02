@@ -21,16 +21,15 @@ export async function submitReport(
     },
   })
 
-  const report = await prisma.report
-    .create({
-      data: {
-        User: { connect: { id: user.id } },
-        contractId,
-        confidence,
-        db,
-        comment: comment.slice(0, 1000),
-      },
-    })
+  const report = await prisma.report.create({
+    data: {
+      User: { connect: { id: user.id } },
+      contractId,
+      confidence,
+      db,
+      comment: comment.slice(0, 1000),
+    },
+  })
 
   await prisma.$disconnect()
   return report

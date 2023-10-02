@@ -12,19 +12,19 @@ export async function getBookmarks(context) {
   await prisma.$connect()
   let user = null
 
-    user = await prisma.user.findUnique({
-      where: {
-        hashId: session.user.hashId,
-      },
-      include: {
-        bookmarks: {
-          select: {
-            contractId: true,
-            db: true,
-          },
+  user = await prisma.user.findUnique({
+    where: {
+      hashId: session.user.hashId,
+    },
+    include: {
+      bookmarks: {
+        select: {
+          contractId: true,
+          db: true,
         },
       },
-    })
+    },
+  })
 
   return user?.bookmarks || []
 }

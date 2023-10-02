@@ -27,21 +27,19 @@ export async function toggleBookmark({ contractId, db }, context) {
   )
 
   if (isBookmarked) {
-    await prisma.bookmark
-      .delete({
-        where: {
-          userId_contractId_db: { userId: user.id, contractId, db },
-        },
-      })
+    await prisma.bookmark.delete({
+      where: {
+        userId_contractId_db: { userId: user.id, contractId, db },
+      },
+    })
   } else {
-    await prisma.bookmark
-      .create({
-        data: {
-          User: { connect: { id: user.id } },
-          contractId,
-          db,
-        },
-      })
+    await prisma.bookmark.create({
+      data: {
+        User: { connect: { id: user.id } },
+        contractId,
+        db,
+      },
+    })
   }
 
   const u = await prisma.user.findUnique(userSpec)

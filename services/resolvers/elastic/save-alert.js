@@ -15,19 +15,19 @@ export async function saveAlert({ cui }, context) {
     return false
   }
 
-    await client.update({
-      id: session.user.email,
-      index: "alerte",
-      body: {
-        doc: {
-          cui: cui
-            .filter((c) => c)
-            .map((c) => c.trim())
-            .slice(0, 20),
-        },
-        doc_as_upsert: true,
+  await client.update({
+    id: session.user.email,
+    index: "alerte",
+    body: {
+      doc: {
+        cui: cui
+          .filter((c) => c)
+          .map((c) => c.trim())
+          .slice(0, 20),
       },
-    })
+      doc_as_upsert: true,
+    },
+  })
 
   return true
 }

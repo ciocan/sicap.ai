@@ -44,10 +44,10 @@ export function SearchBar({ query, onChangeDb, hide }) {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (value) {
-      await fetch("/api/search-add", {
+      fetch("/api/search-add", {
         method: "POST",
         body: JSON.stringify({ query: value, db }),
-      })  
+      })
       const url = value ? `/${db}/${value.replace(" ", "+")}` : "/"
       Router.push(`/${db}/[...param]`, url)
     } else {

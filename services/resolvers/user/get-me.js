@@ -13,15 +13,15 @@ export async function getMe(context) {
 
   let user = null
 
-    user = await prisma.user.findUnique({
-      where: { hashId: session.user.hashId },
-      include: {
-        bookmarks: {
-          select: { contractId: true, db: true },
-        },
-        reports: true,
+  user = await prisma.user.findUnique({
+    where: { hashId: session.user.hashId },
+    include: {
+      bookmarks: {
+        select: { contractId: true, db: true },
       },
-    })
+      reports: true,
+    },
+  })
 
   await prisma.$disconnect()
   return user

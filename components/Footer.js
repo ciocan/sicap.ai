@@ -13,7 +13,12 @@ export const Footer = () => (
       <Link as="/confidentialitate" href="/confidentialitate">
         <ChakraLink>Politica de confidentialitate</ChakraLink>
       </Link>
-      <ChakraLink fontSize="0.85rem" target="_blank" href="https://cloudify.ro">Hosting oferit de <Box as="span" color="blue" fontWeight="semibold">Cloudify.ro</Box></ChakraLink>
+      <ChakraLink fontSize="0.85rem" target="_blank" href="https://cloudify.ro">
+        Hosting oferit de{" "}
+        <Box as="span" color="blue" fontWeight="semibold">
+          Cloudify.ro
+        </Box>
+      </ChakraLink>
     </Stack>
   </Flex>
 )
