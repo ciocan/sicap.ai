@@ -8,14 +8,12 @@ const client = new elasticsearch.Client({
 })
 
 export async function getAlerts(context) {
-  const { req, apm } = context
+  const { req } = context
   const session = await getSession(req)
 
   if (!session) {
     return []
   }
-
-  const tx = apm.startTransaction("getAlerts")
 
   try {
     const body = await client.get({
@@ -23,14 +21,8 @@ export async function getAlerts(context) {
       id: session.user.email,
     })
 
-    tx.result = "success"
-    tx.end()
-
     return body?._source?.cui || []
   } catch (e) {
-    apm.captureError(e)
-    tx.end()
-
     return []
   }
 }

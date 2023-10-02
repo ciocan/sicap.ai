@@ -1,7 +1,7 @@
 import { getSession } from "@utils"
 
 export async function toggleBookmark({ contractId, db }, context) {
-  const { prisma, req, apm } = context
+  const { prisma, req } = context
   const session = await getSession(req)
 
   if (!session) {
@@ -9,7 +9,6 @@ export async function toggleBookmark({ contractId, db }, context) {
     return null
   }
 
-  const tx = apm.startTransaction("toggleBookmark")
   await prisma.$connect()
 
   const userSpec = {
@@ -34,10 +33,6 @@ export async function toggleBookmark({ contractId, db }, context) {
           userId_contractId_db: { userId: user.id, contractId, db },
         },
       })
-      .then(() => (tx.result = "success"))
-      .catch((e) => {
-        apm.captureError(e)
-      })
   } else {
     await prisma.bookmark
       .create({
@@ -47,15 +42,10 @@ export async function toggleBookmark({ contractId, db }, context) {
           db,
         },
       })
-      .then(() => (tx.result = "success"))
-      .catch((e) => {
-        apm.captureError(e)
-      })
   }
 
   const u = await prisma.user.findUnique(userSpec)
 
   await prisma.$disconnect()
-  tx.end()
   return u.bookmarks
 }

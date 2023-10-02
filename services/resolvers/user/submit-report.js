@@ -4,15 +4,13 @@ export async function submitReport(
   { contractId, confidence, comment, db },
   context,
 ) {
-  const { prisma, req, apm } = context
+  const { prisma, req } = context
   const session = await getSession(req)
 
   if (!session) {
     await prisma.$disconnect()
     return false
   }
-
-  const tx = apm.startTransaction("submitReport")
 
   await prisma.$connect()
 
@@ -33,11 +31,7 @@ export async function submitReport(
         comment: comment.slice(0, 1000),
       },
     })
-    .catch((e) => {
-      apm.captureError(e)
-    })
 
   await prisma.$disconnect()
-  tx.end()
   return report
 }

@@ -8,16 +8,13 @@ const client = new elasticsearch.Client({
 })
 
 export async function saveAlert({ cui }, context) {
-  const { req, apm } = context
+  const { req } = context
   const session = await getSession(req)
 
   if (!session) {
     return false
   }
 
-  const tx = apm.startTransaction("saveAlert")
-
-  try {
     await client.update({
       id: session.user.email,
       index: "alerte",
@@ -31,14 +28,6 @@ export async function saveAlert({ cui }, context) {
         doc_as_upsert: true,
       },
     })
-
-    tx.result = "success"
-  } catch (err) {
-    tx.result = "error"
-    apm.captureError(err)
-  }
-
-  tx.end()
 
   return true
 }
