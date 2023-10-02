@@ -10,7 +10,7 @@ export function useBookmarks(db) {
   const bookmarks =
     data?.bookmarks.filter((b) => b.db === db).map((b) => b.contractId) || []
 
-  const [toggleBookmark, { loading, error }] = useMutation(TOGGLE_BOOKMARK, {
+  const [toggleBookmark, { loading }] = useMutation(TOGGLE_BOOKMARK, {
     update(cache, { data: { toggleBookmark } }) {
       cache.writeQuery({
         query: BOOKMARKS,
