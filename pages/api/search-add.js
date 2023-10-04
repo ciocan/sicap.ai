@@ -8,10 +8,10 @@ const client = new elasticsearch.Client({
 
 export default async (req, res) => {
   const { query, db } = JSON.parse(req.body)
-  let remoteAddress;
+  let remoteAddress
 
   if (req.headers["x-forwarded-for"]) {
-    remoteAddress = req.headers["x-forwarded-for"].split(',')[0]
+    remoteAddress = req.headers["x-forwarded-for"].split(",")[0]
   } else if (req.headers["x-real-ip"]) {
     remoteAddress = req.connection.remoteAddress
   } else {
