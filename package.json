@@ -39,6 +39,7 @@
     "@elastic/eui": "^27.3.1",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
+    "@formbricks/js": "^1.0.7",
     "@nexus/schema": "^0.14.0",
     "@prisma/client": "^3.5.0",
     "apollo-cache-inmemory": "^1.6.6",

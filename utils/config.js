@@ -18,3 +18,6 @@ export const auth = {
 export const FATHOM_CODE = process.env.NEXT_PUBLIC_FATHOM_CODE
 
 export const CRISP_WEBSITE_ID = process.env.NEXT_PUBLIC_CRISP_WEBSITE_ID
+
+export const FORMBRICKS_API_HOST = process.env.NEXT_PUBLIC_FORMBRICKS_API_HOST
+export const FORMBRICKS_ENV_ID = process.env.NEXT_PUBLIC_FORMBRICKS_ENV_ID
