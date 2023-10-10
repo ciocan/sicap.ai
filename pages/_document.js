@@ -60,7 +60,11 @@ export default class MyDocument extends Document {
             src="https://static.cloudflareinsights.com/beacon.min.js"
             data-cf-beacon='{"token": "9005de8a0047412ab3b279def36918d9"}'
           ></script>
-          <script defer data-domain="sicap.ai" src="https://plausible.ciocan.dev/js/script.js"></script>
+          <script
+            defer
+            data-domain="sicap.ai"
+            src="https://plausible.ciocan.dev/js/script.js"
+          ></script>
         </Head>
         <body>
           <Main />

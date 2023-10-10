@@ -1757,6 +1757,11 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
+"@formbricks/js@^1.0.7":
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@formbricks/js/-/js-1.0.7.tgz#786771a122d7833f54ac5b6d1c6aec1356efeb2a"
+  integrity sha512-ZA5tL/Fy9dO8WllGMZdo78k0/HmVkbn8t2HnqExzcveu0ArKETXv96pGS2kI4qiud6LDPHwbRWGvvqFy2ZKnRg==
+
 "@graphql-typed-document-node/core@^3.0.0":
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/@graphql-typed-document-node/core/-/core-3.1.1.tgz#076d78ce99822258cf813ecc1e7fa460fa74d052"
