@@ -4,5 +4,11 @@
   "terminal.integrated.fontSize": 14,
   "editor.formatOnSaveMode": "modifications",
   "prettier.useEditorConfig": false,
-  "prettier.enable": false
+  "prettier.enable": false,
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
+    }
+  ]
+
 }
