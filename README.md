@@ -32,8 +32,8 @@ ELASTIC_APM_ENVIRONMENT=""
 ELASTIC_APM_SERVICE_NAME=""
 ```
 
+pentru a rula nextjs dev server
+
 ```bash
 npm run dev
 ```
-
-pentru a rula nextjs dev server
