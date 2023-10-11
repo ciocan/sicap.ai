@@ -1,7 +1,0 @@
-node_modules/
-.next
-.vercel
-**/public/workbox*
-**/public/sw*
-.env
-.env.build
