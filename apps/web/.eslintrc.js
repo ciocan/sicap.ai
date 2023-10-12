@@ -1,3 +1,3 @@
 module.exports = {
-  extends: ["custom/next"],
+  extends: ["@sicap/eslint-config-custom/next"],
 };
