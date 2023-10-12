@@ -12,9 +12,10 @@
   "license": "MIT",
   "scripts": {
     "build": "tsup",
-    "lint": "eslint src/",
+    "lint": "biome lint src/",
     "dev": "tsup --watch",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "fmt": "pnpm biome format src --write"
   },
   "peerDependencies": {
     "react": "^18.2.0"

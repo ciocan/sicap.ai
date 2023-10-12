@@ -13,13 +13,12 @@
     "dev": "turbo dev",
     "lint": "turbo lint",
     "clean": "turbo clean",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "fmt": "turbo fmt"
   },
   "devDependencies": {
-    "prettier": "^3.0.3",
-    "prettier-plugin-tailwindcss": "^0.5.3",
-    "turbo": "latest",
-    "@sicap/tsconfig": "workspace:*"
+    "@biomejs/biome": "1.2.2",
+    "@sicap/tsconfig": "workspace:*",
+    "turbo": "latest"
   },
   "packageManager": "pnpm@8.6.10"
 }

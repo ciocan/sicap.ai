@@ -1,6 +1,6 @@
+import sharedConfig from "@sicap/tailwind-config/tailwind.config.ts";
 // tailwind config is required for editor support
 import type { Config } from "tailwindcss";
-import sharedConfig from "@sicap/tailwind-config/tailwind.config.ts";
 
 const config: Pick<Config, "prefix" | "presets"> = {
   prefix: "ui-",

@@ -1,7 +1,7 @@
 // tailwind config is required for editor support
 
-import type { Config } from "tailwindcss";
 import sharedConfig from "@sicap/tailwind-config/tailwind.config.ts";
+import type { Config } from "tailwindcss";
 
 const config: Pick<Config, "presets"> = {
   presets: [sharedConfig],

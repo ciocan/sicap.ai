@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "biome lint src/",
+    "fmt": "pnpm biome format src --write"
   },
   "dependencies": {
     "next": "^13.4.19",
