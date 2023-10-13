@@ -3,6 +3,9 @@
   "linter": {
     "enabled": true,
     "rules": {
+      "suspicious": {
+        "noConsoleLog": "warn"
+      },
       "recommended": true,
       "a11y": {
         "noSvgWithoutTitle": "off"
