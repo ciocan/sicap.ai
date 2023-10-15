@@ -7,7 +7,8 @@ export default defineConfig((options: Options) => ({
   format: ["esm"],
   dts: true,
   minify: true,
-  clean: true,
+  clean: false,
+  // clean: true,
   external: ["react"],
   ...options,
 }));
