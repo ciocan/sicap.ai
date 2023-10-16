@@ -30,7 +30,7 @@ export type Layout = {
 const baseUrl = "https://sicap.ai";
 
 export const siteConfig: SiteConfig = {
-  name: "sicap.ai",
+  name: "SICAP.ai - cauta in licitatii publice",
   author: "Radu Ciocan",
   description: "Motor de cautare pentru licitatiile publice din Romania",
   keywords: [

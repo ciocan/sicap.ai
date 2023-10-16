@@ -54,11 +54,14 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps): JSX.Element {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} flex min-h-screen flex-col bg-background text-primary`}>
+      <head />
+      <body className={`${inter.className} min-h-screen bg-background font-sans antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <Navbar />
-          {children}
-          <Footer />
+          <div className="relative flex min-h-screen flex-col">
+            <Navbar />
+            <div className="flex-1">{children}</div>
+            <Footer />
+          </div>
         </ThemeProvider>
       </body>
     </html>

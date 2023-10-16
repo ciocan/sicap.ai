@@ -5,3 +5,5 @@ import "../styles/styles.css";
 export * from "./card";
 export * from "./ui/button";
 export * from "./ui/separator";
+export * from "./ui/dropdown-menu";
+export * from "./mode-toggle";
