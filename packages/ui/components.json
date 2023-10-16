@@ -11,6 +11,6 @@
     },
     "aliases": {
       "components": "src/components",
-      "utils": "@sicap/ui/lib/utils"
+      "utils": "@ui/lib/utils"
     }
 }
