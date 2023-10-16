@@ -10,7 +10,7 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
-    "dev": "turbo dev",
+    "dev": "dotenv -- turbo dev",
     "lint": "turbo lint",
     "clean": "turbo clean",
     "fmt": "turbo fmt",
@@ -19,6 +19,7 @@
   "devDependencies": {
     "@biomejs/biome": "1.2.2",
     "@sicap/tsconfig": "workspace:*",
+    "dotenv-cli": "^7.3.0",
     "turbo": "latest"
   },
   "packageManager": "pnpm@8.6.10"

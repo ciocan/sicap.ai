@@ -1,4 +1,4 @@
 module.exports = {
   reactStrictMode: true,
-  transpilePackages: ['@sicap/ui'],
+  transpilePackages: ['@sicap/ui', '@sicap/api'],
 };
