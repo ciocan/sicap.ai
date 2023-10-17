@@ -59,7 +59,7 @@ export default function RootLayout({ children }: RootLayoutProps): JSX.Element {
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <div className="relative flex min-h-screen flex-col">
             <Navbar />
-            <div className="flex-1">{children}</div>
+            <div className="flex flex-col flex-1">{children}</div>
             <Footer />
           </div>
         </ThemeProvider>

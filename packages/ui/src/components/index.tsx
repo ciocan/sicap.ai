@@ -7,3 +7,4 @@ export * from "./ui/button";
 export * from "./ui/separator";
 export * from "./ui/dropdown-menu";
 export * from "./mode-toggle";
+export * from "./ui/input";
