@@ -15,7 +15,7 @@ export function Search({ hideButton }: { hideButton?: boolean }) {
     if (!search) {
       return;
     }
-    router.push(`/cauta?q=${search}`);
+    router.push(`/cauta?q=${encodeURIComponent(search)}`);
   };
 
   return (
