@@ -1,11 +1,8 @@
+import { SearchTotalHits } from "@elastic/elasticsearch/lib/api/types";
+
 import { ES_INDEX_DIRECT, ES_INDEX_PUBLIC, esClient } from "./config";
 import { transformItem } from "./utils";
-
-interface SearchProps {
-  query: string;
-  page?: number;
-  perPage?: number;
-}
+import { IndexName, SearchProps } from "./types";
 
 export async function searchContracts({ query, page = 1, perPage = 20 }: SearchProps) {
   const result = await esClient.search({
@@ -71,24 +68,26 @@ export async function searchContracts({ query, page = 1, perPage = 20 }: SearchP
       "item.sysProcedureState.*",
       "item.cpvCodeAndName",
       "item.noticeStateDate",
-      "item.ronContractValue",
       "publicNotice.entityId",
       "noticeContracts.items.winner.name",
       "noticeContracts.items.winner.fiscalNumber",
       "noticeContracts.items.winner.fiscalNumberInt",
       "noticeContracts.items.winner.entityId",
+      "noticeContracts.items.contractValue",
     ],
     _source: false,
   });
 
-  // console.log(result.hits.hits[0]);
+  // console.log(result.hits.hits[18]);
+
+  const total = result.hits.total as SearchTotalHits;
 
   return {
     took: result.took,
-    total: result?.hits?.total,
-    hits: result?.hits.hits.map((hit) => ({
+    total: total.value,
+    items: result?.hits.hits.map((hit) => ({
       id: hit._id,
-      index: hit._index,
+      index: hit._index as IndexName,
       fields: transformItem(hit._index, hit.fields as Record<string, (string | number)[]>),
     })),
   };

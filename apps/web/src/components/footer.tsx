@@ -8,7 +8,7 @@ export function Footer(): JSX.Element {
     <footer className="mt-auto">
       <Separator />
       <div className="mx-auto w-full max-w-screen-xl p-4">
-        <ul className="flex text-primary opacity-60 text-xs justify-center gap-6">
+        <ul className="flex opacity-60 text-xs justify-center gap-6">
           <li>
             <Link href="/confidentialitate" className="hover:underline">
               Politica de confidentialitate

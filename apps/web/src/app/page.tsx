@@ -7,7 +7,7 @@ export default async function Page() {
   return (
     <main className="my-auto p-4 flex flex-col gap-2 items-center">
       <div className="flex flex-col gap-4">
-        <h1 className="text-6xl text-center">
+        <h1 className="text-6xl text-center text-primary">
           <span className="font-bold">SICAP</span>.ai
         </h1>
         <h2 className="text-sm text-center">
