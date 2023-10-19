@@ -10,7 +10,7 @@ export default async function Page() {
         <h1 className="text-6xl text-center text-primary">
           <span className="font-bold">SICAP</span>.ai
         </h1>
-        <h2 className="text-sm text-center">
+        <h2 className="text-xs text-center">
           {licitatii} licitatii publice si {achizitii} achizitii directe indexate
         </h2>
       </div>

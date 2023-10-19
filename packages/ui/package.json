@@ -35,13 +35,21 @@
     "typescript": "^5.1.6"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.3.2",
+    "@radix-ui/react-checkbox": "^1.0.4",
+    "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-dropdown-menu": "^2.0.6",
+    "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-separator": "^1.0.3",
     "@radix-ui/react-slot": "^1.0.2",
+    "@radix-ui/react-toast": "^1.1.5",
+    "@radix-ui/react-tooltip": "^1.0.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "lucide-react": "^0.287.0",
     "next-themes": "^0.2.1",
-    "tailwind-merge": "^1.14.0"
+    "react-hook-form": "^7.47.0",
+    "tailwind-merge": "^1.14.0",
+    "zod": "^3.22.4"
   }
 }

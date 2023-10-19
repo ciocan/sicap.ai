@@ -12,6 +12,8 @@ export default async function Page(props: PageProps) {
   const page = Number(searchParams.p || 1);
   const perPage = 20;
 
+  console.log("searchParams", searchParams);
+
   const results = await searchContracts({ query, page, perPage });
 
   return (
