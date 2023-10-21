@@ -6,3 +6,4 @@ export * from "./search";
 
 export * from "./list-item";
 export * from "./pagination";
+export * from "./per-page";

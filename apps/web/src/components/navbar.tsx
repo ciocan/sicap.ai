@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { ModeToggle, Separator } from "@sicap/ui";
+import { ModeToggle, Separator, Toaster } from "@sicap/ui";
 import { Search } from "@/components/search";
 
 export function Navbar(): JSX.Element {
@@ -28,6 +28,7 @@ export function Navbar(): JSX.Element {
           </nav>
         </div>
       </header>
+      <Toaster />
       <Separator />
     </>
   );

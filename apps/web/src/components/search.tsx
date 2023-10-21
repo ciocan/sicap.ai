@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Filter } from "lucide-react";
 
@@ -12,7 +12,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
   TooltipContent,
-  Toaster,
 } from "@sicap/ui";
 import { AdvancedSearch } from "./search-advanced";
 
@@ -21,6 +20,7 @@ export function Search({ hideButton }: { hideButton?: boolean }) {
   const router = useRouter();
   const q = searchParams.get("q") || "";
   const [search, setSearch] = useState(q);
+  const [open, setOpen] = useState(false);
 
   const handleSearch = () => {
     if (!search) {
@@ -29,8 +29,12 @@ export function Search({ hideButton }: { hideButton?: boolean }) {
     router.push(`/cauta?q=${encodeURIComponent(search)}`);
   };
 
+  useEffect(() => {
+    setSearch(q);
+  }, [q]);
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <TooltipProvider delayDuration={250}>
         <div className="flex flex-col items-center w-full">
           <div className="flex space-x-2 w-full">
@@ -64,9 +68,8 @@ export function Search({ hideButton }: { hideButton?: boolean }) {
             </DialogTrigger>
           )}
         </div>
-        <AdvancedSearch query={search} />
+        <AdvancedSearch query={search} setOpen={setOpen} />
       </TooltipProvider>
-      <Toaster />
     </Dialog>
   );
 }

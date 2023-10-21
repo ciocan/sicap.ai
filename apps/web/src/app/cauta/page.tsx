@@ -1,5 +1,8 @@
-import { ListItem, Pagination } from "@/components";
+import { Filter } from "lucide-react";
+
+import { ListItem, Pagination, PerPage } from "@/components";
 import { searchContracts } from "@sicap/api";
+import { databases, dbLabels } from "@/utils";
 
 interface PageProps {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -10,9 +13,17 @@ export default async function Page(props: PageProps) {
   const { searchParams } = props;
   const query = searchParams.q as string;
   const page = Number(searchParams.p || 1);
-  const perPage = 20;
-
-  console.log("searchParams", searchParams);
+  const perPage = Number(searchParams.perPage) || 20;
+  const dbs = (searchParams.db as string)?.split(",") || dbLabels;
+  const dbLabelsAsText = dbs.map((db) => databases.find((d) => d.id === db)?.label).join(", ");
+  const dateFrom = searchParams.dateFrom as string;
+  const dateTo = searchParams.dateTo as string;
+  const cpv = searchParams.cpv as string;
+  const authority = searchParams.authority as string;
+  const supplier = searchParams.supplier as string;
+  const valueFrom = searchParams.valueFrom as string;
+  const valueTo = searchParams.valueTo as string;
+  const locality = searchParams.locality as string;
 
   const results = await searchContracts({ query, page, perPage });
 
@@ -22,6 +33,35 @@ export default async function Page(props: PageProps) {
         <h3 className="text-sm">
           Pagina {page} din {results.total} rezultate pentru <b>{query}</b>
         </h3>
+        <div className="flex items-center gap-4 justify-between">
+          <div className="flex flex-wrap items-center text-xs text-gray-700 bg-gray-100 dark:bg-gray-800 dark:text-gray-400 p-2 rounded-md">
+            <Filter className="h-[0.85rem] w-[0.85rem] mr-1" />
+            <span className="font-semibold mr-1">Filtru:</span>
+            <span className="mr-1">{dbLabelsAsText};</span>
+            {dateFrom ||
+            dateTo ||
+            cpv ||
+            authority ||
+            supplier ||
+            valueFrom ||
+            valueTo ||
+            locality ? (
+              <>
+                {dateFrom && <span className="mr-1">{`de la ${dateFrom}`}</span>}
+                {dateTo && <span className="mr-1">{`până la ${dateTo};`}</span>}
+                {cpv && <span className="mr-1">{`CPV: ${cpv};`}</span>}
+                {authority && <span className="mr-1">{`autoritate: ${authority};`}</span>}
+                {supplier && <span className="mr-1">{`furnizor: ${supplier};`}</span>}
+                {valueFrom && <span className="mr-1">{`valoare de la ${valueFrom} RON`}</span>}
+                {valueTo && <span className="mr-1">{`valoare până la ${valueTo} RON`}</span>}
+                {locality && <span className="mr-1">{`; localitate ${locality}.`}</span>}
+              </>
+            ) : null}
+          </div>
+          <div>
+            <PerPage total={perPage} />
+          </div>
+        </div>
         <div className="flex flex-col gap-4">
           {results.items.map((item) => (
             <ListItem key={item.id} fields={item.fields} id={item.id} index={item.index} />

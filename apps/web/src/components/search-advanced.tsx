@@ -1,5 +1,5 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import {
   DialogContent,
@@ -20,17 +20,20 @@ import {
   zodResolver,
   z,
 } from "@sicap/ui";
+import { databases, dbLabels, wait } from "@/utils";
 
-const db = [
-  {
-    id: "licitatii-publice",
-    label: "Licitatii publice",
-  },
-  {
-    id: "achizitii-directe",
-    label: "Achizitii directe",
-  },
-] as const;
+const defaultValues = {
+  q: "",
+  db: dbLabels,
+  dateFrom: "",
+  dateTo: "",
+  cpv: "",
+  authority: "",
+  supplier: "",
+  valueFrom: "",
+  valueTo: "",
+  locality: "",
+};
 
 const formSchema = z
   .object({
@@ -47,6 +50,18 @@ const formSchema = z
     valueTo: z.string().optional(),
     locality: z.string().optional(),
   })
+  .refine(
+    (data) => {
+      if (data.dateFrom && data.dateTo) {
+        return new Date(data.dateFrom) < new Date(data.dateTo);
+      }
+      return true;
+    },
+    {
+      message: "Data de inceput trebuie sa fie mai mica decat data de sfarsit.",
+      path: ["dateFrom"],
+    },
+  )
   .refine(
     (data) => {
       if (data.valueFrom && data.valueTo) {
@@ -82,21 +97,33 @@ const formSchema = z
     },
   );
 
-export function AdvancedSearch({ query }: { query: string }) {
+interface AdvancedSearchProps {
+  query: string;
+  setOpen: (open: boolean) => void;
+}
+
+export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
+  const searchParams = useSearchParams();
   const router = useRouter();
+  const db = searchParams.get("db");
+
+  const params = {
+    ...Object.fromEntries(searchParams.entries()),
+    db: db ? db.split(",") : dbLabels,
+  };
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      ...defaultValues,
       q: query,
-      db: ["licitatii-publice", "achizitii-directe"],
-      cpv: "",
-      authority: "",
-      supplier: "",
-      valueFrom: "",
-      valueTo: "",
-      locality: "",
+      ...params,
     },
   });
+
+  function handleReset() {
+    form.reset({ ...defaultValues, q: query });
+  }
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const params = new URLSearchParams(
@@ -109,7 +136,8 @@ export function AdvancedSearch({ query }: { query: string }) {
         }),
       ),
     );
-    router.push(`/cauta?${params.toString()}`);
+    router.push(`/search-redirect?${params.toString()}`);
+    wait().then(() => setOpen(false));
   }
 
   return (
@@ -149,7 +177,7 @@ export function AdvancedSearch({ query }: { query: string }) {
                   render={() => (
                     <FormItem className="col-span-3">
                       <div className="flex items-center gap-4">
-                        {db.map((item) => (
+                        {databases.map((item) => (
                           <FormField
                             key={item.id}
                             control={form.control}
@@ -201,6 +229,7 @@ export function AdvancedSearch({ query }: { query: string }) {
                       <FormControl>
                         <Input id="dateFrom" type="date" {...field} />
                       </FormControl>
+                      <FormMessage withToast />
                     </FormItem>
                   )}
                 />
@@ -293,7 +322,7 @@ export function AdvancedSearch({ query }: { query: string }) {
                   name="valueFrom"
                   render={({ field }) => (
                     <FormItem className="col-span-3">
-                      <Input id="valueFrom" min={0} type="number" placeholder="0" {...field} />
+                      <Input id="valueFrom" min={0} type="number" placeholder="0 RON" {...field} />
                       <FormMessage withToast />
                     </FormItem>
                   )}
@@ -308,7 +337,7 @@ export function AdvancedSearch({ query }: { query: string }) {
                         id="valueFrom"
                         min={0}
                         type="number"
-                        placeholder="999,999,999"
+                        placeholder="999,999,999 RON"
                         {...field}
                       />
                     </FormItem>
@@ -316,6 +345,7 @@ export function AdvancedSearch({ query }: { query: string }) {
                 />
               </div>
             </div>
+
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="locality" className="text-right">
                 Localitate
@@ -338,6 +368,9 @@ export function AdvancedSearch({ query }: { query: string }) {
           </div>
 
           <DialogFooter>
+            <Button variant="secondary" type="button" onClick={handleReset}>
+              Sterge filtre
+            </Button>
             <Button>Cauta</Button>
           </DialogFooter>
         </form>
