@@ -20,11 +20,11 @@ import {
   zodResolver,
   z,
 } from "@sicap/ui";
-import { databases, dbLabels, wait } from "@/utils";
+import { databases, dbIds, wait } from "@/utils";
 
 const defaultValues = {
   q: "",
-  db: dbLabels,
+  db: dbIds,
   dateFrom: "",
   dateTo: "",
   cpv: "",
@@ -109,7 +109,7 @@ export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
 
   const params = {
     ...Object.fromEntries(searchParams.entries()),
-    db: db ? db.split(",") : dbLabels,
+    db: db ? db.split(",") : dbIds,
   };
 
   const form = useForm<z.infer<typeof formSchema>>({

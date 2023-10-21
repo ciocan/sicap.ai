@@ -1,8 +1,8 @@
 import { Filter } from "lucide-react";
 
 import { ListItem, Pagination, PerPage } from "@/components";
-import { searchContracts } from "@sicap/api";
-import { databases, dbLabels } from "@/utils";
+import { IndexName, searchContracts } from "@sicap/api";
+import { databases, dbIds } from "@/utils";
 
 interface PageProps {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -14,7 +14,7 @@ export default async function Page(props: PageProps) {
   const query = searchParams.q as string;
   const page = Number(searchParams.p || 1);
   const perPage = Number(searchParams.perPage) || 20;
-  const dbs = (searchParams.db as string)?.split(",") || dbLabels;
+  const dbs = ((searchParams.db as string)?.split(",") || dbIds) as IndexName[];
   const dbLabelsAsText = dbs.map((db) => databases.find((d) => d.id === db)?.label).join(", ");
   const dateFrom = searchParams.dateFrom as string;
   const dateTo = searchParams.dateTo as string;
@@ -25,7 +25,20 @@ export default async function Page(props: PageProps) {
   const valueTo = searchParams.valueTo as string;
   const locality = searchParams.locality as string;
 
-  const results = await searchContracts({ query, page, perPage });
+  const filters = {
+    db: dbs,
+    dateFrom,
+    dateTo,
+    cpv,
+    authority,
+    supplier,
+    valueFrom,
+    valueTo,
+    locality,
+  };
+
+  const results = await searchContracts({ query, page, perPage, filters });
+  // console.log(results.items[0].fields)
 
   return (
     <main className="container px-8 py-4 flex flex-col gap-2 lg:max-w-7xl">
@@ -52,8 +65,16 @@ export default async function Page(props: PageProps) {
                 {cpv && <span className="mr-1">{`CPV: ${cpv};`}</span>}
                 {authority && <span className="mr-1">{`autoritate: ${authority};`}</span>}
                 {supplier && <span className="mr-1">{`furnizor: ${supplier};`}</span>}
-                {valueFrom && <span className="mr-1">{`valoare de la ${valueFrom} RON`}</span>}
-                {valueTo && <span className="mr-1">{`valoare până la ${valueTo} RON`}</span>}
+                {valueFrom && (
+                  <span className="mr-1">{`valoare de la ${Intl.NumberFormat().format(
+                    Number(valueFrom),
+                  )} RON`}</span>
+                )}
+                {valueTo && (
+                  <span className="mr-1">{`valoare până la ${Intl.NumberFormat().format(
+                    Number(valueTo),
+                  )} RON`}</span>
+                )}
                 {locality && <span className="mr-1">{`; localitate ${locality}.`}</span>}
               </>
             ) : null}

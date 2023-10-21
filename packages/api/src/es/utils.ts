@@ -1,14 +1,18 @@
-import { ES_INDEX_DIRECT, ES_INDEX_PUBLIC } from "./config";
 import { SearchItemDirect, SearchItemPublic } from "./types";
 
-export function transformItem(index: string, fields: Record<string, (string | number)[]>) {
+export const ES_INDEX_PUBLIC = "licitatii-publice";
+export const ES_INDEX_DIRECT = "achizitii-directe";
+
+export type Fields = Record<string, (string | number)[]>;
+
+export function transformItem(index: string, fields: Fields, highlight: Fields) {
   switch (index) {
     case ES_INDEX_DIRECT:
       return {
         date: fields["item.publicationDate"]?.[0],
         name: fields["item.directAcquisitionName"]?.[0],
         code: fields["item.uniqueIdentificationCode"]?.[0],
-        cpvCode: fields["item.cpvCode"]?.[0],
+        cpvCode: highlight["item.cpvCode"]?.[0] ?? fields["item.cpvCode"]?.[0],
         cpvCodeId: fields["publicDirectAcquisition.cpvCode.id"]?.[0],
         value: fields["item.closingValue"]?.[0] || 0,
         supplierId: fields["publicDirectAcquisition.supplierId"]?.[0],
@@ -23,7 +27,7 @@ export function transformItem(index: string, fields: Record<string, (string | nu
         date: fields["item.noticeStateDate"]?.[0],
         name: fields["item.contractTitle"]?.[0],
         code: fields["item.noticeNo"]?.[0],
-        cpvCode: fields["item.cpvCodeAndName"]?.[0],
+        cpvCode: highlight["item.cpvCodeAndName"]?.[0] ?? fields["item.cpvCodeAndName"]?.[0],
         cpvCodeId: fields["item.cpvCode"]?.[0],
         value: fields["noticeContracts.items.contractValue"]?.[0] || 0,
         supplierId: fields["noticeContracts.items.winner.entityId"]?.[0],

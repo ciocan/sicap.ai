@@ -1,4 +1,5 @@
-import { ES_INDEX_DIRECT, ES_INDEX_PUBLIC, esClient } from "./config";
+import { ES_INDEX_DIRECT, ES_INDEX_PUBLIC } from "./utils";
+import { esClient } from "./config";
 
 export async function getTotal() {
   const licitatii = await esClient.count({ index: ES_INDEX_PUBLIC });

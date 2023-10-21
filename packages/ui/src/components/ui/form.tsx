@@ -154,7 +154,7 @@ const FormMessage = React.forwardRef<HTMLParagraphElement, FormMessageProps>(
         description: error.message,
         variant: "destructive",
       });
-    }, [error]);
+    }, [error, toast]);
 
     if (withToast) {
       return null;

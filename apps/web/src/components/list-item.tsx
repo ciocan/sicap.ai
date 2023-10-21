@@ -4,7 +4,7 @@ import { Building, Briefcase } from "lucide-react";
 import { Card, CardHeader, CardContent, CardDescription, CardTitle, Badge } from "@sicap/ui";
 import type { SearchItemDirect, SearchItemPublic, IndexName } from "@sicap/api";
 import { getDay, getMonth, getYear } from "@sicap/api/dist/utils/date";
-import { ES_INDEX_DIRECT } from "@sicap/api/dist/es/config";
+import { ES_INDEX_DIRECT } from "@sicap/api";
 
 interface ListItemProps {
   id: string;
