@@ -95,6 +95,9 @@ importers:
       dayjs:
         specifier: ^1.11.10
         version: 1.11.10
+      dotenv:
+        specifier: ^16.3.1
+        version: 16.3.1
     devDependencies:
       '@sicap/tsconfig':
         specifier: workspace:*
