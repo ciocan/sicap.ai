@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "dotenv -- next build",
-    "start": "dotenv -- next start",
+    "build": "next build",
+    "start": "next start",
     "lint": "biome lint ./src",
     "fmt": "biome format --write ./src"
   },
@@ -17,8 +17,7 @@
     "next": "^13.5.5",
     "next-themes": "^0.2.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "supports-color": "^9.4.0"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@sicap/tailwind-config": "workspace:*",

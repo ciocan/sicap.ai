@@ -5,7 +5,7 @@
   "main": "src/index.ts",
   "license": "MIT",
   "scripts": {
-    "build": "dotenv -- tsup",
+    "build": "tsup",
     "lint": "biome lint ./src",
     "dev": "tsup --watch",
     "check-types": "tsc --noEmit",
@@ -19,7 +19,6 @@
   },
   "dependencies": {
     "@elastic/elasticsearch": "^8.10.0",
-    "dayjs": "^1.11.10",
-    "dotenv": "^16.3.1"
+    "dayjs": "^1.11.10"
   }
 }

@@ -5,7 +5,6 @@
   "globalDotEnv": [".env"],
   "pipeline": {
     "build": {
-      "env": ["ES_URL"],
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
       "dotEnv": [".env.production.local", ".env.local", ".env.production", ".env"]
@@ -18,7 +17,6 @@
     },
     "check-types": {},
     "dev": {
-      "env": ["ES_URL"],
       "cache": false,
       "persistent": true,
       "dotEnv": [".env.development.local", ".env.local", ".env.development", ".env"]
