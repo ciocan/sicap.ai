@@ -239,10 +239,6 @@ export async function searchContracts({ query, page = 1, perPage = 20, filters }
   };
 
   const result = await esClient.search(searchParams);
-
-  // console.log(result.hits.hits[1]);
-  console.log("TOOK", result.took);
-
   const total = result.hits.total as SearchTotalHits;
 
   return {
