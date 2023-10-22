@@ -19,36 +19,39 @@ import {
   FormMessage,
   zodResolver,
   z,
+  Separator,
 } from "@sicap/ui";
 import { databases, dbIds, wait } from "@/utils";
 
 const defaultValues = {
-  q: "",
   db: dbIds,
+  q: "",
   dateFrom: "",
   dateTo: "",
-  cpv: "",
-  authority: "",
-  supplier: "",
   valueFrom: "",
   valueTo: "",
-  locality: "",
+  authority: "",
+  cpv: "",
+  localityAuthority: "",
+  supplier: "",
+  localitySupplier: "",
 };
 
 const formSchema = z
   .object({
-    q: z.string().optional(),
     db: z.array(z.string()).refine((value) => value.some((item) => item), {
       message: "Selecteaza cel putin una.",
     }),
+    q: z.string().optional(),
     dateFrom: z.string().optional(),
     dateTo: z.string().optional(),
-    cpv: z.string().optional(),
-    authority: z.string().optional(),
-    supplier: z.string().optional(),
     valueFrom: z.string().optional(),
     valueTo: z.string().optional(),
-    locality: z.string().optional(),
+    authority: z.string().optional(),
+    cpv: z.string().optional(),
+    localityAuthority: z.string().optional(),
+    supplier: z.string().optional(),
+    localitySupplier: z.string().optional(),
   })
   .refine(
     (data) => {
@@ -80,12 +83,13 @@ const formSchema = z
         !data.q &&
         !data.dateFrom &&
         !data.dateTo &&
-        !data.cpv &&
-        !data.authority &&
-        !data.supplier &&
         !data.valueFrom &&
         !data.valueTo &&
-        !data.locality
+        !data.authority &&
+        !data.localityAuthority &&
+        !data.cpv &&
+        !data.supplier &&
+        !data.localitySupplier
       ) {
         return false;
       }
@@ -141,9 +145,12 @@ export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
   }
 
   return (
-    <DialogContent className="sm:max-w-[540px]">
+    <DialogContent className="sm:max-w-[540px] h-full sm:h-auto">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="overflow-y-scroll sm:overflow-auto pr-1"
+        >
           <DialogHeader>
             <DialogTitle>Cautare avansata</DialogTitle>
           </DialogHeader>
@@ -165,7 +172,6 @@ export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
                 )}
               />
             </div>
-
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
                 <FormLabel htmlFor="db" className="text-right">
@@ -215,9 +221,8 @@ export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
                 />
               </div>
             </div>
-
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="date1" className="text-right">
+              <Label htmlFor="dateFrom" className="text-right">
                 Data publicarii
               </Label>
               <div className="flex flex-1 sm:flex-row flex-col col-span-3 items-center">
@@ -247,73 +252,8 @@ export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
                 />
               </div>
             </div>
-
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="cpv" className="text-right">
-                Cod CPV
-              </Label>
-              <FormField
-                control={form.control}
-                name="cpv"
-                render={({ field }) => (
-                  <FormItem className="col-span-3">
-                    <FormControl>
-                      <Input
-                        id="cpv"
-                        className="col-span-3"
-                        placeholder="44113620-7 - Asfalt"
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="authority" className="text-right">
-                Autoritate
-              </Label>
-              <FormField
-                control={form.control}
-                name="authority"
-                render={({ field }) => (
-                  <FormItem className="col-span-3">
-                    <FormControl>
-                      <Input
-                        id="authority"
-                        className="col-span-3"
-                        placeholder="Primaria Baicoi"
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="firma" className="text-right">
-                Firma
-              </Label>
-              <FormField
-                control={form.control}
-                name="supplier"
-                render={({ field }) => (
-                  <FormItem className="col-span-3">
-                    <Input
-                      id="supplier"
-                      className="col-span-3"
-                      placeholder="Firma SRL"
-                      {...field}
-                    />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="val1" className="text-right">
+              <Label htmlFor="valueFrom" className="text-right">
                 Valoare contract
               </Label>
               <div className="flex flex-1 col-span-3 items-center">
@@ -345,18 +285,104 @@ export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
                 />
               </div>
             </div>
-
+            <Separator />
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="locality" className="text-right">
+              <Label htmlFor="authority" className="text-right">
+                Autoritate
+              </Label>
+              <FormField
+                control={form.control}
+                name="authority"
+                render={({ field }) => (
+                  <FormItem className="col-span-3">
+                    <FormControl>
+                      <Input
+                        id="authority"
+                        type="search"
+                        className="col-span-3"
+                        placeholder="Primaria Baicoi"
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="cpv" className="text-right">
+                Cod CPV
+              </Label>
+              <FormField
+                control={form.control}
+                name="cpv"
+                render={({ field }) => (
+                  <FormItem className="col-span-3">
+                    <FormControl>
+                      <Input
+                        id="cpv"
+                        type="search"
+                        className="col-span-3"
+                        placeholder="44113620-7 - Asfalt"
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="localityAuthority" className="text-right">
                 Localitate
               </Label>
               <FormField
                 control={form.control}
-                name="locality"
+                name="localityAuthority"
                 render={({ field }) => (
                   <FormItem className="col-span-3">
                     <Input
-                      id="locality"
+                      id="localityAuthority"
+                      type="search"
+                      className="col-span-3"
+                      placeholder="Baicoi..."
+                      {...field}
+                    />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <Separator />
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="supplier" className="text-right">
+                Firma
+              </Label>
+              <FormField
+                control={form.control}
+                name="supplier"
+                render={({ field }) => (
+                  <FormItem className="col-span-3">
+                    <Input
+                      id="supplier"
+                      type="search"
+                      className="col-span-3"
+                      placeholder="Firma SRL"
+                      {...field}
+                    />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="localitySupplier" className="text-right">
+                Localitate
+              </Label>
+              <FormField
+                control={form.control}
+                name="localitySupplier"
+                render={({ field }) => (
+                  <FormItem className="col-span-3">
+                    <Input
+                      id="localitySupplier"
+                      type="search"
                       className="col-span-3"
                       placeholder="Baicoi..."
                       {...field}
@@ -366,7 +392,6 @@ export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
               />
             </div>
           </div>
-
           <DialogFooter>
             <Button variant="secondary" type="button" onClick={handleReset}>
               Sterge filtre

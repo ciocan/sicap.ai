@@ -5,7 +5,18 @@ import { ES_INDEX_DIRECT, ES_INDEX_PUBLIC, Fields, transformItem } from "./utils
 import { IndexName, SearchProps } from "./types";
 
 export async function searchContracts({ query, page = 1, perPage = 20, filters }: SearchProps) {
-  const { db, dateFrom, dateTo, cpv, authority, supplier, valueFrom, valueTo, locality } = filters;
+  const {
+    db,
+    dateFrom,
+    dateTo,
+    valueFrom,
+    valueTo,
+    authority,
+    cpv,
+    localityAuthority,
+    supplier,
+    localitySupplier,
+  } = filters;
 
   if (db?.filter((d) => [ES_INDEX_DIRECT, ES_INDEX_PUBLIC].includes(d)).length === 0) {
     throw new Error("Baza de date nu este specificata.");
@@ -55,10 +66,25 @@ export async function searchContracts({ query, page = 1, perPage = 20, filters }
                           },
                         }
                       : undefined,
+                    localityAuthority
+                      ? {
+                          match_phrase: {
+                            "publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.city":
+                              localityAuthority,
+                          },
+                        }
+                      : undefined,
                     supplier
                       ? {
                           match_phrase: {
                             "noticeContracts.items.winner.name": supplier,
+                          },
+                        }
+                      : undefined,
+                    localitySupplier
+                      ? {
+                          match_phrase: {
+                            "noticeContracts.items.winner.address.city": localitySupplier,
                           },
                         }
                       : undefined,
@@ -99,10 +125,24 @@ export async function searchContracts({ query, page = 1, perPage = 20, filters }
                           },
                         }
                       : undefined,
+                    localityAuthority
+                      ? {
+                          match_phrase: {
+                            "authority.city": localityAuthority,
+                          },
+                        }
+                      : undefined,
                     supplier
                       ? {
                           match_phrase: {
                             "item.supplier": supplier,
+                          },
+                        }
+                      : undefined,
+                    localitySupplier
+                      ? {
+                          match_phrase: {
+                            "supplier.city": localitySupplier,
                           },
                         }
                       : undefined,
@@ -172,6 +212,8 @@ export async function searchContracts({ query, page = 1, perPage = 20, filters }
       "publicDirectAcquisition.supplierId",
       "publicDirectAcquisition.contractingAuthorityID",
       "publicDirectAcquisition.sysAcquisitionContractType.*",
+      "authority.city",
+      "supplier.city",
       // licitatii publice
       "item.caNoticeId",
       "item.noticeNo",
@@ -185,10 +227,12 @@ export async function searchContracts({ query, page = 1, perPage = 20, filters }
       "item.cpvCodeAndName",
       "item.noticeStateDate",
       "publicNotice.entityId",
+      "publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.city",
       "noticeContracts.items.winner.name",
       "noticeContracts.items.winner.fiscalNumber",
       "noticeContracts.items.winner.fiscalNumberInt",
       "noticeContracts.items.winner.entityId",
+      "noticeContracts.items.winner.address.city",
       "noticeContracts.items.contractValue",
     ],
     _source: false,
@@ -197,7 +241,7 @@ export async function searchContracts({ query, page = 1, perPage = 20, filters }
   const result = await esClient.search(searchParams);
 
   // console.log(result.hits.hits[1]);
-  // console.log("TOOK", result.took);
+  console.log("TOOK", result.took);
 
   const total = result.hits.total as SearchTotalHits;
 

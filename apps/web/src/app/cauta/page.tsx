@@ -18,23 +18,25 @@ export default async function Page(props: PageProps) {
   const dbLabelsAsText = dbs.map((db) => databases.find((d) => d.id === db)?.label).join(", ");
   const dateFrom = searchParams.dateFrom as string;
   const dateTo = searchParams.dateTo as string;
-  const cpv = searchParams.cpv as string;
-  const authority = searchParams.authority as string;
-  const supplier = searchParams.supplier as string;
   const valueFrom = searchParams.valueFrom as string;
   const valueTo = searchParams.valueTo as string;
-  const locality = searchParams.locality as string;
+  const authority = searchParams.authority as string;
+  const cpv = searchParams.cpv as string;
+  const localityAuthority = searchParams.localityAuthority as string;
+  const supplier = searchParams.supplier as string;
+  const localitySupplier = searchParams.localitySupplier as string;
 
   const filters = {
     db: dbs,
     dateFrom,
     dateTo,
     cpv,
-    authority,
-    supplier,
     valueFrom,
     valueTo,
-    locality,
+    authority,
+    localityAuthority,
+    supplier,
+    localitySupplier,
   };
 
   const results = await searchContracts({ query, page, perPage, filters });
@@ -44,7 +46,8 @@ export default async function Page(props: PageProps) {
     <main className="container px-8 py-4 flex flex-col gap-2 lg:max-w-7xl">
       <div className="flex flex-col gap-4">
         <h3 className="text-sm">
-          Pagina {page} din {results.total} rezultate pentru <b>{query}</b>
+          Pagina {page} din {Intl.NumberFormat().format(results.total)} rezultate pentru{" "}
+          <b>{query}</b>
         </h3>
         <div className="flex items-center gap-4 justify-between">
           <div className="flex flex-wrap items-center text-xs text-gray-700 bg-gray-100 dark:bg-gray-800 dark:text-gray-400 p-2 rounded-md">
@@ -53,12 +56,13 @@ export default async function Page(props: PageProps) {
             <span className="mr-1">{dbLabelsAsText};</span>
             {dateFrom ||
             dateTo ||
-            cpv ||
-            authority ||
-            supplier ||
             valueFrom ||
             valueTo ||
-            locality ? (
+            authority ||
+            cpv ||
+            localityAuthority ||
+            supplier ||
+            localitySupplier ? (
               <>
                 {dateFrom && <span className="mr-1">{`de la ${dateFrom}`}</span>}
                 {dateTo && <span className="mr-1">{`până la ${dateTo};`}</span>}
@@ -75,7 +79,12 @@ export default async function Page(props: PageProps) {
                     Number(valueTo),
                   )} RON`}</span>
                 )}
-                {locality && <span className="mr-1">{`; localitate ${locality}.`}</span>}
+                {localityAuthority && (
+                  <span className="mr-1">{`; localitate autoritate: ${localityAuthority}.`}</span>
+                )}
+                {localitySupplier && (
+                  <span className="mr-1">{`; localitate firma: ${localitySupplier}.`}</span>
+                )}
               </>
             ) : null}
           </div>

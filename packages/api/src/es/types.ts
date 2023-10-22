@@ -2,21 +2,23 @@ import { ES_INDEX_DIRECT, ES_INDEX_PUBLIC } from "./utils";
 
 export type IndexName = typeof ES_INDEX_PUBLIC | typeof ES_INDEX_DIRECT;
 
+export interface SearchFilters {
+  db?: IndexName[];
+  dateFrom?: string;
+  dateTo?: string;
+  valueFrom?: string;
+  valueTo?: string;
+  authority?: string;
+  cpv?: string;
+  localityAuthority?: string;
+  supplier?: string;
+  localitySupplier?: string;
+}
 export interface SearchProps {
   query: string;
   page?: number;
   perPage?: number;
-  filters: {
-    db?: IndexName[];
-    dateFrom?: string;
-    dateTo?: string;
-    cpv?: string;
-    authority?: string;
-    supplier?: string;
-    valueFrom?: string;
-    valueTo?: string;
-    locality?: string;
-  };
+  filters: SearchFilters;
 }
 
 export interface SearchItemDirect {
@@ -28,8 +30,10 @@ export interface SearchItemDirect {
   value: string;
   supplierId: string;
   supplierName: string;
+  localitySupplier: string;
   contractingAuthorityId: string;
   contractingAuthorityName: string;
+  localityAuthority: string;
   state: string;
   type: string;
 }
