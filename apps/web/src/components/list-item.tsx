@@ -44,24 +44,24 @@ export function ListItem({ id, index, fields }: ListItemProps) {
   return (
     <Card className="flex flex-col sm:flex-row justify-between hover:bg-slate-50 hover:dark:bg-slate-800">
       <div>
-        <CardHeader>
+        <CardHeader className="pb-4">
           <span className="text-xs text-primary">{indexText}</span>
-          <Link href={contractLink} target="_blank">
+          <Link href={contractLink} target="_blank" prefetch={false}>
             <CardTitle className="text-md font-normal">
               {code} - {name}
             </CardTitle>
           </Link>
           <CardDescription>
-            <Badge variant="secondary" className="my-2 mr-2">
+            <Badge variant="secondary" className="mt-2 mr-2">
               {ronValue} RON / {eurValue} EUR
             </Badge>
-            <Link href={cpvLink} target="_blank">
+            <Link href={cpvLink} target="_blank" prefetch={false}>
               <Badge variant="outline">{cpvCode}</Badge>
             </Link>
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col gap-2">
-          <Link href={contractingAuthorityLink} target="_blank">
+        <CardContent className="flex flex-col">
+          <Link href={contractingAuthorityLink} target="_blank" prefetch={false} className="py-2">
             <p className="flex items-center gap-2 text-sm">
               <span>
                 <Building className="h-[1.2rem] w-[1.2rem] text-gray-500" />
@@ -69,7 +69,7 @@ export function ListItem({ id, index, fields }: ListItemProps) {
               <span>{contractingAuthorityName}</span>
             </p>
           </Link>
-          <Link href={supplierLink} target="_blank">
+          <Link href={supplierLink} target="_blank" prefetch={false} className="py-2">
             <p className="flex items-center gap-2 text-sm">
               <span>
                 <Briefcase className="h-[1.2rem] w-[1.2rem] text-gray-500" />

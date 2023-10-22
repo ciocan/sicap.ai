@@ -10,7 +10,12 @@ export function Footer(): JSX.Element {
       <div className="mx-auto w-full max-w-screen-xl p-4">
         <ul className="flex opacity-60 text-xs justify-center gap-6">
           <li>
-            <Link href="/confidentialitate" className="hover:underline">
+            <Link
+              target="_blank"
+              prefetch={false}
+              href="/confidentialitate"
+              className="hover:underline"
+            >
               Politica de confidentialitate
             </Link>
           </li>

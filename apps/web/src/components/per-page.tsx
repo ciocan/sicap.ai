@@ -18,7 +18,7 @@ export function PerPage({ total }: { total: number }) {
 
   return (
     <Select value={value} onValueChange={handleValueChange}>
-      <SelectTrigger className="w-[70px]">
+      <SelectTrigger className="w-[70px]" aria-label="rezultate pe pagina">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
