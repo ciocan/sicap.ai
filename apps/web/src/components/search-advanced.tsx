@@ -22,6 +22,7 @@ import {
   Separator,
 } from "@sicap/ui";
 import { databases, dbIds, wait } from "@/utils";
+import { captureAdvanceSearchButtonClick, captureClearFiltersButtonClick } from "@/utils/telemetry";
 
 const defaultValues = {
   db: dbIds,
@@ -127,6 +128,7 @@ export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
 
   function handleReset() {
     form.reset({ ...defaultValues, q: query });
+    captureClearFiltersButtonClick();
   }
 
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -140,6 +142,10 @@ export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
         }),
       ),
     );
+
+    const filters = Object.fromEntries(params.entries());
+    captureAdvanceSearchButtonClick({ query, filters, mode: "advanced" });
+
     router.push(`/search-redirect?${params.toString()}`);
     wait().then(() => setOpen(false));
   }

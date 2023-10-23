@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 
 import { ModeToggle, Separator, Toaster } from "@sicap/ui";
 import { Search } from "@/components/search";
+import { captureToggleDarkModeButtonClick } from "@/utils/telemetry";
 
 export function Navbar(): JSX.Element {
   const pathname = usePathname();
@@ -23,7 +24,7 @@ export function Navbar(): JSX.Element {
               {!isHome && <Search hideButton />}
             </div>
             <div>
-              <ModeToggle />
+              <ModeToggle onCapture={captureToggleDarkModeButtonClick} />
             </div>
           </nav>
         </div>

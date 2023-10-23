@@ -14,6 +14,7 @@ import {
   TooltipContent,
 } from "@sicap/ui";
 import { AdvancedSearch } from "./search-advanced";
+import { captureOpenAdvancedSearchModal, captureSearchButtonClick } from "@/utils/telemetry";
 
 export function Search({ hideButton }: { hideButton?: boolean }) {
   const searchParams = useSearchParams();
@@ -22,10 +23,11 @@ export function Search({ hideButton }: { hideButton?: boolean }) {
   const [search, setSearch] = useState(q);
   const [open, setOpen] = useState(false);
 
-  const handleSearch = () => {
+  const handleSearch = (type: string) => {
     if (!search) {
       return;
     }
+    captureSearchButtonClick({ query: search, type, mode: "simple" });
     router.push(`/cauta?q=${encodeURIComponent(search)}`);
   };
 
@@ -42,16 +44,20 @@ export function Search({ hideButton }: { hideButton?: boolean }) {
               type="search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch("input")}
               placeholder="cauta achizitii publice..."
               className="w-full"
             />
-            {!hideButton && <Button onClick={handleSearch}>Cautǎ</Button>}
+            {!hideButton && <Button onClick={() => handleSearch("button")}>Cautǎ</Button>}
             {hideButton && (
               <Tooltip>
                 <DialogTrigger asChild>
                   <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => captureOpenAdvancedSearchModal({ type: "icon" })}
+                    >
                       <Filter className="h-[1.2rem] w-[1.2rem] transition-all" />
                       <span className="sr-only">Cautare avansata</span>
                     </Button>
@@ -65,7 +71,12 @@ export function Search({ hideButton }: { hideButton?: boolean }) {
           </div>
           {!hideButton && (
             <DialogTrigger asChild>
-              <Button variant="link">cautare avansata</Button>
+              <Button
+                variant="link"
+                onClick={() => captureOpenAdvancedSearchModal({ type: "link" })}
+              >
+                cautare avansata
+              </Button>
             </DialogTrigger>
           )}
         </div>

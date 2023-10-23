@@ -9,7 +9,7 @@ import { ES_INDEX_DIRECT, ES_INDEX_PUBLIC } from "@sicap/api";
 interface ListItemProps {
   id: string;
   index: IndexName;
-  fields: SearchItemPublic | SearchItemDirect;
+  fields: SearchItemPublic | SearchItemDirect | undefined;
 }
 
 export function ListItem({ id, index, fields }: ListItemProps) {

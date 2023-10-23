@@ -5,10 +5,15 @@ import { useTheme } from "next-themes";
 
 import { Button } from "@ui/button";
 
-export function ModeToggle() {
+type ModeToggleProps = {
+  onCapture: (props: { theme: string | undefined }) => void;
+};
+
+export function ModeToggle({ onCapture }: ModeToggleProps): JSX.Element {
   const { theme, setTheme } = useTheme();
 
   const handleThemeChange = () => {
+    onCapture({ theme });
     switch (theme) {
       case "light":
         setTheme("dark");
