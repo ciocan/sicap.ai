@@ -35,11 +35,15 @@ export interface SearchItemDirect {
   contractingAuthorityName: string;
   localityAuthority: string;
   state: string;
+  stateId: number;
   type: string;
+  typeId: number;
 }
 
 export interface SearchItemPublic extends SearchItemDirect {
   procedureType: string;
+  procedureTypeId: string;
   assigmentType: string;
+  assigmentTypeId: string;
   supplierFiscalNumber: string;
 }

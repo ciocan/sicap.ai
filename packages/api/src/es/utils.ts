@@ -22,7 +22,9 @@ export function transformItem(index: string, fields: Fields, highlight: Fields) 
         contractingAuthorityName: fields["item.contractingAuthority"]?.[0],
         localityAuthority: fields["authority.city"]?.[0],
         state: fields["item.sysDirectAcquisitionState.text"]?.[0],
+        stateId: fields["item.sysDirectAcquisitionState.id"]?.[0],
         type: fields["publicDirectAcquisition.sysAcquisitionContractType.text"]?.[0],
+        typeId: fields["publicDirectAcquisition.sysAcquisitionContractType.id"]?.[0],
       } as SearchItemDirect;
     case ES_INDEX_PUBLIC:
       return {
@@ -41,9 +43,13 @@ export function transformItem(index: string, fields: Fields, highlight: Fields) 
         localityAuthority:
           fields["publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.city"]?.[0],
         state: fields["item.sysProcedureState.text"]?.[0],
+        stateId: fields["item.sysProcedureState.id"]?.[0],
         type: fields["item.sysAcquisitionContractType.text"]?.[0],
+        typeId: fields["item.sysAcquisitionContractType.id"]?.[0],
         procedureType: fields["item.sysProcedureType.text"]?.[0],
+        procedureTypeId: fields["item.sysProcedureType.id"]?.[0],
         assigmentType: fields["item.sysContractAssigmentType.text"]?.[0],
+        assigmentTypeId: fields["item.sysContractAssigmentType.id"]?.[0],
       } as SearchItemPublic;
     default:
       return undefined;

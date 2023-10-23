@@ -4,12 +4,12 @@ import { Building, Briefcase } from "lucide-react";
 import { Card, CardHeader, CardContent, CardDescription, CardTitle, Badge } from "@sicap/ui";
 import type { SearchItemDirect, SearchItemPublic, IndexName } from "@sicap/api";
 import { getDay, getMonth, getYear } from "@sicap/api/dist/utils/date";
-import { ES_INDEX_DIRECT } from "@sicap/api";
+import { ES_INDEX_DIRECT, ES_INDEX_PUBLIC } from "@sicap/api";
 
 interface ListItemProps {
   id: string;
   index: IndexName;
-  fields: SearchItemPublic | SearchItemDirect | undefined;
+  fields: SearchItemPublic | SearchItemDirect;
 }
 
 export function ListItem({ id, index, fields }: ListItemProps) {
@@ -27,7 +27,13 @@ export function ListItem({ id, index, fields }: ListItemProps) {
     contractingAuthorityId,
     supplierName,
     supplierId,
+    state,
+    stateId,
+    type,
   } = fields;
+
+  const { procedureType, assigmentType } = fields as SearchItemPublic;
+
   const day = getDay(date);
   const month = getMonth(date);
   const year = getYear(date);
@@ -44,15 +50,15 @@ export function ListItem({ id, index, fields }: ListItemProps) {
   return (
     <Card className="flex flex-col sm:flex-row justify-between hover:bg-slate-50 hover:dark:bg-slate-800">
       <div>
-        <CardHeader className="pb-4">
+        <CardHeader className="pb-4 space-y-2">
           <span className="text-xs text-primary">{indexText}</span>
           <Link href={contractLink} target="_blank" prefetch={false}>
             <CardTitle className="text-md font-normal">
               {code} - {name}
             </CardTitle>
           </Link>
-          <CardDescription>
-            <Badge variant="secondary" className="mt-2 mr-2">
+          <CardDescription className="flex sm:flex-row flex-col gap-2">
+            <Badge variant="secondary">
               {ronValue} RON / {eurValue} EUR
             </Badge>
             <Link href={cpvLink} target="_blank" prefetch={false}>
@@ -77,6 +83,17 @@ export function ListItem({ id, index, fields }: ListItemProps) {
               <span>{supplierName}</span>
             </p>
           </Link>
+        </CardContent>
+        <CardContent className="flex sm:flex-row flex-col gap-2">
+          {index === ES_INDEX_DIRECT && state && (
+            <Badge variant={[5, 7].includes(stateId) ? "secondary" : "destructive"}>{state}</Badge>
+          )}
+          {index === ES_INDEX_PUBLIC && state && (
+            <Badge variant={[3].includes(stateId) ? "destructive" : "secondary"}>{state}</Badge>
+          )}
+          {type && <Badge variant="secondary">{type}</Badge>}
+          {procedureType && <Badge variant="outline">{procedureType}</Badge>}
+          {assigmentType && <Badge variant="outline">{assigmentType}</Badge>}
         </CardContent>
       </div>
       <CardHeader className="flex justify-center sm:border-l-2 border-t-2 sm:border-t-0">

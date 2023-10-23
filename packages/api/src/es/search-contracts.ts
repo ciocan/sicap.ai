@@ -51,14 +51,16 @@ export async function searchContracts({ query, page = 1, perPage = 20, filters }
                         },
                       },
                     },
-                    {
-                      range: {
-                        "noticeContracts.items.contractValue": {
-                          gte: valueFrom,
-                          lte: valueTo,
-                        },
-                      },
-                    },
+                    valueFrom || valueTo
+                      ? {
+                          range: {
+                            "noticeContracts.items.contractValue": {
+                              gte: valueFrom ?? 0,
+                              lte: valueTo ?? Number.MAX_SAFE_INTEGER,
+                            },
+                          },
+                        }
+                      : undefined,
                     authority
                       ? {
                           match_phrase: {
@@ -201,7 +203,8 @@ export async function searchContracts({ query, page = 1, perPage = 20, filters }
       // achizitii directe
       "item.directAcquisitionId",
       "item.directAcquisitionName",
-      "item.sysDirectAcquisitionState.*",
+      "item.sysDirectAcquisitionState.text",
+      "item.sysDirectAcquisitionState.id",
       "item.uniqueIdentificationCode",
       "item.cpvCode",
       "item.publicationDate",
@@ -212,6 +215,7 @@ export async function searchContracts({ query, page = 1, perPage = 20, filters }
       "publicDirectAcquisition.supplierId",
       "publicDirectAcquisition.contractingAuthorityID",
       "publicDirectAcquisition.sysAcquisitionContractType.*",
+      "publicDirectAcquisition.sysAcquisitionContractTypeID",
       "authority.city",
       "supplier.city",
       // licitatii publice
