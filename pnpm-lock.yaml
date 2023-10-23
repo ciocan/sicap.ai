@@ -23,6 +23,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@formbricks/js':
+        specifier: 1.0.7
+        version: 1.0.7
       '@sicap/api':
         specifier: workspace:*
         version: link:../../packages/api
@@ -532,6 +535,10 @@ packages:
 
   /@floating-ui/utils@0.1.6:
     resolution: {integrity: sha512-OfX7E2oUDYxtBvsuS4e/jSn4Q9Qb6DzgeYtsAdkPZ47znpoNsMgZw0+tVijiv3uGNR6dgNlty6r9rzIzHjtd/A==}
+    dev: false
+
+  /@formbricks/js@1.0.7:
+    resolution: {integrity: sha512-ZA5tL/Fy9dO8WllGMZdo78k0/HmVkbn8t2HnqExzcveu0ArKETXv96pGS2kI4qiud6LDPHwbRWGvvqFy2ZKnRg==}
     dev: false
 
   /@hookform/resolvers@3.3.2(react-hook-form@7.47.0):

@@ -10,6 +10,7 @@
     "fmt": "biome format --write ./src"
   },
   "dependencies": {
+    "@formbricks/js": "1.0.7",
     "@sicap/api": "workspace:*",
     "@sicap/ui": "workspace:*",
     "dotenv": "^16.3.1",

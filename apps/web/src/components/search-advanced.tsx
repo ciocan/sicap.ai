@@ -21,7 +21,7 @@ import {
   z,
   Separator,
 } from "@sicap/ui";
-import { databases, dbIds, wait } from "@/utils";
+import { databases, dbIds } from "@/utils";
 import { captureAdvanceSearchButtonClick, captureClearFiltersButtonClick } from "@/utils/telemetry";
 
 const defaultValues = {
@@ -147,7 +147,7 @@ export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
     captureAdvanceSearchButtonClick({ query, filters, mode: "advanced" });
 
     router.push(`/search-redirect?${params.toString()}`);
-    wait().then(() => setOpen(false));
+    setOpen(false);
   }
 
   return (

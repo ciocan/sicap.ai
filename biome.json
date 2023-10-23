@@ -12,7 +12,8 @@
         "noSvgWithoutTitle": "off"
       },
       "correctness": {
-        "noUnusedVariables": "warn"
+        "noUnusedVariables": "warn",
+        "useExhaustiveDependencies": "warn"
       },
       "security": {
         "noDangerouslySetInnerHtml": "off"

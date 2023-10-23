@@ -5,6 +5,7 @@ import "@/app/globals.css";
 
 import { siteConfig } from "@/config/site";
 import { Navbar, Footer, ThemeProvider } from "@/components";
+import FormbricksProvider from "./formbricks";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -68,6 +69,7 @@ export default function RootLayout({ children }: RootLayoutProps): JSX.Element {
             <div className="flex flex-col flex-1">{children}</div>
             <Footer />
           </div>
+          <FormbricksProvider />
         </ThemeProvider>
       </body>
     </html>
