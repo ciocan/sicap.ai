@@ -40,21 +40,36 @@ export function Header() {
   }
 
   return (
-    <Grid
-      as="nav"
-      py="4"
-      px="4"
-      {...gridProps}
-      gridTemplateColumns="auto 1fr auto auto auto auto"
-      alignItems="center"
-    >
-      {!isHome && <Logo />}
-      <Box mx="8">{!isHome && <SearchBar query={query} hide />}</Box>
-      <Capusa selected={route.includes("firme-capusa")} />
-      <Stats selected={route.includes("statistici")} />
-      <About selected={route.includes("despre")} />
-      <User />
-    </Grid>
+    <Box>
+      <Stack bg="#FFF9BA" align="center" py="2">
+        <ChakraLink
+          href="https://v2.sicap.ai"
+          target="_blank"
+          color="red"
+          fontWeight="semibold"
+          textAlign="center"
+          px="40px"
+          fontSize="14px"
+        >
+          NOU: Incearca noua varianta si testeaza cautarea avansata
+        </ChakraLink>
+      </Stack>
+      <Grid
+        as="nav"
+        py="4"
+        px="4"
+        {...gridProps}
+        gridTemplateColumns="auto 1fr auto auto auto auto"
+        alignItems="center"
+      >
+        {!isHome && <Logo />}
+        <Box mx="8">{!isHome && <SearchBar query={query} hide />}</Box>
+        <Capusa selected={route.includes("firme-capusa")} />
+        <Stats selected={route.includes("statistici")} />
+        <About selected={route.includes("despre")} />
+        <User />
+      </Grid>
+    </Box>
   )
 }
 
