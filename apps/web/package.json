@@ -14,22 +14,22 @@
     "@sicap/api": "workspace:*",
     "@sicap/ui": "workspace:*",
     "dotenv": "^16.3.1",
-    "lucide-react": "^0.287.0",
-    "next": "^13.5.5",
+    "lucide-react": "^0.288.0",
+    "next": "^13.5.6",
     "next-themes": "^0.2.1",
-    "posthog-js": "^1.84.1",
+    "posthog-js": "^1.85.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@sicap/tailwind-config": "workspace:*",
     "@sicap/tsconfig": "workspace:*",
-    "@types/node": "^18.11.17",
-    "@types/react": "^18.2.5",
-    "@types/react-dom": "^18.2.4",
-    "autoprefixer": "^10.4.13",
-    "postcss": "^8.4.20",
-    "tailwindcss": "^3.2.4",
-    "typescript": "^5.1.6"
+    "@types/node": "^20.8.8",
+    "@types/react": "^18.2.31",
+    "@types/react-dom": "^18.2.14",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.31",
+    "tailwindcss": "^3.3.4",
+    "typescript": "^5.2.2"
   }
 }
