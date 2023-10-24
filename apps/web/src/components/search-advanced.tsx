@@ -293,8 +293,8 @@ export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
             </div>
             <Separator />
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="authority" className="text-right">
-                Autoritate
+              <Label htmlFor="authority" className="text-right sm:text-sm text-xs">
+                Autoritate contractanta
               </Label>
               <FormField
                 control={form.control}
@@ -370,7 +370,7 @@ export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
                       id="supplier"
                       type="search"
                       className="col-span-3"
-                      placeholder="Firma SRL"
+                      placeholder="CUI / Firma SRL"
                       {...field}
                     />
                   </FormItem>
