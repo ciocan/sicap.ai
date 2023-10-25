@@ -1,13 +1,24 @@
+"use client";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+
+import { dbIds } from "@/utils";
 
 type PaginationProps = {
-  query: string;
   page: number;
   hasNextPage: boolean;
   hasPreviousPage: boolean;
 };
 
-export function Pagination({ query, page, hasNextPage, hasPreviousPage }: PaginationProps) {
+export function Pagination({ page, hasNextPage, hasPreviousPage }: PaginationProps) {
+  const searchParams = useSearchParams();
+  const db = searchParams.get("db");
+
+  const params = {
+    ...Object.fromEntries(searchParams.entries()),
+    db: db ?? dbIds,
+  };
+
   const previousPage = page - 1;
   const nextPage = page + 1;
 
@@ -18,7 +29,7 @@ export function Pagination({ query, page, hasNextPage, hasPreviousPage }: Pagina
           href={{
             pathname: "/cauta",
             query: {
-              q: query,
+              ...params,
               p: previousPage,
             },
           }}
@@ -31,7 +42,7 @@ export function Pagination({ query, page, hasNextPage, hasPreviousPage }: Pagina
           href={{
             pathname: "/cauta",
             query: {
-              q: query,
+              ...params,
               p: nextPage,
             },
           }}

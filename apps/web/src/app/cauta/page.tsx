@@ -107,7 +107,6 @@ export default async function Page(props: PageProps) {
           ))}
         </div>
         <Pagination
-          query={query}
           page={page}
           hasPreviousPage={page > 1}
           hasNextPage={page * perPage < results.total}
