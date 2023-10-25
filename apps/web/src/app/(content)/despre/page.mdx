@@ -1,0 +1,26 @@
+import { getTotal } from "@sicap/api";
+
+export const metadata = {
+  title: 'Despre',
+  description: "Despre SICAP.ai"
+}
+
+export  const { licitatii, achizitii } = await getTotal();
+
+
+# Despre
+
+SICAP.ai este un motor de cautare pentru baza de date a licitatiilor publice si achizitiilor directe.
+Datele sunt preluate din portalul guvernamental de licitatii publice [e-licitatie.ro](https://www.e-licitatie.ro/) în baza [Licenței pentru Guvernare Deschisa](https://data.gov.ro/base/images/logoinst/OGL-ROU-1.0.pdf) v1.0 
+
+Contractele de licitatii publice si achizitii directe se actualizeaza zilnic iar in prezent sunt indexate **{licitatii} licitatii publice** si **{achizitii} achizitii directe**.
+
+Scopul acestui proiect este de a aduce mai multa transparenta pentru cheltuielile publice si de a putea detecta eventualele suspiciuni de frauda cu ajutorul comunitatii si inteligentei artificiale.
+
+Codul este open source pe github la adresa
+[github.com/ciocan/sicap.ai](https://github.com/ciocan/sicap.ai)
+
+Pentru analiza avansata unde se pot raspunde la intrebari de genul - Cati lei au fost cheltuiti in Brasov in ultimii 3 ani pe lucrari de constructii de drumuri, sau care este lista cu toate companiile din judetul Ialomita ordonata dupa valoarea contractelor,
+exista un proiect separat la adresa [github.com/ciocan/sicap-explorer](https://github.com/ciocan/sicap-explorer)
+
+Ai sugestii sau recomandari? Foloseste acest [link](https://github.com/ciocan/sicap.ai/issues)

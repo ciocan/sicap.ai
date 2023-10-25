@@ -9,6 +9,15 @@ interface PageProps {
   params: { slug: string };
 }
 
+export async function generateMetadata({ searchParams }: PageProps) {
+  const query = searchParams.q as string;
+
+  return {
+    title: `Cǎutare: "${query}"`,
+    description: "Caută în baza de date a contractelor publice din România",
+  };
+}
+
 export default async function Page(props: PageProps) {
   const { searchParams } = props;
   const query = searchParams.q as string;

@@ -11,15 +11,20 @@
   },
   "dependencies": {
     "@formbricks/js": "1.0.7",
+    "@mdx-js/loader": "^3.0.0",
+    "@mdx-js/react": "^3.0.0",
+    "@next/mdx": "^13.5.6",
     "@sicap/api": "workspace:*",
     "@sicap/ui": "workspace:*",
+    "@types/mdx": "^2.0.9",
     "dotenv": "^16.3.1",
     "lucide-react": "^0.288.0",
     "next": "^13.5.6",
     "next-themes": "^0.2.1",
     "posthog-js": "^1.85.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "remark-gfm": "^4.0.0"
   },
   "devDependencies": {
     "@sicap/tailwind-config": "workspace:*",
