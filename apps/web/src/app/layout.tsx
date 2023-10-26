@@ -1,3 +1,4 @@
+import type { Viewport } from 'next'
 import { Inter } from "next/font/google";
 
 import "@sicap/ui/src/styles/styles.css";
@@ -9,6 +10,13 @@ import FormbricksProvider from "./formbricks";
 
 const inter = Inter({ subsets: ["latin"] });
 
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "white" },
+    { media: "(prefers-color-scheme: dark)", color: "black" },
+  ],
+}
+ 
 export const metadata = {
   metadataBase: new URL(siteConfig.url.base),
   title: {
@@ -24,10 +32,6 @@ export const metadata = {
     },
   ],
   creator: siteConfig.author,
-  // themeColor: [
-  //   { media: "(prefers-color-scheme: light)", color: "white" },
-  //   { media: "(prefers-color-scheme: dark)", color: "black" },
-  // ],
   openGraph: {
     type: "website",
     locale: "en_US",

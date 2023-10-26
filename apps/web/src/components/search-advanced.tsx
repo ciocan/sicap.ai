@@ -147,6 +147,7 @@ export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
     captureAdvanceSearchButtonClick({ query, filters, mode: "advanced" });
 
     router.push(`/search-redirect?${params.toString()}`);
+    router.refresh();
     setOpen(false);
   }
 
