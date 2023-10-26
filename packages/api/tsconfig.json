@@ -3,9 +3,9 @@
   "include": ["."],
   "exclude": ["dist", "build", "node_modules"],
   "compilerOptions": {
-    "lib": ["esnext"],
-    "module": "commonjs",
-    "target": "esnext",
+    "lib": ["ESNext"],
+    "module": "ESNext",
+    "target": "es5",
     "outDir": "./dist"
   }
 }

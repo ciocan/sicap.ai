@@ -9,9 +9,9 @@
     "declarationMap": false,
     "incremental": true,
     "jsx": "preserve",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": ["dom", "dom.iterable", "ESNext"],
     "moduleResolution": "node",
-    "module": "esnext",
+    "module": "ESNext",
     "resolveJsonModule": true,
     "strict": false,
     "target": "es5"

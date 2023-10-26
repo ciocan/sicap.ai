@@ -1,4 +1,4 @@
-import { ES_INDEX_DIRECT, ES_INDEX_PUBLIC } from "@sicap/api/dist/es/utils";
+import { ES_INDEX_DIRECT, ES_INDEX_PUBLIC } from "@sicap/api/dist/es/utils.mjs";
 
 export const databases = [
   {
@@ -13,4 +13,4 @@ export const databases = [
 
 export const dbIds = databases.map((d) => d.id);
 
-export const wait = () => new Promise((resolve) => setTimeout(resolve, 250));
+export const wait = (ms = 250) => new Promise((resolve) => setTimeout(resolve, ms));

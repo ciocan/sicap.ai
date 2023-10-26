@@ -4,7 +4,7 @@ import createMDX from '@next/mdx'
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  transpilePackages: ['@sicap/ui', '@sicap/api'],
+  // transpilePackages: ['@sicap/ui', '@sicap/api'],
   pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
   async redirects() {
     return [

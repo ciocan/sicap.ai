@@ -16,7 +16,8 @@
     "dev": "tsup --watch",
     "check-types": "tsc --noEmit",
     "fmt": "biome format --write ./src",
-    "ui:add": "pnpm dlx shadcn-ui@latest add"
+    "ui:add": "pnpm dlx shadcn-ui@latest add",
+    "clean": "pnpm dlx rimraf node_modules .turbo .dist"
   },
   "peerDependencies": {
     "react": "^18.2.0"

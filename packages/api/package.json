@@ -1,7 +1,7 @@
 {
   "name": "@sicap/api",
   "version": "0.1.0",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/index.d.mts",
   "main": "src/index.ts",
   "license": "MIT",
   "scripts": {
@@ -9,7 +9,8 @@
     "lint": "biome lint ./src",
     "dev": "tsup --watch",
     "check-types": "tsc --noEmit",
-    "fmt": "biome format --write ./src"
+    "fmt": "biome format --write ./src",
+    "clean": "pnpm dlx rimraf node_modules .turbo .dist"
   },
   "devDependencies": {
     "@sicap/tsconfig": "workspace:*",
