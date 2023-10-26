@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 
 import { SearchList, type SearchParams } from "@/components";
-import Loading from "./loading";
 
 interface PageProps {
   searchParams: SearchParams;
@@ -21,7 +20,7 @@ export default async function Page(props: PageProps) {
 
   return (
     <main className="container px-8 py-4 flex flex-col gap-2 lg:max-w-7xl">
-      <Suspense fallback={<Loading />}>
+      <Suspense fallback={<div className="text-sm">se incarca...</div>}>
         <SearchList searchParams={searchParams} />
       </Suspense>
     </main>

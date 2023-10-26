@@ -146,7 +146,7 @@ export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
     const filters = Object.fromEntries(params.entries());
     captureAdvanceSearchButtonClick({ query, filters, mode: "advanced" });
 
-    router.push(`/search-redirect?${params.toString()}`);
+    router.push(`/cauta?${params.toString()}`);
     router.refresh();
     setOpen(false);
   }

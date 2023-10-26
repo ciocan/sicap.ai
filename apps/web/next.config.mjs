@@ -4,16 +4,9 @@ import createMDX from '@next/mdx'
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // transpilePackages: ['@sicap/ui', '@sicap/api'],
   pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
   async redirects() {
     return [
-      {
-        source: '/search-redirect',
-        destination: '/cauta',
-        permanent: true,
-      },
-      // 
       {
         source: '/licitatii/contract/:slug',
         destination: 'https://sicap.ai/licitatii/contract/:slug',

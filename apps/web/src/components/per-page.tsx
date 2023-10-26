@@ -13,7 +13,7 @@ export function PerPage({ total }: { total: number }) {
     setValue(value);
     const params = new URLSearchParams(searchParams);
     params.set("perPage", value);
-    router.push(`/search-redirect?${params.toString()}`);
+    router.push(`/cauta?${params.toString()}`);
   };
 
   return (

@@ -28,7 +28,7 @@ export function Search({ hideButton }: { hideButton?: boolean }) {
       return;
     }
     captureSearchButtonClick({ query: search, type, mode: "simple" });
-    router.push(`/search-redirect?q=${encodeURIComponent(search)}`);
+    router.push(`/cauta?q=${encodeURIComponent(search)}`);
   };
 
   useEffect(() => {

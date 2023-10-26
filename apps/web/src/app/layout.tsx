@@ -1,5 +1,5 @@
-import type { Viewport } from 'next'
-import { Inter } from "next/font/google";
+import type { Viewport } from "next";
+import localFont from "next/font/local";
 
 import "@sicap/ui/src/styles/styles.css";
 import "@/app/globals.css";
@@ -8,15 +8,15 @@ import { siteConfig } from "@/config/site";
 import { Navbar, Footer, ThemeProvider } from "@/components";
 import FormbricksProvider from "./formbricks";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = localFont({ src: "./Inter-Regular.woff", display: "swap" });
 
 export const viewport: Viewport = {
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "white" },
     { media: "(prefers-color-scheme: dark)", color: "black" },
   ],
-}
- 
+};
+
 export const metadata = {
   metadataBase: new URL(siteConfig.url.base),
   title: {
@@ -58,7 +58,7 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps): JSX.Element {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={inter.className}>
       <head>
         <script
           defer
@@ -66,7 +66,7 @@ export default function RootLayout({ children }: RootLayoutProps): JSX.Element {
           src={process.env.NEXT_PUBLIC_PLAUSIBLE_URL}
         />
       </head>
-      <body className={`${inter.className} min-h-screen bg-background font-sans antialiased`}>
+      <body className="min-h-screen bg-background font-sans antialiased">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <div className="relative flex min-h-screen flex-col">
             <Navbar />
