@@ -1,6 +1,8 @@
 import { getTotal } from "@sicap/api";
 import { Search } from "@/components";
 
+export const revalidate = 24 * 3600;
+
 export default async function Page() {
   const { licitatii, achizitii } = await getTotal();
 

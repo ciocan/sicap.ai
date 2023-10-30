@@ -6,6 +6,8 @@ interface PageProps {
   searchParams: SearchParams;
 }
 
+export const revalidate = 24 * 3600;
+
 export async function generateMetadata({ searchParams }: PageProps) {
   const query = searchParams.q as string;
 
