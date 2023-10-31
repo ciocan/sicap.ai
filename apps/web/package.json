@@ -19,6 +19,7 @@
     "@sicap/ui": "workspace:*",
     "@types/mdx": "^2.0.9",
     "dotenv": "^16.3.1",
+    "geist": "^1.0.0",
     "lucide-react": "^0.289.0",
     "next": "^14.0.0",
     "next-themes": "^0.2.1",

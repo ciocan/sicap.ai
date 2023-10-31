@@ -14,3 +14,5 @@ export const databases = [
 export const dbIds = databases.map((d) => d.id);
 
 export const wait = (ms = 250) => new Promise((resolve) => setTimeout(resolve, ms));
+
+export const formatNumber = (n: number) => n.toLocaleString("ro-RO");

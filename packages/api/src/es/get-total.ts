@@ -6,7 +6,7 @@ export async function getTotal() {
   const achizitii = await esClient.count({ index: ES_INDEX_DIRECT });
 
   return {
-    licitatii: new Intl.NumberFormat().format(licitatii.count),
-    achizitii: new Intl.NumberFormat().format(achizitii.count),
+    licitatii: licitatii.count,
+    achizitii: achizitii.count,
   };
 }

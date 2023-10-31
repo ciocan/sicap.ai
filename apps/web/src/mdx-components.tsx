@@ -6,6 +6,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     h2: ({ children }) => <h2 className="font-semibold my-4">{children}</h2>,
     p: ({ children }) => <p className="mb-2">{children}</p>,
     li: ({ children }) => <li className="mb-2">{children}</li>,
+    em: ({ children }) => <em className="font-mono not-italic">{children}</em>,
     a: ({ children, ...rest }) => (
       <a className="font-semibold underline" target="_blank" {...rest}>
         {children}

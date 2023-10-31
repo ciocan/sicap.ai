@@ -1,5 +1,5 @@
 import type { Viewport } from "next";
-import localFont from "next/font/local";
+import { GeistSans, GeistMono } from "geist/font";
 
 import "@sicap/ui/src/styles/styles.css";
 import "@/app/globals.css";
@@ -7,8 +7,6 @@ import "@/app/globals.css";
 import { siteConfig } from "@/config/site";
 import { Navbar, Footer, ThemeProvider } from "@/components";
 import FormbricksProvider from "./formbricks";
-
-const inter = localFont({ src: "./Inter-Regular.woff", display: "swap" });
 
 export const viewport: Viewport = {
   themeColor: [
@@ -58,7 +56,11 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps): JSX.Element {
   return (
-    <html lang="en" suppressHydrationWarning className={inter.className}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${GeistSans.variable} ${GeistMono.variable}`}
+    >
       <head>
         <script
           defer

@@ -1,5 +1,6 @@
 import { getTotal } from "@sicap/api";
 import { Search } from "@/components";
+import { formatNumber } from "@/utils";
 
 export const revalidate = 24 * 3600;
 
@@ -13,7 +14,9 @@ export default async function Page() {
           <span className="font-bold">SICAP</span>.ai
         </h1>
         <h2 className="text-xs text-center">
-          {licitatii} licitatii publice si {achizitii} achizitii directe indexate
+          <span className="font-mono font-bold">{formatNumber(licitatii)}</span> licitatii publice
+          si <span className="font-mono font-bold">{formatNumber(achizitii)}</span> achizitii
+          directe indexate
         </h2>
       </div>
       <div className="px-2 max-w-lg w-full">
