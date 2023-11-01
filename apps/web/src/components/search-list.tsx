@@ -43,7 +43,8 @@ export async function SearchList({ searchParams }: SearchListProps) {
     supplier,
     localitySupplier,
   } = searchParams;
-  const dbs = ((db as string)?.split(",") || dbIds) as IndexName[];
+
+  const dbs = ((Array.isArray(db) ? db : db?.split(",")) || dbIds) as IndexName[];
   const dbLabelsAsText = dbs.map((db) => databases.find((d) => d.id === db)?.label).join(", ");
 
   const filters = {
