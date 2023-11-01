@@ -15,11 +15,13 @@
   "devDependencies": {
     "@sicap/tsconfig": "workspace:*",
     "@types/node": "^20.8.8",
+    "@types/ramda": "^0.29.7",
     "tsup": "^7.2.0",
     "typescript": "^5.2.2"
   },
   "dependencies": {
     "@elastic/elasticsearch": "^8.10.0",
-    "dayjs": "^1.11.10"
+    "dayjs": "^1.11.10",
+    "ramda": "^0.29.1"
   }
 }
