@@ -1,6 +1,6 @@
 import { ExternalLink } from "lucide-react";
 
-import { formatNumber } from "@/utils";
+import { moneyRon } from "@/utils";
 import { formatDate, getContractAchizitii } from "@sicap/api";
 import { RowItem } from "./utils";
 import Link from "next/link";
@@ -47,9 +47,7 @@ export async function ContractAchizitii({ id }: { id: string }) {
         <RowItem
           label="Valoare"
           value={
-            <div className="font-semibold text-primary font-mono">
-              {formatNumber(closingValue)} RON
-            </div>
+            <div className="font-semibold text-primary font-mono">{moneyRon(closingValue)}</div>
           }
         />
         <RowItem
@@ -92,9 +90,7 @@ export async function ContractAchizitii({ id }: { id: string }) {
                   key={item.directAcquisitionItemID}
                   className="mb-2 border-b dark:border-b-gray-700 border-b-gray-100"
                 >
-                  <div className="text-primary font-mono">
-                    {formatNumber(item.itemClosingPrice)} RON
-                  </div>
+                  <div className="text-primary font-mono">{moneyRon(item.itemClosingPrice)}</div>
                   <div className="mb-3">
                     <div className="text-gray-400">Cantitate: {item.itemQuantity}</div>
                     <div className="text-gray-400">Unitate masura: {item.itemMeasureUnit}</div>

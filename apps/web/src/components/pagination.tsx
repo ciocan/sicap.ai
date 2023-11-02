@@ -8,26 +8,32 @@ type PaginationProps = {
   page: number;
   hasNextPage: boolean;
   hasPreviousPage: boolean;
+  pathname?: string;
 };
 
-export function Pagination({ page, hasNextPage, hasPreviousPage }: PaginationProps) {
+export function Pagination({
+  page,
+  hasNextPage,
+  hasPreviousPage,
+  pathname = "/cauta",
+}: PaginationProps) {
   const searchParams = useSearchParams();
-  const db = searchParams.get("db");
+  const db = searchParams.get("db") ?? dbIds;
 
   const params = {
     ...Object.fromEntries(searchParams.entries()),
-    db: db ?? dbIds,
+    ...(pathname === "/cauta" && { db }),
   };
 
-  const previousPage = page - 1;
-  const nextPage = page + 1;
+  const previousPage = Number(page) - 1;
+  const nextPage = Number(page) + 1;
 
   return (
     <div className="text-sm space-x-4">
       {hasPreviousPage && (
         <Link
           href={{
-            pathname: "/cauta",
+            pathname,
             query: {
               ...params,
               p: previousPage,
@@ -40,7 +46,7 @@ export function Pagination({ page, hasNextPage, hasPreviousPage }: PaginationPro
       {hasNextPage && (
         <Link
           href={{
-            pathname: "/cauta",
+            pathname,
             query: {
               ...params,
               p: nextPage,

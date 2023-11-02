@@ -3,6 +3,7 @@ import { pick } from "ramda";
 import { esClient } from "../config";
 import { ES_INDEX_DIRECT } from "../utils";
 import { RootObject } from "./types";
+import { authorityProps, itemProps, publicDirectAcquisitionProps, supplierProps } from "./common";
 
 export async function getContractAchizitii(id: string) {
   const result = await esClient.search({
@@ -24,33 +25,13 @@ export async function getContractAchizitii(id: string) {
 
   const data = {
     ...pick(["istoric"], contract._source),
-    ...pick(
-      [
-        "directAcquisitionId",
-        "directAcquisitionName",
-        "sysDirectAcquisitionState",
-        "uniqueIdentificationCode",
-        "cpvCode",
-        "publicationDate",
-        "closingValue",
-      ],
-      contract._source.item,
-    ),
-    ...pick(
-      ["directAcquisitionDescription", "sysAcquisitionContractType", "directAcquisitionItems"],
-      contract._source.publicDirectAcquisition,
-    ),
+    ...pick(itemProps, contract._source.item),
+    ...pick(publicDirectAcquisitionProps, contract._source.publicDirectAcquisition),
     supplier: {
-      ...pick(
-        ["entityId", "numericFiscalNumber", "entityName", "city", "county"],
-        contract._source.supplier,
-      ),
+      ...pick(supplierProps, contract._source.supplier),
     },
     contractingAuthority: {
-      ...pick(
-        ["entityId", "numericFiscalNumber", "entityName", "city", "county"],
-        contract._source.authority,
-      ),
+      ...pick(authorityProps, contract._source.authority),
     },
   };
 

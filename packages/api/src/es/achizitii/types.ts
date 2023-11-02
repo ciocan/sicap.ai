@@ -10,15 +10,6 @@ export interface Source {
   istoric: boolean;
 }
 
-export interface Document {
-  directAcquisitionDocumentID: number;
-  documentID: number;
-  documentCode: string | null;
-  documentName: string;
-  clientFileName: string;
-  tempPath: string;
-}
-
 export interface CpvCode {
   id: number;
   text: string;
@@ -48,12 +39,6 @@ export interface DirectAcquisitionItem {
   cpvCode: CpvCode;
   isExpired: boolean | null;
   itemHistory: string | null;
-}
-
-export interface AssignedCAUser {
-  id: number;
-  text: string;
-  localeKey: string;
 }
 
 export interface SysAcquisitionContractType {
@@ -95,14 +80,12 @@ export interface PublicDirectAcquisition {
   supplierDecisionDeadline: string;
   caDecisionDeadline: string;
   contractingAuthorityID: number;
-  documents: Document[];
   directAcquisitionItems: DirectAcquisitionItem[];
   supplierRejectionReason: string | null;
   caRejectionReason: string | null;
   isOpenForCorrection: boolean | null;
   isOpenForContractCorrection: boolean;
   daAwardNoticeID: number | null;
-  assignedCAUser: AssignedCAUser;
   assignedSupplierUser: string | null;
   financingType: boolean;
   sysAcquisitionContractType: SysAcquisitionContractType;

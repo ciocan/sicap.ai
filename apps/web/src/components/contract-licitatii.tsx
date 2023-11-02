@@ -1,6 +1,6 @@
 import { ExternalLink } from "lucide-react";
 
-import { formatNumber } from "@/utils";
+import { moneyRon } from "@/utils";
 import { formatDate, getContractLicitatii } from "@sicap/api";
 import { RowItem } from "./utils";
 import Link from "next/link";
@@ -49,9 +49,7 @@ export async function ContractLicitatii({ id }: { id: string }) {
         <RowItem
           label="Valoare"
           value={
-            <div className="font-semibold text-primary font-mono">
-              {formatNumber(contractValue)} RON
-            </div>
+            <div className="font-semibold text-primary font-mono">{moneyRon(contractValue)}</div>
           }
         />
         <RowItem
@@ -93,9 +91,7 @@ export async function ContractLicitatii({ id }: { id: string }) {
                   className="mb-2 border-b dark:border-b-gray-700 border-b-gray-100"
                 >
                   {item.estimatedValue && (
-                    <div className="text-primary font-mono">
-                      {formatNumber(item.estimatedValue)} RON
-                    </div>
+                    <div className="text-primary font-mono">{moneyRon(item.estimatedValue)}</div>
                   )}
                   <div className="mb-3">
                     <div className="text-gray-400">{item.mainLocation}</div>

@@ -7,3 +7,4 @@ export * from "./es/get-total";
 export * from "./es/search-contracts";
 export * from "./es/achizitii/get-contract";
 export * from "./es/licitatii/get-contract";
+export * from "./es/achizitii/get-company";

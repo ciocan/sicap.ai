@@ -5,6 +5,8 @@ export const ES_INDEX_DIRECT = "achizitii-directe";
 
 export type Fields = Record<string, (string | number)[]>;
 
+export const RESULTS_PER_PAGE = 20;
+
 export function transformItem(index: string, fields: Fields, highlight: Fields) {
   switch (index) {
     case ES_INDEX_DIRECT:
@@ -55,3 +57,45 @@ export function transformItem(index: string, fields: Fields, highlight: Fields) 
       return undefined;
   }
 }
+
+export const fieldsAchizitii = [
+  "item.directAcquisitionId",
+  "item.directAcquisitionName",
+  "item.sysDirectAcquisitionState.text",
+  "item.sysDirectAcquisitionState.id",
+  "item.uniqueIdentificationCode",
+  "item.cpvCode",
+  "item.publicationDate",
+  "item.closingValue",
+  "item.supplier",
+  "item.contractingAuthority",
+  "publicDirectAcquisition.cpvCode.*",
+  "publicDirectAcquisition.supplierId",
+  "publicDirectAcquisition.contractingAuthorityID",
+  "publicDirectAcquisition.sysAcquisitionContractType.*",
+  "publicDirectAcquisition.sysAcquisitionContractTypeID",
+  "authority.city",
+  "supplier.city",
+] as const;
+
+export const filedsLicitatii = [
+  "item.caNoticeId",
+  "item.noticeNo",
+  "item.contractingAuthorityNameAndFN",
+  "item.contractTitle",
+  "item.sysAcquisitionContractType.*",
+  "item.sysProcedureType.*",
+  "item.sysContractAssigmentType.*",
+  "item.sysNoticeState.*",
+  "item.sysProcedureState.*",
+  "item.cpvCodeAndName",
+  "item.noticeStateDate",
+  "publicNotice.entityId",
+  "publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.city",
+  "noticeContracts.items.winner.name",
+  "noticeContracts.items.winner.fiscalNumber",
+  "noticeContracts.items.winner.fiscalNumberInt",
+  "noticeContracts.items.winner.entityId",
+  "noticeContracts.items.winner.address.city",
+  "noticeContracts.items.contractValue",
+] as const;

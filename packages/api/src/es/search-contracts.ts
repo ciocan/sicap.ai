@@ -1,10 +1,23 @@
 import { SearchTotalHits } from "@elastic/elasticsearch/lib/api/types";
 
 import { esClient } from "./config";
-import { ES_INDEX_DIRECT, ES_INDEX_PUBLIC, Fields, transformItem } from "./utils";
+import {
+  ES_INDEX_DIRECT,
+  ES_INDEX_PUBLIC,
+  RESULTS_PER_PAGE,
+  Fields,
+  fieldsAchizitii,
+  filedsLicitatii,
+  transformItem,
+} from "./utils";
 import { IndexName, SearchProps } from "./types";
 
-export async function searchContracts({ query, page = 1, perPage = 20, filters }: SearchProps) {
+export async function searchContracts({
+  query,
+  page = 1,
+  perPage = RESULTS_PER_PAGE,
+  filters,
+}: SearchProps) {
   const {
     db,
     dateFrom,
@@ -199,46 +212,7 @@ export async function searchContracts({ query, page = 1, perPage = 20, filters }
       from: (page - 1) * perPage,
       size: perPage,
     },
-    fields: [
-      // achizitii directe
-      "item.directAcquisitionId",
-      "item.directAcquisitionName",
-      "item.sysDirectAcquisitionState.text",
-      "item.sysDirectAcquisitionState.id",
-      "item.uniqueIdentificationCode",
-      "item.cpvCode",
-      "item.publicationDate",
-      "item.closingValue",
-      "item.supplier",
-      "item.contractingAuthority",
-      "publicDirectAcquisition.cpvCode.*",
-      "publicDirectAcquisition.supplierId",
-      "publicDirectAcquisition.contractingAuthorityID",
-      "publicDirectAcquisition.sysAcquisitionContractType.*",
-      "publicDirectAcquisition.sysAcquisitionContractTypeID",
-      "authority.city",
-      "supplier.city",
-      // licitatii publice
-      "item.caNoticeId",
-      "item.noticeNo",
-      "item.contractingAuthorityNameAndFN",
-      "item.contractTitle",
-      "item.sysAcquisitionContractType.*",
-      "item.sysProcedureType.*",
-      "item.sysContractAssigmentType.*",
-      "item.sysNoticeState.*",
-      "item.sysProcedureState.*",
-      "item.cpvCodeAndName",
-      "item.noticeStateDate",
-      "publicNotice.entityId",
-      "publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.city",
-      "noticeContracts.items.winner.name",
-      "noticeContracts.items.winner.fiscalNumber",
-      "noticeContracts.items.winner.fiscalNumberInt",
-      "noticeContracts.items.winner.entityId",
-      "noticeContracts.items.winner.address.city",
-      "noticeContracts.items.contractValue",
-    ],
+    fields: [...fieldsAchizitii, ...filedsLicitatii],
     _source: false,
   };
 

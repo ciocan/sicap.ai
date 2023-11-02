@@ -1,6 +1,6 @@
 import { Filter } from "lucide-react";
 
-import { databases, dbIds, formatNumber } from "@/utils";
+import { databases, dbIds, formatNumber, moneyRon } from "@/utils";
 import { IndexName, searchContracts } from "@sicap/api";
 
 import { ListItem } from "./list-item";
@@ -87,16 +87,8 @@ export async function SearchList({ searchParams }: SearchListProps) {
               {cpv && <span className="mr-1">{`CPV: ${cpv};`}</span>}
               {authority && <span className="mr-1">{`autoritate: ${authority};`}</span>}
               {supplier && <span className="mr-1">{`furnizor: ${supplier};`}</span>}
-              {valueFrom && (
-                <span className="mr-1">{`valoare de la ${Intl.NumberFormat().format(
-                  Number(valueFrom),
-                )} RON`}</span>
-              )}
-              {valueTo && (
-                <span className="mr-1">{`valoare până la ${Intl.NumberFormat().format(
-                  Number(valueTo),
-                )} RON`}</span>
-              )}
+              {valueFrom && <span className="mr-1">{`valoare de la ${moneyRon(valueFrom)}`}</span>}
+              {valueTo && <span className="mr-1">{`valoare până la ${moneyRon(valueTo)}`}</span>}
               {localityAuthority && (
                 <span className="mr-1">{`; localitate autoritate: ${localityAuthority}.`}</span>
               )}

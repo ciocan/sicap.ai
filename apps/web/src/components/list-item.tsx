@@ -5,7 +5,7 @@ import { Card, CardHeader, CardContent, CardDescription, CardTitle, Badge } from
 import type { SearchItemDirect, SearchItemPublic, IndexName } from "@sicap/api";
 import { getDay, getMonth, getYear } from "@sicap/api";
 import { ES_INDEX_DIRECT, ES_INDEX_PUBLIC } from "@sicap/api/dist/es/utils.mjs";
-import { formatNumber } from "@/utils";
+import { moneyEur, moneyRon } from "@/utils";
 
 interface ListItemProps {
   id: string;
@@ -42,8 +42,7 @@ export function ListItem({ id, index, fields }: ListItemProps) {
   const indexSlug = index.replace(/-directe|-publice/g, "");
   const contractLink = `/${indexSlug}/contract/${id}`;
   const cpvLink = `/${indexSlug}/cpv/${id}`;
-  const ronValue = formatNumber(Number(value));
-  const eurValue = formatNumber(Number(value) / 5);
+  const ronValue = Number(value);
   const contractingAuthorityLink = `/${indexSlug}/autoritate/${contractingAuthorityId}`;
   const supplierLink = `/${indexSlug}/firma/${supplierId}`;
   const indexText = index === ES_INDEX_DIRECT ? "Achizitie directa" : "Licitatie publica";
@@ -53,22 +52,22 @@ export function ListItem({ id, index, fields }: ListItemProps) {
       <div>
         <CardHeader className="pb-4 space-y-2">
           <span className="text-xs text-primary">{indexText}</span>
-          <Link href={contractLink} target="_blank" prefetch={false}>
+          <Link href={contractLink} prefetch={false}>
             <CardTitle className="text-md font-normal">
               {code} - {name}
             </CardTitle>
           </Link>
           <CardDescription className="flex sm:flex-row flex-col gap-2">
             <Badge variant="secondary" className="font-mono">
-              {ronValue} RON / {eurValue} EUR
+              {moneyRon(ronValue)} / {moneyEur(ronValue)}
             </Badge>
-            <Link href={cpvLink} target="_blank" prefetch={false}>
+            <Link href={cpvLink} prefetch={false}>
               <Badge variant="outline">{cpvCode}</Badge>
             </Link>
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col">
-          <Link href={contractingAuthorityLink} target="_blank" prefetch={false} className="py-2">
+          <Link href={contractingAuthorityLink} prefetch={false} className="py-2">
             <p className="flex items-center gap-2 text-sm">
               <span>
                 <Building className="h-[1.2rem] w-[1.2rem] text-gray-500" />
@@ -76,7 +75,7 @@ export function ListItem({ id, index, fields }: ListItemProps) {
               <span>{contractingAuthorityName}</span>
             </p>
           </Link>
-          <Link href={supplierLink} target="_blank" prefetch={false} className="py-2">
+          <Link href={supplierLink} prefetch={false} className="py-2">
             <p className="flex items-center gap-2 text-sm">
               <span>
                 <Briefcase className="h-[1.2rem] w-[1.2rem] text-gray-500" />
