@@ -1,12 +1,12 @@
 import { ExternalLink } from "lucide-react";
 
 import { formatNumber } from "@/utils";
-import { getContract } from "@sicap/api";
+import { formatDate, getContractAchizitii } from "@sicap/api";
 import { RowItem } from "./utils";
 import Link from "next/link";
 
 export async function ContractAchizitii({ id }: { id: string }) {
-  const contract = await getContract(id);
+  const contract = await getContractAchizitii(id);
   const {
     closingValue,
     publicationDate,
@@ -19,15 +19,20 @@ export async function ContractAchizitii({ id }: { id: string }) {
     sysDirectAcquisitionState,
     sysAcquisitionContractType,
     cpvCode,
+    istoric,
   } = contract;
   const { entityId, numericFiscalNumber, entityName, city, county } = contractingAuthority;
+
+  const seapUrl = `https://www.${
+    istoric ? "istoric." : ""
+  }e-licitatie.ro/pub/direct-acquisition/view/${id}`;
 
   return (
     <div className="border dark:border-secondary p-4 rounded-sm">
       <div className="flex sm:flex-row flex-col justify-between gap-2">
-        <h1 className="text-lg font-semibold text-primary">{directAcquisitionName}</h1>
+        <h1 className="text-md font-semibold text-primary">{directAcquisitionName}</h1>
         <a
-          href={`https://www.e-licitatie.ro/pub/direct-acquisition/view/${id}`}
+          href={seapUrl}
           target="_blank"
           rel="noreferrer"
           className="hover:underline flex items-center gap-1 border-gray-200 dark:border-gray-500 border rounded-sm px-2 py-1 justify-center w-[90px] place-self-end"
@@ -38,10 +43,14 @@ export async function ContractAchizitii({ id }: { id: string }) {
       </div>
       <div className="grid sm:grid-cols-[25%,75%] mt-4">
         <RowItem label="ID" value={uniqueIdentificationCode} />
-        <RowItem label="Data" value={publicationDate} />
+        <RowItem label="Data" value={formatDate(publicationDate)} />
         <RowItem
           label="Valoare"
-          value={<div className="font-semibold text-primary">{formatNumber(closingValue)} RON</div>}
+          value={
+            <div className="font-semibold text-primary font-mono">
+              {formatNumber(closingValue)} RON
+            </div>
+          }
         />
         <RowItem
           label="Stare"
@@ -83,7 +92,9 @@ export async function ContractAchizitii({ id }: { id: string }) {
                   key={item.directAcquisitionItemID}
                   className="mb-2 border-b dark:border-b-gray-700 border-b-gray-100"
                 >
-                  <div className="text-primary">{item.itemClosingPrice} RON</div>
+                  <div className="text-primary font-mono">
+                    {formatNumber(item.itemClosingPrice)} RON
+                  </div>
                   <div className="mb-3">
                     <div className="text-gray-400">Cantitate: {item.itemQuantity}</div>
                     <div className="text-gray-400">Unitate masura: {item.itemMeasureUnit}</div>

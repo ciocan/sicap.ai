@@ -1,6 +1,6 @@
 import { Filter } from "lucide-react";
 
-import { databases, dbIds } from "@/utils";
+import { databases, dbIds, formatNumber } from "@/utils";
 import { IndexName, searchContracts } from "@sicap/api";
 
 import { ListItem } from "./list-item";
@@ -65,8 +65,7 @@ export async function SearchList({ searchParams }: SearchListProps) {
   return (
     <div className="flex flex-col gap-4">
       <h3 className="text-sm">
-        Pagina {page} din {Intl.NumberFormat().format(results.total)} rezultate pentru{" "}
-        <b>{query}</b>
+        Pagina {page} din {formatNumber(results.total)} rezultate pentru <b>{query}</b>
       </h3>
       <div className="flex items-center gap-4 justify-between">
         <div className="flex flex-wrap items-center text-xs text-gray-700 bg-gray-100 dark:bg-gray-800 dark:text-gray-400 p-2 rounded-md">

@@ -5,6 +5,7 @@ import { Card, CardHeader, CardContent, CardDescription, CardTitle, Badge } from
 import type { SearchItemDirect, SearchItemPublic, IndexName } from "@sicap/api";
 import { getDay, getMonth, getYear } from "@sicap/api";
 import { ES_INDEX_DIRECT, ES_INDEX_PUBLIC } from "@sicap/api/dist/es/utils.mjs";
+import { formatNumber } from "@/utils";
 
 interface ListItemProps {
   id: string;
@@ -41,8 +42,8 @@ export function ListItem({ id, index, fields }: ListItemProps) {
   const indexSlug = index.replace(/-directe|-publice/g, "");
   const contractLink = `/${indexSlug}/contract/${id}`;
   const cpvLink = `/${indexSlug}/cpv/${id}`;
-  const ronValue = Intl.NumberFormat().format(Number(value));
-  const eurValue = Intl.NumberFormat().format(Number(value) / 5);
+  const ronValue = formatNumber(Number(value));
+  const eurValue = formatNumber(Number(value) / 5);
   const contractingAuthorityLink = `/${indexSlug}/autoritate/${contractingAuthorityId}`;
   const supplierLink = `/${indexSlug}/firma/${supplierId}`;
   const indexText = index === ES_INDEX_DIRECT ? "Achizitie directa" : "Licitatie publica";
@@ -58,7 +59,7 @@ export function ListItem({ id, index, fields }: ListItemProps) {
             </CardTitle>
           </Link>
           <CardDescription className="flex sm:flex-row flex-col gap-2">
-            <Badge variant="secondary">
+            <Badge variant="secondary" className="font-mono">
               {ronValue} RON / {eurValue} EUR
             </Badge>
             <Link href={cpvLink} target="_blank" prefetch={false}>
@@ -98,9 +99,9 @@ export function ListItem({ id, index, fields }: ListItemProps) {
       </div>
       <CardHeader className="flex justify-center sm:border-l-2 border-t-2 sm:border-t-0">
         <div className="flex gap-1 sm:flex-col text-center w-14">
-          <span className="sm:text-2xl sm:text-primary">{day}</span>
+          <span className="sm:text-2xl sm:text-primary font-mono">{day}</span>
           <span className="sm:text-md sm:uppercase">{month}</span>
-          <span className="sm:text-sm">{year}</span>
+          <span className="sm:text-sm font-mono">{year}</span>
         </div>
       </CardHeader>
     </Card>

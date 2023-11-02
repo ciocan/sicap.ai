@@ -17,3 +17,7 @@ export function getMonth(d: string) {
 export function getYear(d: string) {
   return dayjs(d).year();
 }
+
+export function formatDate(d: string) {
+  return dayjs(d).format("DD MMMM YYYY");
+}

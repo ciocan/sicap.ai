@@ -1,3 +1,15 @@
+export interface RootObject {
+  _source: Source;
+}
+
+export interface Source {
+  item: Item;
+  publicDirectAcquisition: PublicDirectAcquisition;
+  authority: Authority;
+  supplier: Supplier;
+  istoric: boolean;
+}
+
 export interface Document {
   directAcquisitionDocumentID: number;
   documentID: number;
@@ -146,16 +158,4 @@ export interface Item {
   closingValue: number;
   isOpenForCorrection: boolean | null;
   isOpenForContractCorrection: boolean;
-}
-
-export interface Source {
-  item: Item;
-  publicDirectAcquisition: PublicDirectAcquisition;
-  authority: Authority;
-  supplier: Supplier;
-  istoric: boolean;
-}
-
-export interface RootObject {
-  _source: Source;
 }

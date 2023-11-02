@@ -4,7 +4,7 @@ import { esClient } from "../config";
 import { ES_INDEX_DIRECT } from "../utils";
 import { RootObject } from "./types";
 
-export async function getContract(id: string) {
+export async function getContractAchizitii(id: string) {
   const result = await esClient.search({
     index: ES_INDEX_DIRECT,
     body: {
@@ -23,6 +23,7 @@ export async function getContract(id: string) {
   }
 
   const data = {
+    ...pick(["istoric"], contract._source),
     ...pick(
       [
         "directAcquisitionId",

@@ -13,15 +13,17 @@ export function ModeToggle({ onCapture }: ModeToggleProps): JSX.Element {
   const { theme, setTheme } = useTheme();
 
   const handleThemeChange = () => {
-    onCapture({ theme });
     switch (theme) {
       case "light":
+        onCapture({ theme: "dark" });
         setTheme("dark");
         break;
       case "dark":
+        onCapture({ theme: "light" });
         setTheme("light");
         break;
       default:
+        onCapture({ theme: "light" });
         setTheme("light");
         break;
     }
