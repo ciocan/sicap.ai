@@ -16,12 +16,12 @@ export async function generateMetadata(props: PageProps) {
   const {
     params: { id },
   } = props;
-  const { hits, stats, contractingAuthority } = await getCompanyAchizitii({ authority: id });
+  const { total, stats, contractingAuthority } = await getCompanyAchizitii({ authority: id });
   const totalValue = stats?.years.map((y) => y.value).reduce((a, b) => a + b, 0);
   const totalValueRon = moneyRon(totalValue);
   return {
     title: `${contractingAuthority?.entityName}, ${contractingAuthority?.city}  | Achizitii directe @ SICAP.ai`,
-    description: `${hits} achizitii in valoare de ${totalValueRon}`,
+    description: `${total} achizitii in valoare de ${totalValueRon}`,
   };
 }
 
