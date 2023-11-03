@@ -3,7 +3,6 @@ export const itemProps = [
   "directAcquisitionName",
   "sysDirectAcquisitionState",
   "uniqueIdentificationCode",
-  "cpvCode",
   "publicationDate",
   "closingValue",
 ] as const;

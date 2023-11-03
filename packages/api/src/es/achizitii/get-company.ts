@@ -12,20 +12,55 @@ import {
 import { RootObject } from "./types";
 import { Args, Buckets, IndexName } from "../types";
 
-export async function getCompanyAchizitii(args: Args) {
-  const { supplierId, authorityId, page = 1, perPage = RESULTS_PER_PAGE } = args;
+const getQueryForSupplierId = (id: string | undefined) => {
+  if (!id) {
+    return { match_all: {} };
+  }
+  return {
+    match: { "supplier.entityId": Number(id) },
+  };
+};
 
-  if (!supplierId && !authorityId) {
-    throw new Error('Trebuie sa specifici unul dintre parametri: "authorityId" sau "supplierId"');
+const getQueryForAuthorityId = (id: string | undefined) => {
+  if (!id) {
+    return { match_all: {} };
+  }
+  return { match: { "authority.entityId": Number(id) } };
+};
+
+const getQueryForCpvCode = (cpvCode: string | undefined) => {
+  return { match: { "publicDirectAcquisition.cpvCode.localeKey.keyword": cpvCode } };
+};
+
+const getType = (supplierId?: string, authorityId?: string, cpvCode?: string) => {
+  if (supplierId !== undefined) {
+    return "supplierId";
+  }
+  if (authorityId !== undefined) {
+    return "authorityId";
+  }
+  if (cpvCode !== undefined) {
+    return "cpvCode";
+  }
+};
+
+export async function getCompanyAchizitii(args: Args) {
+  const { supplierId, authorityId, cpvCode, page = 1, perPage = RESULTS_PER_PAGE } = args;
+
+  if (!supplierId && !authorityId && !cpvCode) {
+    throw new Error(
+      'Trebuie sa specifici unul dintre parametri: "authorityId", "supplierId" sau "cpvCode"',
+    );
   }
 
-  const query = supplierId
-    ? {
-        match: { "supplier.entityId": Number(supplierId) },
-      }
-    : {
-        match: { "authority.entityId": Number(authorityId) },
-      };
+  const queryTypeMappings = {
+    supplierId: getQueryForSupplierId(supplierId),
+    authorityId: getQueryForAuthorityId(authorityId),
+    cpvCode: getQueryForCpvCode(cpvCode),
+  };
+
+  const type = getType(supplierId, authorityId, cpvCode) as keyof typeof queryTypeMappings;
+  const query = queryTypeMappings[type];
 
   const result = await esClient.search({
     index: ES_INDEX_DIRECT,
@@ -92,7 +127,11 @@ export async function getCompanyAchizitii(args: Args) {
     size,
     total: total.value,
     supplier: firstContract._source.supplier,
-    contractingAuthority: firstContract._source.authority,
+    contractingAuthority: {
+      ...firstContract._source.authority,
+      cpvCodeAndName: firstContract._source.item.cpvCode,
+      cpvCode: firstContract._source.publicDirectAcquisition.cpvCode.localeKey,
+    },
     items: result?.hits.hits.map((hit) => ({
       id: hit._id,
       index: hit._index as IndexName,

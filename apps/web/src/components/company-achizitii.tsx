@@ -14,7 +14,12 @@ interface CompanyAchizitiiProps {
 
 export async function CompanyAchizitii({ id, slug, searchParams }: CompanyAchizitiiProps) {
   const { p: page = 1, perPage = 20 } = searchParams;
-  const companyProps = slug === "firma" ? { supplierId: id } : { authorityId: id };
+  const propMappings = {
+    autoritate: { authorityId: id },
+    firma: { supplierId: id },
+    cpv: { cpvCode: id },
+  };
+  const companyProps = propMappings[slug];
   const results = await getCompanyAchizitii({ ...companyProps, page, perPage });
   const { total, contractingAuthority, supplier, stats } = results;
   const { fiscalNumber, entityName, city, county } = contractingAuthority;
@@ -23,15 +28,18 @@ export async function CompanyAchizitii({ id, slug, searchParams }: CompanyAchizi
   const totalValueRon = moneyRon(totalValue);
   const totalValueEur = moneyEur(totalValue);
 
-  const companyTitle =
-    slug === "firma"
-      ? `${supplier.fiscalNumber} / ${supplier.entityName} / ${supplier.city}, ${supplier.county}`
-      : `${fiscalNumber} / ${entityName} / ${city}, ${county}`;
+  const titleMappings = {
+    autoritate: `${fiscalNumber} / ${entityName} / ${city}, ${county}`,
+    firma: `${supplier.fiscalNumber} / ${supplier.entityName} / ${supplier.city}, ${supplier.county}`,
+    cpv: `${results.contractingAuthority.cpvCodeAndName}`,
+  };
+
+  const title = titleMappings[slug];
 
   return (
     <div className="space-y-8">
       <div className="space-y-1">
-        <h1 className="font-semibold text-md">{companyTitle}</h1>
+        <h1 className="font-semibold text-md">{title}</h1>
         <p className="text-sm">
           {formatNumber(total)} contracte in valoare de{" "}
           <span className="text-primary font-mono">{totalValueRon}</span> /{" "}

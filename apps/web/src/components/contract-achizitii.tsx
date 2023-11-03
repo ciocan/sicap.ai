@@ -18,6 +18,7 @@ export async function ContractAchizitii({ id }: { id: string }) {
     supplier,
     sysDirectAcquisitionState,
     sysAcquisitionContractType,
+    cpvCodeAndName,
     cpvCode,
     istoric,
   } = contract;
@@ -76,7 +77,14 @@ export async function ContractAchizitii({ id }: { id: string }) {
           }
         />
         <RowItem label="Tipul contractului" value={sysAcquisitionContractType.text} />
-        <RowItem label="Cod CPV" value={cpvCode} />
+        <RowItem
+          label="Cod CPV"
+          value={
+            <Link href={`/achizitii/cpv/${cpvCode}`} className="hover:underline">
+              {cpvCodeAndName}
+            </Link>
+          }
+        />
         <RowItem
           label="Descriere:"
           value={<samp className="text-xs">{directAcquisitionDescription}</samp>}

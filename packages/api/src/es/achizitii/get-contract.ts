@@ -27,6 +27,8 @@ export async function getContractAchizitii(id: string) {
     ...pick(["istoric"], contract._source),
     ...pick(itemProps, contract._source.item),
     ...pick(publicDirectAcquisitionProps, contract._source.publicDirectAcquisition),
+    cpvCode: contract._source.publicDirectAcquisition.cpvCode.localeKey,
+    cpvCodeAndName: contract._source.item.cpvCode,
     supplier: {
       ...pick(supplierProps, contract._source.supplier),
     },
