@@ -44,7 +44,7 @@ export function ListItem({ id, index, fields }: ListItemProps) {
   const cpvLink = `/${indexSlug}/cpv/${id}`;
   const ronValue = Number(value);
   const contractingAuthorityLink = `/${indexSlug}/autoritate/${contractingAuthorityId}`;
-  const supplierLink = `/${indexSlug}/firma/${supplierId}`;
+  const supplierLink = supplierId ? `/${indexSlug}/firma/${supplierId}` : "#";
   const indexText = index === ES_INDEX_DIRECT ? "Achizitie directa" : "Licitatie publica";
 
   return (
@@ -80,7 +80,7 @@ export function ListItem({ id, index, fields }: ListItemProps) {
               <span>
                 <Briefcase className="h-[1.2rem] w-[1.2rem] text-gray-500" />
               </span>
-              <span>{supplierName}</span>
+              <span>{supplierName ?? "-"}</span>
             </p>
           </Link>
         </CardContent>

@@ -34,7 +34,11 @@ export interface NoticeContractItem {
         text: string;
         localeKey: string;
       };
-      county: unknown;
+      county: {
+        id: number;
+        text: string;
+        localeKey: string;
+      };
       email: string;
       phone: string;
       fax: string;
@@ -87,7 +91,11 @@ export interface Winner {
       text: string;
       localeKey: string;
     };
-    county: unknown;
+    county: {
+      id: number;
+      text: string;
+      localeKey: string;
+    };
     email: string;
     phone: string;
     fax: string;
@@ -186,7 +194,11 @@ export interface Source {
               text: string;
               localeKey: string;
             };
-            county: unknown;
+            county: {
+              id: number;
+              text: string;
+              localeKey: string;
+            };
             email: string;
             phone: string;
             fax: string;

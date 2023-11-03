@@ -10,13 +10,13 @@ export async function ContractLicitatii({ id }: { id: string }) {
   const {
     noticeNo,
     contractTitle,
+    ronContractValue,
     city,
     county,
     contractingAuthorityNameAndFN,
     sysProcedureState,
     sysProcedureType,
     sysAcquisitionContractType,
-    contractValue,
     contractDate,
     cpvCodeAndName,
     shortDescription,
@@ -28,6 +28,8 @@ export async function ContractLicitatii({ id }: { id: string }) {
   const seapUrl = `https://${
     istoric ? "istoric." : ""
   }e-licitatie.ro/pub/notices/ca-notices/view-c/${id}`;
+
+  const supplierUrl = winner.entityId ? `/licitatii/firma/${winner.entityId}` : "#";
 
   return (
     <div className="border dark:border-secondary p-4 rounded-sm">
@@ -49,7 +51,7 @@ export async function ContractLicitatii({ id }: { id: string }) {
         <RowItem
           label="Valoare"
           value={
-            <div className="font-semibold text-primary font-mono">{moneyRon(contractValue)}</div>
+            <div className="font-semibold text-primary font-mono">{moneyRon(ronContractValue)}</div>
           }
         />
         <RowItem
@@ -65,16 +67,16 @@ export async function ContractLicitatii({ id }: { id: string }) {
         <RowItem
           label="Autoritatea contractanta"
           value={
-            <Link href={`/licitatii/autoritate/${winner.entityId}`} className="hover:underline">
+            <Link href={`/licitatii/autoritate/${contract.entityId}`} className="hover:underline">
               {contractingAuthorityNameAndFN}
             </Link>
           }
         />
-        <RowItem label="Localitate" value={`${city} ${county ? `, ${county}` : ""}`} />
+        <RowItem label="Localitate" value={`${city} ${county ? `, ${county?.text}` : ""}`} />
         <RowItem
           label="Furnizor"
           value={
-            <Link href={`/licitatii/firma/${winner.entityId}`} className="hover:underline">
+            <Link href={supplierUrl} className="hover:underline">
               {winner.fiscalNumber} - {winner.name}
             </Link>
           }

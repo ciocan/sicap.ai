@@ -3,6 +3,7 @@ export const noticeProps = [
   "noticeNo",
   "contractingAuthorityNameAndFN",
   "contractTitle",
+  "ronContractValue",
   "sysAcquisitionContractType",
   "sysProcedureType",
   "sysContractAssigmentType",

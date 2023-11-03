@@ -51,7 +51,7 @@ export function Chart({ stats }: Props) {
     return null;
   }
 
-  const [activeChartType, setActiveChartType] = useState("count");
+  const [activeChartType, setActiveChartType] = useState("value");
   const [activeInterval, setActiveInterval] = useState("years");
   const [data, setData] = useState<StatItem[]>([]);
 
