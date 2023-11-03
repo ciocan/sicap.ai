@@ -52,7 +52,7 @@ export async function CompanyAchizitii({ id, slug, searchParams }: CompanyAchizi
           page={page}
           hasPreviousPage={page > 1}
           hasNextPage={page * perPage < results.total}
-          pathname={`/achizitii/autoritate/${id}`}
+          pathname={`/achizitii/${slug}/${id}`}
         />
       </div>
     </div>
