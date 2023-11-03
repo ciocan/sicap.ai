@@ -30,25 +30,25 @@ const mapBucket = (b: Bucket) => ({
 });
 
 interface Args {
-  authority?: string;
-  company?: string;
+  authorityId?: string;
+  supplierId?: string;
   page?: number;
   perPage?: number;
 }
 
 export async function getCompanyAchizitii(args: Args) {
-  const { authority, company, page = 1, perPage = RESULTS_PER_PAGE } = args;
+  const { supplierId, authorityId, page = 1, perPage = RESULTS_PER_PAGE } = args;
 
-  if (!authority && !company) {
-    throw new Error('Trebuie sa specifici unul dintre parametri: "authority" sau "company"');
+  if (!supplierId && !authorityId) {
+    throw new Error('Trebuie sa specifici unul dintre parametri: "authorityId" sau "supplierId"');
   }
 
-  const query = company
+  const query = supplierId
     ? {
-        match: { "supplier.entityId": Number(company) },
+        match: { "supplier.entityId": Number(supplierId) },
       }
     : {
-        match: { "authority.entityId": Number(authority) },
+        match: { "authority.entityId": Number(authorityId) },
       };
 
   const result = await esClient.search({

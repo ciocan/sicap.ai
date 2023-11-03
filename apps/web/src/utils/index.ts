@@ -1,5 +1,7 @@
 import { ES_INDEX_DIRECT, ES_INDEX_PUBLIC } from "@sicap/api/dist/es/utils.mjs";
 
+export const allowedSlugs = ["firma", "autoritate"];
+
 export const databases = [
   {
     id: ES_INDEX_PUBLIC,

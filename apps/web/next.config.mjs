@@ -17,16 +17,6 @@ const nextConfig = {
         destination: 'https://sicap.ai/licitatii/firma/:slug',
         permanent: false
       },
-      // {
-      //   source: '/achizitii/autoritate/:slug',
-      //   destination: 'https://sicap.ai/achizitii/autoritate/:slug',
-      //   permanent: false
-      // },
-      {
-        source: '/achizitii/firma/:slug',
-        destination: 'https://sicap.ai/achizitii/firma/:slug',
-        permanent: false
-      },
     ]
   },
 }

@@ -4,30 +4,34 @@ import { ListItem } from "./list-item";
 import { Pagination } from "./pagination";
 import { type SearchParams } from "./search-list";
 import { Chart } from "./chart";
+import { type SLUG } from "@/utils/types";
 
 interface CompanyAchizitiiProps {
   id: string;
-  type: "supplier" | "authority";
+  slug: SLUG;
   searchParams: SearchParams;
 }
 
-export async function CompanyAchizitii({ id, type, searchParams }: CompanyAchizitiiProps) {
+export async function CompanyAchizitii({ id, slug, searchParams }: CompanyAchizitiiProps) {
   const { p: page = 1, perPage = 20 } = searchParams;
-  const args = type === "supplier" ? { supplier: id } : { authority: id };
-  const results = await getCompanyAchizitii({ ...args, page, perPage });
-  const { total, contractingAuthority, stats } = results;
+  const companyProps = slug === "firma" ? { supplierId: id } : { authorityId: id };
+  const results = await getCompanyAchizitii({ ...companyProps, page, perPage });
+  const { total, contractingAuthority, supplier, stats } = results;
   const { fiscalNumber, entityName, city, county } = contractingAuthority;
 
   const totalValue = stats?.years.map((y) => y.value).reduce((a, b) => a + b, 0);
   const totalValueRon = moneyRon(totalValue);
   const totalValueEur = moneyEur(totalValue);
 
+  const companyTitle =
+    slug === "firma"
+      ? `${supplier.fiscalNumber} / ${supplier.entityName} / ${supplier.city}, ${supplier.county}`
+      : `${fiscalNumber} / ${entityName} / ${city}, ${county}`;
+
   return (
     <div className="space-y-8">
       <div className="space-y-1">
-        <h1 className="font-semibold text-md">
-          {fiscalNumber} / {entityName} / {city}, {county}
-        </h1>
+        <h1 className="font-semibold text-md">{companyTitle}</h1>
         <p className="text-sm">
           {formatNumber(total)} contracte in valoare de{" "}
           <span className="text-primary font-mono">{totalValueRon}</span> /{" "}
