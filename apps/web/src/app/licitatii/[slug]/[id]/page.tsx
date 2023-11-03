@@ -23,15 +23,26 @@ export async function generateMetadata(props: PageProps) {
     throw new Error("Adresa invalida");
   }
 
-  const companyProps = slug === "firma" ? { supplierId: id } : { authorityId: id };
+  const propMappings = {
+    autoritate: { authorityId: id },
+    firma: { supplierId: id },
+    cpv: { cpvCode: id },
+  };
+  const companyProps = propMappings[slug];
+
   const { total, stats, contractingAuthority, supplier } = await getCompanyLicitatii(companyProps);
   const totalValue = stats?.years.map((y) => y.value).reduce((a, b) => a + b, 0);
   const totalValueRon = moneyRon(totalValue);
 
-  const title =
-    slug === "firma"
-      ? `${supplier.name}, ${supplier.address.city} `
-      : `${contractingAuthority.contractingAuthorityNameAndFN}, ${contractingAuthority.city}`;
+  const titleMappings = {
+    autoritate: `${contractingAuthority.contractingAuthorityNameAndFN} / ${contractingAuthority.city}`,
+    firma: `${supplier.fiscalNumber} / ${supplier.name} / ${supplier.address.city} ${
+      supplier.address.county?.text ? `, ${supplier.address.county?.text}` : ""
+    }`,
+    cpv: `${contractingAuthority.cpvCodeAndName}`,
+  };
+
+  const title = titleMappings[slug];
 
   return {
     title: `${title}  | Achizitii directe @ SICAP.ai`,

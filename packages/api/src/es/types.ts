@@ -26,7 +26,7 @@ export interface SearchItemDirect {
   name: string;
   code: string;
   cpvCode: string;
-  cpvCodeId: string;
+  cpvCodeAndName: string;
   value: string;
   supplierId: string;
   supplierName: string;
@@ -46,4 +46,24 @@ export interface SearchItemPublic extends SearchItemDirect {
   assigmentType: string;
   assigmentTypeId: string;
   supplierFiscalNumber: string;
+}
+
+export interface Bucket {
+  key_as_string: string;
+  doc_count: number;
+  sales: {
+    value: number;
+  };
+}
+
+export interface Buckets {
+  buckets: Bucket[];
+}
+
+export interface Args {
+  authorityId?: string;
+  supplierId?: string;
+  cpvCode?: string;
+  page?: number;
+  perPage?: number;
 }

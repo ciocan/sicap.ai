@@ -24,6 +24,7 @@ export function ListItem({ id, index, fields }: ListItemProps) {
     name,
     code,
     cpvCode,
+    cpvCodeAndName,
     contractingAuthorityName,
     contractingAuthorityId,
     supplierName,
@@ -41,7 +42,7 @@ export function ListItem({ id, index, fields }: ListItemProps) {
 
   const indexSlug = index.replace(/-directe|-publice/g, "");
   const contractLink = `/${indexSlug}/contract/${id}`;
-  const cpvLink = `/${indexSlug}/cpv/${id}`;
+  const cpvLink = `/${indexSlug}/cpv/${cpvCode}`;
   const ronValue = Number(value);
   const contractingAuthorityLink = `/${indexSlug}/autoritate/${contractingAuthorityId}`;
   const supplierLink = supplierId ? `/${indexSlug}/firma/${supplierId}` : "#";
@@ -62,7 +63,7 @@ export function ListItem({ id, index, fields }: ListItemProps) {
               {moneyRon(ronValue)} / {moneyEur(ronValue)}
             </Badge>
             <Link href={cpvLink} prefetch={false}>
-              <Badge variant="outline">{cpvCode}</Badge>
+              <Badge variant="outline">{cpvCodeAndName}</Badge>
             </Link>
           </CardDescription>
         </CardHeader>

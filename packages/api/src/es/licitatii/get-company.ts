@@ -6,61 +6,64 @@ import {
   Fields,
   RESULTS_PER_PAGE,
   filedsLicitatii,
+  mapBucket,
   transformItem,
 } from "../utils";
 import { RootObject } from "./types";
-import { IndexName } from "../types";
+import { Args, Buckets, IndexName } from "../types";
 import { decode } from "../../utils";
 
-interface Bucket {
-  key_as_string: string;
-  doc_count: number;
-  sales: {
-    value: number;
-  };
-}
+const getQueryForSupplierId = (id: string | undefined) => {
+  if (!id) {
+    return { match_all: {} };
+  }
+  return Number(id)
+    ? { match: { "noticeContracts.items.winners.entityId": Number(id) } }
+    : { match_phrase_prefix: { "noticeContracts.items.winners.name.keyword": decode(id) } };
+};
 
-interface Buckets {
-  buckets: Bucket[];
-}
+const getQueryForAuthorityId = (id: string | undefined) => {
+  if (!id) {
+    return { match_all: {} };
+  }
+  return Number(id)
+    ? { match: { "publicNotice.entityId": Number(id) } }
+    : { match_phrase_prefix: { "item.contractingAuthorityNameAndFN.keyword": decode(id) } };
+};
 
-const mapBucket = (b: Bucket) => ({
-  key: b.key_as_string,
-  count: b.doc_count,
-  value: b.sales.value,
-});
+const getQueryForCpvCode = (cpvCode: string | undefined) => {
+  return { match: { "item.cpvCode.keyword": cpvCode } };
+};
 
-interface Args {
-  authorityId?: string;
-  supplierId?: string;
-  page?: number;
-  perPage?: number;
-}
+const getType = (supplierId?: string, authorityId?: string, cpvCode?: string) => {
+  if (supplierId !== undefined) {
+    return "supplierId";
+  }
+  if (authorityId !== undefined) {
+    return "authorityId";
+  }
+  if (cpvCode !== undefined) {
+    return "cpvCode";
+  }
+};
 
 export async function getCompanyLicitatii(args: Args) {
-  const { supplierId, authorityId, page = 1, perPage = RESULTS_PER_PAGE } = args;
+  const { supplierId, authorityId, cpvCode, page = 1, perPage = RESULTS_PER_PAGE } = args;
 
-  if (!supplierId && !authorityId) {
-    throw new Error('Trebuie sa specifici unul dintre parametri: "authorityId" sau "supplierId"');
+  if (!supplierId && !authorityId && !cpvCode) {
+    throw new Error(
+      'Trebuie sa specifici unul dintre parametri: "authorityId", "supplierId" sau "cpvCode"',
+    );
   }
 
-  const query = supplierId
-    ? Number(supplierId)
-      ? { match: { "noticeContracts.items.winners.entityId": Number(supplierId) } }
-      : {
-          match_phrase_prefix: {
-            "noticeContracts.items.winners.name": decode(supplierId),
-          },
-        }
-    : Number(authorityId)
-    ? {
-        match: { "publicNotice.entityId": Number(authorityId) },
-      }
-    : {
-        match_phrase_prefix: {
-          "item.contractingAuthorityNameAndFN": decode(authorityId as string),
-        },
-      };
+  const queryTypeMappings = {
+    supplierId: getQueryForSupplierId(supplierId),
+    authorityId: getQueryForAuthorityId(authorityId),
+    cpvCode: getQueryForCpvCode(cpvCode),
+  };
+
+  const type = getType(supplierId, authorityId, cpvCode) as keyof typeof queryTypeMappings;
+  const query = queryTypeMappings[type];
 
   const result = await esClient.search({
     index: ES_INDEX_PUBLIC,
@@ -130,6 +133,7 @@ export async function getCompanyLicitatii(args: Args) {
     contractingAuthority: {
       ...firstContract._source.publicNotice?.caNoticeEdit_New?.section1_New?.section1_1?.caAddress,
       contractingAuthorityNameAndFN: firstContract._source.item.contractingAuthorityNameAndFN,
+      cpvCodeAndName: firstContract._source.item.cpvCodeAndName,
     },
     items: result?.hits.hits.map((hit) => ({
       id: hit._id,

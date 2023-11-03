@@ -19,6 +19,7 @@ export async function ContractLicitatii({ id }: { id: string }) {
     sysAcquisitionContractType,
     contractDate,
     cpvCodeAndName,
+    cpvCode,
     shortDescription,
     descriptionList,
     winner,
@@ -81,7 +82,14 @@ export async function ContractLicitatii({ id }: { id: string }) {
             </Link>
           }
         />
-        <RowItem label="Cod CPV" value={cpvCodeAndName} />
+        <RowItem
+          label="Cod CPV"
+          value={
+            <Link href={`/licitatii/cpv/${cpvCode}`} className="hover:underline">
+              {cpvCodeAndName}
+            </Link>
+          }
+        />
         <RowItem label="Descriere:" value={<samp className="text-xs">{shortDescription}</samp>} />
         <RowItem
           label="Loturi:"

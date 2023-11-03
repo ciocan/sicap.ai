@@ -151,6 +151,7 @@ export interface Source {
     };
     sysContractAssigmentType: unknown;
     cpvCodeAndName: string;
+    cpvCode: string;
     ronContractValue: number | null;
     isOnline: boolean;
     noticeStateDate: string;

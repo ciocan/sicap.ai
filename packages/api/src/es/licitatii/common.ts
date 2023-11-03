@@ -10,6 +10,7 @@ export const noticeProps = [
   "sysNoticeState",
   "sysProcedureState",
   "cpvCodeAndName",
+  "cpvCode",
   "noticeStateDate",
   "ronContractValue",
 ] as const;

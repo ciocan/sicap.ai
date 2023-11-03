@@ -1,4 +1,4 @@
-import { SearchItemDirect, SearchItemPublic } from "./types";
+import { Bucket, SearchItemDirect, SearchItemPublic } from "./types";
 
 export const ES_INDEX_PUBLIC = "licitatii-publice";
 export const ES_INDEX_DIRECT = "achizitii-directe";
@@ -14,8 +14,8 @@ export function transformItem(index: string, fields: Fields, highlight: Fields) 
         date: fields["item.publicationDate"]?.[0],
         name: fields["item.directAcquisitionName"]?.[0],
         code: fields["item.uniqueIdentificationCode"]?.[0],
-        cpvCode: highlight?.["item.cpvCode"]?.[0] ?? fields["item.cpvCode"]?.[0],
-        cpvCodeId: fields["publicDirectAcquisition.cpvCode.id"]?.[0],
+        cpvCode: fields["publicDirectAcquisition.cpvCode.localeKey"]?.[0],
+        cpvCodeAndName: fields["item.cpvCode"]?.[0],
         value: fields["item.closingValue"]?.[0] || 0,
         supplierId: fields["publicDirectAcquisition.supplierId"]?.[0],
         supplierName: fields["item.supplier"]?.[0],
@@ -33,8 +33,8 @@ export function transformItem(index: string, fields: Fields, highlight: Fields) 
         date: fields["item.noticeStateDate"]?.[0],
         name: fields["item.contractTitle"]?.[0],
         code: fields["item.noticeNo"]?.[0],
-        cpvCode: highlight?.["item.cpvCodeAndName"]?.[0] ?? fields["item.cpvCodeAndName"]?.[0],
-        cpvCodeId: fields["item.cpvCode"]?.[0],
+        cpvCode: fields["item.cpvCode"]?.[0],
+        cpvCodeAndName: fields["item.cpvCodeAndName"]?.[0],
         value: fields["item.ronContractValue"]?.[0] || 0,
         supplierId: fields["noticeContracts.items.winner.entityId"]?.[0],
         supplierName: fields["noticeContracts.items.winner.name"]?.[0],
@@ -81,6 +81,8 @@ export const fieldsAchizitii = [
 export const filedsLicitatii = [
   "item.caNoticeId",
   "item.noticeNo",
+  "item.cpvCode",
+  "item.cpvCodeAndName",
   "item.contractingAuthorityNameAndFN",
   "item.contractTitle",
   "item.ronContractValue",
@@ -100,3 +102,9 @@ export const filedsLicitatii = [
   "noticeContracts.items.winner.address.city",
   "noticeContracts.items.contractValue",
 ] as const;
+
+export const mapBucket = (b: Bucket) => ({
+  key: b.key_as_string,
+  count: b.doc_count,
+  value: b.sales.value,
+});

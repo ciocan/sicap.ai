@@ -1,1 +1,1 @@
-export type SLUG = "firma" | "autoritate";
+export type SLUG = "firma" | "autoritate" | "cpv";

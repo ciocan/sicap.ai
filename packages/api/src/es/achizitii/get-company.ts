@@ -6,35 +6,11 @@ import {
   Fields,
   RESULTS_PER_PAGE,
   fieldsAchizitii,
+  mapBucket,
   transformItem,
 } from "../utils";
 import { RootObject } from "./types";
-import { IndexName } from "../types";
-
-interface Bucket {
-  key_as_string: string;
-  doc_count: number;
-  sales: {
-    value: number;
-  };
-}
-
-interface Buckets {
-  buckets: Bucket[];
-}
-
-const mapBucket = (b: Bucket) => ({
-  key: b.key_as_string,
-  count: b.doc_count,
-  value: b.sales.value,
-});
-
-interface Args {
-  authorityId?: string;
-  supplierId?: string;
-  page?: number;
-  perPage?: number;
-}
+import { Args, Buckets, IndexName } from "../types";
 
 export async function getCompanyAchizitii(args: Args) {
   const { supplierId, authorityId, page = 1, perPage = RESULTS_PER_PAGE } = args;
