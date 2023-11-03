@@ -95,7 +95,7 @@ export async function ContractLicitatii({ id }: { id: string }) {
           label="Loturi:"
           value={
             <div>
-              {descriptionList.map((item) => (
+              {descriptionList?.map((item) => (
                 <div
                   key={item.lotNumber}
                   className="mb-2 border-b dark:border-b-gray-700 border-b-gray-100"

@@ -22,6 +22,15 @@ export const caNoticeEdit_New__section1_New__section1_1__caAddress = [
   "city",
   "county",
 ] as const;
+
+export const caNoticeEdit_New_U__section1_New_U__section1_1__caAddress = [
+  "cityItem",
+  "city",
+  "county",
+] as const;
+
+export const caNoticeEdit_New_U__section2_New_U__section2_1_New_U = ["shortDescription"] as const;
+
 export const section2_2_New = ["descriptionList"] as const;
 
 export const _source = [

@@ -10,6 +10,8 @@ import {
   caNoticeEdit_New,
   caNoticeEdit_New__section1_New__section1_1__caAddress,
   section2_2_New,
+  caNoticeEdit_New_U__section1_New_U__section1_1__caAddress,
+  caNoticeEdit_New_U__section2_New_U__section2_1_New_U,
 } from "./common";
 
 export async function getContractLicitatii(id: string) {
@@ -41,6 +43,15 @@ export async function getContractLicitatii(id: string) {
       ...pick(
         caNoticeEdit_New__section1_New__section1_1__caAddress,
         contract._source.publicNotice?.caNoticeEdit_New?.section1_New?.section1_1?.caAddress || {},
+      ),
+      ...pick(
+        caNoticeEdit_New_U__section1_New_U__section1_1__caAddress,
+        contract._source.publicNotice?.caNoticeEdit_New_U?.section1_New_U?.section1_1?.caAddress ||
+          {},
+      ),
+      ...pick(
+        caNoticeEdit_New_U__section2_New_U__section2_1_New_U,
+        contract._source.publicNotice?.caNoticeEdit_New_U?.section2_New_U?.section2_1_New_U || {},
       ),
       ...pick(
         section2_2_New,

@@ -323,7 +323,24 @@ export interface Source {
         };
       };
     };
-    caNoticeEdit_New_U: unknown;
+    caNoticeEdit_New_U: {
+      section1_New_U: {
+        section1_1: {
+          caAddress: {
+            city: string;
+            cityItem: string;
+            county: {
+              text: string;
+            };
+          };
+        };
+      };
+      section2_New_U: {
+        section2_1_New_U: {
+          shortDescription: string;
+        };
+      };
+    };
     cNoticeId: number;
     isView: boolean;
     errorList: unknown[];
