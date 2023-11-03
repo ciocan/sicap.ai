@@ -5,6 +5,7 @@ import { Pagination } from "./pagination";
 import { type SearchParams } from "./search-list";
 import { Chart } from "./chart";
 import { type SLUG } from "@/utils/types";
+import { PerPage } from "./per-page";
 
 interface CompanyAchizitiiProps {
   id: string;
@@ -14,14 +15,12 @@ interface CompanyAchizitiiProps {
 
 export async function CompanyLicitatii({ id, slug, searchParams }: CompanyAchizitiiProps) {
   const { p: page = 1, perPage = 20 } = searchParams;
-
   const propMappings = {
     autoritate: { authorityId: id },
     firma: { supplierId: id },
     cpv: { cpvCode: id },
   };
   const companyProps = propMappings[slug];
-
   const results = await getCompanyLicitatii({ ...companyProps, page, perPage });
   const { total, contractingAuthority, supplier, stats } = results;
   const { nationalIDNumber, officialName, city, county } = contractingAuthority;
@@ -54,9 +53,12 @@ export async function CompanyLicitatii({ id, slug, searchParams }: CompanyAchizi
       </div>
       <Chart stats={stats} />
       <div className="space-y-4">
-        <h3 className="text-xs">
-          Pagina {page} din {formatNumber(results.total)} rezultate
-        </h3>
+        <div className="flex justify-between items-center">
+          <h3 className="text-xs">
+            Pagina {page} din {formatNumber(results.total)} rezultate
+          </h3>
+          <PerPage total={perPage} pathname={`/licitatii/${slug}/${id}`} />
+        </div>
         <div className="flex flex-col gap-4">
           {results.items.map((item) => (
             <ListItem key={item.id} fields={item.fields} id={item.id} index={item.index} />

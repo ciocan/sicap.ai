@@ -5,6 +5,7 @@ import { Pagination } from "./pagination";
 import { type SearchParams } from "./search-list";
 import { Chart } from "./chart";
 import { type SLUG } from "@/utils/types";
+import { PerPage } from "./per-page";
 
 interface CompanyAchizitiiProps {
   id: string;
@@ -38,7 +39,7 @@ export async function CompanyAchizitii({ id, slug, searchParams }: CompanyAchizi
 
   return (
     <div className="space-y-8">
-      <div className="space-y-1">
+      <div className="space-y-2">
         <h1 className="font-semibold text-md">{title}</h1>
         <p className="text-sm">
           {formatNumber(total)} contracte in valoare de{" "}
@@ -48,9 +49,12 @@ export async function CompanyAchizitii({ id, slug, searchParams }: CompanyAchizi
       </div>
       <Chart stats={stats} />
       <div className="space-y-4">
-        <h3 className="text-xs">
-          Pagina {page} din {formatNumber(results.total)} rezultate
-        </h3>
+        <div className="flex justify-between items-center">
+          <h3 className="text-xs">
+            Pagina {page} din {formatNumber(results.total)} rezultate
+          </h3>
+          <PerPage total={perPage} pathname={`/achizitii/${slug}/${id}`} />
+        </div>
         <div className="flex flex-col gap-4">
           {results.items.map((item) => (
             <ListItem key={item.id} fields={item.fields} id={item.id} index={item.index} />

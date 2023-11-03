@@ -4,7 +4,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@sicap/ui";
 
-export function PerPage({ total }: { total: number }) {
+interface PerPageProps {
+  total: number;
+  pathname?: string;
+}
+
+export function PerPage({ total, pathname = "cauta" }: PerPageProps) {
   const [value, setValue] = useState(total.toString());
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -13,7 +18,7 @@ export function PerPage({ total }: { total: number }) {
     setValue(value);
     const params = new URLSearchParams(searchParams);
     params.set("perPage", value);
-    router.push(`/cauta?${params.toString()}`);
+    router.push(`${pathname}?${params.toString()}`);
   };
 
   return (
