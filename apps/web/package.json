@@ -22,6 +22,7 @@
     "geist": "^1.0.0",
     "lucide-react": "^0.289.0",
     "next": "^14.0.0",
+    "next-pwa": "^5.6.0",
     "next-themes": "^0.2.1",
     "posthog-js": "^1.87.1",
     "react": "^18.2.0",

@@ -16,6 +16,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata = {
+  manifest: "/manifest.json",
   metadataBase: new URL(siteConfig.url.base),
   title: {
     default: siteConfig.name,
