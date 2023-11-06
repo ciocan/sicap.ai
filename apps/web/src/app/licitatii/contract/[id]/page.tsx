@@ -2,6 +2,7 @@ import { Suspense } from "react";
 
 import { ContractLicitatii } from "@/components/contract-licitatii";
 import { getContractLicitatii } from "@sicap/api";
+import { generateOpenGraph } from "@/utils/og";
 
 interface PageProps {
   params: {
@@ -16,9 +17,18 @@ export async function generateMetadata(props: PageProps) {
   const contract = await getContractLicitatii(id);
   const { noticeNo, contractTitle, shortDescription } = contract;
 
+  const title = `${noticeNo} | ${contractTitle}`;
+  const description = shortDescription;
+
   return {
-    title: `${noticeNo} | ${contractTitle}`,
-    description: shortDescription,
+    title,
+    description,
+    ...generateOpenGraph({
+      id,
+      title,
+      description: `${description.substring(0, 60)}...`,
+      path: `/licitatii/contract/${id}`,
+    }),
   };
 }
 

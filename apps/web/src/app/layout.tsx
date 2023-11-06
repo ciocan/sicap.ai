@@ -33,18 +33,12 @@ export const metadata = {
   creator: siteConfig.author,
   openGraph: {
     type: "website",
-    locale: "en_US",
+    locale: "en_RO",
     url: siteConfig.url.base,
     title: siteConfig.name,
     description: siteConfig.description,
     siteName: siteConfig.name,
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: siteConfig.name,
-    description: siteConfig.description,
-    images: [`${siteConfig.url.base}/og.jpg`],
-    creator: siteConfig.author,
+    images: ["/og.png"],
   },
   icons: {
     icon: "/favicon.ico",

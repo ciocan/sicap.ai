@@ -5,6 +5,7 @@ import { CompanyAchizitii } from "@/components/company-achizitii";
 import { allowedSlugs, moneyRon } from "@/utils";
 import { type SearchParams } from "@/components";
 import { type SLUG } from "@/utils/types";
+import { generateOpenGraph } from "@/utils/og";
 
 interface PageProps {
   params: {
@@ -41,10 +42,17 @@ export async function generateMetadata(props: PageProps) {
   };
 
   const title = titleMappings[slug];
+  const description = `${total} achizitii in valoare de ${totalValueRon}`;
 
   return {
-    title: `${title}  | Achizitii directe @ SICAP.ai`,
-    description: `${total} achizitii in valoare de ${totalValueRon}`,
+    title,
+    description,
+    ...generateOpenGraph({
+      id,
+      title,
+      description,
+      path: `/achizitii/${slug}/${id}`,
+    }),
   };
 }
 

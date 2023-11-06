@@ -27,7 +27,7 @@ export type Layout = {
   };
 };
 
-const baseUrl = "https://sicap.ai";
+export const baseUrl = process.env.BASE_URL as string;
 
 export const siteConfig: SiteConfig = {
   name: "SICAP.ai - cauta in licitatii publice",
@@ -44,7 +44,7 @@ export const siteConfig: SiteConfig = {
     base: baseUrl,
     author: "https://ciocan.dev",
   },
-  ogImage: `${baseUrl}/og.jpg`,
+  ogImage: `${baseUrl}/og.png`,
 };
 
 export const contactConfig: ContactConfig = {
