@@ -20,6 +20,8 @@ import {
   zodResolver,
   z,
   Separator,
+  ScrollArea,
+  ScrollBar,
 } from "@sicap/ui";
 import { databases, dbIds } from "@/utils";
 import { captureAdvanceSearchButtonClick, captureClearFiltersButtonClick } from "@/utils/telemetry";
@@ -57,7 +59,7 @@ const formSchema = z
   .refine(
     (data) => {
       if (data.dateFrom && data.dateTo) {
-        return new Date(data.dateFrom) < new Date(data.dateTo);
+        return new Date(data.dateFrom) <= new Date(data.dateTo);
       }
       return true;
     },
@@ -69,7 +71,7 @@ const formSchema = z
   .refine(
     (data) => {
       if (data.valueFrom && data.valueTo) {
-        return parseInt(data.valueFrom) < parseInt(data.valueTo);
+        return parseInt(data.valueFrom) <= parseInt(data.valueTo);
       }
       return true;
     },
@@ -152,139 +154,250 @@ export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
   }
 
   return (
-    <DialogContent className="sm:max-w-[540px] h-full sm:h-auto">
+    <DialogContent className="sm:max-w-[540px] h-full sm:h-[80%] p-2">
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="overflow-y-scroll sm:overflow-auto pr-1"
-        >
-          <DialogHeader>
-            <DialogTitle>Cautare avansata</DialogTitle>
-          </DialogHeader>
-          <div className="grid gap-4 py-8">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <FormLabel htmlFor="query" className="text-right">
-                Termen de cautare
-              </FormLabel>
-              <FormField
-                control={form.control}
-                name="q"
-                render={({ field }) => (
-                  <FormItem className="col-span-3">
-                    <FormControl>
-                      <Input id="query" type="search" {...field} placeholder="cauta orice..." />
-                    </FormControl>
-                    <FormMessage withToast />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="grid gap-4 py-4">
+        <ScrollArea className="p-2">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="p-4">
+            <DialogHeader>
+              <DialogTitle>Cautare avansata</DialogTitle>
+            </DialogHeader>
+            <div className="grid gap-4 py-8">
               <div className="grid grid-cols-4 items-center gap-4">
-                <FormLabel htmlFor="db" className="text-right">
-                  Baza de date
+                <FormLabel htmlFor="query" className="text-right">
+                  Termen de cautare
                 </FormLabel>
                 <FormField
                   control={form.control}
-                  name="db"
-                  render={() => (
-                    <FormItem className="col-span-3">
-                      <div className="flex items-center gap-4">
-                        {databases.map((item) => (
-                          <FormField
-                            key={item.id}
-                            control={form.control}
-                            name="db"
-                            render={({ field }) => {
-                              return (
-                                <FormItem
-                                  key={item.id}
-                                  className="flex items-center space-x-2 space-y-0"
-                                >
-                                  <FormControl>
-                                    <Checkbox
-                                      checked={field.value?.includes(item.id)}
-                                      onCheckedChange={(checked) => {
-                                        return checked
-                                          ? field.onChange([...field.value, item.id])
-                                          : field.onChange(
-                                              field.value?.filter((value) => value !== item.id),
-                                            );
-                                      }}
-                                    />
-                                  </FormControl>
-                                  <FormLabel className="text-right text-xs sm:text-sm">
-                                    {item.label}
-                                  </FormLabel>
-                                </FormItem>
-                              );
-                            }}
-                          />
-                        ))}
-                      </div>
-                      <FormMessage withToast />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="dateFrom" className="text-right">
-                Data publicarii
-              </Label>
-              <div className="flex flex-1 sm:flex-row flex-col col-span-3 items-center">
-                <FormField
-                  control={form.control}
-                  name="dateFrom"
+                  name="q"
                   render={({ field }) => (
-                    <FormItem className="col-span-3 w-full">
+                    <FormItem className="col-span-3">
                       <FormControl>
-                        <Input id="dateFrom" type="date" {...field} />
+                        <Input id="query" type="search" {...field} placeholder="cauta orice..." />
                       </FormControl>
                       <FormMessage withToast />
                     </FormItem>
                   )}
                 />
-                <span className="mx-2">-</span>
+              </div>
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <FormLabel htmlFor="db" className="text-right">
+                    Baza de date
+                  </FormLabel>
+                  <FormField
+                    control={form.control}
+                    name="db"
+                    render={() => (
+                      <FormItem className="col-span-3">
+                        <div className="flex items-center gap-4">
+                          {databases.map((item) => (
+                            <FormField
+                              key={item.id}
+                              control={form.control}
+                              name="db"
+                              render={({ field }) => {
+                                return (
+                                  <FormItem
+                                    key={item.id}
+                                    className="flex items-center space-x-2 space-y-0"
+                                  >
+                                    <FormControl>
+                                      <Checkbox
+                                        checked={field.value?.includes(item.id)}
+                                        onCheckedChange={(checked) => {
+                                          return checked
+                                            ? field.onChange([...field.value, item.id])
+                                            : field.onChange(
+                                                field.value?.filter((value) => value !== item.id),
+                                              );
+                                        }}
+                                      />
+                                    </FormControl>
+                                    <FormLabel className="text-right text-xs sm:text-sm">
+                                      {item.label}
+                                    </FormLabel>
+                                  </FormItem>
+                                );
+                              }}
+                            />
+                          ))}
+                        </div>
+                        <FormMessage withToast />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="dateFrom" className="text-right">
+                  Data publicarii
+                </Label>
+                <div className="flex flex-1 sm:flex-row flex-col col-span-3 items-center">
+                  <FormField
+                    control={form.control}
+                    name="dateFrom"
+                    render={({ field }) => (
+                      <FormItem className="col-span-3 w-full">
+                        <FormControl>
+                          <Input id="dateFrom" type="date" {...field} />
+                        </FormControl>
+                        <FormMessage withToast />
+                      </FormItem>
+                    )}
+                  />
+                  <span className="mx-2">-</span>
+                  <FormField
+                    control={form.control}
+                    name="dateTo"
+                    render={({ field }) => (
+                      <FormItem className="col-span-3 w-full">
+                        <FormControl>
+                          <Input id="dateTo" type="date" {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="valueFrom" className="text-right">
+                  Valoare contract
+                </Label>
+                <div className="flex flex-1 col-span-3 items-center">
+                  <FormField
+                    control={form.control}
+                    name="valueFrom"
+                    render={({ field }) => (
+                      <FormItem className="col-span-3">
+                        <Input
+                          id="valueFrom"
+                          min={0}
+                          type="number"
+                          placeholder="0 RON"
+                          {...field}
+                        />
+                        <FormMessage withToast />
+                      </FormItem>
+                    )}
+                  />
+                  <span className="mx-2">-</span>
+                  <FormField
+                    control={form.control}
+                    name="valueTo"
+                    render={({ field }) => (
+                      <FormItem className="col-span-3">
+                        <Input
+                          id="valueFrom"
+                          min={0}
+                          type="number"
+                          placeholder="999,999,999 RON"
+                          {...field}
+                        />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+              <Separator />
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="authority" className="text-right sm:text-sm text-xs">
+                  Autoritate contractanta
+                </Label>
                 <FormField
                   control={form.control}
-                  name="dateTo"
+                  name="authority"
                   render={({ field }) => (
-                    <FormItem className="col-span-3 w-full">
+                    <FormItem className="col-span-3">
                       <FormControl>
-                        <Input id="dateTo" type="date" {...field} />
+                        <Input
+                          id="authority"
+                          type="search"
+                          className="col-span-3"
+                          placeholder="Primaria Baicoi"
+                          {...field}
+                        />
                       </FormControl>
                     </FormItem>
                   )}
                 />
               </div>
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="valueFrom" className="text-right">
-                Valoare contract
-              </Label>
-              <div className="flex flex-1 col-span-3 items-center">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="cpv" className="text-right">
+                  Cod CPV
+                </Label>
                 <FormField
                   control={form.control}
-                  name="valueFrom"
+                  name="cpv"
                   render={({ field }) => (
                     <FormItem className="col-span-3">
-                      <Input id="valueFrom" min={0} type="number" placeholder="0 RON" {...field} />
-                      <FormMessage withToast />
+                      <FormControl>
+                        <Input
+                          id="cpv"
+                          type="search"
+                          className="col-span-3"
+                          placeholder="44113620-7 - Asfalt"
+                          {...field}
+                        />
+                      </FormControl>
                     </FormItem>
                   )}
                 />
-                <span className="mx-2">-</span>
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="localityAuthority" className="text-right">
+                  Localitate
+                </Label>
                 <FormField
                   control={form.control}
-                  name="valueTo"
+                  name="localityAuthority"
                   render={({ field }) => (
                     <FormItem className="col-span-3">
                       <Input
-                        id="valueFrom"
-                        min={0}
-                        type="number"
-                        placeholder="999,999,999 RON"
+                        id="localityAuthority"
+                        type="search"
+                        className="col-span-3"
+                        placeholder="Baicoi..."
+                        {...field}
+                      />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <Separator />
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="supplier" className="text-right">
+                  Firma
+                </Label>
+                <FormField
+                  control={form.control}
+                  name="supplier"
+                  render={({ field }) => (
+                    <FormItem className="col-span-3">
+                      <Input
+                        id="supplier"
+                        type="search"
+                        className="col-span-3"
+                        placeholder="CUI / Firma SRL"
+                        {...field}
+                      />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="localitySupplier" className="text-right">
+                  Localitate
+                </Label>
+                <FormField
+                  control={form.control}
+                  name="localitySupplier"
+                  render={({ field }) => (
+                    <FormItem className="col-span-3">
+                      <Input
+                        id="localitySupplier"
+                        type="search"
+                        className="col-span-3"
+                        placeholder="Baicoi..."
                         {...field}
                       />
                     </FormItem>
@@ -292,120 +405,15 @@ export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
                 />
               </div>
             </div>
-            <Separator />
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="authority" className="text-right sm:text-sm text-xs">
-                Autoritate contractanta
-              </Label>
-              <FormField
-                control={form.control}
-                name="authority"
-                render={({ field }) => (
-                  <FormItem className="col-span-3">
-                    <FormControl>
-                      <Input
-                        id="authority"
-                        type="search"
-                        className="col-span-3"
-                        placeholder="Primaria Baicoi"
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="cpv" className="text-right">
-                Cod CPV
-              </Label>
-              <FormField
-                control={form.control}
-                name="cpv"
-                render={({ field }) => (
-                  <FormItem className="col-span-3">
-                    <FormControl>
-                      <Input
-                        id="cpv"
-                        type="search"
-                        className="col-span-3"
-                        placeholder="44113620-7 - Asfalt"
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="localityAuthority" className="text-right">
-                Localitate
-              </Label>
-              <FormField
-                control={form.control}
-                name="localityAuthority"
-                render={({ field }) => (
-                  <FormItem className="col-span-3">
-                    <Input
-                      id="localityAuthority"
-                      type="search"
-                      className="col-span-3"
-                      placeholder="Baicoi..."
-                      {...field}
-                    />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <Separator />
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="supplier" className="text-right">
-                Firma
-              </Label>
-              <FormField
-                control={form.control}
-                name="supplier"
-                render={({ field }) => (
-                  <FormItem className="col-span-3">
-                    <Input
-                      id="supplier"
-                      type="search"
-                      className="col-span-3"
-                      placeholder="CUI / Firma SRL"
-                      {...field}
-                    />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="localitySupplier" className="text-right">
-                Localitate
-              </Label>
-              <FormField
-                control={form.control}
-                name="localitySupplier"
-                render={({ field }) => (
-                  <FormItem className="col-span-3">
-                    <Input
-                      id="localitySupplier"
-                      type="search"
-                      className="col-span-3"
-                      placeholder="Baicoi..."
-                      {...field}
-                    />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="secondary" type="button" onClick={handleReset}>
-              Sterge filtre
-            </Button>
-            <Button>Cauta</Button>
-          </DialogFooter>
-        </form>
+            <DialogFooter>
+              <Button variant="secondary" type="button" onClick={handleReset}>
+                Sterge filtre
+              </Button>
+              <Button>Cauta</Button>
+            </DialogFooter>
+          </form>
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
       </Form>
     </DialogContent>
   );
