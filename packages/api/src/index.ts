@@ -9,3 +9,4 @@ export * from "./es/achizitii/get-contract";
 export * from "./es/licitatii/get-contract";
 export * from "./es/achizitii/get-company";
 export * from "./es/licitatii/get-company";
+export * from "./es/get-sitemaps";
