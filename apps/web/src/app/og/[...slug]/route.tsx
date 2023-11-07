@@ -20,10 +20,9 @@ const toHex = (arrayBuffer: ArrayBuffer) => {
     .join("");
 };
 
-export async function GET(request: Request) {
+export async function GET(request: Request, { params }: { params: { slug: string[] } }) {
   const { searchParams } = new URL(request.url);
-  const params = new URLSearchParams(request.url);
-  const [first, second] = params.getAll("params");
+  const [first, second] = params.slug;
   const title = searchParams.get("title");
 
   const id = second ? first : first?.split("/")[0];
