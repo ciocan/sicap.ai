@@ -14,7 +14,7 @@ import {
   TooltipContent,
 } from "@sicap/ui";
 import { AdvancedSearch } from "./search-advanced";
-import { captureOpenAdvancedSearchModal, captureSearchButtonClick } from "@/utils/telemetry";
+import { captureOpenAdvancedSearchModal, captureSearchButtonClick } from "@/lib/telemetry";
 
 export function Search({ hideButton }: { hideButton?: boolean }) {
   const searchParams = useSearchParams();

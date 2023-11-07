@@ -24,7 +24,7 @@ import {
   ScrollBar,
 } from "@sicap/ui";
 import { databases, dbIds } from "@/utils";
-import { captureAdvanceSearchButtonClick, captureClearFiltersButtonClick } from "@/utils/telemetry";
+import { captureAdvanceSearchButtonClick, captureClearFiltersButtonClick } from "@/lib/telemetry";
 
 const defaultValues = {
   db: dbIds,

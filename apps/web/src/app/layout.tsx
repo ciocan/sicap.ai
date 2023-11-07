@@ -1,4 +1,5 @@
 import type { Viewport } from "next";
+import { SessionProvider } from "next-auth/react";
 import { GeistSans, GeistMono } from "geist/font";
 
 import "@sicap/ui/src/styles/styles.css";
@@ -64,19 +65,21 @@ export default function RootLayout({ children }: RootLayoutProps): JSX.Element {
         />
       </head>
       <body className="min-h-screen bg-background font-sans antialiased">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <div className="relative flex min-h-screen flex-col">
-            <Navbar />
-            <div className="flex flex-col flex-1">{children}</div>
-            <Footer />
-          </div>
-          <FormbricksProvider />
-        </ThemeProvider>
+        <SessionProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <div className="relative flex min-h-screen flex-col">
+              <Navbar />
+              <div className="flex flex-col flex-1">{children}</div>
+              <Footer />
+            </div>
+            <FormbricksProvider />
+          </ThemeProvider>
+        </SessionProvider>
       </body>
     </html>
   );

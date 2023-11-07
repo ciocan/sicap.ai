@@ -1,7 +1,8 @@
 "use client";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
-import { Menu as MenuIcon } from "lucide-react";
+import { Menu as MenuIcon, UserSquare2 } from "lucide-react";
 
 import { Button, DropdownMenu, DropdownMenuTrigger, Separator, Toaster } from "@sicap/ui";
 import { Search } from "@/components/search";
@@ -10,6 +11,8 @@ import { Menu } from "./menu";
 export function Navbar(): JSX.Element {
   const pathname = usePathname();
   const isHome = pathname === "/";
+  const session = useSession();
+  const isAuthenticated = session.status === "authenticated";
 
   return (
     <>
@@ -26,8 +29,8 @@ export function Navbar(): JSX.Element {
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <MenuIcon />
+                <Button variant="outline" size="icon" className="text-primary">
+                  {isAuthenticated ? <UserSquare2 /> : <MenuIcon />}
                 </Button>
               </DropdownMenuTrigger>
               <Menu />
