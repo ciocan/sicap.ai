@@ -27,8 +27,8 @@ export const captureOpenAdvancedSearchModal = (props = {}) => {
   capture("advanced search modal opened", props);
 };
 
-export const captureToggleDarkModeButtonClick = ({ theme }) => {
-  capture("toggle dark mode button clicked", { theme });
+export const captureToggleDarkModeButtonClick = ({ theme, from }) => {
+  capture("toggle dark mode button clicked", { theme, from });
 };
 
 export const captureClearFiltersButtonClick = () => {

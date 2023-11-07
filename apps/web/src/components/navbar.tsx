@@ -1,10 +1,11 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Menu as MenuIcon } from "lucide-react";
 
-import { ModeToggle, Separator, Toaster } from "@sicap/ui";
+import { Button, DropdownMenu, DropdownMenuTrigger, Separator, Toaster } from "@sicap/ui";
 import { Search } from "@/components/search";
-import { captureToggleDarkModeButtonClick } from "@/utils/telemetry";
+import { Menu } from "./menu";
 
 export function Navbar(): JSX.Element {
   const pathname = usePathname();
@@ -23,9 +24,14 @@ export function Navbar(): JSX.Element {
               </Link>
               {!isHome && <Search hideButton />}
             </div>
-            <div>
-              <ModeToggle onCapture={captureToggleDarkModeButtonClick} />
-            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="icon">
+                  <MenuIcon />
+                </Button>
+              </DropdownMenuTrigger>
+              <Menu />
+            </DropdownMenu>
           </nav>
         </div>
       </header>

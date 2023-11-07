@@ -1,14 +1,13 @@
-"use client";
 import Link from "next/link";
 
-import { Separator } from "@sicap/ui";
+import { StatusWidget } from "./openstatus";
+import { DarkMode } from "./dark-mode";
 
-export function Footer(): JSX.Element {
+export async function Footer() {
   return (
     <footer className="mt-auto">
-      <Separator />
-      <div className="mx-auto w-full max-w-screen-xl p-4">
-        <ul className="flex opacity-60 text-xs justify-center gap-6">
+      <div className="mx-auto w-full max-w-screen-xl p-4 space-y-2 border-t border-t-1 border-secondary/80">
+        <ul className="flex opacity-60 text-xs justify-center items-center gap-6">
           <li>
             <Link href="/confidentialitate" className="hover:underline">
               Politica de confidentialitate
@@ -18,6 +17,19 @@ export function Footer(): JSX.Element {
             <Link target="_blank" href="https://cloudify.ro" className="hover:underline">
               Hosting oferit de Cloudify.ro
             </Link>
+          </li>
+          <li>
+            <Link href="/despre" className="hover:underline">
+              Despre
+            </Link>
+          </li>
+        </ul>
+        <ul className="flex opacity-60 text-xs justify-center items-center gap-4">
+          <li>
+            <StatusWidget />
+          </li>
+          <li>
+            <DarkMode />
           </li>
         </ul>
       </div>
