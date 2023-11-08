@@ -8,6 +8,7 @@ import "@/app/globals.css";
 import { siteConfig } from "@/config/site";
 import { Navbar, Footer, ThemeProvider } from "@/components";
 import FormbricksProvider from "./formbricks";
+import { env } from "@/lib/env.client";
 
 export const viewport: Viewport = {
   themeColor: [
@@ -60,8 +61,8 @@ export default function RootLayout({ children }: RootLayoutProps): JSX.Element {
       <head>
         <script
           defer
-          data-domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}
-          src={process.env.NEXT_PUBLIC_PLAUSIBLE_URL}
+          data-domain={env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}
+          src={env.NEXT_PUBLIC_PLAUSIBLE_URL}
         />
       </head>
       <body className="min-h-screen bg-background font-sans antialiased">

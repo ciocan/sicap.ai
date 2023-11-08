@@ -36,3 +36,4 @@ yarn-error.log*
 # ui
 dist/
 .vercel
+devdb*

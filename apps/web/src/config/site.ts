@@ -1,3 +1,5 @@
+import { env } from "@/lib/env.server";
+
 export type SiteConfig = {
   name: string;
   author: string;
@@ -27,7 +29,7 @@ export type Layout = {
   };
 };
 
-export const baseUrl = process.env.BASE_URL as string;
+export const baseUrl = env.BASE_URL;
 
 export const siteConfig: SiteConfig = {
   name: "SICAP.ai - cauta in licitatii publice",

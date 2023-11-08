@@ -1,8 +1,9 @@
 import { createHmac } from "crypto";
 
 import { baseUrl } from "@/config/site";
+import { env } from "@/lib/env.server";
 
-const OG_SECRET = process.env.OG_SECRET as string;
+const OG_SECRET = env.OG_SECRET;
 
 export const getToken = (id: string): string => {
   const hmac = createHmac("sha256", OG_SECRET);

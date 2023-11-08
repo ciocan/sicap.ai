@@ -1,4 +1,6 @@
-const siteUrl = process.env.BASE_URL;
+import { env } from "@/lib/env.server";
+
+const siteUrl = env.BASE_URL;
 
 /** @type {import('next-sitemap').IConfig} */
 const config = {

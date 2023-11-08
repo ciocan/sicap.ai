@@ -6,10 +6,11 @@ import {
   getSitemapLicitatii,
   getSitemapLicitatiiCpv,
 } from "@sicap/api";
+import { env } from "@/lib/env.server";
 
 export const revalidate = 0;
 
-const siteUrl = process.env.BASE_URL;
+const siteUrl = env.BASE_URL;
 const allowedSlugs = ["licitatii", "achizitii", "licitatii.cpv", "achizitii.cpv"] as const;
 const size = 10_000;
 

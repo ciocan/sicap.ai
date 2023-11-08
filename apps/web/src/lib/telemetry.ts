@@ -1,7 +1,9 @@
 import posthogJs from "posthog-js";
 
-const API_KEY = process.env.NEXT_PUBLIC_POSTHOG_API_KEY as string;
-const API_HOST = process.env.NEXT_PUBLIC_POSTHOG_API_HOST as string;
+import { env } from "./env.client";
+
+const API_KEY = env.NEXT_PUBLIC_POSTHOG_API_KEY;
+const API_HOST = env.NEXT_PUBLIC_POSTHOG_API_HOST;
 
 const initPostHog = () => {
   if (typeof window !== "undefined") {

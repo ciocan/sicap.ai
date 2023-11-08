@@ -14,7 +14,12 @@
     "lint": "turbo lint",
     "clean": "pnpm dlx rimraf .next .turbo .vercel && turbo clean",
     "fmt": "turbo fmt",
-    "ui:add": "pnpm --filter ui ui:add"
+    "ui:add": "pnpm --filter ui ui:add",
+    "db:generate": "pnpm with-env turbo --filter web db:generate",
+    "db:migrate": "pnpm with-env turbo --filter web db:migrate",
+    "db:studio": "pnpm with-env turbo --filter web db:studio",
+    "db:dev": "turso dev --db-file=devdb",
+    "with-env": "dotenv -e .env --"
   },
   "devDependencies": {
     "@biomejs/biome": "1.3.1",

@@ -1,0 +1,13 @@
+{
+  "version": "5",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1699435075666,
+      "tag": "0000_broken_captain_marvel",
+      "breakpoints": true
+    }
+  ]
+}
