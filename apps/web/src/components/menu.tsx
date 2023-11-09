@@ -13,7 +13,12 @@ import {
   AvatarImage,
   AvatarFallback,
 } from "@sicap/ui";
-import { captureToggleDarkModeButtonClick } from "@/lib/telemetry";
+import {
+  captureAboutMenuClick,
+  captureSignInMenuClick,
+  captureSignOutMenuClick,
+  captureToggleDarkModeButtonClick,
+} from "@/lib/telemetry";
 import { getInitials } from "@/utils";
 
 export function Menu() {
@@ -39,6 +44,7 @@ export function Menu() {
   };
 
   const handleSignout = () => {
+    captureSignOutMenuClick();
     signOut();
   };
 
@@ -61,7 +67,11 @@ export function Menu() {
       <DropdownMenuGroup>
         {!isAuthenticated && (
           <DropdownMenuItem asChild className="justify-between">
-            <Link href="/autentificare" className="flex w-full justify-between cursor-pointer">
+            <Link
+              href="/autentificare"
+              className="flex w-full justify-between cursor-pointer"
+              onClick={captureSignInMenuClick}
+            >
               Autentificare <LogInIcon className="w-[1rem]" />
             </Link>
           </DropdownMenuItem>
@@ -87,7 +97,7 @@ export function Menu() {
       </DropdownMenuGroup>
       <DropdownMenuSeparator />
       <DropdownMenuItem asChild>
-        <Link href="/despre" className="w-full cursor-pointer">
+        <Link href="/despre" className="w-full cursor-pointer" onClick={captureAboutMenuClick}>
           Despre
         </Link>
       </DropdownMenuItem>

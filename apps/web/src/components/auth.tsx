@@ -2,6 +2,7 @@
 import { signIn, signOut } from "next-auth/react";
 
 import { Button } from "@sicap/ui";
+import { captureGoogleSignInButtonClick } from "@/lib/telemetry";
 
 const GoogleIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -37,11 +38,16 @@ export function SignOut() {
 }
 
 export function SignIn() {
+  const handleSignIn = () => {
+    captureGoogleSignInButtonClick();
+    signIn("google");
+  };
+
   return (
     <Button
       variant="secondary"
       className="w-60 px-3 py-2 border border-neutral-200 dark:border-neutral-700 rounded p-1 text-sm inline-flex items-center leading-4 text-neutral-900 dark:text-neutral-100"
-      onClick={() => signIn("google")}
+      onClick={handleSignIn}
     >
       <GoogleIcon />
       <div className="ml-3">Autentificǎ cu Google</div>

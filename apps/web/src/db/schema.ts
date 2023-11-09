@@ -1,6 +1,5 @@
 import { integer, sqliteTable, text, primaryKey } from "drizzle-orm/sqlite-core";
 import type { AdapterAccount } from "@auth/core/adapters";
-
 import { createClient } from "@libsql/client";
 import { drizzle } from "drizzle-orm/libsql";
 
@@ -19,6 +18,8 @@ export const users = sqliteTable("user", {
   email: text("email").notNull(),
   emailVerified: integer("emailVerified", { mode: "timestamp_ms" }),
   image: text("image"),
+  updatedAt: text("updated_at"),
+  createdAt: text("created_at"),
 });
 
 export const accounts = sqliteTable(

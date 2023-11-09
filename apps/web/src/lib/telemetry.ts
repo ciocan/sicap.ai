@@ -25,6 +25,10 @@ export const capture = (name: string, props = {}) => {
   posthog.capture(name, props);
 };
 
+export const identifyUser = (id: string, traits = {}) => {
+  posthog.identify(id, traits);
+};
+
 export const captureOpenAdvancedSearchModal = (props = {}) => {
   capture("advanced search modal opened", props);
 };
@@ -47,4 +51,20 @@ export const captureAdvanceSearchButtonClick = (props = {}) => {
 
 export const capturePerPageListChange = (props = {}) => {
   capture("per page list changed", props);
+};
+
+export const captureSignOutMenuClick = () => {
+  capture("sign out menu clicked");
+};
+
+export const captureSignInMenuClick = () => {
+  capture("sign in menu clicked");
+};
+
+export const captureGoogleSignInButtonClick = () => {
+  capture("google sign in button clicked");
+};
+
+export const captureAboutMenuClick = () => {
+  capture("about menu clicked");
 };

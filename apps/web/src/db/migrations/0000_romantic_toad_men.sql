@@ -26,7 +26,9 @@ CREATE TABLE `user` (
 	`name` text,
 	`email` text NOT NULL,
 	`emailVerified` integer,
-	`image` text
+	`image` text,
+	`updated_at` text,
+	`created_at` text
 );
 --> statement-breakpoint
 CREATE TABLE `verificationToken` (

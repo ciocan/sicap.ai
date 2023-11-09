@@ -23,5 +23,5 @@ export const env = createEnv({
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     OG_SECRET: process.env.OG_SECRET,
     BASE_URL: process.env.BASE_URL,
-  }
+  },
 });

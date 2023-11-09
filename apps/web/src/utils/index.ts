@@ -45,3 +45,19 @@ export const getInitials = (fullName: string): string => {
     names[0].charAt(0).toUpperCase() + names[names.length - 1].charAt(0).toUpperCase();
   return initials;
 };
+
+export const checkSearchTerms = (searchTerms) => {
+  const notAllowed = [
+    "dateFrom",
+    "dateTo",
+    "valueFrom",
+    "valueTo",
+    "authority",
+    "cpv",
+    "supplier",
+    "localityAuthority",
+    "localitySupplier",
+  ];
+  const isAllowed = Object.keys(searchTerms).every((value) => !notAllowed.includes(value));
+  return isAllowed;
+};

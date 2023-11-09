@@ -19,6 +19,7 @@
     "db:migrate": "pnpm with-env turbo --filter web db:migrate",
     "db:studio": "pnpm with-env turbo --filter web db:studio",
     "db:dev": "turso dev --db-file=devdb",
+    "db:dev:clean": "rm devdb*",
     "with-env": "dotenv -e .env --"
   },
   "devDependencies": {
