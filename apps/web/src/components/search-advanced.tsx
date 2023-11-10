@@ -146,8 +146,11 @@ export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
     );
 
     const filters = Object.fromEntries(params.entries());
-    captureAdvanceSearchButtonClick({ query, filters, mode: "advanced" });
-
+    captureAdvanceSearchButtonClick({ query: filters.q, filters, mode: "advanced" });
+    fetch("/api/search", {
+      method: "POST",
+      body: JSON.stringify({ query: filters.q, filters, mode: "advanced" }),
+    });
     router.push(`/cauta?${params.toString()}`);
     router.refresh();
     setOpen(false);

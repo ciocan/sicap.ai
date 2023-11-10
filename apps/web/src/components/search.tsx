@@ -28,6 +28,10 @@ export function Search({ hideButton }: { hideButton?: boolean }) {
       return;
     }
     captureSearchButtonClick({ query: search, type, mode: "simple" });
+    fetch("/api/search", {
+      method: "POST",
+      body: JSON.stringify({ query: search, mode: "simple" }),
+    });
     router.push(`/cauta?q=${encodeURIComponent(search)}`);
   };
 
