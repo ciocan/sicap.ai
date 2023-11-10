@@ -12,6 +12,9 @@ export const env = createEnv({
     NEXTAUTH_URL: z.string().url(),
     OG_SECRET: z.string().min(1),
     BASE_URL: z.string().url(),
+    LISTMONK_API_KEY: z.string().min(1),
+    LISTMONK_API_URL: z.string().url(),
+    LISTMONK_FROM_EMAIL: z.string().email(),
   },
   runtimeEnv: {
     ES_URL: process.env.ES_URL,
@@ -23,5 +26,8 @@ export const env = createEnv({
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     OG_SECRET: process.env.OG_SECRET,
     BASE_URL: process.env.BASE_URL,
+    LISTMONK_API_KEY: process.env.LISTMONK_API_KEY,
+    LISTMONK_API_URL: process.env.LISTMONK_API_URL,
+    LISTMONK_FROM_EMAIL: process.env.LISTMONK_FROM_EMAIL,
   },
 });

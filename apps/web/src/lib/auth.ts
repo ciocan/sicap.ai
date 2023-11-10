@@ -8,6 +8,7 @@ import { eq, and } from "drizzle-orm";
 
 import { accounts, db, users } from "../db/schema";
 import { env } from "./env.server";
+import { addSubscriber, addSubscriberToLists, messageSubscriber } from "./listmonk";
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
@@ -62,12 +63,28 @@ export const {
   },
   events: {
     async createUser({ user }) {
-      await db
-        .update(users)
-        .set({ createdAt: new Date().toISOString() })
-        .where(eq(users.id, user.id))
-        .returning();
+      const email = user.email!;
+      const name = user.name!;
+      const userId = user.id;
+      try {
+        await db
+          .update(users)
+          .set({ createdAt: new Date().toISOString() })
+          .where(eq(users.id, user.id))
+          .returning();
+
+        await addSubscriber({
+          email,
+          name,
+          attribs: { userId },
+        });
+        await addSubscriberToLists({ email, lists: ["users"] });
+        await messageSubscriber({ email, template: "welcome" });
+      } catch (e) {
+        console.error(e);
+      }
     },
+
     async signIn({ user, isNewUser }) {
       await db
         .update(users)
