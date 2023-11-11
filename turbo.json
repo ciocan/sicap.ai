@@ -32,6 +32,9 @@
     },
     "db:migrate": {
       "cache": false
+    },
+    "sitemap": {
+      "cache": false
     }
   }
 }
