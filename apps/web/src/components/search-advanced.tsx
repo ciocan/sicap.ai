@@ -25,6 +25,7 @@ import {
 } from "@sicap/ui";
 import { databases, dbIds } from "@/utils";
 import { captureAdvanceSearchButtonClick, captureClearFiltersButtonClick } from "@/lib/telemetry";
+import { useEffect } from "react";
 
 const defaultValues = {
   db: dbIds,
@@ -118,6 +119,10 @@ export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
     ...Object.fromEntries(searchParams.entries()),
     db: db ? db.split(",") : dbIds,
   };
+
+  useEffect(() => {
+    form.reset({ ...defaultValues, q: query, ...params });
+  }, [searchParams]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

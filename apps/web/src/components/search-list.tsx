@@ -1,11 +1,10 @@
-import { Filter } from "lucide-react";
-
-import { databases, dbIds, formatNumber, moneyRon } from "@/utils";
+import { dbIds, formatNumber } from "@/utils";
 import { IndexName, searchContracts } from "@sicap/api";
 
 import { ListItem } from "./list-item";
 import { Pagination } from "./pagination";
 import { PerPage } from "./per-page";
+import { FilterDetails } from "./filter-details";
 
 export interface SearchParams {
   q: string;
@@ -45,7 +44,6 @@ export async function SearchList({ searchParams }: SearchListProps) {
   } = searchParams;
 
   const dbs = ((Array.isArray(db) ? db : db?.split(",")) || dbIds) as IndexName[];
-  const dbLabelsAsText = dbs.map((db) => databases.find((d) => d.id === db)?.label).join(", ");
 
   const filters = {
     db: dbs,
@@ -68,36 +66,7 @@ export async function SearchList({ searchParams }: SearchListProps) {
         Pagina {page} din {formatNumber(results.total)} rezultate pentru <b>{query}</b>
       </h3>
       <div className="flex items-center gap-4 justify-between">
-        <div className="flex flex-wrap items-center text-xs text-gray-700 bg-gray-100 dark:bg-gray-800 dark:text-gray-400 p-2 rounded-md">
-          <Filter className="h-[0.85rem] w-[0.85rem] mr-1" />
-          <span className="font-semibold mr-1">Filtru:</span>
-          <span className="mr-1">{dbLabelsAsText};</span>
-          {dateFrom ||
-          dateTo ||
-          valueFrom ||
-          valueTo ||
-          authority ||
-          cpv ||
-          localityAuthority ||
-          supplier ||
-          localitySupplier ? (
-            <>
-              {dateFrom && <span className="mr-1">{`de la ${dateFrom}`}</span>}
-              {dateTo && <span className="mr-1">{`până la ${dateTo};`}</span>}
-              {cpv && <span className="mr-1">{`CPV: ${cpv};`}</span>}
-              {authority && <span className="mr-1">{`autoritate: ${authority};`}</span>}
-              {supplier && <span className="mr-1">{`furnizor: ${supplier};`}</span>}
-              {valueFrom && <span className="mr-1">{`valoare de la ${moneyRon(valueFrom)}`}</span>}
-              {valueTo && <span className="mr-1">{`valoare până la ${moneyRon(valueTo)}`}</span>}
-              {localityAuthority && (
-                <span className="mr-1">{`; localitate autoritate: ${localityAuthority}.`}</span>
-              )}
-              {localitySupplier && (
-                <span className="mr-1">{`; localitate firma: ${localitySupplier}.`}</span>
-              )}
-            </>
-          ) : null}
-        </div>
+        <FilterDetails searchParams={searchParams} />
         <div>
           <PerPage total={perPage} />
         </div>
