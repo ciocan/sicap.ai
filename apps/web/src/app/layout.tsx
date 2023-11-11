@@ -1,6 +1,7 @@
 import type { Viewport } from "next";
 import { SessionProvider } from "next-auth/react";
 import { GeistSans, GeistMono } from "geist/font";
+import { AxiomWebVitals } from "next-axiom";
 
 import "@sicap/ui/src/styles/styles.css";
 import "@/app/globals.css";
@@ -82,6 +83,7 @@ export default function RootLayout({ children }: RootLayoutProps): JSX.Element {
           </ThemeProvider>
         </SessionProvider>
       </body>
+      <AxiomWebVitals />
     </html>
   );
 }

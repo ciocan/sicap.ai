@@ -5,6 +5,7 @@ import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { SqlFlavorOptions } from "@auth/drizzle-adapter/lib/utils";
 import { DefaultSession } from "@auth/core/types";
 import { eq, and } from "drizzle-orm";
+import { Logger } from "next-axiom";
 
 import { accounts, db, users } from "../db/schema";
 import { env } from "./env.server";
@@ -41,6 +42,8 @@ function getAdapter(): Adapter {
   };
 }
 
+const log = new Logger();
+
 export const {
   handlers: { GET, POST },
   auth,
@@ -66,6 +69,8 @@ export const {
       const email = user.email!;
       const name = user.name!;
       const userId = user.id;
+      log.info("User created", { userId });
+
       try {
         await db
           .update(users)
@@ -86,13 +91,17 @@ export const {
     },
 
     async signIn({ user, isNewUser }) {
+      log.info("User signed in", { userId: user.id });
       await db
         .update(users)
         .set({ updatedAt: new Date().toISOString() })
         .where(eq(users.id, user.id))
         .returning();
     },
-    async signOut(message) {},
+    async signOut(message: { token: { id: string } }) {
+      const userId = message.token.id;
+      log.info("User signed out", { userId });
+    },
   },
   callbacks: {
     redirect() {

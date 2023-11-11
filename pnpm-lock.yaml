@@ -77,6 +77,9 @@ importers:
       next-auth:
         specifier: 5.0.0-beta.3
         version: 5.0.0-beta.3(next@14.0.1)(react@18.2.0)
+      next-axiom:
+        specifier: ^1.1.0
+        version: 1.1.0(next@14.0.1)(react@18.2.0)
       next-pwa:
         specifier: ^5.6.0
         version: 5.6.0(@babel/core@7.23.2)(esbuild@0.18.20)(next@14.0.1)(webpack@5.89.0)
@@ -6283,6 +6286,18 @@ packages:
       react: 18.2.0
     dev: false
 
+  /next-axiom@1.1.0(next@14.0.1)(react@18.2.0):
+    resolution: {integrity: sha512-/Fh8MOM7gzeR58SA0HfF2ZyNp4WY3cv0hbH3XW3e0u3FG4IGPfFoRuNtpWx3qv4YCqm3jmoR3CVP/dc0VF6xMQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      next: '>=13.4'
+      react: '>=18.0.0'
+    dependencies:
+      next: 14.0.1(@babel/core@7.23.2)(react-dom@18.2.0)(react@18.2.0)
+      react: 18.2.0
+      whatwg-fetch: 3.6.19
+    dev: false
+
   /next-pwa@5.6.0(@babel/core@7.23.2)(esbuild@0.18.20)(next@14.0.1)(webpack@5.89.0):
     resolution: {integrity: sha512-XV8g8C6B7UmViXU8askMEYhWwQ4qc/XqJGnexbLV68hzKaGHZDMtHsm2TNxFcbR7+ypVuth/wwpiIlMwpRJJ5A==}
     peerDependencies:
@@ -8101,6 +8116,10 @@ packages:
       - '@swc/core'
       - esbuild
       - uglify-js
+    dev: false
+
+  /whatwg-fetch@3.6.19:
+    resolution: {integrity: sha512-d67JP4dHSbm2TrpFj8AbO8DnL1JXL5J9u0Kq2xW6d0TFDbCA3Muhdt8orXC22utleTVj7Prqt82baN6RBvnEgw==}
     dev: false
 
   /whatwg-url@5.0.0:

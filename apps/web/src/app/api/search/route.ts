@@ -1,8 +1,10 @@
+import { withAxiom, AxiomRequest } from "next-axiom";
+
 import { auth } from "@/lib/auth";
 import { dbIds } from "@/utils";
 import { saveSearch } from "@sicap/api";
 
-export async function POST(request: Request) {
+export const POST = withAxiom(async (request: AxiomRequest) => {
   const session = await auth();
   const userId = session?.user?.id;
   const data = await request.json();
@@ -19,4 +21,4 @@ export async function POST(request: Request) {
   });
 
   return Response.json(data);
-}
+});
