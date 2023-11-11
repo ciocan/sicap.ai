@@ -39,6 +39,7 @@ export function Navbar(): JSX.Element {
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="icon" className="text-primary">
                   {isAuthenticated ? <UserSquare2 /> : <MenuIcon />}
+                  <span className="sr-only">Meniu</span>
                 </Button>
               </DropdownMenuTrigger>
               <Menu />

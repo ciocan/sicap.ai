@@ -28,7 +28,7 @@ export async function Footer() {
           <li>
             <StatusWidget />
           </li>
-          <li>
+          <li className="scale-[75%]">
             <DarkMode />
           </li>
         </ul>

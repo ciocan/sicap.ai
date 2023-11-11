@@ -54,7 +54,7 @@ export async function StatusWidget() {
 
   return (
     <a
-      className="border-border text-foreground/70 hover:bg-muted hover:text-foreground inline-flex max-w-fit items-center gap-2 rounded-md border px-3 py-1 text-sm"
+      className="border-border text-foreground hover:bg-muted hover:text-foreground inline-flex max-w-fit items-center gap-2 rounded-md border px-3 py-1 text-xs"
       href="https://sicap.openstatus.dev"
       target="_blank"
       rel="noreferrer"
