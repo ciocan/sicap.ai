@@ -65,6 +65,11 @@ export default function RootLayout({ children }: RootLayoutProps): JSX.Element {
           data-domain={env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}
           src={env.NEXT_PUBLIC_PLAUSIBLE_URL}
         />
+        <script
+          defer
+          src={env.NEXT_PUBLIC_CLOUDFLARE_HOST}
+          data-cf-beacon={`{"token": "${env.NEXT_PUBLIC_CLOUDFLARE_TOKEN}"}`}
+        />
       </head>
       <body className="min-h-screen bg-background font-sans antialiased">
         <SessionProvider>

@@ -6,6 +6,9 @@ export const metadata = {
   description: "Despre SICAP.ai"
 }
 
+export const revalidate = 0
+export const dynamic = 'force-dynamic'
+
 export const totals = await getTotal();
 export const licitatii = formatNumber(totals.licitatii);
 export const achizitii = formatNumber(totals.achizitii);

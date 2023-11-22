@@ -1,4 +1,11 @@
-import { integer, sqliteTable, text, primaryKey } from "drizzle-orm/sqlite-core";
+import {
+  integer,
+  sqliteTable,
+  text,
+  primaryKey,
+  uniqueIndex,
+  index,
+} from "drizzle-orm/sqlite-core";
 import type { AdapterAccount } from "@auth/core/adapters";
 import { createClient } from "@libsql/client";
 import { drizzle } from "drizzle-orm/libsql";
@@ -12,15 +19,21 @@ const client = createClient({
 
 export const db = drizzle(client);
 
-export const users = sqliteTable("user", {
-  id: text("id").notNull().primaryKey(),
-  name: text("name"),
-  email: text("email").notNull(),
-  emailVerified: integer("emailVerified", { mode: "timestamp_ms" }),
-  image: text("image"),
-  updatedAt: text("updated_at"),
-  createdAt: text("created_at"),
-});
+export const users = sqliteTable(
+  "user",
+  {
+    id: text("id").notNull().primaryKey(),
+    name: text("name"),
+    email: text("email").notNull(),
+    emailVerified: integer("emailVerified", { mode: "timestamp_ms" }),
+    image: text("image"),
+    updatedAt: text("updated_at"),
+    createdAt: text("created_at"),
+  },
+  (user) => ({
+    emailIndex: uniqueIndex("users__email__idx").on(user.email),
+  }),
+);
 
 export const accounts = sqliteTable(
   "account",
@@ -41,16 +54,28 @@ export const accounts = sqliteTable(
   },
   (account) => ({
     compoundKey: primaryKey(account.provider, account.providerAccountId),
+    providerProviderAccountIdIndex: uniqueIndex("accounts__provider__providerAccountId__idx").on(
+      account.provider,
+      account.providerAccountId,
+    ),
+    userIdIndex: index("accounts__userId__idx").on(account.userId),
   }),
 );
 
-export const sessions = sqliteTable("session", {
-  sessionToken: text("sessionToken").notNull().primaryKey(),
-  userId: text("userId")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  expires: integer("expires", { mode: "timestamp_ms" }).notNull(),
-});
+export const sessions = sqliteTable(
+  "session",
+  {
+    sessionToken: text("sessionToken").notNull().primaryKey(),
+    userId: text("userId")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    expires: integer("expires", { mode: "timestamp_ms" }).notNull(),
+  },
+  (session) => ({
+    sessionTokenIndex: uniqueIndex("sessions__sessionToken__idx").on(session.sessionToken),
+    userIdIndex: index("sessions__userId__idx").on(session.userId),
+  }),
+);
 
 export const verificationTokens = sqliteTable(
   "verificationToken",
@@ -61,5 +86,6 @@ export const verificationTokens = sqliteTable(
   },
   (vt) => ({
     compoundKey: primaryKey(vt.identifier, vt.token),
+    tokenIndex: uniqueIndex("verification_tokens__token__idx").on(vt.token),
   }),
 );

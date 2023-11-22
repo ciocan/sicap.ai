@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { notFound } from "next/navigation";
 
 import { getCompanyLicitatii } from "@sicap/api";
 import { allowedSlugs, moneyRon } from "@/utils";
@@ -31,31 +32,37 @@ export async function generateMetadata(props: PageProps) {
   };
   const companyProps = propMappings[slug];
 
-  const { total, stats, contractingAuthority, supplier } = await getCompanyLicitatii(companyProps);
-  const totalValue = stats?.years.map((y) => y.value).reduce((a, b) => a + b, 0);
-  const totalValueRon = moneyRon(totalValue);
+  try {
+    const { total, stats, contractingAuthority, supplier } = await getCompanyLicitatii(
+      companyProps,
+    );
+    const totalValue = stats?.years.map((y) => y.value).reduce((a, b) => a + b, 0);
+    const totalValueRon = moneyRon(totalValue);
 
-  const titleMappings = {
-    autoritate: `${contractingAuthority.contractingAuthorityNameAndFN} / ${contractingAuthority.city}`,
-    firma: `${supplier.fiscalNumber} / ${supplier.name} / ${supplier.address.city} ${
-      supplier.address.county?.text ? `, ${supplier.address.county?.text}` : ""
-    }`,
-    cpv: `${contractingAuthority.cpvCodeAndName}`,
-  };
+    const titleMappings = {
+      autoritate: `${contractingAuthority.contractingAuthorityNameAndFN} / ${contractingAuthority.city}`,
+      firma: `${supplier?.fiscalNumber} / ${supplier?.name} / ${supplier?.address?.city} ${
+        supplier?.address?.county?.text ? `, ${supplier?.address?.county?.text}` : ""
+      }`,
+      cpv: `${contractingAuthority.cpvCodeAndName}`,
+    };
 
-  const title = titleMappings[slug];
-  const description = `${total} achizitii in valoare de ${totalValueRon}`;
+    const title = titleMappings[slug];
+    const description = `${total} achizitii in valoare de ${totalValueRon}`;
 
-  return {
-    title,
-    description,
-    ...generateOpenGraph({
-      id,
+    return {
       title,
       description,
-      path: `/licitatii/${slug}/${id}`,
-    }),
-  };
+      ...generateOpenGraph({
+        id,
+        title,
+        description,
+        path: `/licitatii/${slug}/${id}`,
+      }),
+    };
+  } catch {
+    return notFound();
+  }
 }
 
 export default async function Page(props: PageProps) {

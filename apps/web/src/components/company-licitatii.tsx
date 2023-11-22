@@ -33,8 +33,8 @@ export async function CompanyLicitatii({ id, slug, searchParams }: CompanyAchizi
     autoritate: `${nationalIDNumber} / ${officialName} / ${city} ${
       county?.text ? `, ${county?.text}` : ""
     }`,
-    firma: `${supplier.fiscalNumber} / ${supplier.name} / ${supplier.address.city} ${
-      supplier.address.county?.text ? `, ${supplier.address.county?.text}` : ""
+    firma: `${supplier?.fiscalNumber} / ${supplier?.name} / ${supplier?.address.city} ${
+      supplier?.address.county?.text ? `, ${supplier?.address.county?.text}` : ""
     }`,
     cpv: `${results.contractingAuthority.cpvCodeAndName}`,
   };

@@ -113,6 +113,10 @@ export async function getCompanyAchizitii(args: Args) {
   const [firstContract] = allContracts;
   const total = result.hits.total as SearchTotalHits;
 
+  if (!firstContract) {
+    throw new Error("Identificator invalid");
+  }
+
   let stats = undefined;
   if (result.aggregations) {
     const years = result.aggregations.years as Buckets;

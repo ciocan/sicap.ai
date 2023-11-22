@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { notFound } from "next/navigation";
 
 import { getCompanyAchizitii } from "@sicap/api";
 import { CompanyAchizitii } from "@/components/company-achizitii";
@@ -31,29 +32,35 @@ export async function generateMetadata(props: PageProps) {
   };
   const companyProps = propMappings[slug];
 
-  const { total, stats, contractingAuthority, supplier } = await getCompanyAchizitii(companyProps);
-  const totalValue = stats?.years.map((y) => y.value).reduce((a, b) => a + b, 0);
-  const totalValueRon = moneyRon(totalValue);
+  try {
+    const { total, stats, contractingAuthority, supplier } = await getCompanyAchizitii(
+      companyProps,
+    );
+    const totalValue = stats?.years.map((y) => y.value).reduce((a, b) => a + b, 0);
+    const totalValueRon = moneyRon(totalValue);
 
-  const titleMappings = {
-    autoritate: `${contractingAuthority.entityName}, ${contractingAuthority.city}`,
-    firma: `${supplier.entityName}, ${supplier.city}`,
-    cpv: `${contractingAuthority.cpvCodeAndName}`,
-  };
+    const titleMappings = {
+      autoritate: `${contractingAuthority.entityName}, ${contractingAuthority.city}`,
+      firma: `${supplier.entityName}, ${supplier.city}`,
+      cpv: `${contractingAuthority.cpvCodeAndName}`,
+    };
 
-  const title = titleMappings[slug];
-  const description = `${total} achizitii in valoare de ${totalValueRon}`;
+    const title = titleMappings[slug];
+    const description = `${total} achizitii in valoare de ${totalValueRon}`;
 
-  return {
-    title,
-    description,
-    ...generateOpenGraph({
-      id,
+    return {
       title,
       description,
-      path: `/achizitii/${slug}/${id}`,
-    }),
-  };
+      ...generateOpenGraph({
+        id,
+        title,
+        description,
+        path: `/achizitii/${slug}/${id}`,
+      }),
+    };
+  } catch {
+    return notFound();
+  }
 }
 
 export default async function Page(props: PageProps) {

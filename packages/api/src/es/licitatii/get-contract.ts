@@ -29,7 +29,7 @@ export async function getContractLicitatii(id: string) {
   const [contract] = result.hits.hits as RootObject[];
 
   if (!contract) {
-    throw new Error(`Contractul nu a fostgasit: ${id}`);
+    throw new Error(`Contractul nu a fost gasit: ${id}`);
   }
 
   const data = {

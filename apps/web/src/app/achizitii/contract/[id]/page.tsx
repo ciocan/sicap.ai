@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { ContractAchizitii } from "@/components/contract-achizitii";
 import { getContractAchizitii } from "@sicap/api";
 import { generateOpenGraph } from "@/utils/og";
+import { notFound } from "next/navigation";
 
 interface PageProps {
   params: {
@@ -14,23 +15,27 @@ export async function generateMetadata(props: PageProps) {
   const {
     params: { id },
   } = props;
-  const contract = await getContractAchizitii(id);
-  const { uniqueIdentificationCode, directAcquisitionName, directAcquisitionDescription } =
-    contract;
+  try {
+    const contract = await getContractAchizitii(id);
+    const { uniqueIdentificationCode, directAcquisitionName, directAcquisitionDescription } =
+      contract;
 
-  const title = `${uniqueIdentificationCode} | ${directAcquisitionName}`;
-  const description = directAcquisitionDescription;
+    const title = `${uniqueIdentificationCode} | ${directAcquisitionName}`;
+    const description = directAcquisitionDescription;
 
-  return {
-    title,
-    description,
-    ...generateOpenGraph({
-      id,
+    return {
       title,
-      description: `${description.substring(0, 60)}...`,
-      path: `/achizitii/contract/${id}`,
-    }),
-  };
+      description,
+      ...generateOpenGraph({
+        id,
+        title,
+        description: `${description?.substring(0, 60)}...`,
+        path: `/achizitii/contract/${id}`,
+      }),
+    };
+  } catch {
+    return notFound();
+  }
 }
 
 export default async function Page(props: PageProps) {

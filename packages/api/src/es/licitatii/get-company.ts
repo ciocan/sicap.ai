@@ -19,7 +19,7 @@ const getQueryForSupplierId = (id: string | undefined) => {
   }
   return Number(id)
     ? { match: { "noticeContracts.items.winners.entityId": Number(id) } }
-    : { match_phrase_prefix: { "noticeContracts.items.winners.name.keyword": decode(id) } };
+    : { match_phrase_prefix: { "noticeContracts.items.winners.name": decode(id) } };
 };
 
 const getQueryForAuthorityId = (id: string | undefined) => {
@@ -28,7 +28,7 @@ const getQueryForAuthorityId = (id: string | undefined) => {
   }
   return Number(id)
     ? { match: { "publicNotice.entityId": Number(id) } }
-    : { match_phrase_prefix: { "item.contractingAuthorityNameAndFN.keyword": decode(id) } };
+    : { match_phrase_prefix: { "item.contractingAuthorityNameAndFN": decode(id) } };
 };
 
 const getQueryForCpvCode = (cpvCode: string | undefined) => {
@@ -116,6 +116,10 @@ export async function getCompanyLicitatii(args: Args) {
   const [firstContract] = allContracts;
   const total = result.hits.total as SearchTotalHits;
 
+  if (!firstContract) {
+    throw new Error("Identificator invalid");
+  }
+
   let stats = undefined;
   if (result.aggregations) {
     const years = result.aggregations.years as Buckets;
@@ -132,6 +136,8 @@ export async function getCompanyLicitatii(args: Args) {
     supplier: firstContract._source.noticeContracts?.items[0]?.winner,
     contractingAuthority: {
       ...firstContract._source.publicNotice?.caNoticeEdit_New?.section1_New?.section1_1?.caAddress,
+      ...firstContract._source.publicNotice?.caNoticeEdit_New_U?.section1_New_U?.section1_1
+        ?.caAddress,
       contractingAuthorityNameAndFN: firstContract._source.item.contractingAuthorityNameAndFN,
       cpvCodeAndName: firstContract._source.item.cpvCodeAndName,
     },

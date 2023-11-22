@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { notFound } from "next/navigation";
 
 import { ContractLicitatii } from "@/components/contract-licitatii";
 import { getContractLicitatii } from "@sicap/api";
@@ -14,22 +15,26 @@ export async function generateMetadata(props: PageProps) {
   const {
     params: { id },
   } = props;
-  const contract = await getContractLicitatii(id);
-  const { noticeNo, contractTitle, shortDescription } = contract;
+  try {
+    const contract = await getContractLicitatii(id);
+    const { noticeNo, contractTitle, shortDescription } = contract;
 
-  const title = `${noticeNo} | ${contractTitle}`;
-  const description = shortDescription;
+    const title = `${noticeNo} | ${contractTitle}`;
+    const description = shortDescription;
 
-  return {
-    title,
-    description,
-    ...generateOpenGraph({
-      id,
+    return {
       title,
-      description: `${description.substring(0, 60)}...`,
-      path: `/licitatii/contract/${id}`,
-    }),
-  };
+      description,
+      ...generateOpenGraph({
+        id,
+        title,
+        description: `${description?.substring(0, 60)}...`,
+        path: `/licitatii/contract/${id}`,
+      }),
+    };
+  } catch {
+    return notFound();
+  }
 }
 
 export default async function Page(props: PageProps) {
