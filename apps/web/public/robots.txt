@@ -8,6 +8,8 @@ Host: https://sicap.ai
 # Sitemaps
 Sitemap: https://sicap.ai/sitemap.xml
 Sitemap: https://sicap.ai/sitemaps/achizitii.xml
+Sitemap: https://sicap.ai/sitemaps/achizitii.firme.xml
+Sitemap: https://sicap.ai/sitemaps/achizitii.autoritati.xml
 Sitemap: https://sicap.ai/sitemaps/licitatii.xml
 Sitemap: https://sicap.ai/sitemaps/licitatii.cpv.xml
 Sitemap: https://sicap.ai/sitemaps/achizitii.cpv.xml

@@ -2,6 +2,8 @@
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <sitemap><loc>https://sicap.ai/sitemap-0.xml</loc></sitemap>
 <sitemap><loc>https://sicap.ai/sitemaps/achizitii.xml</loc></sitemap>
+<sitemap><loc>https://sicap.ai/sitemaps/achizitii.firme.xml</loc></sitemap>
+<sitemap><loc>https://sicap.ai/sitemaps/achizitii.autoritati.xml</loc></sitemap>
 <sitemap><loc>https://sicap.ai/sitemaps/licitatii.xml</loc></sitemap>
 <sitemap><loc>https://sicap.ai/sitemaps/licitatii.cpv.xml</loc></sitemap>
 <sitemap><loc>https://sicap.ai/sitemaps/achizitii.cpv.xml</loc></sitemap>

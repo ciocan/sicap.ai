@@ -2,8 +2,8 @@ import { getTotal } from "@sicap/api";
 import { Search } from "@/components";
 import { formatNumber } from "@/utils";
 
-export const revalidate = 0
-export const dynamic = 'force-dynamic'
+export const revalidate = 0;
+export const dynamic = "force-dynamic";
 
 export default async function Page() {
   const { licitatii, achizitii } = await getTotal();
