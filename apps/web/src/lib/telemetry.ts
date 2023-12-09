@@ -68,3 +68,7 @@ export const captureGoogleSignInButtonClick = () => {
 export const captureAboutMenuClick = () => {
   capture("about menu clicked");
 };
+
+export const captureCloudifyLinkClick = () => {
+  capture("cloudify link clicked");
+};

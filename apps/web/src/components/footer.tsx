@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { StatusWidget } from "./openstatus";
 import { DarkMode } from "./dark-mode";
+import { HostingLink } from "./hosting-link";
 
 export async function Footer() {
   return (
@@ -14,9 +15,7 @@ export async function Footer() {
             </Link>
           </li>
           <li>
-            <Link target="_blank" href="https://cloudify.ro" className="hover:underline">
-              Hosting oferit de Cloudify.ro
-            </Link>
+            <HostingLink />
           </li>
           <li>
             <Link href="/despre" className="hover:underline">
