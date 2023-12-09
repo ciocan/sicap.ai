@@ -21,8 +21,10 @@ export function FilterDetails({ searchParams }: { searchParams: SearchParams }) 
     authority,
     cpv,
     localityAuthority,
+    countyAuthority,
     supplier,
     localitySupplier,
+    countySupplier,
   } = searchParams;
 
   const dbs = ((Array.isArray(db) ? db : db?.split(",")) || dbIds) as IndexName[];
@@ -45,6 +47,8 @@ export function FilterDetails({ searchParams }: { searchParams: SearchParams }) 
           authority ||
           cpv ||
           localityAuthority ||
+          countyAuthority ||
+          countySupplier ||
           supplier ||
           localitySupplier ? (
             <>
@@ -58,8 +62,14 @@ export function FilterDetails({ searchParams }: { searchParams: SearchParams }) 
               {localityAuthority && (
                 <span className="mr-1">{`; localitate autoritate: ${localityAuthority}.`}</span>
               )}
+              {countyAuthority && (
+                <span className="mr-1">{`; judet autoritate: ${countyAuthority}.`}</span>
+              )}
               {localitySupplier && (
                 <span className="mr-1">{`; localitate firma: ${localitySupplier}.`}</span>
+              )}
+              {countySupplier && (
+                <span className="mr-1">{`; judet firma: ${countySupplier}.`}</span>
               )}
             </>
           ) : null}

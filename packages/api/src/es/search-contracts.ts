@@ -27,8 +27,10 @@ export async function searchContracts({
     authority,
     cpv,
     localityAuthority,
+    countyAuthority,
     supplier,
     localitySupplier,
+    countySupplier,
   } = filters;
 
   if (db?.filter((d) => [ES_INDEX_DIRECT, ES_INDEX_PUBLIC].includes(d)).length === 0) {
@@ -41,7 +43,7 @@ export async function searchContracts({
         query
           ? {
               multi_match: {
-                query: query,
+                query,
                 type: "phrase",
                 lenient: true,
               },
@@ -83,9 +85,55 @@ export async function searchContracts({
                       : undefined,
                     localityAuthority
                       ? {
-                          match_phrase: {
-                            "publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.city":
-                              localityAuthority,
+                          bool: {
+                            should: [
+                              {
+                                match_phrase: {
+                                  "publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.city":
+                                    localityAuthority,
+                                },
+                              },
+                              {
+                                match_phrase: {
+                                  "publicNotice.caNoticeEdit_New_U.section1_New_U.section1_1.caAddress.city":
+                                    localityAuthority,
+                                },
+                              },
+                            ],
+                            minimum_should_match: 1,
+                          },
+                        }
+                      : undefined,
+                    countyAuthority
+                      ? {
+                          bool: {
+                            should: [
+                              {
+                                match_phrase: {
+                                  "publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.county.text":
+                                    countyAuthority,
+                                },
+                              },
+                              {
+                                match_phrase: {
+                                  "publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.nutsCodeItem.text":
+                                    countyAuthority,
+                                },
+                              },
+                              {
+                                match_phrase: {
+                                  "publicNotice.caNoticeEdit_New_U.section1_New_U.section1_1.caAddress.nutsCodeItem.text":
+                                    countyAuthority,
+                                },
+                              },
+                              {
+                                match_phrase: {
+                                  "publicNotice.caNoticeEdit_New_U.section1_New_U.section1_1.caAddress.county.text":
+                                    countyAuthority,
+                                },
+                              },
+                            ],
+                            minimum_should_match: 1,
                           },
                         }
                       : undefined,
@@ -100,6 +148,27 @@ export async function searchContracts({
                       ? {
                           match_phrase: {
                             "noticeContracts.items.winner.address.city": localitySupplier,
+                          },
+                        }
+                      : undefined,
+                    countySupplier
+                      ? {
+                          bool: {
+                            should: [
+                              {
+                                match_phrase: {
+                                  "noticeContracts.items.winner.address.county.text":
+                                    countySupplier,
+                                },
+                              },
+                              {
+                                match_phrase: {
+                                  "noticeContracts.items.winner.address.nutsCodeItem.text":
+                                    countySupplier,
+                                },
+                              },
+                            ],
+                            minimum_should_match: 1,
                           },
                         }
                       : undefined,
@@ -147,6 +216,13 @@ export async function searchContracts({
                           },
                         }
                       : undefined,
+                    countyAuthority
+                      ? {
+                          match_phrase: {
+                            "authority.county": countyAuthority,
+                          },
+                        }
+                      : undefined,
                     supplier
                       ? {
                           match_phrase: {
@@ -158,6 +234,13 @@ export async function searchContracts({
                       ? {
                           match_phrase: {
                             "supplier.city": localitySupplier,
+                          },
+                        }
+                      : undefined,
+                    countySupplier
+                      ? {
+                          match_phrase: {
+                            "supplier.county": countySupplier,
                           },
                         }
                       : undefined,

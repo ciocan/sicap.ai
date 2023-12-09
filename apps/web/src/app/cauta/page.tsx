@@ -15,7 +15,7 @@ export async function generateMetadata({ searchParams }: PageProps) {
   const query = searchParams.q as string;
 
   return {
-    title: `Cǎutare: "${query}"`,
+    title: `Cǎutare: "${query || "..."}"`,
     description: "Caută în baza de date a contractelor publice din România",
   };
 }

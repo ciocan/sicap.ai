@@ -56,6 +56,7 @@ export const checkSearchTerms = (searchTerms) => {
     "cpv",
     "supplier",
     "localityAuthority",
+    "countyAuthority",
     "localitySupplier",
   ];
   const isAllowed = Object.keys(searchTerms).every((value) => !notAllowed.includes(value));

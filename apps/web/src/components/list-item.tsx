@@ -27,8 +27,12 @@ export function ListItem({ id, index, fields }: ListItemProps) {
     cpvCodeAndName,
     contractingAuthorityName,
     contractingAuthorityId,
+    localityAuthority,
+    countyAuthority,
     supplierName,
     supplierId,
+    localitySupplier,
+    countySupplier,
     state,
     stateId,
     type,
@@ -76,6 +80,12 @@ export function ListItem({ id, index, fields }: ListItemProps) {
               <span>{contractingAuthorityName}</span>
             </p>
           </Link>
+          <p className="flex items-center gap-2 text-xs">
+            <span className="text-gray-500">Localitate:</span>
+            <span>{localityAuthority}</span>
+            <span className="text-gray-500">Judet:</span>
+            <span>{countyAuthority}</span>
+          </p>
           <Link href={supplierLink} prefetch={false} className="py-2">
             <p className="flex items-center gap-2 text-sm">
               <span>
@@ -84,6 +94,12 @@ export function ListItem({ id, index, fields }: ListItemProps) {
               <span>{supplierName ?? "-"}</span>
             </p>
           </Link>
+          <p className="flex items-center gap-2 text-xs">
+            <span className="text-gray-500">Localitate:</span>
+            <span>{localitySupplier ?? "-"}</span>
+            <span className="text-gray-500">Judet:</span>
+            <span>{countySupplier ?? "-"}</span>
+          </p>
         </CardContent>
         <CardContent className="flex sm:flex-row flex-col gap-2">
           {index === ES_INDEX_DIRECT && state && (
