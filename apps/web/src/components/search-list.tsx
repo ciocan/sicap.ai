@@ -18,8 +18,10 @@ export interface SearchParams {
   authority: string;
   cpv: string;
   localityAuthority: string;
+  countyAuthority: string;
   supplier: string;
   localitySupplier: string;
+  countySupplier: string;
 }
 
 interface SearchListProps {
@@ -39,8 +41,10 @@ export async function SearchList({ searchParams }: SearchListProps) {
     authority,
     cpv,
     localityAuthority,
+    countyAuthority,
     supplier,
     localitySupplier,
+    countySupplier,
   } = searchParams;
 
   const dbs = ((Array.isArray(db) ? db : db?.split(",")) || dbIds) as IndexName[];
@@ -54,8 +58,10 @@ export async function SearchList({ searchParams }: SearchListProps) {
     valueTo,
     authority,
     localityAuthority,
+    countyAuthority,
     supplier,
     localitySupplier,
+    countySupplier,
   };
 
   const results = await searchContracts({ query, page, perPage, filters });

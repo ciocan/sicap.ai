@@ -11,8 +11,10 @@ export interface SearchFilters {
   authority?: string;
   cpv?: string;
   localityAuthority?: string;
+  countyAuthority?: string;
   supplier?: string;
   localitySupplier?: string;
+  countySupplier?: string;
 }
 export interface SearchProps {
   query: string;
@@ -31,9 +33,11 @@ export interface SearchItemDirect {
   supplierId: string;
   supplierName: string;
   localitySupplier: string;
+  countySupplier: string;
   contractingAuthorityId: string;
   contractingAuthorityName: string;
   localityAuthority: string;
+  countyAuthority: string;
   state: string;
   stateId: number;
   type: string;

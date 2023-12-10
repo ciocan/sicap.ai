@@ -37,8 +37,10 @@ const defaultValues = {
   authority: "",
   cpv: "",
   localityAuthority: "",
+  countyAuthority: "",
   supplier: "",
   localitySupplier: "",
+  countySupplier: "",
 };
 
 const formSchema = z
@@ -54,8 +56,10 @@ const formSchema = z
     authority: z.string().optional(),
     cpv: z.string().optional(),
     localityAuthority: z.string().optional(),
+    countyAuthority: z.string().optional(),
     supplier: z.string().optional(),
     localitySupplier: z.string().optional(),
+    countySupplier: z.string().optional(),
   })
   .refine(
     (data) => {
@@ -91,9 +95,11 @@ const formSchema = z
         !data.valueTo &&
         !data.authority &&
         !data.localityAuthority &&
+        !data.countyAuthority &&
         !data.cpv &&
         !data.supplier &&
-        !data.localitySupplier
+        !data.localitySupplier &&
+        !data.countySupplier
       ) {
         return false;
       }
@@ -371,6 +377,26 @@ export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
                   )}
                 />
               </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="countyAuthority" className="text-right">
+                  Judet
+                </Label>
+                <FormField
+                  control={form.control}
+                  name="countyAuthority"
+                  render={({ field }) => (
+                    <FormItem className="col-span-3">
+                      <Input
+                        id="countyAuthority"
+                        type="search"
+                        className="col-span-3"
+                        placeholder="Prahova..."
+                        {...field}
+                      />
+                    </FormItem>
+                  )}
+                />
+              </div>
               <Separator />
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="supplier" className="text-right">
@@ -406,6 +432,26 @@ export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
                         type="search"
                         className="col-span-3"
                         placeholder="Baicoi..."
+                        {...field}
+                      />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="countySupplier" className="text-right">
+                  Judet
+                </Label>
+                <FormField
+                  control={form.control}
+                  name="countySupplier"
+                  render={({ field }) => (
+                    <FormItem className="col-span-3">
+                      <Input
+                        id="countySupplier"
+                        type="search"
+                        className="col-span-3"
+                        placeholder="Prahova..."
                         {...field}
                       />
                     </FormItem>
