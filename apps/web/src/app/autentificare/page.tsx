@@ -32,7 +32,8 @@ export default async function Page() {
     <div className="container px-8 py-4 flex flex-col gap-2 lg:max-w-7xl">
       <div className="flex flex-col gap-4 max-w-xl place-center place-self-center mt-20">
         <h1 className="text-lg">
-          Pentru a beneficia de urmatoarele facilitatie trebuie sa fii utilizator autentificat.
+          Pentru a accesa toate funcționalitățile disponibile, este necesar să te autentifici în
+          contul tău.
         </h1>
         <ul>
           {items.map((item) => (
