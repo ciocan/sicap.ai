@@ -72,3 +72,7 @@ export const captureAboutMenuClick = () => {
 export const captureCloudifyLinkClick = () => {
   capture("cloudify link clicked");
 };
+
+export const captureCSVDownloadButtonClick = (props = {}) => {
+  capture("csv download button clicked", props);
+};

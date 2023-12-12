@@ -5,6 +5,7 @@ import { ListItem } from "./list-item";
 import { Pagination } from "./pagination";
 import { PerPage } from "./per-page";
 import { FilterDetails } from "./filter-details";
+import { CSVDownload } from "./csv-download";
 
 export interface SearchParams {
   q: string;
@@ -73,7 +74,8 @@ export async function SearchList({ searchParams }: SearchListProps) {
       </h3>
       <div className="flex items-center gap-4 justify-between">
         <FilterDetails searchParams={searchParams} />
-        <div>
+        <div className="flex gap-2">
+          <CSVDownload items={results.items} />
           <PerPage total={perPage} />
         </div>
       </div>
