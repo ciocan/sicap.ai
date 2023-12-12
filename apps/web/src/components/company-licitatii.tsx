@@ -6,6 +6,7 @@ import { type SearchParams } from "./search-list";
 import { Chart } from "./chart";
 import { type SLUG } from "@/utils/types";
 import { PerPage } from "./per-page";
+import { CSVDownload } from "./csv-download";
 
 interface CompanyAchizitiiProps {
   id: string;
@@ -57,7 +58,10 @@ export async function CompanyLicitatii({ id, slug, searchParams }: CompanyAchizi
           <h3 className="text-xs">
             Pagina {page} din {formatNumber(results.total)} rezultate
           </h3>
-          <PerPage total={perPage} pathname={`/licitatii/${slug}/${id}`} />
+          <div className="flex gap-2">
+            <CSVDownload items={results.items} />
+            <PerPage total={perPage} pathname={`/licitatii/${slug}/${id}`} />
+          </div>
         </div>
         <div className="flex flex-col gap-4">
           {results.items.map((item) => (
