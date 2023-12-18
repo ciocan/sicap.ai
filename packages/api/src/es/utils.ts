@@ -1,7 +1,8 @@
-import { Bucket, SearchItemDirect, SearchItemPublic } from "./types";
+import { Bucket, SearchItemDirect, SearchItemOffline, SearchItemPublic } from "./types";
 
 export const ES_INDEX_PUBLIC = "licitatii-publice";
 export const ES_INDEX_DIRECT = "achizitii-directe";
+export const ES_INDEX_OFFLINE = "achizitii-offline";
 
 export type Fields = Record<string, (string | number)[]>;
 
@@ -9,6 +10,27 @@ export const RESULTS_PER_PAGE = 20;
 
 export function transformItem(index: string, fields: Fields, highlight: Fields) {
   switch (index) {
+    case ES_INDEX_OFFLINE:
+      return {
+        date: fields["item.publicationDate"]?.[0],
+        name: fields["item.contractObject"]?.[0],
+        code: fields["item.noticeNo"]?.[0],
+        cpvCode: fields["details.cpvCode.localeKey"]?.[0],
+        cpvCodeAndName: fields["item.cpvCode"]?.[0],
+        value: fields["item.awardedValue"]?.[0] || 0,
+        supplierId: fields["details.noticeEntityAddress.fiscalNumber"]?.[0],
+        supplierName: fields["item.supplier"]?.[0],
+        localitySupplier: fields["details.noticeEntityAddress.city"]?.[0],
+        countySupplier: fields["supplier.county"]?.[0], // TODO: add this field to the index
+        contractingAuthorityId: fields["details.contractingAuthorityID"]?.[0],
+        contractingAuthorityName: fields["item.contractingAuthority"]?.[0],
+        localityAuthority: fields["authority.city"]?.[0], // TODO: add this field to the index
+        countyAuthority: fields["authority.county"]?.[0], // TODO: add this field to the index
+        state: fields["item.sysNoticeState.text"]?.[0],
+        stateId: fields["item.sysNoticeState.id"]?.[0],
+        type: fields["details.sysAcquisitionContractType.text"]?.[0],
+        typeId: fields["details.sysAcquisitionContractType.id"]?.[0],
+      } as SearchItemOffline;
     case ES_INDEX_DIRECT:
       return {
         date: fields["item.publicationDate"]?.[0],
@@ -93,6 +115,28 @@ export const fieldsAchizitii = [
   "publicDirectAcquisition.contractingAuthorityID",
   "publicDirectAcquisition.sysAcquisitionContractType.*",
   "publicDirectAcquisition.sysAcquisitionContractTypeID",
+  "authority.city",
+  "authority.county",
+  "supplier.city",
+  "supplier.county",
+] as const;
+
+export const fieldsAchizitiiOffline = [
+  "item.contractId",
+  "item.contractObject",
+  "item.noticeNo",
+  "item.publicationDate",
+  "item.awardedValue",
+  "item.supplier",
+  "item.contractingAuthority",
+  "item.sysNoticeState.*",
+  "item.sysNoticeState.id",
+  "item.sysAcquisitionContractType.*",
+  "item.sysAcquisitionContractType.id",
+  "details.cpvCode.*",
+  "details.noticeEntityAddress.fiscalNumber",
+  "details.noticeEntityAddress.city",
+  "details.contractingAuthorityID",
   "authority.city",
   "authority.county",
   "supplier.city",

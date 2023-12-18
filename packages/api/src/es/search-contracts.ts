@@ -4,11 +4,13 @@ import { esClient } from "./config";
 import {
   ES_INDEX_DIRECT,
   ES_INDEX_PUBLIC,
+  ES_INDEX_OFFLINE,
   RESULTS_PER_PAGE,
   Fields,
   fieldsAchizitii,
   filedsLicitatii,
   transformItem,
+  fieldsAchizitiiOffline,
 } from "./utils";
 import { IndexName, SearchProps } from "./types";
 
@@ -33,7 +35,9 @@ export async function searchContracts({
     countySupplier,
   } = filters;
 
-  if (db?.filter((d) => [ES_INDEX_DIRECT, ES_INDEX_PUBLIC].includes(d)).length === 0) {
+  if (
+    db?.filter((d) => [ES_INDEX_DIRECT, ES_INDEX_PUBLIC, ES_INDEX_OFFLINE].includes(d)).length === 0
+  ) {
     throw new Error("Baza de date nu este specificata.");
   }
 
@@ -254,6 +258,78 @@ export async function searchContracts({
                   ].filter(Boolean),
                 },
               },
+              // achizitii offline
+              {
+                bool: {
+                  filter: [
+                    {
+                      range: {
+                        "item.publicationDate": {
+                          gte: dateFrom,
+                          lte: dateTo,
+                        },
+                      },
+                    },
+                    {
+                      range: {
+                        "item.awardedValue": {
+                          gte: valueFrom,
+                          lte: valueTo,
+                        },
+                      },
+                    },
+                    authority
+                      ? {
+                          match_phrase: {
+                            "item.contractingAuthority": authority,
+                          },
+                        }
+                      : undefined,
+                    localityAuthority
+                      ? {
+                          match_phrase: {
+                            "authority.city": localityAuthority,
+                          },
+                        }
+                      : undefined,
+                    countyAuthority
+                      ? {
+                          match_phrase: {
+                            "authority.county": countyAuthority,
+                          },
+                        }
+                      : undefined,
+                    supplier
+                      ? {
+                          match_phrase: {
+                            "item.supplier": supplier,
+                          },
+                        }
+                      : undefined,
+                    localitySupplier
+                      ? {
+                          match_phrase: {
+                            "details.noticeEntityAddress.city": localitySupplier,
+                          },
+                        }
+                      : undefined,
+                    countySupplier
+                      ? {
+                          match_phrase: {
+                            "supplier.county": countySupplier,
+                          },
+                        }
+                      : undefined,
+                    cpv
+                      ? {
+                          match_phrase: {
+                            "item.cpvCode": cpv,
+                          },
+                        }
+                      : undefined,
+                  ].filter(Boolean),
+                },
+              },
             ],
           },
         },
@@ -295,7 +371,7 @@ export async function searchContracts({
       from: (page - 1) * perPage,
       size: perPage,
     },
-    fields: [...fieldsAchizitii, ...filedsLicitatii],
+    fields: [...fieldsAchizitii, ...filedsLicitatii, ...fieldsAchizitiiOffline],
     _source: false,
   };
 

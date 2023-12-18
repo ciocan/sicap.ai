@@ -1,6 +1,6 @@
-import { ES_INDEX_DIRECT, ES_INDEX_PUBLIC } from "./utils";
+import { ES_INDEX_DIRECT, ES_INDEX_OFFLINE, ES_INDEX_PUBLIC } from "./utils";
 
-export type IndexName = typeof ES_INDEX_PUBLIC | typeof ES_INDEX_DIRECT;
+export type IndexName = typeof ES_INDEX_PUBLIC | typeof ES_INDEX_DIRECT | typeof ES_INDEX_OFFLINE;
 
 export interface SearchFilters {
   db?: IndexName[];
@@ -51,6 +51,8 @@ export interface SearchItemPublic extends SearchItemDirect {
   assigmentTypeId: string;
   supplierFiscalNumber: string;
 }
+
+export interface SearchItemOffline extends SearchItemDirect {}
 
 export interface Bucket {
   key_as_string: string;
