@@ -15,10 +15,9 @@ export default async function Page() {
           <span className="font-bold">SICAP</span>.ai
         </h1>
         <h2 className="text-xs text-center">
-          <span className="font-mono font-bold">{formatNumber(licitatii)}</span> licitatii publice, {" "}
+          <span className="font-mono font-bold">{formatNumber(licitatii)}</span> licitatii publice,{" "}
           <span className="font-mono font-bold">{formatNumber(achizitii)}</span> achizitii directe
-          si <span className="font-mono font-bold">{formatNumber(offline)}</span> achizitii
-          offline
+          si <span className="font-mono font-bold">{formatNumber(offline)}</span> achizitii offline
         </h2>
       </div>
       <div className="px-2 max-w-lg w-full">
