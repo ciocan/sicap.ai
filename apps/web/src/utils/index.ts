@@ -1,4 +1,4 @@
-import { ES_INDEX_DIRECT, ES_INDEX_PUBLIC } from "@sicap/api/dist/es/utils.mjs";
+import { ES_INDEX_DIRECT, ES_INDEX_OFFLINE, ES_INDEX_PUBLIC } from "@sicap/api/dist/es/utils.mjs";
 
 export const allowedSlugs = ["firma", "autoritate", "cpv"];
 
@@ -10,6 +10,10 @@ export const databases = [
   {
     id: ES_INDEX_DIRECT,
     label: "Achizitii directe",
+  },
+  {
+    id: ES_INDEX_OFFLINE,
+    label: "Achizitii offline",
   },
 ] as const;
 

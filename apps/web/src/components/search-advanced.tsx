@@ -203,7 +203,7 @@ export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
                     name="db"
                     render={() => (
                       <FormItem className="col-span-3">
-                        <div className="flex items-center gap-4">
+                        <div className="flex flex-col gap-4">
                           {databases.map((item) => (
                             <FormField
                               key={item.id}

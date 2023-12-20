@@ -2,15 +2,15 @@ import Link from "next/link";
 import { Building, Briefcase } from "lucide-react";
 
 import { Card, CardHeader, CardContent, CardDescription, CardTitle, Badge } from "@sicap/ui";
-import type { SearchItemDirect, SearchItemPublic, IndexName } from "@sicap/api";
+import type { SearchItemDirect, SearchItemPublic, IndexName, SearchItemOffline } from "@sicap/api";
 import { getDay, getMonth, getYear } from "@sicap/api";
-import { ES_INDEX_DIRECT, ES_INDEX_PUBLIC } from "@sicap/api/dist/es/utils.mjs";
+import { ES_INDEX_DIRECT, ES_INDEX_PUBLIC, ES_INDEX_OFFLINE } from "@sicap/api/dist/es/utils.mjs";
 import { moneyEur, moneyRon } from "@/utils";
 
 interface ListItemProps {
   id: string;
   index: IndexName;
-  fields: SearchItemPublic | SearchItemDirect | undefined;
+  fields: SearchItemPublic | SearchItemDirect | SearchItemOffline | undefined;
 }
 
 export function ListItem({ id, index, fields }: ListItemProps) {
@@ -50,7 +50,12 @@ export function ListItem({ id, index, fields }: ListItemProps) {
   const ronValue = Number(value);
   const contractingAuthorityLink = `/${indexSlug}/autoritate/${contractingAuthorityId}`;
   const supplierLink = supplierId ? `/${indexSlug}/firma/${supplierId}` : "#";
-  const indexText = index === ES_INDEX_DIRECT ? "Achizitie directa" : "Licitatie publica";
+  const indexText =
+    index === ES_INDEX_DIRECT
+      ? "Achizitie directa"
+      : index === ES_INDEX_OFFLINE
+      ? "Achizitie Offline"
+      : "Licitatie publica";
 
   return (
     <Card className="flex flex-col sm:flex-row justify-between hover:bg-slate-50 hover:dark:bg-slate-800">
@@ -82,9 +87,9 @@ export function ListItem({ id, index, fields }: ListItemProps) {
           </Link>
           <p className="flex items-center gap-2 text-xs">
             <span className="text-gray-500">Localitate:</span>
-            <span>{localityAuthority}</span>
+            <span>{localityAuthority ?? "-"}</span>
             <span className="text-gray-500">Judet:</span>
-            <span>{countyAuthority}</span>
+            <span>{countyAuthority ?? "-"}</span>
           </p>
           <Link href={supplierLink} prefetch={false} className="py-2">
             <p className="flex items-center gap-2 text-sm">
@@ -108,6 +113,7 @@ export function ListItem({ id, index, fields }: ListItemProps) {
           {index === ES_INDEX_PUBLIC && state && (
             <Badge variant={[3].includes(stateId) ? "destructive" : "secondary"}>{state}</Badge>
           )}
+          {index === ES_INDEX_OFFLINE && state && <Badge variant="secondary">{state}</Badge>}
           {type && <Badge variant="secondary">{type}</Badge>}
           {procedureType && <Badge variant="outline">{procedureType}</Badge>}
           {assigmentType && <Badge variant="outline">{assigmentType}</Badge>}

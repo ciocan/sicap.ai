@@ -43,7 +43,7 @@ export async function CompanyAchizitii({ id, slug, searchParams }: CompanyAchizi
       <div className="space-y-2">
         <h1 className="font-semibold text-lg">{title}</h1>
         <p className="text-sm">
-          {formatNumber(total)} contracte in valoare de{" "}
+          {formatNumber(total)} achizitii in valoare de{" "}
           <span className="text-primary font-mono">{totalValueRon}</span> /{" "}
           <span className="font-mono">{totalValueEur}</span>
         </p>

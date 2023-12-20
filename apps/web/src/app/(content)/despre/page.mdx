@@ -12,13 +12,14 @@ export const dynamic = 'force-dynamic'
 export const totals = await getTotal();
 export const licitatii = formatNumber(totals.licitatii);
 export const achizitii = formatNumber(totals.achizitii);
+export const offline = formatNumber(totals.offline);
 
 # Despre
 
 SICAP.ai este un motor de cautare pentru baza de date a licitatiilor publice si achizitiilor directe.
 Datele sunt preluate din portalul guvernamental de licitatii publice [e-licitatie.ro](https://www.e-licitatie.ro/) în baza [Licenței pentru Guvernare Deschisa](https://data.gov.ro/base/images/logoinst/OGL-ROU-1.0.pdf) v1.0 
 
-Contractele de licitatii publice si achizitii directe se actualizeaza zilnic iar in prezent sunt indexate **_{licitatii}_ licitatii publice** si **_{achizitii}_ achizitii directe**.
+Contractele de licitatii publice si achizitii directe se actualizeaza zilnic iar in prezent sunt indexate **_{licitatii}_ licitatii publice**, **_{achizitii}_ achizitii directe** si **_{offline}_ achizitii offline**.
 
 Scopul acestui proiect este de a aduce mai multa transparenta pentru cheltuielile publice si de a putea detecta eventualele suspiciuni de frauda cu ajutorul comunitatii si inteligentei artificiale.
 

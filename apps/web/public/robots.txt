@@ -13,3 +13,4 @@ Sitemap: https://sicap.ai/sitemaps/achizitii.autoritati.xml
 Sitemap: https://sicap.ai/sitemaps/licitatii.xml
 Sitemap: https://sicap.ai/sitemaps/licitatii.cpv.xml
 Sitemap: https://sicap.ai/sitemaps/achizitii.cpv.xml
+Sitemap: https://sicap.ai/sitemaps/achizitii-offline.xml
