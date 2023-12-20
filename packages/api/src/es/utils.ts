@@ -18,7 +18,9 @@ export function transformItem(index: string, fields: Fields, highlight: Fields) 
         cpvCode: fields["details.cpvCode.localeKey"]?.[0],
         cpvCodeAndName: fields["item.cpvCode"]?.[0],
         value: fields["item.awardedValue"]?.[0] || 0,
-        supplierId: fields["details.noticeEntityAddress.fiscalNumber"]?.[0],
+        supplierId:
+          fields["supplier.entityId"]?.[0] ||
+          `${fields["details.noticeEntityAddress.fiscalNumber"]?.[0]}?isFiscal=true`,
         supplierName: fields["item.supplier"]?.[0],
         localitySupplier: fields["details.noticeEntityAddress.city"]?.[0],
         countrySupplier: fields["details.noticeEntityAddress.country.text"]?.[0],
@@ -130,6 +132,7 @@ export const fieldsAchizitiiOffline = [
   "item.awardedValue",
   "item.supplier",
   "item.cpvCategory",
+  "item.cpvCode",
   "item.contractingAuthority",
   "item.sysNoticeState.*",
   "details.sysAcquisitionContractType.*",
@@ -141,6 +144,7 @@ export const fieldsAchizitiiOffline = [
   "details.contractDate",
   "authority.city",
   "authority.county",
+  "supplier.entityId",
   "supplier.city",
   "supplier.county",
 ] as const;

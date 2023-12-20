@@ -3,6 +3,7 @@ export const itemProps = [
   "contractObject",
   "sysNoticeState",
   "noticeNo",
+  "cpvCode",
   "publicationDate",
   "awardedValue",
   "contractingAuthority",

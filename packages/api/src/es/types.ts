@@ -72,4 +72,5 @@ export interface Args {
   cpvCode?: string;
   page?: number;
   perPage?: number;
+  isFiscal?: string;
 }

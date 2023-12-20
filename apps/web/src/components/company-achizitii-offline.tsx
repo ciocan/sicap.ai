@@ -1,5 +1,5 @@
 import { formatNumber, moneyEur, moneyRon } from "@/utils";
-import { getCompanyLicitatii } from "@sicap/api";
+import { getCompanyAchizitiiOffline } from "@sicap/api";
 import { ListItem } from "./list-item";
 import { Pagination } from "./pagination";
 import { type SearchParams } from "./search-list";
@@ -14,29 +14,32 @@ interface CompanyAchizitiiProps {
   searchParams: SearchParams;
 }
 
-export async function CompanyLicitatii({ id, slug, searchParams }: CompanyAchizitiiProps) {
-  const { p: page = 1, perPage = 20 } = searchParams;
+export async function CompanyAchizitiiOffline({ id, slug, searchParams }: CompanyAchizitiiProps) {
+  const { p: page = 1, perPage = 20, isFiscal } = searchParams;
+
   const propMappings = {
     autoritate: { authorityId: id },
-    firma: { supplierId: id },
+    firma: { supplierId: id, isFiscal },
     cpv: { cpvCode: id },
   };
   const companyProps = propMappings[slug];
-  const results = await getCompanyLicitatii({ ...companyProps, page, perPage });
-  const { total, contractingAuthority, supplier, stats } = results;
-  const { nationalIDNumber, officialName, city, county } = contractingAuthority;
+  const results = await getCompanyAchizitiiOffline({ ...companyProps, page, perPage });
+  const { total, contractingAuthority, supplier, stats, details } = results;
+  const { fiscalNumber, entityName, city, county } = contractingAuthority;
+  const { noticeEntityAddress } = details;
 
   const totalValue = stats?.years.map((y) => y.value).reduce((a, b) => a + b, 0);
   const totalValueRon = moneyRon(totalValue);
   const totalValueEur = moneyEur(totalValue);
 
+  const firma =
+    isFiscal === "true"
+      ? `${noticeEntityAddress.fiscalNumber} / ${noticeEntityAddress.organization} / ${noticeEntityAddress.city}, ${noticeEntityAddress.country.text}`
+      : `${supplier?.fiscalNumber} / ${supplier?.entityName} / ${supplier?.city}, ${supplier?.county}`;
+
   const titleMappings = {
-    autoritate: `${nationalIDNumber} / ${officialName} / ${city} ${
-      county?.text ? `, ${county?.text}` : ""
-    }`,
-    firma: `${supplier?.fiscalNumber} / ${supplier?.name} / ${supplier?.address.city} ${
-      supplier?.address.county?.text ? `, ${supplier?.address.county?.text}` : ""
-    }`,
+    autoritate: `${fiscalNumber} / ${entityName} / ${city}, ${county}`,
+    firma,
     cpv: `${results.contractingAuthority.cpvCodeAndName}`,
   };
 
@@ -47,7 +50,7 @@ export async function CompanyLicitatii({ id, slug, searchParams }: CompanyAchizi
       <div className="space-y-2">
         <h1 className="font-semibold text-lg">{title}</h1>
         <p className="text-sm">
-          {formatNumber(total)} licitatii in valoare de{" "}
+          {formatNumber(total)} achizitii offline in valoare de{" "}
           <span className="text-primary font-mono">{totalValueRon}</span> /{" "}
           <span className="font-mono">{totalValueEur}</span>
         </p>
@@ -60,7 +63,7 @@ export async function CompanyLicitatii({ id, slug, searchParams }: CompanyAchizi
           </h3>
           <div className="flex gap-2">
             <CSVDownload items={results.items} />
-            <PerPage total={perPage} pathname={`/licitatii/${slug}/${id}`} />
+            <PerPage total={perPage} pathname={`/achizitii-offline/${slug}/${id}`} />
           </div>
         </div>
         <div className="flex flex-col gap-4">
@@ -72,7 +75,7 @@ export async function CompanyLicitatii({ id, slug, searchParams }: CompanyAchizi
           page={page}
           hasPreviousPage={page > 1}
           hasNextPage={page * perPage < results.total}
-          pathname={`/licitatii/${slug}/${id}`}
+          pathname={`/achizitii-offline/${slug}/${id}`}
         />
       </div>
     </div>

@@ -113,6 +113,7 @@ export function ListItem({ id, index, fields }: ListItemProps) {
           {index === ES_INDEX_PUBLIC && state && (
             <Badge variant={[3].includes(stateId) ? "destructive" : "secondary"}>{state}</Badge>
           )}
+          {index === ES_INDEX_OFFLINE && state && <Badge variant="secondary">{state}</Badge>}
           {type && <Badge variant="secondary">{type}</Badge>}
           {procedureType && <Badge variant="outline">{procedureType}</Badge>}
           {assigmentType && <Badge variant="outline">{assigmentType}</Badge>}

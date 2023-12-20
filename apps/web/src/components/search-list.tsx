@@ -23,6 +23,7 @@ export interface SearchParams {
   supplier: string;
   localitySupplier: string;
   countySupplier: string;
+  isFiscal?: string;
 }
 
 interface SearchListProps {

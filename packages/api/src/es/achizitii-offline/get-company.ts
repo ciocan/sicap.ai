@@ -2,19 +2,24 @@ import { SearchTotalHits } from "@elastic/elasticsearch/lib/api/types";
 
 import { esClient } from "../config";
 import {
-  ES_INDEX_DIRECT,
+  ES_INDEX_OFFLINE,
   Fields,
   RESULTS_PER_PAGE,
-  fieldsAchizitii,
+  fieldsAchizitiiOffline,
   mapBucket,
   transformItem,
 } from "../utils";
 import { RootObject } from "./types";
 import { Args, Buckets, IndexName } from "../types";
 
-const getQueryForSupplierId = (id: string | undefined) => {
+const getQueryForSupplierId = (id: string | undefined, isFiscal: string | undefined) => {
   if (!id) {
     return { match_all: {} };
+  }
+  if (isFiscal === "true") {
+    return {
+      match: { "details.noticeEntityAddress.fiscalNumber": id },
+    };
   }
   return {
     match: { "supplier.entityId": Number(id) },
@@ -29,7 +34,7 @@ const getQueryForAuthorityId = (id: string | undefined) => {
 };
 
 const getQueryForCpvCode = (cpvCode: string | undefined) => {
-  return { match: { "publicDirectAcquisition.cpvCode.localeKey.keyword": cpvCode } };
+  return { match: { "details.cpvCode.localeKey.keyword": cpvCode } };
 };
 
 const getType = (supplierId?: string, authorityId?: string, cpvCode?: string) => {
@@ -45,7 +50,7 @@ const getType = (supplierId?: string, authorityId?: string, cpvCode?: string) =>
 };
 
 export async function getCompanyAchizitiiOffline(args: Args) {
-  const { supplierId, authorityId, cpvCode, page = 1, perPage = RESULTS_PER_PAGE } = args;
+  const { supplierId, isFiscal, authorityId, cpvCode, page = 1, perPage = RESULTS_PER_PAGE } = args;
 
   if (!supplierId && !authorityId && !cpvCode) {
     throw new Error(
@@ -54,7 +59,7 @@ export async function getCompanyAchizitiiOffline(args: Args) {
   }
 
   const queryTypeMappings = {
-    supplierId: getQueryForSupplierId(supplierId),
+    supplierId: getQueryForSupplierId(supplierId, isFiscal),
     authorityId: getQueryForAuthorityId(authorityId),
     cpvCode: getQueryForCpvCode(cpvCode),
   };
@@ -63,7 +68,7 @@ export async function getCompanyAchizitiiOffline(args: Args) {
   const query = queryTypeMappings[type];
 
   const result = await esClient.search({
-    index: ES_INDEX_DIRECT,
+    index: ES_INDEX_OFFLINE,
     body: {
       query,
       sort: [
@@ -83,7 +88,7 @@ export async function getCompanyAchizitiiOffline(args: Args) {
           aggs: {
             sales: {
               sum: {
-                field: "item.closingValue",
+                field: "item.awardedValue",
               },
             },
           },
@@ -96,7 +101,7 @@ export async function getCompanyAchizitiiOffline(args: Args) {
           aggs: {
             sales: {
               sum: {
-                field: "item.closingValue",
+                field: "item.awardedValue",
               },
             },
           },
@@ -105,7 +110,7 @@ export async function getCompanyAchizitiiOffline(args: Args) {
       from: (page - 1) * perPage,
       size: perPage,
     },
-    fields: [...fieldsAchizitii],
+    fields: [...fieldsAchizitiiOffline],
   });
 
   const size = Buffer.byteLength(JSON.stringify(result));
@@ -131,6 +136,7 @@ export async function getCompanyAchizitiiOffline(args: Args) {
     size,
     total: total.value,
     supplier: firstContract._source.supplier,
+    details: firstContract._source.details,
     contractingAuthority: {
       ...firstContract._source.authority,
       cpvCodeAndName: firstContract._source.item.cpvCode,
