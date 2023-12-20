@@ -7,6 +7,14 @@ import { withAxiom } from "next-axiom"
 const nextConfig = {
   reactStrictMode: true,
   pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
+  async rewrites() {
+    return [
+      {
+        source: "/ingest/:path*",
+        destination: "https://eu.posthog.com/:path*",
+      },
+    ];
+  },
   async redirects() {
     return [
       {

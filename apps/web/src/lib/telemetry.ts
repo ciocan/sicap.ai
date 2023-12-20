@@ -4,11 +4,13 @@ import { env } from "./env.client";
 
 const API_KEY = env.NEXT_PUBLIC_POSTHOG_API_KEY;
 const API_HOST = env.NEXT_PUBLIC_POSTHOG_API_HOST;
+const API_UI_HOST = env.NEXT_PUBLIC_POSTHOG_UI_HOST;
 
 const initPostHog = () => {
   if (typeof window !== "undefined") {
     posthogJs.init(API_KEY, {
       api_host: API_HOST,
+      ui_host: API_UI_HOST,
       autocapture: false,
       session_recording: {
         maskAllInputs: false,
