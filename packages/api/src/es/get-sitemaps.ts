@@ -1,6 +1,6 @@
 import { SearchRequest } from "@elastic/elasticsearch/lib/api/types";
 
-import { ES_INDEX_DIRECT, ES_INDEX_PUBLIC } from "./utils";
+import { ES_INDEX_DIRECT, ES_INDEX_OFFLINE, ES_INDEX_PUBLIC } from "./utils";
 import { esClient } from "./config";
 
 interface SearchItem {
@@ -224,4 +224,38 @@ export async function getSitemapLicitatiiCpv(size = 100) {
     console.error(error);
     throw error;
   }
+}
+
+export async function getSitemapAchizitiiOffline(size = 1000) {
+  const scrollDuration = "1m";
+  const allResults = [];
+
+  const params = {
+    index: ES_INDEX_OFFLINE,
+    scroll: scrollDuration,
+    body: {
+      query: {
+        match_all: {},
+      },
+      sort: [
+        {
+          "item.publicationDate": {
+            order: "desc",
+            unmapped_type: "boolean",
+          },
+        },
+      ],
+      _source: ["_id", "item.publicationDate"],
+      size: 10_000,
+    },
+  };
+
+  for await (const hit of scrollSearch<SearchItem>(params, size)) {
+    allResults.push({
+      id: hit._id,
+      date: hit._source?.item.publicationDate as string,
+    });
+  }
+
+  return allResults;
 }

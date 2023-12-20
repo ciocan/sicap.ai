@@ -16,6 +16,7 @@ const config = {
       `${siteUrl}/sitemaps/licitatii.xml`,
       `${siteUrl}/sitemaps/licitatii.cpv.xml`,
       `${siteUrl}/sitemaps/achizitii.cpv.xml`,
+      `${siteUrl}/sitemaps/achizitii-offline.xml`,
     ],
   },
 };

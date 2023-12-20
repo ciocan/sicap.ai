@@ -5,6 +5,7 @@ import {
   getSitemapAchizitiiAutoritati,
   getSitemapAchizitiiCpv,
   getSitemapAchizitiiFirme,
+  getSitemapAchizitiiOffline,
   getSitemapLicitatii,
   getSitemapLicitatiiCpv,
 } from "@sicap/api";
@@ -20,6 +21,7 @@ const allowedSlugs = [
   "achizitii.autoritati",
   "licitatii.cpv",
   "achizitii.cpv",
+  "achizitii-offline",
 ] as const;
 
 const size = 50_000;
@@ -51,12 +53,16 @@ export async function GET(request: Request, { params }: { params: { slug: string
       break;
     case "achizitii.autoritati":
       data = await getSitemapAchizitiiAutoritati(size);
+      break;
+    case "achizitii-offline":
+      data = await getSitemapAchizitiiOffline(size);
   }
 
   const sitemap = data.map(({ id, date }) => {
     switch (slug) {
       case "licitatii":
       case "achizitii":
+      case "achizitii-offline":
         return {
           loc: `${siteUrl}/${slug}/contract/${id}`,
           lastmod: date,

@@ -76,7 +76,7 @@ export async function ContractAchizitii({ id }: { id: string }) {
             </Link>
           }
         />
-        <RowItem label="Tipul contractului" value={sysAcquisitionContractType.text} />
+        <RowItem label="Tipul contractului" value={sysAcquisitionContractType?.text || "-"} />
         <RowItem
           label="Cod CPV"
           value={
