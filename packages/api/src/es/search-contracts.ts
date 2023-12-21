@@ -46,7 +46,7 @@ export async function searchContracts({
       must: [
         query
           ? {
-              multi_match: {
+              query_string: {
                 query,
                 type: "phrase",
                 lenient: true,

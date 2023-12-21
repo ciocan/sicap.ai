@@ -27,7 +27,7 @@ const allowedSlugs = [
 const size = 50_000;
 
 export async function GET(request: Request, { params }: { params: { slug: string } }) {
-  const slug = params.slug.replace(/\.xml$/, "") as typeof allowedSlugs[number];
+  const slug = params.slug.replace(/\.xml$/, "") as (typeof allowedSlugs)[number];
 
   if (!allowedSlugs.includes(slug)) {
     return new Response("Not found", { status: 404 });

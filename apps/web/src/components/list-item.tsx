@@ -54,8 +54,8 @@ export function ListItem({ id, index, fields }: ListItemProps) {
     index === ES_INDEX_DIRECT
       ? "Achizitie directa"
       : index === ES_INDEX_OFFLINE
-      ? "Achizitie Offline"
-      : "Licitatie publica";
+        ? "Achizitie Offline"
+        : "Licitatie publica";
 
   return (
     <Card className="flex flex-col sm:flex-row justify-between hover:bg-slate-50 hover:dark:bg-slate-800">

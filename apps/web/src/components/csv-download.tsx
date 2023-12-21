@@ -66,7 +66,16 @@ export function CSVDownload({ items }: Props) {
         }e-licitatie.ro/pub/notices/ca-notices/view-c/${id}`;
 
         const url = isAchizitii ? seapUrlAchizitii : seapUrlLicitatii;
-        return `${id},${index},${code},${date},${state},${type},${value},${cpvCodeAndName.replaceAll(",", "")},${name.replaceAll(",", "")},${contractingAuthorityName.replaceAll(",", "")},${localityAuthority},${countyAuthority},${supplierName.replaceAll(",", "")},${localitySupplier},${countySupplier},${url}`;
+        return `${id},${index},${code},${date},${state},${type},${value},${cpvCodeAndName.replaceAll(
+          ",",
+          "",
+        )},${name.replaceAll(",", "")},${contractingAuthorityName.replaceAll(
+          ",",
+          "",
+        )},${localityAuthority},${countyAuthority},${supplierName.replaceAll(
+          ",",
+          "",
+        )},${localitySupplier},${countySupplier},${url}`;
       })
       .join("\n");
     const csvContent = `data:text/csv;charset=utf-8,${header}\n${rows}`;
