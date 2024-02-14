@@ -66,3 +66,15 @@ export const checkSearchTerms = (searchTerms) => {
   const isAllowed = Object.keys(searchTerms).every((value) => !notAllowed.includes(value));
   return isAllowed;
 };
+
+export const escapeCsvString = (input: string): string => {
+  return input.replace(/[#""]/g, (match) => {
+    if (match === "#") {
+      return "";
+    }
+    if (match === '"') {
+      return '""';
+    }
+    return match;
+  });
+};
