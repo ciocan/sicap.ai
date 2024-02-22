@@ -13,6 +13,7 @@ import {
   fieldsAchizitiiOffline,
 } from "./utils";
 import { IndexName, SearchProps } from "./types";
+import { escapeQuery } from "../utils";
 
 export async function searchContracts({
   query,
@@ -41,13 +42,15 @@ export async function searchContracts({
     throw new Error("Baza de date nu este specificata.");
   }
 
+  console.log("escaped", escapeQuery(query));
+
   const querySearch = {
     bool: {
       must: [
         query
           ? {
               query_string: {
-                query,
+                query: escapeQuery(query),
                 type: "phrase",
                 lenient: true,
               },
@@ -381,7 +384,7 @@ export async function searchContracts({
   return {
     took: result.took,
     total: total.value,
-    items: result?.hits.hits.map((hit) => ({
+    items: result?.hits?.hits?.map((hit) => ({
       id: hit._id,
       index: hit._index as IndexName,
       fields: transformItem(hit._index, hit.fields as Fields, hit.highlight as Fields),

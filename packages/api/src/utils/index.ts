@@ -14,3 +14,5 @@ export const isBase64 = (str: string) => {
     return false;
   }
 };
+
+export const escapeQuery = (s: string) => s.replace(/\//g, "\\/");
