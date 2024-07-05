@@ -30,8 +30,8 @@ importers:
         specifier: ^0.3.5
         version: 0.3.5
       '@formbricks/js':
-        specifier: 1.0.7
-        version: 1.0.7
+        specifier: 2.1.0
+        version: 2.1.0
       '@libsql/client':
         specifier: ^0.3.6
         version: 0.3.6
@@ -45,8 +45,8 @@ importers:
         specifier: ^14.0.0
         version: 14.0.0(@mdx-js/loader@3.0.0)(@mdx-js/react@3.0.0)
       '@openstatus/next-monitoring':
-        specifier: ^0.0.3
-        version: 0.0.3(next@14.0.1)(react@18.2.0)
+        specifier: ^0.0.4
+        version: 0.0.4(next@14.0.1)(react@18.2.0)
       '@sicap/api':
         specifier: workspace:*
         version: link:../../packages/api
@@ -2023,8 +2023,8 @@ packages:
     resolution: {integrity: sha512-OfX7E2oUDYxtBvsuS4e/jSn4Q9Qb6DzgeYtsAdkPZ47znpoNsMgZw0+tVijiv3uGNR6dgNlty6r9rzIzHjtd/A==}
     dev: false
 
-  /@formbricks/js@1.0.7:
-    resolution: {integrity: sha512-ZA5tL/Fy9dO8WllGMZdo78k0/HmVkbn8t2HnqExzcveu0ArKETXv96pGS2kI4qiud6LDPHwbRWGvvqFy2ZKnRg==}
+  /@formbricks/js@2.1.0:
+    resolution: {integrity: sha512-UZyp5IA8cIf8A3cgzwoLa1mxbZaE8Wfh1n71JD/KlI8vABQx3P8sF5NLq9tulEhJ70zd5EesXmZaTylTsaOD0w==}
     dev: false
 
   /@hookform/resolvers@3.3.2(react-hook-form@7.47.0):
@@ -2351,8 +2351,8 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.15.0
 
-  /@openstatus/next-monitoring@0.0.3(next@14.0.1)(react@18.2.0):
-    resolution: {integrity: sha512-5e8MMTW0Ne+2XBYdewz1d0TGTFCCwEPUvD5T+RL8/2PHdWSaRUes+end9aabV5txdrXV7mmatrDxWeqrWRZfvA==}
+  /@openstatus/next-monitoring@0.0.4(next@14.0.1)(react@18.2.0):
+    resolution: {integrity: sha512-/UXWRt6hKfgGtuqvO9umBgBHDMIgs/Pkrrlt/3SWPGywkW7N5j7GGSCBwMzjs4SthPWBQRL1++lERZvaGkgEyA==}
     peerDependencies:
       next: '>=14.0.0'
       react: '>=18.2.0'

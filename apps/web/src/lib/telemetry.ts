@@ -1,4 +1,5 @@
 import posthogJs from "posthog-js";
+import formbricks from "@formbricks/js/website";
 
 import { env } from "./env.client";
 
@@ -48,7 +49,8 @@ export const captureSearchButtonClick = (props = {}) => {
 };
 
 export const captureAdvanceSearchButtonClick = (props = {}) => {
-  capture("query searched", props);
+  capture("advanced query searched", props);
+  formbricks?.track("advanced query searched");
 };
 
 export const capturePerPageListChange = (props = {}) => {
