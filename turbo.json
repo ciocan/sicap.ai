@@ -1,13 +1,41 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": ["**/.env.*local"],
-  "globalEnv": ["ES_URL", "DATABASE_URL", "DATABASE_AUTH_TOKEN", "GOOGLE_ID", "GOOGLE_SECRET", "NEXTAUTH_URL", "NEXTAUTH_SECRET", "OG_SECRET", "BASE_URL"],
-  "globalDotEnv": [".env"],
-  "pipeline": {
+  "globalDependencies": [
+    "**/.env.*local",
+    ".env"
+  ],
+  "globalEnv": [
+    "ES_URL",
+    "DATABASE_URL",
+    "DATABASE_AUTH_TOKEN",
+    "GOOGLE_ID",
+    "GOOGLE_SECRET",
+    "NEXTAUTH_URL",
+    "NEXTAUTH_SECRET",
+    "OG_SECRET",
+    "BASE_URL",
+    "LISTMONK_API_KEY",
+    "LISTMONK_API_URL",
+    "LISTMONK_FROM_EMAIL",
+    "API_SERVICES_TOKEN"
+  ],
+  "tasks": {
     "build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
-      "dotEnv": [".env.production.local", ".env.local", ".env.production", ".env"]
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**",
+        ".next/**",
+        "!.next/cache/**"
+      ],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env.production.local",
+        ".env.local",
+        ".env.production",
+        ".env"
+      ]
     },
     "lint": {
       "cache": false
@@ -22,7 +50,13 @@
     "dev": {
       "cache": false,
       "persistent": true,
-      "dotEnv": [".env.development.local", ".env.local", ".env.development", ".env"]
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env.development.local",
+        ".env.local",
+        ".env.development",
+        ".env"
+      ]
     },
     "clean": {
       "cache": false
