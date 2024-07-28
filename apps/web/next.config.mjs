@@ -5,6 +5,7 @@ import { withAxiom } from "next-axiom"
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "standalone",
   reactStrictMode: true,
   pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
   async rewrites() {
