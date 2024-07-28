@@ -1,7 +1,7 @@
 import { createHmac } from "crypto";
 
 import { baseUrl } from "@/config/site";
-import { env } from "@/lib/env.server";
+import { env } from "@/lib/env";
 
 const OG_SECRET = env.OG_SECRET;
 

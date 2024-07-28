@@ -1,7 +1,7 @@
 import posthogJs from "posthog-js";
 import formbricks from "@formbricks/js/website";
 
-import { env } from "./env.client";
+import { env } from "./env";
 
 const API_KEY = env.NEXT_PUBLIC_POSTHOG_API_KEY;
 const API_HOST = env.NEXT_PUBLIC_POSTHOG_API_HOST;

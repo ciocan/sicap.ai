@@ -8,7 +8,7 @@ import { eq, and } from "drizzle-orm";
 import { Logger } from "next-axiom";
 
 import { accounts, db, users } from "../db/schema";
-import { env } from "./env.server";
+import { env } from "./env";
 import { addSubscriber, addSubscriberToLists, messageSubscriber } from "./listmonk";
 
 declare module "next-auth" {

@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import formbricks from "@formbricks/js/website";
 
-import { env } from "@/lib/env.client";
+import { env } from "@/lib/env";
 
 export default function FormbricksProvider() {
   const pathname = usePathname();

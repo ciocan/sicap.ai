@@ -10,7 +10,7 @@ import "@/app/globals.css";
 import { siteConfig } from "@/config/site";
 import { Navbar, Footer, ThemeProvider } from "@/components";
 import FormbricksProvider from "./formbricks";
-import { env } from "@/lib/env.client";
+import { env } from "@/lib/env";
 
 export const viewport: Viewport = {
   themeColor: [

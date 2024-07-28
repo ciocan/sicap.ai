@@ -1,5 +1,5 @@
 import { callAPI } from "@/utils/api";
-import { env } from "./env.server";
+import { env } from "./env";
 
 const emailTemplates = {
   welcome: 8,

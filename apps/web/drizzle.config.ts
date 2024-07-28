@@ -1,6 +1,6 @@
 import type { Config } from "drizzle-kit";
 
-import { env } from '@/lib/env.server';
+import { env } from '@/lib/env';
 
 export default {
   schema: "./src/db/schema.ts",

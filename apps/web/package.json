@@ -27,7 +27,7 @@
     "@openstatus/next-monitoring": "^0.0.4",
     "@sicap/api": "workspace:*",
     "@sicap/ui": "workspace:*",
-    "@t3-oss/env-nextjs": "^0.7.1",
+    "@t3-oss/env-nextjs": "^0.8.0",
     "@types/mdx": "^2.0.9",
     "better-sqlite3": "^9.0.0",
     "csv-stringify": "^6.4.5",

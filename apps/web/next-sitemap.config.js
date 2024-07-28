@@ -1,4 +1,4 @@
-const siteUrl = process.env.BASE_URL;
+const siteUrl = process.env.BASE_URL || "https://sicap.ai";
 
 const config = {
   siteUrl,

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { env } from "@/lib/env.server";
+import { env } from "@/lib/env";
 import { NextHandler } from "./types";
 
 export const withBearerToken = (handler: NextHandler) => {

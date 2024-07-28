@@ -9,7 +9,7 @@ import {
   getSitemapLicitatii,
   getSitemapLicitatiiCpv,
 } from "@sicap/api";
-import { env } from "@/lib/env.server";
+import { env } from "@/lib/env";
 
 export const revalidate = 0;
 
