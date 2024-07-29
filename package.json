@@ -11,6 +11,7 @@
   "scripts": {
     "build": "dotenv -- turbo build",
     "dev": "dotenv -- turbo dev",
+    "start": "dotenv -- turbo start",
     "lint": "turbo lint",
     "typecheck": "pnpm turbo typecheck",
     "clean": "pnpm dlx rimraf .next .turbo .vercel && turbo clean",
@@ -30,5 +31,8 @@
     "dotenv-cli": "^7.3.0",
     "turbo": "^2.0.9"
   },
-  "packageManager": "pnpm@9.6.0"
+  "packageManager": "pnpm@9.6.0",
+  "engines": {
+    "node": "20.15.1"
+  }
 }

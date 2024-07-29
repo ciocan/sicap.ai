@@ -3,8 +3,6 @@ import { ImageResponse } from "next/og";
 import { baseUrl } from "@/config/site";
 import { env } from "@/lib/env";
 
-export const runtime = "edge";
-
 const OG_SECRET = env.OG_SECRET;
 
 const key = crypto.subtle.importKey(

@@ -3,11 +3,11 @@
   "version": "0.2.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --port=3042",
     "build": "next build",
     "postbuild": "next-sitemap",
     "sitemap": "next-sitemap",
-    "start": "next start",
+    "start": "PORT=3042 node .next/standalone/apps/web/server.js",
     "lint": "biome lint ./src",
     "fmt": "biome format --write ./src",
     "typecheck": "tsc --project tsconfig.json --noEmit",

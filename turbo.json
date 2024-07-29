@@ -58,6 +58,17 @@
         ".env"
       ]
     },
+    "start": {
+      "cache": false,
+      "persistent": true,
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env.development.local",
+        ".env.local",
+        ".env.development",
+        ".env"
+      ]
+    },
     "clean": {
       "cache": false
     },
