@@ -5,7 +5,7 @@ import { Card, CardHeader, CardContent, CardDescription, CardTitle, Badge } from
 import type { SearchItemDirect, SearchItemPublic, IndexName, SearchItemOffline } from "@sicap/api";
 import { getDay, getMonth, getYear } from "@sicap/api";
 import { ES_INDEX_DIRECT, ES_INDEX_PUBLIC, ES_INDEX_OFFLINE } from "@sicap/api/dist/es/utils.mjs";
-import { moneyEur, moneyRon } from "@/utils";
+import { getIndexSlug, moneyEur, moneyRon } from "@/utils";
 
 interface ListItemProps {
   id: string;
@@ -44,7 +44,8 @@ export function ListItem({ id, index, fields }: ListItemProps) {
   const month = getMonth(date);
   const year = getYear(date);
 
-  const indexSlug = index.replace(/-directe|-publice/g, "");
+  const indexSlug = getIndexSlug(index);
+
   const contractLink = `/${indexSlug}/contract/${id}`;
   const cpvLink = `/${indexSlug}/cpv/${cpvCode}`;
   const ronValue = Number(value);

@@ -17,7 +17,13 @@
     "LISTMONK_API_KEY",
     "LISTMONK_API_URL",
     "LISTMONK_FROM_EMAIL",
-    "API_SERVICES_TOKEN"
+    "API_SERVICES_TOKEN",
+    "API_SERVICES_TOKEN",
+    "ES_INDEX_PUBLIC",
+    "ES_INDEX_DIRECT",
+    "ES_INDEX_OFFLINE",
+    "ES_INDEX_SEARCH",
+    "ES_API_KEY"
   ],
   "tasks": {
     "build": {

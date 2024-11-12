@@ -6,18 +6,23 @@ export const databases = [
   {
     id: ES_INDEX_PUBLIC,
     label: "Licitatii publice",
+    slug: "licitatii",
   },
   {
     id: ES_INDEX_DIRECT,
     label: "Achizitii directe",
+    slug: "achizitii",
   },
   {
     id: ES_INDEX_OFFLINE,
     label: "Achizitii offline",
+    slug: "achizitii-offline",
   },
 ] as const;
 
 export const dbIds = databases.map((d) => d.id);
+
+export const getIndexSlug = (index: string) => databases.find((d) => d.id === index)?.slug;
 
 export const wait = (ms = 250) => new Promise((resolve) => setTimeout(resolve, ms));
 
