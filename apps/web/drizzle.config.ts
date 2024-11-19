@@ -1,13 +1,16 @@
-import type { Config } from "drizzle-kit";
+import { defineConfig } from "drizzle-kit";
 
 import { env } from '@/lib/env';
 
-export default {
+export default defineConfig({
+  dialect: "turso",
   schema: "./src/db/schema.ts",
   out: "./src/db/migrations",
-  driver: "turso",
   dbCredentials: {
     url: env.DATABASE_URL,
     authToken: env.DATABASE_AUTH_TOKEN,
-  }
-} satisfies Config;
+  },
+  migrations: {
+    table: "__drizzle_migrations",
+  },
+});

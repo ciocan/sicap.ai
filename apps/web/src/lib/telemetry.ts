@@ -1,5 +1,5 @@
 import posthogJs from "posthog-js";
-import formbricks from "@formbricks/js/website";
+import formbricks from "@formbricks/js";
 
 import { env } from "./env";
 

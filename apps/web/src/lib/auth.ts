@@ -1,55 +1,24 @@
 import NextAuth from "next-auth";
+import "next-auth/jwt";
 import Google from "next-auth/providers/google";
-import { Adapter } from "@auth/core/adapters";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
-import { SqlFlavorOptions } from "@auth/drizzle-adapter/lib/utils";
-import { DefaultSession } from "@auth/core/types";
-import { eq, and } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { Logger } from "next-axiom";
 
-import { accounts, db, users } from "../db/schema";
-import { env } from "./env";
+import { accounts, db, sessions, users, verificationTokens } from "../db/schema";
 import { addSubscriber, addSubscriberToLists, messageSubscriber } from "./listmonk";
-
-declare module "next-auth" {
-  interface Session extends DefaultSession {
-    user: {
-      id: string;
-    } & DefaultSession["user"];
-  }
-}
-
-// TODO: Remove this when github issue is resolved
-// https://github.com/nextauthjs/next-auth/issues/8377
-function getAdapter(): Adapter {
-  return {
-    ...DrizzleAdapter(db as unknown as SqlFlavorOptions),
-    async getUserByAccount(providerAccountId) {
-      const results = await db
-        .select()
-        .from(accounts)
-        .leftJoin(users, eq(users.id, accounts.userId))
-        .where(
-          and(
-            eq(accounts.provider, providerAccountId.provider),
-            eq(accounts.providerAccountId, providerAccountId.providerAccountId),
-          ),
-        )
-        .get();
-
-      return results?.user ?? null;
-    },
-  };
-}
+import { env } from "./env";
 
 const log = new Logger();
 
-export const {
-  handlers: { GET, POST },
-  auth,
-} = NextAuth({
-  // debug: process.env.NODE_ENV === "development",
-  adapter: getAdapter(),
+export const { handlers, auth } = NextAuth({
+  debug: process.env.NODE_ENV === "development",
+  adapter: DrizzleAdapter(db, {
+    usersTable: users,
+    accountsTable: accounts,
+    sessionsTable: sessions,
+    verificationTokensTable: verificationTokens,
+  }),
   session: {
     strategy: "jwt",
   },
@@ -68,14 +37,14 @@ export const {
     async createUser({ user }) {
       const email = user.email!;
       const name = user.name!;
-      const userId = user.id;
+      const userId = user.id!;
       log.info("User created", { userId });
 
       try {
         await db
           .update(users)
           .set({ createdAt: new Date().toISOString() })
-          .where(eq(users.id, user.id))
+          .where(eq(users.id, userId))
           .returning();
 
         await addSubscriber({
@@ -95,7 +64,7 @@ export const {
       await db
         .update(users)
         .set({ updatedAt: new Date().toISOString() })
-        .where(eq(users.id, user.id))
+        .where(eq(users.id, user.id!))
         .returning();
     },
     async signOut(message: { token: { id: string } }) {
@@ -107,17 +76,14 @@ export const {
     redirect() {
       return "/";
     },
-    async session({ token, session }) {
-      return {
-        ...session,
-        user: {
-          ...session.user,
-          id: token.id,
-          name: token.name,
-          email: token.email,
-          image: token.picture,
-        },
-      };
+    async session({ session, token }) {
+      if (token?.accessToken) {
+        session.accessToken = token.accessToken;
+      }
+      if (token?.id) {
+        session.user.id = token.id;
+      }
+      return session;
     },
     async jwt({ token, user }) {
       const dbUser = await db
@@ -140,3 +106,16 @@ export const {
     },
   },
 });
+
+declare module "next-auth" {
+  interface Session {
+    accessToken?: string;
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    accessToken?: string;
+    id?: string;
+  }
+}

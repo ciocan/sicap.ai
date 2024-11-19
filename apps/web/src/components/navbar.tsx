@@ -17,7 +17,7 @@ export function Navbar(): JSX.Element {
   const isAuthenticated = session.status === "authenticated";
 
   useEffect(() => {
-    if (session.status === "authenticated") {
+    if (session.status === "authenticated" && session.data.user?.id) {
       identifyUser(session.data.user.id, session.data.user);
     }
   }, [session]);

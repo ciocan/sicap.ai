@@ -18,8 +18,8 @@ export const env = createEnv({
     API_SERVICES_TOKEN: z.string().optional().default(""),
   },
   client: {
-    NEXT_PUBLIC_FORMBRICKS_API_HOST: z.string().optional().default(""),
-    NEXT_PUBLIC_FORMBRICKS_ENV_ID: z.string().optional(),
+    NEXT_PUBLIC_FORMBRICKS_API_HOST: z.string().min(1),
+    NEXT_PUBLIC_FORMBRICKS_ENV_ID: z.string().min(1),
     NEXT_PUBLIC_POSTHOG_API_HOST: z.string().optional().default(""),
     NEXT_PUBLIC_POSTHOG_UI_HOST: z.string().optional(),
     NEXT_PUBLIC_POSTHOG_API_KEY: z.string().optional().default(""),

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
-import formbricks from "@formbricks/js/website";
+import formbricks from "@formbricks/js";
 
 import { env } from "@/lib/env";
 
