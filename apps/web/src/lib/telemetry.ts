@@ -1,14 +1,15 @@
 import posthogJs from "posthog-js";
-import formbricks from "@formbricks/js";
+import type { User } from "@auth/core/types";
 
 import { env } from "./env";
+// import { formbricks } from "@/app/formbricks";
 
 const API_KEY = env.NEXT_PUBLIC_POSTHOG_API_KEY;
 const API_HOST = env.NEXT_PUBLIC_POSTHOG_API_HOST;
 const API_UI_HOST = env.NEXT_PUBLIC_POSTHOG_UI_HOST;
 
 const initPostHog = () => {
-  if (typeof window !== "undefined") {
+  if (typeof window !== "undefined" && !env.NEXT_PUBLIC_TELEMETRY_DISABLED) {
     posthogJs.init(API_KEY, {
       api_host: API_HOST,
       ui_host: API_UI_HOST,
@@ -28,8 +29,13 @@ export const capture = (name: string, props = {}) => {
   posthog.capture(name, props);
 };
 
-export const identifyUser = (id: string, traits = {}) => {
-  posthog.identify(id, traits);
+export const identifyUser = (id: string, user: User = {} as User) => {
+  posthog.identify(id, user);
+
+  // if (formbricks) {
+  //   formbricks.setAttribute("userId", id);
+  //   formbricks.setAttribute("email", user.email ?? "");
+  // }
 };
 
 export const captureOpenAdvancedSearchModal = (props = {}) => {
@@ -50,7 +56,7 @@ export const captureSearchButtonClick = (props = {}) => {
 
 export const captureAdvanceSearchButtonClick = (props = {}) => {
   capture("advanced query searched", props);
-  formbricks?.track("advanced query searched");
+  // formbricks?.track("advanced query searched");
 };
 
 export const capturePerPageListChange = (props = {}) => {

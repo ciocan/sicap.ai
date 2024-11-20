@@ -5,9 +5,9 @@ import { withAxiom } from "next-axiom"
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "standalone",
-  reactStrictMode: true,
-  pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
+  // output: "standalone",
+  reactStrictMode: false,
+  pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
   async rewrites() {
     return [
       {
@@ -19,38 +19,38 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: '/achizitii/firma/:id/:page(\\d{1,})',
-        destination: '/achizitii/firma/:id?p=:page',
+        source: "/achizitii/firma/:id/:page(\\d{1,})",
+        destination: "/achizitii/firma/:id?p=:page",
         permanent: true,
       },
       {
-        source: '/achizitii/autoritate/:id/:page(\\d{1,})',
-        destination: '/achizitii/autoritate/:id?p=:page',
+        source: "/achizitii/autoritate/:id/:page(\\d{1,})",
+        destination: "/achizitii/autoritate/:id?p=:page",
         permanent: true,
       },
       {
-        source: '/licitatii/firma/:id/:page(\\d{1,})',
-        destination: '/achizitii/firma/:id?p=:page',
+        source: "/licitatii/firma/:id/:page(\\d{1,})",
+        destination: "/achizitii/firma/:id?p=:page",
         permanent: true,
       },
       {
-        source: '/licitatii/autoritate/:id/:page(\\d{1,})',
-        destination: '/achizitii/autoritate/:id?p=:page',
+        source: "/licitatii/autoritate/:id/:page(\\d{1,})",
+        destination: "/achizitii/autoritate/:id?p=:page",
         permanent: true,
       },
       {
-        source: '/achizitii/:cpvId',
-        destination: '/achizitii/cpv/:cpvId',
+        source: "/achizitii/:cpvId",
+        destination: "/achizitii/cpv/:cpvId",
         permanent: true,
       },
       {
-        source: '/licitatii/:cpvId',
-        destination: '/licitatii/cpv/:cpvId',
+        source: "/licitatii/:cpvId",
+        destination: "/licitatii/cpv/:cpvId",
         permanent: true,
       },
-    ]
+    ];
   },
-}
+};
 
 const withMDX = createMDX({
   options: {

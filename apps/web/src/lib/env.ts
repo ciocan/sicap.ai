@@ -8,7 +8,7 @@ export const env = createEnv({
     DATABASE_AUTH_TOKEN: z.string().optional().default("abcd"),
     GOOGLE_ID: z.string().optional(),
     GOOGLE_SECRET: z.string().optional(),
-    NEXTAUTH_SECRET: z.string().optional().default("abcd"),
+    AUTH_SECRET: z.string().optional().default("abcd"),
     NEXTAUTH_URL: z.string().url().optional().default("http://localhost:3000"),
     OG_SECRET: z.string().optional().default("abcd"),
     BASE_URL: z.string().url().optional().default("http://localhost:3000"),
@@ -28,6 +28,7 @@ export const env = createEnv({
     NEXT_PUBLIC_CLOUDFLARE_TOKEN: z.string().optional(),
     NEXT_PUBLIC_CLOUDFLARE_HOST: z.string().optional(),
     NEXT_PUBLIC_OPENSTATUS_RUM_DSN: z.string().optional().default(""),
+    NEXT_PUBLIC_TELEMETRY_DISABLED: z.string().transform((s) => s !== "false" && s !== "0"),
   },
   runtimeEnv: {
     ES_URL: process.env.ES_URL,
@@ -36,7 +37,7 @@ export const env = createEnv({
     DATABASE_AUTH_TOKEN: process.env.DATABASE_AUTH_TOKEN,
     GOOGLE_ID: process.env.GOOGLE_ID,
     GOOGLE_SECRET: process.env.GOOGLE_SECRET,
-    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
+    AUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     OG_SECRET: process.env.OG_SECRET,
     BASE_URL: process.env.BASE_URL,
@@ -53,5 +54,6 @@ export const env = createEnv({
     NEXT_PUBLIC_CLOUDFLARE_TOKEN: process.env.NEXT_PUBLIC_CLOUDFLARE_TOKEN,
     NEXT_PUBLIC_CLOUDFLARE_HOST: process.env.NEXT_PUBLIC_CLOUDFLARE_HOST,
     NEXT_PUBLIC_OPENSTATUS_RUM_DSN: process.env.NEXT_PUBLIC_OPENSTATUS_RUM_DSN,
+    NEXT_PUBLIC_TELEMETRY_DISABLED: process.env.NEXT_PUBLIC_TELEMETRY_DISABLED,
   },
 });

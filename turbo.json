@@ -11,7 +11,7 @@
     "GOOGLE_ID",
     "GOOGLE_SECRET",
     "NEXTAUTH_URL",
-    "NEXTAUTH_SECRET",
+    "AUTH_SECRET",
     "OG_SECRET",
     "BASE_URL",
     "LISTMONK_API_KEY",
