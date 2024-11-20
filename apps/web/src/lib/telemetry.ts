@@ -50,7 +50,6 @@ export const captureSearchButtonClick = (props = {}) => {
 
 export const captureAdvanceSearchButtonClick = (props = {}) => {
   capture("advanced query searched", props);
-  // formbricks?.track("advanced query searched");
 };
 
 export const capturePerPageListChange = (props = {}) => {

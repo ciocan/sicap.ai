@@ -26,6 +26,7 @@ import {
 import { databases, dbIds } from "@/utils";
 import { captureAdvanceSearchButtonClick, captureClearFiltersButtonClick } from "@/lib/telemetry";
 import { useEffect } from "react";
+import { useFormbricks } from "@/app/formbricks";
 
 const defaultValues = {
   db: dbIds,
@@ -120,6 +121,7 @@ export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const db = searchParams.get("db");
+  const { formbricks } = useFormbricks();
 
   const params = {
     ...Object.fromEntries(searchParams.entries()),
@@ -158,6 +160,8 @@ export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
 
     const filters = Object.fromEntries(params.entries());
     captureAdvanceSearchButtonClick({ query: filters.q, filters, mode: "advanced" });
+    formbricks?.track("advanced_query_searched");
+
     fetch("/api/search", {
       method: "POST",
       body: JSON.stringify({ query: filters.q, filters, mode: "advanced" }),
