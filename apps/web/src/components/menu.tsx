@@ -1,4 +1,4 @@
-import { Moon, Sun, LogInIcon, LogOutIcon, User2Icon } from "lucide-react";
+import { Moon, Sun, LogInIcon, LogOutIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
@@ -25,8 +25,9 @@ import { useIdentify } from "@/hooks";
 
 export function Menu() {
   const { theme, setTheme } = useTheme();
-  const formbricks = useFormbricks();
-  const { isAuthenticated, userName, userImage } = useIdentify();
+  const { formbricks } = useFormbricks();
+  const { isAuthenticated, user } = useIdentify();
+  const { name, image } = user ?? {};
 
   const handleThemeChange = () => {
     switch (theme) {
@@ -48,6 +49,7 @@ export function Menu() {
   const handleSignout = () => {
     captureSignOutMenuClick();
     signOut();
+    formbricks?.reset();
     formbricks?.logout();
   };
 
@@ -55,10 +57,10 @@ export function Menu() {
     <DropdownMenuContent className="w-56">
       {isAuthenticated ? (
         <DropdownMenuLabel className="text-primary/70 flex items-center justify-between">
-          <span>{userName}</span>
+          <span>{name}</span>
           <Avatar className="h-6 w-6">
-            <AvatarImage src={userImage!} />
-            <AvatarFallback className="text-xs">{getInitials(userName!)}</AvatarFallback>
+            <AvatarImage src={image!} />
+            <AvatarFallback className="text-xs">{getInitials(name!)}</AvatarFallback>
           </Avatar>
         </DropdownMenuLabel>
       ) : (

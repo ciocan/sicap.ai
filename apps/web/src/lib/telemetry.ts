@@ -2,7 +2,6 @@ import posthogJs from "posthog-js";
 import type { User } from "@auth/core/types";
 
 import { env } from "./env";
-// import { formbricks } from "@/app/formbricks";
 
 const API_KEY = env.NEXT_PUBLIC_POSTHOG_API_KEY;
 const API_HOST = env.NEXT_PUBLIC_POSTHOG_API_HOST;
@@ -31,11 +30,6 @@ export const capture = (name: string, props = {}) => {
 
 export const identifyUser = (id: string, user: User = {} as User) => {
   posthog.identify(id, user);
-
-  // if (formbricks) {
-  //   formbricks.setAttribute("userId", id);
-  //   formbricks.setAttribute("email", user.email ?? "");
-  // }
 };
 
 export const captureOpenAdvancedSearchModal = (props = {}) => {
