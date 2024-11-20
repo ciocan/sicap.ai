@@ -1,26 +1,17 @@
 "use client";
 import Link from "next/link";
-import { useEffect } from "react";
-import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { Menu as MenuIcon, UserSquare2 } from "lucide-react";
 
 import { Button, DropdownMenu, DropdownMenuTrigger, Separator, Toaster } from "@sicap/ui";
 import { Search } from "@/components/search";
 import { Menu } from "./menu";
-import { identifyUser } from "@/lib/telemetry";
+import { useIdentify } from "@/hooks";
 
 export function Navbar(): JSX.Element {
   const pathname = usePathname();
   const isHome = pathname === "/";
-  const session = useSession();
-  const isAuthenticated = session.status === "authenticated";
-
-  useEffect(() => {
-    if (session.status === "authenticated" && session.data.user?.id) {
-      identifyUser(session.data.user.id, session.data.user);
-    }
-  }, [session]);
+  const { isAuthenticated } = useIdentify();
 
   return (
     <>

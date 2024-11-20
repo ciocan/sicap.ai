@@ -80,12 +80,13 @@ export default function RootLayout({ children }: RootLayoutProps): JSX.Element {
             enableSystem
             disableTransitionOnChange
           >
-            <div className="relative flex min-h-screen flex-col">
-              <Navbar />
-              <div className="flex flex-col flex-1">{children}</div>
-              <Footer />
-            </div>
-            <FormbricksProvider />
+            <FormbricksProvider>
+              <div className="relative flex min-h-screen flex-col">
+                <Navbar />
+                <div className="flex flex-col flex-1">{children}</div>
+                <Footer />
+              </div>
+            </FormbricksProvider>
           </ThemeProvider>
         </SessionProvider>
         <OpenStatusProvider dsn={env.NEXT_PUBLIC_OPENSTATUS_RUM_DSN} />

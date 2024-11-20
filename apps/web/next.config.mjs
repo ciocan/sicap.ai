@@ -6,6 +6,9 @@ import { withAxiom } from "next-axiom"
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // output: "standalone",
+  experimental: {
+    missingSuspenseWithCSRBailout: false,
+  },
   reactStrictMode: false,
   pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
   async rewrites() {

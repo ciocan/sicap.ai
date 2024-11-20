@@ -1,6 +1,6 @@
 import { Moon, Sun, LogInIcon, LogOutIcon, User2Icon } from "lucide-react";
 import { useTheme } from "next-themes";
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import Link from "next/link";
 
 import {
@@ -20,11 +20,13 @@ import {
   captureToggleDarkModeButtonClick,
 } from "@/lib/telemetry";
 import { getInitials } from "@/utils";
+import { useFormbricks } from "@/app/formbricks";
+import { useIdentify } from "@/hooks";
 
 export function Menu() {
   const { theme, setTheme } = useTheme();
-  const session = useSession();
-  const isAuthenticated = session.status === "authenticated";
+  const formbricks = useFormbricks();
+  const { isAuthenticated, userName, userImage } = useIdentify();
 
   const handleThemeChange = () => {
     switch (theme) {
@@ -46,18 +48,17 @@ export function Menu() {
   const handleSignout = () => {
     captureSignOutMenuClick();
     signOut();
+    formbricks?.logout();
   };
 
   return (
     <DropdownMenuContent className="w-56">
       {isAuthenticated ? (
         <DropdownMenuLabel className="text-primary/70 flex items-center justify-between">
-          <span>{session.data?.user?.name}</span>
+          <span>{userName}</span>
           <Avatar className="h-6 w-6">
-            <AvatarImage src={session.data.user?.image!} />
-            <AvatarFallback className="text-xs">
-              {getInitials(session.data.user?.name!)}
-            </AvatarFallback>
+            <AvatarImage src={userImage!} />
+            <AvatarFallback className="text-xs">{getInitials(userName!)}</AvatarFallback>
           </Avatar>
         </DropdownMenuLabel>
       ) : (
