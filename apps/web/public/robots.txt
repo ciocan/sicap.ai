@@ -1,6 +1,8 @@
-# *
-User-agent: *
+User-agent: Googlebot
 Allow: /
+
+User-agent: *
+Disallow: /
 
 # Host
 Host: https://sicap.ai
