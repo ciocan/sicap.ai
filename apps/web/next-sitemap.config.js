@@ -3,7 +3,6 @@ const siteUrl = process.env.BASE_URL || "https://sicap.ai";
 const config = {
   siteUrl,
   changefreq: "daily",
-  generateRobotsTxt: true,
   additionalPaths: () => {
     return [{ loc: `${siteUrl}/despre` }, { loc: `${siteUrl}/confidentialitate` }];
   },
