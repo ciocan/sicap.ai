@@ -24,7 +24,7 @@ export async function ContractAchizitii({ id }: { id: string }) {
   } = contract;
   const { entityId, numericFiscalNumber, entityName, city, county } = contractingAuthority;
 
-  const seapUrl = `https://www.${
+  const seapUrl = `https://${
     istoric ? "istoric." : ""
   }e-licitatie.ro/pub/direct-acquisition/view/${id}`;
 
