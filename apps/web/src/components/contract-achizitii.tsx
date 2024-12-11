@@ -1,9 +1,9 @@
+import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 
 import { moneyRon } from "@/utils";
 import { formatDate, getContractAchizitii } from "@sicap/api";
 import { RowItem } from "./utils";
-import Link from "next/link";
 
 export async function ContractAchizitii({ id }: { id: string }) {
   const contract = await getContractAchizitii(id);
@@ -31,12 +31,12 @@ export async function ContractAchizitii({ id }: { id: string }) {
   return (
     <div className="border dark:border-secondary p-4 rounded-sm">
       <div className="flex sm:flex-row flex-col justify-between gap-2">
-        <h1 className="text-md font-semibold text-primary">{directAcquisitionName}</h1>
+        <h1 className="text-lg font-semibold">{directAcquisitionName}</h1>
         <a
           href={seapUrl}
           target="_blank"
           rel="noreferrer"
-          className="hover:underline flex items-center gap-1 border-gray-200 dark:border-gray-500 border rounded-sm px-2 py-1 justify-center w-[90px] place-self-end"
+          className="hover:underline flex items-center gap-1 border-gray-200 dark:border-gray-500 border rounded-sm px-2 py-1 justify-center w-[90px] place-self-end text-primary"
         >
           <span>SEAP</span>
           <ExternalLink className="w-[1rem]" />
@@ -47,9 +47,7 @@ export async function ContractAchizitii({ id }: { id: string }) {
         <RowItem label="Data" value={formatDate(publicationDate)} />
         <RowItem
           label="Valoare"
-          value={
-            <div className="font-semibold text-primary font-mono">{moneyRon(closingValue)}</div>
-          }
+          value={<div className="font-semibold font-mono">{moneyRon(closingValue)}</div>}
         />
         <RowItem
           label="Stare"
@@ -62,7 +60,10 @@ export async function ContractAchizitii({ id }: { id: string }) {
         <RowItem
           label="Autoritatea contractanta"
           value={
-            <Link href={`/achizitii/autoritate/${entityId}`} className="hover:underline">
+            <Link
+              href={`/achizitii/autoritate/${entityId}`}
+              className="underline text-primary font-semibold"
+            >
               {numericFiscalNumber} - {entityName}
             </Link>
           }
@@ -71,7 +72,10 @@ export async function ContractAchizitii({ id }: { id: string }) {
         <RowItem
           label="Furnizor"
           value={
-            <Link href={`/achizitii/firma/${supplier.entityId}`} className="hover:underline">
+            <Link
+              href={`/achizitii/firma/${supplier.entityId}`}
+              className="underline text-primary font-semibold"
+            >
               {supplier.numericFiscalNumber} - {supplier.entityName}
             </Link>
           }
@@ -80,7 +84,10 @@ export async function ContractAchizitii({ id }: { id: string }) {
         <RowItem
           label="Cod CPV"
           value={
-            <Link href={`/achizitii/cpv/${cpvCode}`} className="hover:underline">
+            <Link
+              href={`/achizitii/cpv/${cpvCode}`}
+              className="underline text-primary font-semibold"
+            >
               {cpvCodeAndName}
             </Link>
           }
@@ -98,7 +105,7 @@ export async function ContractAchizitii({ id }: { id: string }) {
                   key={item.directAcquisitionItemID}
                   className="mb-2 border-b dark:border-b-gray-700 border-b-gray-100"
                 >
-                  <div className="text-primary font-mono">{moneyRon(item.itemClosingPrice)}</div>
+                  <div className="font-semibold font-mono">{moneyRon(item.itemClosingPrice)}</div>
                   <div className="mb-3">
                     <div className="text-gray-400">Cantitate: {item.itemQuantity}</div>
                     <div className="text-gray-400">Unitate masura: {item.itemMeasureUnit}</div>

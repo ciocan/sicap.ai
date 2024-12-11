@@ -52,12 +52,12 @@ export async function ContractAchizitiiOffline({ id }: { id: string }) {
   return (
     <div className="border dark:border-secondary p-4 rounded-sm">
       <div className="flex sm:flex-row flex-col justify-between gap-2">
-        <h1 className="text-md font-semibold text-primary">{contractObject}</h1>
+        <h1 className="text-lg font-semibold">{contractObject}</h1>
         <a
           href={seapUrl}
           target="_blank"
           rel="noreferrer"
-          className="hover:underline flex items-center gap-1 border-gray-200 dark:border-gray-500 border rounded-sm px-2 py-1 justify-center w-[90px] place-self-end"
+          className="hover:underline flex items-center gap-1 border-gray-200 dark:border-gray-500 border rounded-sm px-2 py-1 justify-center w-[90px] place-self-end text-primary"
         >
           <span>SEAP</span>
           <ExternalLink className="w-[1rem]" />
@@ -70,9 +70,7 @@ export async function ContractAchizitiiOffline({ id }: { id: string }) {
         <RowItem label="Data contract" value={formatDateTime(contractDate)} />
         <RowItem
           label="Valoare"
-          value={
-            <div className="font-semibold text-primary font-mono">{moneyRon(awardedValue)}</div>
-          }
+          value={<div className="font-semibold font-mono">{moneyRon(awardedValue)}</div>}
         />
         <RowItem
           label="Stare"
@@ -87,7 +85,10 @@ export async function ContractAchizitiiOffline({ id }: { id: string }) {
         <RowItem
           label="Cod CPV"
           value={
-            <Link href={`/achizitii-offline/cpv/${cpvCode}`} className="hover:underline underline">
+            <Link
+              href={`/achizitii-offline/cpv/${cpvCode}`}
+              className="underline text-primary font-semibold"
+            >
               {cpvCodeAndName}
             </Link>
           }
@@ -95,11 +96,10 @@ export async function ContractAchizitiiOffline({ id }: { id: string }) {
         <RowItem label="Categorie CPV" value={cpvCategory} />
         <RowItem
           label="Autoritatea contractanta"
-          className="text-primary"
           value={
             <Link
               href={`/achizitii-offline/autoritate/${entityId}`}
-              className="hover:underline underline"
+              className="underline text-primary font-semibold"
             >
               {numericFiscalNumber} - {entityName}
             </Link>
@@ -108,11 +108,10 @@ export async function ContractAchizitiiOffline({ id }: { id: string }) {
         <RowItem label="Localitate" value={`${cityAuthority}, ${county}`} />
         <RowItem
           label="Ofertant"
-          className="text-primary"
           value={
             <Link
               href={`/achizitii-offline/firma/${supplierId}`}
-              className="hover:underline underline"
+              className="underline text-primary font-semibold"
             >
               {supplierName}
             </Link>
@@ -128,7 +127,7 @@ export async function ContractAchizitiiOffline({ id }: { id: string }) {
                   key={item.directAcquisitionID}
                   className="mb-2 border-b dark:border-b-gray-700 border-b-gray-100"
                 >
-                  <div className="text-primary font-mono">{moneyRon(item.closingValue)}</div>
+                  <div className="font-semibold font-mono">{moneyRon(item.closingValue)}</div>
                   <div className="mb-3">
                     <div className="text-md my-2">{item.directAcquisitionName}</div>
                   </div>

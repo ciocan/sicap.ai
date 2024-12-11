@@ -88,7 +88,10 @@ export async function ContractLicitatii({ id }: { id: string }) {
         <RowItem
           label="Autoritatea contractanta"
           value={
-            <Link href={`/licitatii/autoritate/${contract.entityId}`} className="hover:underline">
+            <Link
+              href={`/licitatii/autoritate/${contract.entityId}`}
+              className="underline text-primary font-semibold"
+            >
               {contractingAuthorityNameAndFN}
             </Link>
           }
@@ -97,7 +100,7 @@ export async function ContractLicitatii({ id }: { id: string }) {
         <RowItem
           label="Furnizor"
           value={
-            <Link href={supplierUrl} className="hover:underline">
+            <Link href={supplierUrl} className="underline text-primary font-semibold">
               {winner.fiscalNumber} - {winner.name}
             </Link>
           }
@@ -105,7 +108,10 @@ export async function ContractLicitatii({ id }: { id: string }) {
         <RowItem
           label="Cod CPV"
           value={
-            <Link href={`/licitatii/cpv/${cpvCode}`} className="hover:underline">
+            <Link
+              href={`/licitatii/cpv/${cpvCode}`}
+              className="underline text-primary font-semibold"
+            >
               {cpvCodeAndName}
             </Link>
           }
@@ -121,7 +127,7 @@ export async function ContractLicitatii({ id }: { id: string }) {
                   className="mb-2 border-b dark:border-b-gray-700 border-b-gray-100"
                 >
                   {item.estimatedValue && (
-                    <div className="text-primary font-mono">{moneyRon(item.estimatedValue)}</div>
+                    <div className="font-semibold font-mono">{moneyRon(item.estimatedValue)}</div>
                   )}
                   <div className="mb-3">
                     <div className="text-gray-400">{item.mainLocation}</div>
