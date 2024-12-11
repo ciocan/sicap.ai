@@ -1,31 +1,37 @@
 import dayjs from "dayjs";
 import localeData from "dayjs/plugin/localeData";
 import "dayjs/locale/ro";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+const tz = "Europe/Bucharest";
 
 dayjs.extend(localeData);
+dayjs.extend(utc);
+dayjs.extend(timezone);
 dayjs.locale("ro");
 
 export function getDay(d: string) {
-  return dayjs(d).date();
+  return dayjs(d).tz(tz).date();
 }
 
 export function getMonth(d: string) {
   const m = dayjs.monthsShort();
-  return m[dayjs(d).month()];
+  return m[dayjs(d).tz(tz).month()];
 }
 
 export function getYear(d: string) {
-  return dayjs(d).year();
+  return dayjs(d).tz(tz).year();
 }
 
 export function formatDate(d: string) {
-  return dayjs(d).format("DD MMMM YYYY");
+  return dayjs(d).tz(tz).format("DD MMMM YYYY");
 }
 
 export function formatDateTime(d: string) {
-  return dayjs(d).format("DD MMMM YYYY - HH:mm");
+  return dayjs(d).tz(tz).format("DD MMMM YYYY - HH:mm");
 }
 
 export function formatDateAs(d: string, format: string) {
-  return dayjs(d).format(format);
+  return dayjs(d).tz(tz).format(format);
 }

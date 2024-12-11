@@ -324,6 +324,12 @@ export interface Source {
       };
     };
     caNoticeEdit_New_U: {
+      publicationDetailsModel: {
+        caPublicationDate: string;
+        publicationDate: string;
+        jouePublicationNumber: string;
+        noticeNo: string;
+      };
       section1_New_U: {
         section1_1: {
           caAddress: {

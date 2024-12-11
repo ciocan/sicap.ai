@@ -68,6 +68,10 @@ export async function getContractLicitatii(id: string) {
         ...pick(["entityId", "name", "fiscalNumber"], winner || {}),
       })),
       istoric: contract._source.istoric,
+      cNotice:
+        contract._source.publicNotice?.caNoticeEdit_New?.publicationDetailsModel ||
+        contract._source.publicNotice?.caNoticeEdit_New_U?.publicationDetailsModel ||
+        {},
     },
   };
 

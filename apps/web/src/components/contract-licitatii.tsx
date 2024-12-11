@@ -1,9 +1,9 @@
+import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 
 import { moneyRon } from "@/utils";
-import { formatDate, getContractLicitatii } from "@sicap/api";
+import { formatDate, formatDateTime, getContractLicitatii } from "@sicap/api";
 import { RowItem } from "./utils";
-import Link from "next/link";
 
 export async function ContractLicitatii({ id }: { id: string }) {
   const contract = await getContractLicitatii(id);
@@ -24,7 +24,10 @@ export async function ContractLicitatii({ id }: { id: string }) {
     descriptionList,
     winner,
     istoric,
+    cNotice,
   } = contract;
+
+  const hasCNotice = !!cNotice.noticeNo && !!cNotice.publicationDate;
 
   const seapUrl = `https://${
     istoric ? "istoric." : ""
@@ -35,25 +38,42 @@ export async function ContractLicitatii({ id }: { id: string }) {
   return (
     <div className="border dark:border-secondary p-4 rounded-sm">
       <div className="flex sm:flex-row flex-col justify-between gap-2">
-        <h1 className="text-md font-semibold text-primary">{contractTitle}</h1>
+        <h1 className="text-lg font-semibold">{contractTitle}</h1>
         <a
           href={seapUrl}
           target="_blank"
           rel="noreferrer"
-          className="hover:underline flex items-center gap-1 border-gray-200 dark:border-gray-500 border rounded-sm px-2 py-1 justify-center w-[90px] place-self-end"
+          className="hover:underline flex items-center gap-1 border-gray-200 dark:border-gray-500 border rounded-sm px-2 py-1 justify-center w-[90px] place-self-end text-primary"
         >
           <span>SEAP</span>
           <ExternalLink className="w-[1rem]" />
         </a>
       </div>
       <div className="grid sm:grid-cols-[25%,75%] mt-4">
-        <RowItem label="ID" value={noticeNo} />
+        <RowItem label="ID licitatie atribuita" value={noticeNo} />
+        <RowItem
+          label="ID anunt de participare"
+          value={
+            hasCNotice ? (
+              <>
+                <Link
+                  href={`https://sicap.pro/anunturi/${cNotice.noticeNo}`}
+                  className="underline text-primary font-semibold pr-2"
+                  target="_blank"
+                >
+                  {cNotice.noticeNo}
+                </Link>
+                <span className="text-gray-400">- {formatDateTime(cNotice.publicationDate)}</span>
+              </>
+            ) : (
+              <span>-</span>
+            )
+          }
+        />
         <RowItem label="Data" value={formatDate(contractDate)} />
         <RowItem
           label="Valoare"
-          value={
-            <div className="font-semibold text-primary font-mono">{moneyRon(ronContractValue)}</div>
-          }
+          value={<div className="font-semibold font-mono">{moneyRon(ronContractValue)}</div>}
         />
         <RowItem
           label="Stare"
