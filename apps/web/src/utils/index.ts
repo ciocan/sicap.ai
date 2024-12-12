@@ -72,7 +72,11 @@ export const checkSearchTerms = (searchTerms) => {
   return isAllowed;
 };
 
-export const escapeCsvString = (input: string): string => {
+export const escapeCsvString = (input?: string): string => {
+  if (!input) {
+    return "";
+  }
+
   return input.replace(/[#""]/g, (match) => {
     if (match === "#") {
       return "";
