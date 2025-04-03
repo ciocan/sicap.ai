@@ -36,6 +36,7 @@ export function ListItem({ id, index, fields }: ListItemProps) {
     state,
     stateId,
     type,
+    euFunds,
   } = fields;
 
   const { procedureType, assigmentType } = fields as SearchItemPublic;
@@ -60,9 +61,12 @@ export function ListItem({ id, index, fields }: ListItemProps) {
 
   return (
     <Card className="flex flex-col sm:flex-row justify-between hover:bg-slate-50 hover:dark:bg-slate-800">
-      <div>
+      <div className="flex flex-col w-full">
         <CardHeader className="pb-4 space-y-2">
-          <span className="text-xs text-primary">{indexText}</span>
+          <span className="flex items-center gap-2 justify-between w-full">
+            <span className="text-xs text-primary">{indexText}</span>
+            {euFunds && <span className="text-xs text-primary">{euFunds}</span>}
+          </span>
           <Link href={contractLink} prefetch={false}>
             <CardTitle className="text-md font-normal">
               {code} - {name}

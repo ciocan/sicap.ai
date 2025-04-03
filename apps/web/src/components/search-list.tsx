@@ -24,6 +24,7 @@ export interface SearchParams {
   localitySupplier: string;
   countySupplier: string;
   isFiscal?: string;
+  euFunds?: string;
 }
 
 interface SearchListProps {
@@ -47,6 +48,7 @@ export async function SearchList({ searchParams }: SearchListProps) {
     supplier,
     localitySupplier,
     countySupplier,
+    euFunds,
   } = searchParams;
 
   const dbs = ((Array.isArray(db) ? db : db?.split(",")) || dbIds) as IndexName[];
@@ -64,6 +66,7 @@ export async function SearchList({ searchParams }: SearchListProps) {
     supplier,
     localitySupplier,
     countySupplier,
+    euFunds: euFunds === "true" ? true : false,
   };
 
   const results = await searchContracts({ query, page, perPage, filters });

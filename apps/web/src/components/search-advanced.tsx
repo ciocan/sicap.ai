@@ -42,6 +42,7 @@ const defaultValues = {
   supplier: "",
   localitySupplier: "",
   countySupplier: "",
+  euFunds: false,
 };
 
 const formSchema = z
@@ -61,6 +62,7 @@ const formSchema = z
     supplier: z.string().optional(),
     localitySupplier: z.string().optional(),
     countySupplier: z.string().optional(),
+    euFunds: z.boolean().optional(),
   })
   .refine(
     (data) => {
@@ -100,7 +102,8 @@ const formSchema = z
         !data.cpv &&
         !data.supplier &&
         !data.localitySupplier &&
-        !data.countySupplier
+        !data.countySupplier &&
+        !data.euFunds
       ) {
         return false;
       }
@@ -126,6 +129,7 @@ export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
   const params = {
     ...Object.fromEntries(searchParams.entries()),
     db: db ? db.split(",") : dbIds,
+    euFunds: searchParams.get("euFunds") === "true",
   };
 
   useEffect(() => {
@@ -152,9 +156,11 @@ export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
         Object.entries({
           ...values,
           db: values.db.join(","),
-        }).filter(([_, value]) => {
-          return value !== "" && value !== undefined && value !== null;
-        }),
+        })
+          .filter(([_, value]) => {
+            return value !== "" && value !== undefined && value !== null;
+          })
+          .map(([key, value]) => [key, String(value)]),
       ),
     );
 
@@ -172,7 +178,7 @@ export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
   }
 
   return (
-    <DialogContent className="sm:max-w-[540px] h-full sm:h-[80%] p-2">
+    <DialogContent className="sm:max-w-2xl h-full sm:h-[80%] p-2">
       <Form {...form}>
         <ScrollArea className="p-2">
           <form onSubmit={form.handleSubmit(onSubmit)} className="p-4">
@@ -458,6 +464,26 @@ export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
                         placeholder="Prahova..."
                         {...field}
                       />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="euFunds" className="text-right">
+                  Fonduri Europene
+                </Label>
+                <FormField
+                  control={form.control}
+                  name="euFunds"
+                  render={({ field }) => (
+                    <FormItem className="col-span-3 flex items-center">
+                      <FormControl>
+                        <Checkbox
+                          id="euFunds"
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
                     </FormItem>
                   )}
                 />

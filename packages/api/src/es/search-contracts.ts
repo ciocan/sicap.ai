@@ -34,6 +34,7 @@ export async function searchContracts({
     supplier,
     localitySupplier,
     countySupplier,
+    euFunds,
   } = filters;
 
   if (
@@ -184,6 +185,27 @@ export async function searchContracts({
                           },
                         }
                       : undefined,
+                    euFunds
+                      ? {
+                          bool: {
+                            should: [
+                              {
+                                exists: {
+                                  field:
+                                    "publicNotice.caNoticeEdit_New.section2_New.section2_2_New.descriptionList.sysEuropeanFund.id",
+                                },
+                              },
+                              {
+                                exists: {
+                                  field:
+                                    "publicNotice.caNoticeEdit_New_U.section2_New_U.section2_2_New_U.descriptionList.sysEuropeanFund.id",
+                                },
+                              },
+                            ],
+                            minimum_should_match: 1,
+                          },
+                        }
+                      : undefined,
                   ].filter(Boolean),
                 },
               },
@@ -256,6 +278,20 @@ export async function searchContracts({
                           },
                         }
                       : undefined,
+                    euFunds
+                      ? {
+                          bool: {
+                            should: [
+                              {
+                                exists: {
+                                  field: "publicDirectAcquisition.sysEuropeanFund.id",
+                                },
+                              },
+                            ],
+                            minimum_should_match: 1,
+                          },
+                        }
+                      : undefined,
                   ].filter(Boolean),
                 },
               },
@@ -325,6 +361,20 @@ export async function searchContracts({
                       ? {
                           match_phrase: {
                             "item.cpvCode": cpv,
+                          },
+                        }
+                      : undefined,
+                    euFunds
+                      ? {
+                          bool: {
+                            should: [
+                              {
+                                exists: {
+                                  field: "details.sysEuropeanFund.id",
+                                },
+                              },
+                            ],
+                            minimum_should_match: 1,
                           },
                         }
                       : undefined,

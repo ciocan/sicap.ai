@@ -36,6 +36,7 @@ export function transformItem(index: string, fields: Fields, highlight: Fields) 
         stateId: fields["item.sysNoticeState.id"]?.[0],
         type: fields["details.sysAcquisitionContractType.text"]?.[0],
         typeId: fields["details.sysAcquisitionContractType.id"]?.[0],
+        euFunds: fields["details.sysEuropeanFund.text"]?.[0],
       } as SearchItemOffline;
     case ES_INDEX_DIRECT:
       return {
@@ -57,6 +58,7 @@ export function transformItem(index: string, fields: Fields, highlight: Fields) 
         stateId: fields["item.sysDirectAcquisitionState.id"]?.[0],
         type: fields["publicDirectAcquisition.sysAcquisitionContractType.text"]?.[0],
         typeId: fields["publicDirectAcquisition.sysAcquisitionContractType.id"]?.[0],
+        euFunds: fields["publicDirectAcquisition.sysEuropeanFund.text"]?.[0],
       } as SearchItemDirect;
     case ES_INDEX_PUBLIC:
       return {
@@ -99,6 +101,13 @@ export function transformItem(index: string, fields: Fields, highlight: Fields) 
         procedureTypeId: fields["item.sysProcedureType.id"]?.[0],
         assigmentType: fields["item.sysContractAssigmentType.text"]?.[0],
         assigmentTypeId: fields["item.sysContractAssigmentType.id"]?.[0],
+        euFunds:
+          fields[
+            "publicNotice.caNoticeEdit_New.section2_New.section2_2_New.descriptionList.sysEuropeanFund.text"
+          ]?.[0] ||
+          fields[
+            "publicNotice.caNoticeEdit_New_U.section2_New_U.section2_2_New_U.descriptionList.sysEuropeanFund.text"
+          ]?.[0],
       } as SearchItemPublic;
     default:
       return undefined;
@@ -121,6 +130,7 @@ export const fieldsAchizitii = [
   "publicDirectAcquisition.contractingAuthorityID",
   "publicDirectAcquisition.sysAcquisitionContractType.*",
   "publicDirectAcquisition.sysAcquisitionContractTypeID",
+  "publicDirectAcquisition.sysEuropeanFund.text",
   "authority.city",
   "authority.county",
   "supplier.city",
@@ -145,6 +155,7 @@ export const fieldsAchizitiiOffline = [
   "details.contractingAuthorityID",
   "details.finalizationDate",
   "details.contractDate",
+  "details.sysEuropeanFund.text",
   "authority.city",
   "authority.county",
   "supplier.entityId",
@@ -182,6 +193,8 @@ export const filedsLicitatii = [
   "noticeContracts.items.winner.address.county.text",
   "noticeContracts.items.winner.address.nutsCodeItem.text",
   "noticeContracts.items.contractValue",
+  "publicNotice.caNoticeEdit_New.section2_New.section2_2_New.descriptionList.sysEuropeanFund.text",
+  "publicNotice.caNoticeEdit_New_U.section2_New_U.section2_2_New_U.descriptionList.sysEuropeanFund.text",
 ] as const;
 
 export const mapBucket = (b: Bucket) => ({

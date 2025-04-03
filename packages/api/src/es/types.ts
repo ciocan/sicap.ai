@@ -15,6 +15,7 @@ export interface SearchFilters {
   supplier?: string;
   localitySupplier?: string;
   countySupplier?: string;
+  euFunds?: boolean;
 }
 export interface SearchProps {
   query: string;
@@ -42,6 +43,7 @@ export interface SearchItemDirect {
   stateId: number;
   type: string;
   typeId: number;
+  euFunds: string;
 }
 
 export interface SearchItemPublic extends SearchItemDirect {

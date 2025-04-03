@@ -25,6 +25,7 @@ export function FilterDetails({ searchParams }: { searchParams: SearchParams }) 
     supplier,
     localitySupplier,
     countySupplier,
+    euFunds,
   } = searchParams;
 
   const dbs = ((Array.isArray(db) ? db : db?.split(",")) || dbIds) as IndexName[];
@@ -50,7 +51,8 @@ export function FilterDetails({ searchParams }: { searchParams: SearchParams }) 
           countyAuthority ||
           countySupplier ||
           supplier ||
-          localitySupplier ? (
+          localitySupplier ||
+          euFunds ? (
             <>
               {dateFrom && <span className="mr-1">{`de la ${dateFrom}`}</span>}
               {dateTo && <span className="mr-1">{`până la ${dateTo};`}</span>}
@@ -71,6 +73,7 @@ export function FilterDetails({ searchParams }: { searchParams: SearchParams }) 
               {countySupplier && (
                 <span className="mr-1">{`; judet firma: ${countySupplier}.`}</span>
               )}
+              {euFunds === "true" && <span className="mr-1">Fonduri Europene: DA.</span>}
             </>
           ) : null}
         </div>
