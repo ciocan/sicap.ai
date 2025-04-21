@@ -71,11 +71,6 @@ export default function RootLayout({ children }: RootLayoutProps): JSX.Element {
           src={env.NEXT_PUBLIC_CLOUDFLARE_HOST}
           data-cf-beacon={`{"token": "${env.NEXT_PUBLIC_CLOUDFLARE_TOKEN}"}`}
         />
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5379318134801724"
-          crossOrigin="anonymous"
-        />
       </head>
       <body className="min-h-screen bg-background font-sans antialiased">
         <SessionProvider>
