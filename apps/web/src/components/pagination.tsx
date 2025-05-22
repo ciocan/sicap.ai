@@ -18,11 +18,17 @@ export function Pagination({
   pathname = "/cauta",
 }: PaginationProps) {
   const searchParams = useSearchParams();
-  const db = searchParams.get("db") ?? dbIds;
+
+  const db = searchParams.getAll("db");
+  const dbValues = db.length > 0 ? db : dbIds;
+
+  const paramsObj = Object.fromEntries(
+    Array.from(searchParams.entries()).filter(([key]) => key !== "db")
+  );
 
   const params = {
-    ...Object.fromEntries(searchParams.entries()),
-    ...(pathname === "/cauta" && { db }),
+    ...paramsObj,
+    ...(pathname === "/cauta" && { db: dbValues }),
   };
 
   const previousPage = Number(page) - 1;
