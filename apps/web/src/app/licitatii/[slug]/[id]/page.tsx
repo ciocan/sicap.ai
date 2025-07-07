@@ -7,7 +7,6 @@ import type { SearchParams } from "@/components";
 import type { SLUG } from "@/utils/types";
 import { CompanyLicitatii } from "@/components/company-licitatii";
 import { generateOpenGraph } from "@/utils/og";
-import { checkBot } from "@/lib/server";
 
 interface PageProps {
   params: {
@@ -18,8 +17,6 @@ interface PageProps {
 }
 
 export async function generateMetadata(props: PageProps) {
-  await checkBot();
-
   const {
     params: { id, slug },
   } = props;

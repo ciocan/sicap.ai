@@ -7,7 +7,6 @@ import { allowedSlugs, moneyRon } from "@/utils";
 import type { SearchParams } from "@/components";
 import type { SLUG } from "@/utils/types";
 import { generateOpenGraph } from "@/utils/og";
-import { checkBot } from "@/lib/server";
 
 interface PageProps {
   params: {
@@ -21,8 +20,6 @@ export async function generateMetadata(props: PageProps) {
   const {
     params: { id, slug },
   } = props;
-
-  await checkBot();
 
   if (!allowedSlugs.includes(slug)) {
     throw new Error("Adresa invalida");

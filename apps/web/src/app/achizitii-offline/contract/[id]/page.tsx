@@ -4,7 +4,6 @@ import { ContractAchizitiiOffline } from "@/components/contract-achizitii-offlin
 import { getContractAchizitiiOffline } from "@sicap/api";
 import { generateOpenGraph } from "@/utils/og";
 import { notFound } from "next/navigation";
-import { checkBot } from "@/lib/server";
 
 interface PageProps {
   params: {
@@ -13,8 +12,6 @@ interface PageProps {
 }
 
 export async function generateMetadata(props: PageProps) {
-  await checkBot();
-
   const {
     params: { id },
   } = props;
