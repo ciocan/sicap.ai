@@ -3,6 +3,7 @@ import { SessionProvider } from "next-auth/react";
 import { GeistSans, GeistMono } from "geist/font";
 import { AxiomWebVitals } from "next-axiom";
 import { OpenStatusProvider } from "@openstatus/next-monitoring";
+import { BotIdClient } from "botid/client";
 
 import "@sicap/ui/src/styles/styles.css";
 import "@/app/globals.css";
@@ -53,6 +54,25 @@ interface RootLayoutProps {
   children: React.ReactNode;
 }
 
+const protectedRoutes = [
+  {
+    path: "/",
+    method: "GET",
+  },
+  {
+    path: "/licitatii/*",
+    method: "GET",
+  },
+  {
+    path: "/achizitii/*",
+    method: "GET",
+  },
+  {
+    path: "/achizitii-offline/*",
+    method: "GET",
+  },
+];
+
 export default function RootLayout({ children }: RootLayoutProps): JSX.Element {
   return (
     <html
@@ -71,6 +91,7 @@ export default function RootLayout({ children }: RootLayoutProps): JSX.Element {
           src={env.NEXT_PUBLIC_CLOUDFLARE_HOST}
           data-cf-beacon={`{"token": "${env.NEXT_PUBLIC_CLOUDFLARE_TOKEN}"}`}
         />
+        <BotIdClient protect={protectedRoutes} />
       </head>
       <body className="min-h-screen bg-background font-sans antialiased">
         <SessionProvider>

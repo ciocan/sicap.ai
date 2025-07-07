@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ContractLicitatii } from "@/components/contract-licitatii";
 import { getContractLicitatii } from "@sicap/api";
 import { generateOpenGraph } from "@/utils/og";
+import { checkBot } from "@/lib/server";
 
 interface PageProps {
   params: {
@@ -12,6 +13,8 @@ interface PageProps {
 }
 
 export async function generateMetadata(props: PageProps) {
+  await checkBot();
+
   const {
     params: { id },
   } = props;
@@ -38,6 +41,8 @@ export async function generateMetadata(props: PageProps) {
 }
 
 export default async function Page(props: PageProps) {
+  await checkBot();
+
   const {
     params: { id },
   } = props;

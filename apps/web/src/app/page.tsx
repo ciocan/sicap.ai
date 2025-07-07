@@ -1,11 +1,13 @@
 import { getTotal } from "@sicap/api";
 import { Search } from "@/components";
 import { formatNumber } from "@/utils";
+import { checkBot } from "@/lib/server";
 
 export const revalidate = 0;
 export const dynamic = "force-dynamic";
 
 export default async function Page() {
+  await checkBot();
   const { licitatii, achizitii, offline } = await getTotal();
 
   return (

@@ -3,10 +3,11 @@ import { notFound } from "next/navigation";
 
 import { getCompanyLicitatii } from "@sicap/api";
 import { allowedSlugs, moneyRon } from "@/utils";
-import { type SearchParams } from "@/components";
-import { type SLUG } from "@/utils/types";
+import type { SearchParams } from "@/components";
+import type { SLUG } from "@/utils/types";
 import { CompanyLicitatii } from "@/components/company-licitatii";
 import { generateOpenGraph } from "@/utils/og";
+import { checkBot } from "@/lib/server";
 
 interface PageProps {
   params: {
@@ -17,6 +18,8 @@ interface PageProps {
 }
 
 export async function generateMetadata(props: PageProps) {
+  await checkBot();
+
   const {
     params: { id, slug },
   } = props;
@@ -65,6 +68,8 @@ export async function generateMetadata(props: PageProps) {
 }
 
 export default async function Page(props: PageProps) {
+  await checkBot();
+
   const {
     params: { id, slug },
     searchParams,

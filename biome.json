@@ -1,11 +1,12 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.0.0/schema.json",
+  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
   "linter": {
     "enabled": true,
     "rules": {
       "suspicious": {
         "noConsoleLog": "warn",
-        "noEmptyInterface": "off"
+        "noEmptyInterface": "off",
+        "noArrayIndexKey": "off"
       },
       "recommended": true,
       "a11y": {
@@ -13,7 +14,8 @@
       },
       "correctness": {
         "noUnusedVariables": "warn",
-        "useExhaustiveDependencies": "warn"
+        "useExhaustiveDependencies": "warn",
+        "noUnusedImports": "warn"
       },
       "security": {
         "noDangerouslySetInnerHtml": "off"
@@ -24,6 +26,9 @@
       },
       "performance": {
         "noDelete": "off"
+      },
+      "complexity": {
+        "useLiteralKeys": "warn"
       }
     },
     "ignore": ["node_modules", ".next", "dist", ".nuxt", ".contentlayer"]

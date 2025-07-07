@@ -4,9 +4,10 @@ import { notFound } from "next/navigation";
 import { getCompanyAchizitiiOffline } from "@sicap/api";
 import { CompanyAchizitiiOffline } from "@/components/company-achizitii-offline";
 import { allowedSlugs, moneyRon } from "@/utils";
-import { type SearchParams } from "@/components";
-import { type SLUG } from "@/utils/types";
+import type { SearchParams } from "@/components";
+import type { SLUG } from "@/utils/types";
 import { generateOpenGraph } from "@/utils/og";
+import { checkBot } from "@/lib/server";
 
 interface PageProps {
   params: {
@@ -17,6 +18,8 @@ interface PageProps {
 }
 
 export async function generateMetadata(props: PageProps) {
+  await checkBot();
+
   const {
     params: { id, slug },
     searchParams: { isFiscal },
@@ -71,6 +74,8 @@ export async function generateMetadata(props: PageProps) {
 }
 
 export default async function Page(props: PageProps) {
+  await checkBot();
+
   const {
     params: { id, slug },
     searchParams,

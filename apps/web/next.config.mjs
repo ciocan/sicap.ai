@@ -2,6 +2,7 @@ import remarkGfm from 'remark-gfm'
 import createMDX from '@next/mdx'
 import nextPWA from "next-pwa";
 import { withAxiom } from "next-axiom"
+import { withBotId } from 'botid/next/config';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -70,4 +71,4 @@ const withPWA = nextPWA({
   skipWaiting: true,
 });
 
-export default withAxiom(withPWA(withMDX(nextConfig)))
+export default withAxiom(withPWA(withMDX(withBotId(nextConfig))))

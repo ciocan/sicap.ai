@@ -4,9 +4,10 @@ import { notFound } from "next/navigation";
 import { getCompanyAchizitii } from "@sicap/api";
 import { CompanyAchizitii } from "@/components/company-achizitii";
 import { allowedSlugs, moneyRon } from "@/utils";
-import { type SearchParams } from "@/components";
-import { type SLUG } from "@/utils/types";
+import type { SearchParams } from "@/components";
+import type { SLUG } from "@/utils/types";
 import { generateOpenGraph } from "@/utils/og";
+import { checkBot } from "@/lib/server";
 
 interface PageProps {
   params: {
@@ -20,6 +21,8 @@ export async function generateMetadata(props: PageProps) {
   const {
     params: { id, slug },
   } = props;
+
+  await checkBot();
 
   if (!allowedSlugs.includes(slug)) {
     throw new Error("Adresa invalida");
@@ -63,6 +66,8 @@ export async function generateMetadata(props: PageProps) {
 }
 
 export default async function Page(props: PageProps) {
+  await checkBot();
+
   const {
     params: { id, slug },
     searchParams,
