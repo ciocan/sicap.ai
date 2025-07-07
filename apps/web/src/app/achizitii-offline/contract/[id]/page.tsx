@@ -42,8 +42,6 @@ export async function generateMetadata(props: PageProps) {
 }
 
 export default async function Page(props: PageProps) {
-  await checkBot();
-
   const {
     params: { id },
   } = props;

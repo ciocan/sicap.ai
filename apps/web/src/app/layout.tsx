@@ -71,6 +71,10 @@ const protectedRoutes = [
     path: "/achizitii-offline/*",
     method: "GET",
   },
+  {
+    path: "/cauta",
+    method: "GET",
+  },
 ];
 
 export default function RootLayout({ children }: RootLayoutProps): JSX.Element {

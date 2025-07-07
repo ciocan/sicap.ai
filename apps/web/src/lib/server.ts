@@ -1,6 +1,5 @@
 import { checkBotId } from "botid/server";
 
-
 export const checkBot = async () => {
   const verification = await checkBotId();
 

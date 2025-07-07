@@ -1,10 +1,9 @@
 import { Suspense } from "react";
+import { redirect } from "next/navigation";
 
 import { SearchList, type SearchParams } from "@/components";
 import { checkSearchTerms } from "@/utils";
-import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
-import { checkBot } from "@/lib/server";
 
 interface PageProps {
   searchParams: SearchParams;
@@ -22,8 +21,6 @@ export async function generateMetadata({ searchParams }: PageProps) {
 }
 
 export default async function Page(props: PageProps) {
-  await checkBot();
-
   const session = await auth();
   const { searchParams } = props;
 
