@@ -1,12 +1,10 @@
-import remarkGfm from 'remark-gfm'
-import createMDX from '@next/mdx'
-import nextPWA from "next-pwa";
-import { withAxiom } from "next-axiom"
-import { withBotId } from 'botid/next/config';
+import remarkGfm from "remark-gfm";
+import createMDX from "@next/mdx";
+import { withAxiom } from "next-axiom";
+import { withBotId } from "botid/next/config";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // output: "standalone",
   experimental: {
     missingSuspenseWithCSRBailout: false,
   },
@@ -61,14 +59,6 @@ const withMDX = createMDX({
     remarkPlugins: [remarkGfm],
     rehypePlugins: [],
   },
-})
-
-
-const withPWA = nextPWA({
-  dest: "public",
-  disable: process.env.NODE_ENV === "development",
-  register: true,
-  skipWaiting: true,
 });
 
-export default withAxiom(withPWA(withMDX(withBotId(nextConfig))))
+export default withAxiom(withMDX(withBotId(nextConfig)));
