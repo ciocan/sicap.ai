@@ -3,10 +3,10 @@
 import { OpenStatusProvider as OSTProvider } from "@openstatus/next-monitoring";
 
 interface OpenStatusProviderProps {
-	/**
-	 * The DSN of your OpenStatus project.
-	 */
-	dsn: string;
+  /**
+   * The DSN of your OpenStatus project.
+   */
+  dsn: string;
 }
 
 /**
@@ -17,5 +17,5 @@ interface OpenStatusProviderProps {
  * Next.js server build.
  */
 export default function OpenStatusProvider({ dsn }: OpenStatusProviderProps) {
-	return <OSTProvider dsn={dsn} />;
+  return <OSTProvider dsn={dsn} />;
 }

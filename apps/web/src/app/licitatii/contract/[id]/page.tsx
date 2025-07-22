@@ -6,43 +6,43 @@ import { getContractLicitatii } from "@sicap/api";
 import { generateOpenGraph } from "@/utils/og";
 
 export type PageProps = {
-	params: Promise<{
-		id: string;
-	}>;
+  params: Promise<{
+    id: string;
+  }>;
 };
 
 export async function generateMetadata(props: PageProps) {
-	const { id } = await props.params;
-	try {
-		const contract = await getContractLicitatii(id);
-		const { noticeNo, contractTitle, shortDescription } = contract;
+  const { id } = await props.params;
+  try {
+    const contract = await getContractLicitatii(id);
+    const { noticeNo, contractTitle, shortDescription } = contract;
 
-		const title = `${noticeNo} | ${contractTitle}`;
-		const description = shortDescription;
+    const title = `${noticeNo} | ${contractTitle}`;
+    const description = shortDescription;
 
-		return {
-			title,
-			description,
-			...generateOpenGraph({
-				id,
-				title,
-				description: `${description?.substring(0, 60)}...`,
-				path: `/licitatii/contract/${id}`,
-			}),
-		};
-	} catch {
-		return notFound();
-	}
+    return {
+      title,
+      description,
+      ...generateOpenGraph({
+        id,
+        title,
+        description: `${description?.substring(0, 60)}...`,
+        path: `/licitatii/contract/${id}`,
+      }),
+    };
+  } catch {
+    return notFound();
+  }
 }
 
 export default async function Page(props: PageProps) {
-	const { id } = await props.params;
+  const { id } = await props.params;
 
-	return (
-		<main className="container px-8 py-4 flex flex-col gap-2 lg:max-w-7xl">
-			<Suspense fallback={<div className="text-sm">se incarca...</div>}>
-				<ContractLicitatii id={id} />
-			</Suspense>
-		</main>
-	);
+  return (
+    <main className="container px-8 py-4 flex flex-col gap-2 lg:max-w-7xl">
+      <Suspense fallback={<div className="text-sm">se incarca...</div>}>
+        <ContractLicitatii id={id} />
+      </Suspense>
+    </main>
+  );
 }

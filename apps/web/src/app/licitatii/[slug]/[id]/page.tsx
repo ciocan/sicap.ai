@@ -9,75 +9,67 @@ import { CompanyLicitatii } from "@/components/company-licitatii";
 import { generateOpenGraph } from "@/utils/og";
 
 export type PageProps = {
-	params: Promise<{
-		id: string;
-		slug: SLUG;
-	}>;
-	searchParams: Promise<SearchParams>;
+  params: Promise<{
+    id: string;
+    slug: SLUG;
+  }>;
+  searchParams: Promise<SearchParams>;
 };
 
 export async function generateMetadata({ params }: PageProps) {
-	const { id, slug } = await params;
+  const { id, slug } = await params;
 
-	if (!allowedSlugs.includes(slug)) {
-		throw new Error("Adresa invalida");
-	}
+  if (!allowedSlugs.includes(slug)) {
+    throw new Error("Adresa invalida");
+  }
 
-	const propMappings = {
-		autoritate: { authorityId: id },
-		firma: { supplierId: id },
-		cpv: { cpvCode: id },
-	};
-	const companyProps = propMappings[slug];
+  const propMappings = {
+    autoritate: { authorityId: id },
+    firma: { supplierId: id },
+    cpv: { cpvCode: id },
+  };
+  const companyProps = propMappings[slug];
 
-	try {
-		const { total, stats, contractingAuthority, supplier } =
-			await getCompanyLicitatii(companyProps);
-		const totalValue = stats?.years
-			.map((y) => y.value)
-			.reduce((a, b) => a + b, 0);
-		const totalValueRon = moneyRon(totalValue);
+  try {
+    const { total, stats, contractingAuthority, supplier } =
+      await getCompanyLicitatii(companyProps);
+    const totalValue = stats?.years.map((y) => y.value).reduce((a, b) => a + b, 0);
+    const totalValueRon = moneyRon(totalValue);
 
-		const titleMappings = {
-			autoritate: `${contractingAuthority.contractingAuthorityNameAndFN} / ${contractingAuthority.city}`,
-			firma: `${supplier?.fiscalNumber} / ${supplier?.name} / ${supplier?.address?.city} ${
-				supplier?.address?.county?.text
-					? `, ${supplier?.address?.county?.text}`
-					: ""
-			}`,
-			cpv: `${contractingAuthority.cpvCodeAndName}`,
-		};
+    const titleMappings = {
+      autoritate: `${contractingAuthority.contractingAuthorityNameAndFN} / ${contractingAuthority.city}`,
+      firma: `${supplier?.fiscalNumber} / ${supplier?.name} / ${supplier?.address?.city} ${
+        supplier?.address?.county?.text ? `, ${supplier?.address?.county?.text}` : ""
+      }`,
+      cpv: `${contractingAuthority.cpvCodeAndName}`,
+    };
 
-		const title = titleMappings[slug];
-		const description = `${total} achizitii in valoare de ${totalValueRon}`;
+    const title = titleMappings[slug];
+    const description = `${total} achizitii in valoare de ${totalValueRon}`;
 
-		return {
-			title,
-			description,
-			...generateOpenGraph({
-				id,
-				title,
-				description,
-				path: `/licitatii/${slug}/${id}`,
-			}),
-		};
-	} catch {
-		return notFound();
-	}
+    return {
+      title,
+      description,
+      ...generateOpenGraph({
+        id,
+        title,
+        description,
+        path: `/licitatii/${slug}/${id}`,
+      }),
+    };
+  } catch {
+    return notFound();
+  }
 }
 
 export default async function Page({ params, searchParams }: PageProps) {
-	const { id, slug } = await params;
+  const { id, slug } = await params;
 
-	return (
-		<main className="container px-8 py-4 flex flex-col gap-2 lg:max-w-7xl">
-			<Suspense fallback={<div className="text-sm">se incarca...</div>}>
-				<CompanyLicitatii
-					id={id}
-					slug={slug}
-					searchParams={await searchParams}
-				/>
-			</Suspense>
-		</main>
-	);
+  return (
+    <main className="container px-8 py-4 flex flex-col gap-2 lg:max-w-7xl">
+      <Suspense fallback={<div className="text-sm">se incarca...</div>}>
+        <CompanyLicitatii id={id} slug={slug} searchParams={await searchParams} />
+      </Suspense>
+    </main>
+  );
 }

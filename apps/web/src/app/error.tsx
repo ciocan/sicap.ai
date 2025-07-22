@@ -1,10 +1,6 @@
 "use client";
 
-export default function ErrorPage({
-  error,
-}: {
-  error: Error & { digest?: string };
-}) {
+export default function ErrorPage({ error }: { error: Error & { digest?: string } }) {
   return (
     <div className="grid flex-1 place-items-center p-8">
       <div className="space-y-2">
