@@ -1,6 +1,6 @@
 {
   "extends": "@sicap/tsconfig/react-library.json",
-  "include": ["."],
+  "include": ["src/**/*.tsx", "src/**/*.d.ts", "src/**/*.ts"],
   "exclude": ["dist", "build", "node_modules"],
   "compilerOptions": {
     "baseUrl": ".",

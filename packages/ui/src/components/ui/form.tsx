@@ -1,23 +1,21 @@
+"use client";
+
 import * as React from "react";
-import * as LabelPrimitive from "@radix-ui/react-label";
+import type * as LabelPrimitive from "@radix-ui/react-label";
 import { Slot } from "@radix-ui/react-slot";
-import {
-  Controller,
-  ControllerProps,
-  FieldPath,
-  FieldValues,
-  FormProvider,
-  useFormContext,
-  useForm,
-} from "react-hook-form";
+import * as ReactHookForm from "react-hook-form";
+import type { ControllerProps, FieldPath, FieldValues } from "react-hook-form";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
-import { cn } from "@ui/lib/utils";
+const { FormProvider, Controller, useFormContext, useForm } = ReactHookForm;
+
+import { cn } from "../../lib/utils";
 import { Label } from "./label";
 import { useToast } from "./use-toast";
 
-const Form = FormProvider;
+const Form: typeof ReactHookForm.FormProvider = FormProvider;
 
 type FormFieldContextValue<
   TFieldValues extends FieldValues = FieldValues,

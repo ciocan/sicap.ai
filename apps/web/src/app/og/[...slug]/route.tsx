@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import type { NextRequest } from "next/server";
 
 import { baseUrl } from "@/config/site";
 import { env } from "@/lib/env";
@@ -19,7 +20,7 @@ const toHex = (arrayBuffer: ArrayBuffer) => {
     .join("");
 };
 
-export async function GET(request: Request, { params }: { params: { slug: string[] } }) {
+export async function GET(request: NextRequest, { params }: any) {
   const { searchParams } = new URL(request.url);
   const [first, second] = params.slug;
   const title = searchParams.get("title");

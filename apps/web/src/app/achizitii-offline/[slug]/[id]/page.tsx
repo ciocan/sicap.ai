@@ -8,19 +8,17 @@ import type { SearchParams } from "@/components";
 import type { SLUG } from "@/utils/types";
 import { generateOpenGraph } from "@/utils/og";
 
-interface PageProps {
-  params: {
+export type PageProps = {
+  params: Promise<{
     id: string;
     slug: SLUG;
-  };
-  searchParams: SearchParams;
-}
+  }>;
+  searchParams: Promise<SearchParams>;
+};
 
-export async function generateMetadata(props: PageProps) {
-  const {
-    params: { id, slug },
-    searchParams: { isFiscal },
-  } = props;
+export async function generateMetadata({ params, searchParams }: PageProps) {
+  const { id, slug } = await params;
+  const { isFiscal } = await searchParams;
 
   if (!allowedSlugs.includes(slug)) {
     throw new Error("Adresa invalida");
@@ -70,16 +68,13 @@ export async function generateMetadata(props: PageProps) {
   }
 }
 
-export default async function Page(props: PageProps) {
-  const {
-    params: { id, slug },
-    searchParams,
-  } = props;
+export default async function Page({ params, searchParams }: PageProps) {
+  const { id, slug } = await params;
 
   return (
     <main className="container px-8 py-4 flex flex-col gap-2 lg:max-w-7xl">
       <Suspense fallback={<div className="text-sm">se incarca...</div>}>
-        <CompanyAchizitiiOffline id={id} slug={slug} searchParams={searchParams} />
+        <CompanyAchizitiiOffline id={id} slug={slug} searchParams={await searchParams} />
       </Suspense>
     </main>
   );

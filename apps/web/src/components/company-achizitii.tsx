@@ -61,7 +61,7 @@ export async function CompanyAchizitii({ id, slug, searchParams }: CompanyAchizi
         </div>
         <div className="flex flex-col gap-4">
           {results.items.map((item) => (
-            <ListItem key={item.id} fields={item.fields} id={item.id} index={item.index} />
+            <ListItem key={item.id!} fields={item.fields} id={item.id!} index={item.index} />
           ))}
         </div>
         <Pagination

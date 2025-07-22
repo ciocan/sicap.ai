@@ -7,10 +7,10 @@ import { env } from "@/lib/env";
 import { useIdentify } from "@/hooks";
 
 const FormbricksContext = createContext<{
-  formbricks: typeof formbricksJs | undefined;
+  formbricks: typeof formbricksJs | null;
   isDone: boolean;
 }>({
-  formbricks: undefined,
+  formbricks: null,
   isDone: false,
 });
 
@@ -23,7 +23,7 @@ export default function FormbricksProvider({ children }: { children: React.React
   const [isDone, setIsDone] = useState(false);
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const formbricksRef = useRef<typeof formbricksJs>();
+  const formbricksRef = useRef<typeof formbricksJs | null>(null);
   const { isAuthenticated, userId, user, isLoading } = useIdentify();
   const { email, name } = user ?? {};
 

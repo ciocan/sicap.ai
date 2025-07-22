@@ -1,8 +1,9 @@
 "use client";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
+import type { JSX } from "react";
 
-import { Button } from "@ui/button";
+import { Button } from "./ui/button";
 
 type ModeToggleProps = {
   onCapture: (props: { theme: string | undefined; from?: string }) => void;

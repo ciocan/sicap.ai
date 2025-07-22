@@ -23,7 +23,11 @@ export async function CompanyAchizitiiOffline({ id, slug, searchParams }: Compan
     cpv: { cpvCode: id },
   };
   const companyProps = propMappings[slug];
-  const results = await getCompanyAchizitiiOffline({ ...companyProps, page, perPage });
+  const results = await getCompanyAchizitiiOffline({
+    ...companyProps,
+    page,
+    perPage,
+  });
   const { total, contractingAuthority, supplier, stats, details } = results;
   const { fiscalNumber, entityName, city, county } = contractingAuthority;
   const { noticeEntityAddress } = details;
@@ -68,7 +72,7 @@ export async function CompanyAchizitiiOffline({ id, slug, searchParams }: Compan
         </div>
         <div className="flex flex-col gap-4">
           {results.items.map((item) => (
-            <ListItem key={item.id} fields={item.fields} id={item.id} index={item.index} />
+            <ListItem key={item.id!} fields={item.fields} id={item.id!} index={item.index} />
           ))}
         </div>
         <Pagination

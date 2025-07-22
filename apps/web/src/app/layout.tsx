@@ -2,7 +2,7 @@ import type { Viewport } from "next";
 import { SessionProvider } from "next-auth/react";
 import { GeistSans, GeistMono } from "geist/font";
 import { AxiomWebVitals } from "next-axiom";
-import { OpenStatusProvider } from "@openstatus/next-monitoring";
+import OpenStatusProvider from "@/components/openstatus-provider";
 import { BotIdClient } from "botid/client";
 
 import "@sicap/ui/src/styles/styles.css";
@@ -10,6 +10,7 @@ import "@/app/globals.css";
 
 import { siteConfig } from "@/config/site";
 import { Navbar, Footer, ThemeProvider } from "@/components";
+import { Suspense } from "react";
 import FormbricksProvider from "./formbricks";
 import { env } from "@/lib/env";
 
@@ -77,7 +78,7 @@ const protectedRoutes = [
   },
 ];
 
-export default function RootLayout({ children }: RootLayoutProps): JSX.Element {
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html
       lang="en"
@@ -105,13 +106,15 @@ export default function RootLayout({ children }: RootLayoutProps): JSX.Element {
             enableSystem
             disableTransitionOnChange
           >
-            <FormbricksProvider>
-              <div className="relative flex min-h-screen flex-col">
-                <Navbar />
-                <div className="flex flex-col flex-1">{children}</div>
-                <Footer />
-              </div>
-            </FormbricksProvider>
+            <Suspense fallback={null}>
+              <FormbricksProvider>
+                <div className="relative flex min-h-screen flex-col">
+                  <Navbar />
+                  <div className="flex flex-col flex-1">{children}</div>
+                  <Footer />
+                </div>
+              </FormbricksProvider>
+            </Suspense>
           </ThemeProvider>
         </SessionProvider>
         <OpenStatusProvider dsn={env.NEXT_PUBLIC_OPENSTATUS_RUM_DSN} />

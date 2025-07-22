@@ -1,8 +1,14 @@
+import type { ReactNode } from "react";
+
 export function RowItem({
   label,
   value,
   className,
-}: { label: string; className?: string; value: string | number | JSX.Element }) {
+}: {
+  label: string;
+  className?: string;
+  value: string | number | ReactNode;
+}) {
   return (
     <>
       <span

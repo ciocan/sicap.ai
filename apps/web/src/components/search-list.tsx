@@ -85,7 +85,7 @@ export async function SearchList({ searchParams }: SearchListProps) {
       </div>
       <div className="flex flex-col gap-4">
         {results.items.map((item) => (
-          <ListItem key={item.id} fields={item.fields} id={item.id} index={item.index} />
+          <ListItem key={item.id!} fields={item.fields} id={item.id!} index={item.index} />
         ))}
       </div>
       <Pagination

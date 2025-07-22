@@ -433,7 +433,7 @@ export async function searchContracts({
     took: result.took,
     total: total.value,
     items: result?.hits?.hits?.map((hit) => ({
-      id: hit._id,
+      id: hit._id as string,
       index: hit._index as IndexName,
       fields: transformItem(hit._index, hit.fields as Fields, hit.highlight as Fields),
     })),

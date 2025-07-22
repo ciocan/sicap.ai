@@ -23,7 +23,7 @@ export function Pagination({
   const dbValues = db.length > 0 ? db : dbIds;
 
   const paramsObj = Object.fromEntries(
-    Array.from(searchParams.entries()).filter(([key]) => key !== "db")
+    Array.from(searchParams.entries()).filter(([key]) => key !== "db"),
   );
 
   const params = {

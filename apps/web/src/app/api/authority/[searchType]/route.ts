@@ -31,7 +31,9 @@ export const GET = withBearerToken(
     const searchAfter = searchParams.get("searchAfter");
 
     if (!authorityFiscalCode || !pitId) {
-      return new NextResponse("Missing authorityFiscalCode or pitId", { status: 400 });
+      return new NextResponse("Missing authorityFiscalCode or pitId", {
+        status: 400,
+      });
     }
 
     const searchFunction = searchFunctionMap[searchType];

@@ -15,10 +15,11 @@
   },
   "devDependencies": {
     "@sicap/tsconfig": "workspace:*",
+    "@swc/core": "^1.13.1",
     "@types/node": "^20.8.8",
     "@types/ramda": "^0.29.7",
-    "tsup": "^7.2.0",
-    "typescript": "^5.2.2"
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3"
   },
   "dependencies": {
     "@elastic/elasticsearch": "^8.10.0",

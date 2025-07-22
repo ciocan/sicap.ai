@@ -8,7 +8,7 @@ import { Search } from "@/components/search";
 import { Menu } from "./menu";
 import { useIdentify } from "@/hooks";
 
-export function Navbar(): JSX.Element {
+export function Navbar() {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const { isAuthenticated } = useIdentify();

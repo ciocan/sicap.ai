@@ -5,16 +5,14 @@ import { ContractLicitatii } from "@/components/contract-licitatii";
 import { getContractLicitatii } from "@sicap/api";
 import { generateOpenGraph } from "@/utils/og";
 
-interface PageProps {
-  params: {
+export type PageProps = {
+  params: Promise<{
     id: string;
-  };
-}
+  }>;
+};
 
 export async function generateMetadata(props: PageProps) {
-  const {
-    params: { id },
-  } = props;
+  const { id } = await props.params;
   try {
     const contract = await getContractLicitatii(id);
     const { noticeNo, contractTitle, shortDescription } = contract;
@@ -38,9 +36,7 @@ export async function generateMetadata(props: PageProps) {
 }
 
 export default async function Page(props: PageProps) {
-  const {
-    params: { id },
-  } = props;
+  const { id } = await props.params;
 
   return (
     <main className="container px-8 py-4 flex flex-col gap-2 lg:max-w-7xl">
