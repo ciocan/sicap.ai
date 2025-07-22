@@ -1,5 +1,6 @@
 "use client";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 
 import {
   DialogContent,
@@ -25,7 +26,6 @@ import {
 } from "@sicap/ui";
 import { databases, dbIds } from "@/utils";
 import { captureAdvanceSearchButtonClick, captureClearFiltersButtonClick } from "@/lib/telemetry";
-import { useEffect } from "react";
 import { useFormbricks } from "@/app/formbricks";
 
 const defaultValues = {
@@ -79,7 +79,7 @@ const formSchema = z
   .refine(
     (data) => {
       if (data.valueFrom && data.valueTo) {
-        return parseInt(data.valueFrom) <= parseInt(data.valueTo);
+        return Number.parseInt(data.valueFrom) <= Number.parseInt(data.valueTo);
       }
       return true;
     },

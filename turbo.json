@@ -23,7 +23,8 @@
     "ES_INDEX_DIRECT",
     "ES_INDEX_OFFLINE",
     "ES_INDEX_SEARCH",
-    "ES_API_KEY"
+    "ES_API_KEY",
+    "OPENAI_API_KEY"
   ],
   "tasks": {
     "build": {
@@ -88,6 +89,9 @@
       "cache": false
     },
     "sitemap": {
+      "cache": false
+    },
+    "mastra:dev": {
       "cache": false
     }
   }

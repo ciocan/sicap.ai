@@ -5,34 +5,33 @@ import { SearchList, type SearchParams } from "@/components";
 import { checkSearchTerms } from "@/utils";
 import { auth } from "@/lib/auth";
 
-interface PageProps {
-  searchParams: SearchParams;
-}
+export type PageProps = {
+	searchParams: Promise<SearchParams>;
+};
 
-export const revalidate = 24 * 3600;
+export const revalidate = 86400; // 24 * 3600;
 
 export async function generateMetadata({ searchParams }: PageProps) {
-  const query = searchParams.q as string;
+	const { q: query } = await searchParams;
 
-  return {
-    title: `Cǎutare: "${query || "..."}"`,
-    description: "Caută în baza de date a contractelor publice din România",
-  };
+	return {
+		title: `Cǎutare: "${query || "..."}"`,
+		description: "Caută în baza de date a contractelor publice din România",
+	};
 }
 
-export default async function Page(props: PageProps) {
-  const session = await auth();
-  const { searchParams } = props;
+export default async function Page({ searchParams }: PageProps) {
+	const session = await auth();
 
-  if (!session?.user && !checkSearchTerms(searchParams)) {
-    redirect("/autentificare");
-  }
+	if (!session?.user && !checkSearchTerms(await searchParams)) {
+		redirect("/autentificare");
+	}
 
-  return (
-    <main className="container px-8 py-4 flex flex-col gap-2 lg:max-w-7xl">
-      <Suspense fallback={<div className="text-sm">se incarca...</div>}>
-        <SearchList searchParams={searchParams} />
-      </Suspense>
-    </main>
-  );
+	return (
+		<main className="container px-8 py-4 flex flex-col gap-2 lg:max-w-7xl">
+			<Suspense fallback={<div className="text-sm">se incarca...</div>}>
+				<SearchList searchParams={await searchParams} />
+			</Suspense>
+		</main>
+	);
 }

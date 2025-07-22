@@ -1,4 +1,4 @@
-import { Bucket, SearchItemDirect, SearchItemOffline, SearchItemPublic } from "./types";
+import type { Bucket, SearchItemDirect, SearchItemOffline, SearchItemPublic } from "./types";
 
 export const ES_INDEX_PUBLIC = process.env.NEXT_PUBLIC_ES_INDEX_PUBLIC as string;
 export const ES_INDEX_DIRECT = process.env.NEXT_PUBLIC_ES_INDEX_DIRECT as string;
@@ -11,7 +11,11 @@ export type Fields = Record<string, (string | number)[]>;
 
 export const RESULTS_PER_PAGE = 20;
 
-export function transformItem(index: string, fields: Fields, highlight: Fields) {
+export function transformItem(
+  index: string,
+  fields: Fields,
+  highlight: Fields,
+): SearchItemDirect | SearchItemPublic | SearchItemOffline {
   switch (index) {
     case ES_INDEX_OFFLINE:
       return {
@@ -110,7 +114,7 @@ export function transformItem(index: string, fields: Fields, highlight: Fields) 
           ]?.[0],
       } as SearchItemPublic;
     default:
-      return undefined;
+      throw new Error(`Invalid index: ${index}`);
   }
 }
 
