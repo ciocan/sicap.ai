@@ -30,20 +30,20 @@ export const formatNumber = (n: number) => n.toLocaleString("ro-RO");
 
 const EURO = 5; // 1 EUR = 5 RON
 
-export const moneyRon = (value) =>
+export const moneyRon = (value: number | string | null | undefined): string =>
   new Intl.NumberFormat("ro-RO", {
     style: "currency",
     currency: "RON",
     minimumFractionDigits: 0,
-  }).format(value);
+  }).format(Number(value ?? 0));
 
-export const moneyEur = (value) =>
+export const moneyEur = (value: number | string | null | undefined): string =>
   new Intl.NumberFormat("ro-RO", {
     style: "currency",
     currency: "EUR",
-  }).format(eur(value));
+  }).format(eur(value ?? 0));
 
-export const eur = (v) => Number(v) / EURO;
+export const eur = (v: number | string | null | undefined): number => Number(v ?? 0) / EURO;
 
 export const getInitials = (fullName: string): string => {
   const names = fullName.split(" ");
@@ -55,7 +55,7 @@ export const getInitials = (fullName: string): string => {
   return initials;
 };
 
-export const checkSearchTerms = (searchTerms) => {
+export const checkSearchTerms = (searchTerms: any): boolean => {
   const notAllowed = [
     "dateFrom",
     "dateTo",

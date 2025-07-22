@@ -115,7 +115,7 @@ export const searchContractsTool = createTool({
       localitySupplier,
       countySupplier,
       euFunds,
-    } = context.input;
+    } = context;
     const results = await searchContracts({
       query,
       page,

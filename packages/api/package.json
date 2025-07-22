@@ -2,7 +2,7 @@
   "name": "@sicap/api",
   "version": "0.1.0",
   "types": "./dist/index.d.mts",
-  "main": "src/index.ts",
+  "main": "./dist/index.mjs",
   "license": "MIT",
   "scripts": {
     "build": "tsup",

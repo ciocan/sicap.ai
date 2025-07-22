@@ -67,9 +67,11 @@ export const { handlers, auth } = NextAuth({
         .where(eq(users.id, user.id!))
         .returning();
     },
-    async signOut(message: { token: { id: string } }) {
-      const userId = message.token.id;
-      log.info("User signed out", { userId });
+    async signOut(message: any) {
+      const userId = message?.token?.id;
+      if (userId) {
+        log.info("User signed out", { userId });
+      }
     },
   },
   callbacks: {

@@ -1,8 +1,8 @@
 import dayjs from "dayjs";
-import localeData from "dayjs/plugin/localeData";
-import "dayjs/locale/ro";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
+import localeData from "dayjs/plugin/localeData.js";
+import "dayjs/locale/ro.js";
+import utc from "dayjs/plugin/utc.js";
+import timezone from "dayjs/plugin/timezone.js";
 
 const tz = "Europe/Bucharest";
 

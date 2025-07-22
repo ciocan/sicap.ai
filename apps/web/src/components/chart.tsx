@@ -9,6 +9,7 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
+import type { TooltipProps } from "recharts";
 
 import { Label, RadioGroup, RadioGroupItem } from "@sicap/ui";
 import { formatNumber, moneyRon } from "@/utils";
@@ -29,9 +30,9 @@ interface Props {
     | undefined;
 }
 
-const CustomTooltip = ({ active, payload }) => {
+const CustomTooltip = ({ active, payload }: TooltipProps<number, string>) => {
   if (active && payload && payload.length) {
-    const [data] = payload;
+    const [data] = payload as unknown as { payload: StatItem }[];
     return (
       <div className="font-mono text-xs text-center bg-slate-50 dark:bg-slate-400 p-1 px-2 rounded-sm text-primary dark:text-secondary space-y-1">
         <p className="pb-1 border-b border-b-1 border-b-slate-200 dark:border-b-slate-500">
@@ -47,26 +48,26 @@ const CustomTooltip = ({ active, payload }) => {
 };
 
 export function Chart({ stats }: Props) {
-  if (!stats) {
-    return null;
-  }
-
   const [activeChartType, setActiveChartType] = useState("value");
   const [activeInterval, setActiveInterval] = useState("years");
   const [data, setData] = useState<StatItem[]>([]);
 
   useEffect(() => {
-    setData(stats.years.map((y) => ({ ...y, key: formatDateAs(y.key, "YYYY") })));
+    setData(stats?.years.map((y) => ({ ...y, key: formatDateAs(y.key, "YYYY") })) || []);
   }, [stats]);
 
-  const handleChangeChartType = (type) => {
+  if (!stats) {
+    return null;
+  }
+
+  const handleChangeChartType = (type: string) => {
     setActiveChartType(type);
   };
 
-  const handleChangeInterval = (interval) => {
+  const handleChangeInterval = (interval: string) => {
     setActiveInterval(interval);
     setData(
-      stats[interval].map((y) => ({
+      stats[interval as keyof typeof stats].map((y) => ({
         ...y,
         key: formatDateAs(y.key, interval === "years" ? "YYYY" : "MM/YYYY"),
       })),
@@ -81,7 +82,7 @@ export function Chart({ stats }: Props) {
           <XAxis dataKey="key" />
           <YAxis dataKey={activeChartType} />
           <Line dataKey={activeChartType} type="monotone" activeDot={{ r: 4 }} dot={{ r: 2 }} />
-          <Tooltip content={CustomTooltip} />
+          <Tooltip content={<CustomTooltip />} />
         </LineChart>
       </ResponsiveContainer>
       <div className="flex flex-col sm:flex-row justify-between items-center gap-2">

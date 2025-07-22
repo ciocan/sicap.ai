@@ -1,13 +1,10 @@
-import { NextRequest } from "next/server";
+import type { NextRequest } from "next/server";
 
 import { env } from "@/lib/env";
-import { NextHandler } from "./types";
+import type { NextHandler } from "./types";
 
-export const withBearerToken = (handler: NextHandler) => {
-  // The wrapped function must conform to the Next.js Route Handler signature:
-  // (request: NextRequest, context: { params: Record<string, string> }) => Response | Promise<Response>
-  // We therefore accept the `context` object as the second parameter instead of a `NextResponse`.
-  return async (req: NextRequest, context?: unknown) => {
+export const withBearerToken = <T extends NextRequest = NextRequest>(handler: NextHandler<T>) => {
+  return async (req: T, context?: unknown) => {
     const token = req.headers.get("authorization")?.split(" ")[1];
 
     if (!token) {
@@ -18,7 +15,6 @@ export const withBearerToken = (handler: NextHandler) => {
       return new Response("Invalid token", { status: 403 });
     }
 
-    // Forward the original `context` object (if any) to the downstream handler.
     return handler(req, context);
   };
 };

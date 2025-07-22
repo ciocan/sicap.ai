@@ -93,6 +93,12 @@
     },
     "mastra:dev": {
       "cache": false
+    },
+    "mastra:build": {
+      "cache": false,
+      "dependsOn": [
+        "^build"
+      ]
     }
   }
 }

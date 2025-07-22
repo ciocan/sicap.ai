@@ -46,7 +46,7 @@ export const GET = withBearerToken(
     try {
       return NextResponse.json(await searchFunction(authorityFiscalCode, pitId, searchAfter));
     } catch (error) {
-      request.log.error(error);
+      request.log.error(String(error));
       return new NextResponse("Invalid pitId", { status: 500 });
     }
   }),
