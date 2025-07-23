@@ -4,10 +4,7 @@ import { z } from "zod";
 import { searchContracts } from "@sicap/api";
 
 const inputSchema = z.object({
-  query: z
-    .string()
-    .min(1, "Căutarea nu poate fi goală")
-    .describe("Textul de căutare introdus de utilizator"),
+  query: z.string().optional().describe("Textul de căutare introdus de utilizator"),
   page: z.number().int().min(1).optional().default(1).describe("Pagina de rezultate (implicit 1)"),
   perPage: z
     .number()
@@ -19,7 +16,7 @@ const inputSchema = z.object({
     .describe("Numărul de rezultate pe pagină (implicit 20, maxim 100)"),
   db: z
     .array(z.enum(["licitatii-publice", "achizitii-directe", "achizitii-offline"]))
-    .optional()
+    .default(["licitatii-publice", "achizitii-directe", "achizitii-offline"])
     .describe(
       "Baza de date selectată pentru căutare (ex: licitații publice, achiziții directe, achiziții offline)",
     ),
@@ -45,7 +42,9 @@ const searchItemDirectSchema = z.object({
   name: z.string().describe("Denumirea contractului sau achiziției"),
   code: z
     .string()
-    .describe("Codul unic de identificare al contractului (ex: număr anunț sau achiziție)"),
+    .describe(
+      "Codul unic de identificare al contractului (ex: codul anunțului sau achiziției - CN, SCN, DA, etc.)",
+    ),
   cpvCode: z.string().describe("Codul CPV principal asociat contractului"),
   cpvCodeAndName: z.string().describe("Codul CPV și denumirea completă asociată contractului"),
   value: z.string().describe("Valoarea contractului (RON)"),
@@ -85,8 +84,12 @@ const outputSchema = z.object({
   total: z.number(),
   items: z.array(
     z.object({
-      id: z.string(),
-      index: z.string(),
+      id: z.string().describe("ID-ul unic al contractului"),
+      index: z
+        .string()
+        .describe(
+          "Indexul bazei de date (licitații publice, achiziții directe, achiziții offline)",
+        ),
       fields: searchItemSchema,
     }),
   ),

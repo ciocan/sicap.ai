@@ -18,7 +18,7 @@ export interface SearchFilters {
   euFunds?: boolean;
 }
 export interface SearchProps {
-  query: string;
+  query?: string;
   page?: number;
   perPage?: number;
   filters: SearchFilters;

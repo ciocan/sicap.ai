@@ -1,9 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": [
-    "**/.env.*local",
-    ".env"
-  ],
+  "globalDependencies": ["**/.env.*local", ".env"],
   "globalEnv": [
     "ES_URL",
     "DATABASE_URL",
@@ -24,18 +21,17 @@
     "ES_INDEX_OFFLINE",
     "ES_INDEX_SEARCH",
     "ES_API_KEY",
-    "OPENAI_API_KEY"
+    "OPENAI_API_KEY",
+    "AGENT_DB",
+    "AGENT_DB_AUTH_TOKEN",
+    "LANGFUSE_PUBLIC_KEY",
+    "LANGFUSE_SECRET_KEY",
+    "LANGFUSE_BASEURL"
   ],
   "tasks": {
     "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        "dist/**",
-        ".next/**",
-        "!.next/cache/**"
-      ],
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
       "inputs": [
         "$TURBO_DEFAULT$",
         ".env.production.local",
@@ -96,9 +92,7 @@
     },
     "mastra:build": {
       "cache": false,
-      "dependsOn": [
-        "^build"
-      ]
+      "dependsOn": ["^build"]
     }
   }
 }

@@ -16,6 +16,11 @@ export const env = createEnv({
     LISTMONK_API_URL: z.string().url().optional().default("http://localhost:9000"),
     LISTMONK_FROM_EMAIL: z.string().email().optional(),
     API_SERVICES_TOKEN: z.string().optional().default(""),
+    AGENT_DB: z.string().url().optional().default("http://localhost:8080"),
+    AGENT_DB_AUTH_TOKEN: z.string().optional().default("abcd"),
+    LANGFUSE_PUBLIC_KEY: z.string().optional(),
+    LANGFUSE_SECRET_KEY: z.string().optional(),
+    LANGFUSE_BASEURL: z.string().url().optional().default("https://cloud.langfuse.com"),
   },
   client: {
     NEXT_PUBLIC_FORMBRICKS_API_HOST: z.string().min(1),
@@ -55,5 +60,10 @@ export const env = createEnv({
     NEXT_PUBLIC_CLOUDFLARE_HOST: process.env.NEXT_PUBLIC_CLOUDFLARE_HOST,
     NEXT_PUBLIC_OPENSTATUS_RUM_DSN: process.env.NEXT_PUBLIC_OPENSTATUS_RUM_DSN,
     NEXT_PUBLIC_TELEMETRY_DISABLED: process.env.NEXT_PUBLIC_TELEMETRY_DISABLED,
+    AGENT_DB: process.env.AGENT_DB,
+    AGENT_DB_AUTH_TOKEN: process.env.AGENT_DB_AUTH_TOKEN,
+    LANGFUSE_PUBLIC_KEY: process.env.LANGFUSE_PUBLIC_KEY,
+    LANGFUSE_SECRET_KEY: process.env.LANGFUSE_SECRET_KEY,
+    LANGFUSE_BASEURL: process.env.LANGFUSE_BASEURL,
   },
 });
