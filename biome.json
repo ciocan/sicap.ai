@@ -14,7 +14,7 @@
       "suspicious": {
         "noEmptyInterface": "off",
         "noArrayIndexKey": "off",
-        "noConsole": { "level": "warn", "options": { "allow": ["log"] } }
+        "noConsole": { "level": "warn", "options": { "allow": ["info", "error"] } }
       },
       "recommended": true,
       "a11y": {

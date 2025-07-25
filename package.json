@@ -2,7 +2,11 @@
   "name": "sicap",
   "version": "0.2.0",
   "description": "Motor de cautare pentru achizitii publice",
-  "workspaces": ["apps/*", "packages/*", "internal/*"],
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "internal/*"
+  ],
   "private": true,
   "scripts": {
     "build": "dotenv -- turbo build",
@@ -21,7 +25,8 @@
     "db:dev": "turso dev --db-file=devdb",
     "db:dev:clean": "rm devdb*",
     "with-env": "dotenv -e .env --",
-    "sitemap": "pnpm with-env turbo --filter web sitemap"
+    "sitemap": "pnpm with-env turbo --filter web sitemap",
+    "scc": "scc -i ts,tsx,md,json,sh,m --no-cocomo --exclude-dir='packages/ui,apps/web/src/lib/db/migrations'"
   },
   "devDependencies": {
     "@biomejs/biome": "2.1.2",

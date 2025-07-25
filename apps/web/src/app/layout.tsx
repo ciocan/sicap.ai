@@ -107,13 +107,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             disableTransitionOnChange
           >
             <Suspense fallback={null}>
-              <FormbricksProvider>
-                <div className="relative flex min-h-screen flex-col">
-                  <Navbar />
-                  <div className="flex flex-col flex-1">{children}</div>
-                  <Footer />
-                </div>
-              </FormbricksProvider>
+              <FormbricksProvider>{children}</FormbricksProvider>
             </Suspense>
           </ThemeProvider>
         </SessionProvider>
