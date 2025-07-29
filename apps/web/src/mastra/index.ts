@@ -30,4 +30,12 @@ export const mastra = new Mastra({
       }),
     },
   },
+  server: {
+    cors: {
+      origin: "*",
+      allowMethods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+      allowHeaders: ["Content-Type", "Authorization"],
+      credentials: false,
+    },
+  },
 });

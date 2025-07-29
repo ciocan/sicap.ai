@@ -4,12 +4,13 @@ import { GeistSans, GeistMono } from "geist/font";
 import { AxiomWebVitals } from "next-axiom";
 import OpenStatusProvider from "@/components/openstatus-provider";
 import { BotIdClient } from "botid/client";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 import "@sicap/ui/src/styles/styles.css";
 import "@/app/globals.css";
 
 import { siteConfig } from "@/config/site";
-import { Navbar, Footer, ThemeProvider } from "@/components";
+import { ThemeProvider } from "@/components";
 import { Suspense } from "react";
 import FormbricksProvider from "./formbricks";
 import { env } from "@/lib/env";
@@ -107,7 +108,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
             disableTransitionOnChange
           >
             <Suspense fallback={null}>
-              <FormbricksProvider>{children}</FormbricksProvider>
+              <FormbricksProvider>
+                <NuqsAdapter>{children}</NuqsAdapter>
+              </FormbricksProvider>
             </Suspense>
           </ThemeProvider>
         </SessionProvider>

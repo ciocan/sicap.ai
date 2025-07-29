@@ -8,9 +8,6 @@ export const POST = async (request: NextRequest) => {
   const session = await auth();
   const userId = session?.user?.id;
 
-  console.log("session", session);
-  console.log("data", JSON.stringify(data, null, 2));
-
   if (!session || !userId) {
     return new NextResponse("Neautorizat", { status: 401 });
   }

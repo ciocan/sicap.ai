@@ -37,3 +37,5 @@ yarn-error.log*
 # service workers
 public/workbox-*.*
 public/sw.*
+
+.mastra
