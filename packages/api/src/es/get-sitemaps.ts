@@ -1,7 +1,9 @@
-import { SearchRequest } from "@elastic/elasticsearch/lib/api/types";
+import type { estypes } from "@elastic/elasticsearch";
 
 import { ES_INDEX_DIRECT, ES_INDEX_OFFLINE, ES_INDEX_PUBLIC } from "./utils";
 import { esClient } from "./config";
+
+type SearchRequest = estypes.SearchRequest;
 
 interface SearchItem {
   item: {

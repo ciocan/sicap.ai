@@ -1,5 +1,3 @@
-// tailwind config is required for editor support
-
 import sharedConfig from "@sicap/tailwind-config/tailwind.config.ts";
 import type { Config } from "tailwindcss";
 

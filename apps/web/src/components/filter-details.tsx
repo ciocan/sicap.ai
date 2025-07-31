@@ -34,8 +34,8 @@ export function FilterDetails({ searchParams }: { searchParams: SearchParams }) 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <div
-          role="button"
+        <button
+          type="button"
           className="flex flex-wrap items-center text-xs text-gray-700 bg-gray-100 dark:bg-gray-800 dark:text-gray-400 p-2 rounded-md cursor-pointer"
         >
           <Filter className="h-[0.85rem] w-[0.85rem] mr-1" />
@@ -76,7 +76,7 @@ export function FilterDetails({ searchParams }: { searchParams: SearchParams }) 
               {euFunds === "true" && <span className="mr-1">Fonduri Europene: DA.</span>}
             </>
           ) : null}
-        </div>
+        </button>
       </DialogTrigger>
       <AdvancedSearch query={q} setOpen={setOpen} />
     </Dialog>

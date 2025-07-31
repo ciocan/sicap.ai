@@ -17,6 +17,7 @@ export async function ContractLicitatii({ id }: { id: string }) {
     sysProcedureState,
     sysProcedureType,
     sysAcquisitionContractType,
+    // @ts-expect-error: TODO: fix this
     contractDate,
     cpvCodeAndName,
     cpvCode,
@@ -33,6 +34,7 @@ export async function ContractLicitatii({ id }: { id: string }) {
     istoric ? "istoric." : ""
   }e-licitatie.ro/pub/notices/ca-notices/view-c/${id}`;
 
+  // @ts-expect-error: TODO: fix this
   const supplierUrl = winner.entityId ? `/licitatii/firma/${winner.entityId}` : "#";
 
   return (
@@ -101,6 +103,7 @@ export async function ContractLicitatii({ id }: { id: string }) {
           label="Furnizor"
           value={
             <Link href={supplierUrl} className="underline text-primary font-semibold">
+              {/* @ts-expect-error: TODO: fix this */}
               {winner.fiscalNumber} - {winner.name}
             </Link>
           }

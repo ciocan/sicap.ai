@@ -33,9 +33,14 @@ interface Props {
 const CustomTooltip = ({ active, payload }: TooltipProps<number, string>) => {
   if (active && payload && payload.length) {
     const [data] = payload as unknown as { payload: StatItem }[];
+
+    if (!data) {
+      return null;
+    }
+
     return (
       <div className="font-mono text-xs text-center bg-slate-50 dark:bg-slate-400 p-1 px-2 rounded-sm text-primary dark:text-secondary space-y-1">
-        <p className="pb-1 border-b border-b-1 border-b-slate-200 dark:border-b-slate-500">
+        <p className="pb-1 border-b-1 border-b-slate-200 dark:border-b-slate-500">
           {data.payload.key}
         </p>
         <p>{`${formatNumber(data.payload.count)} contracte`}</p>

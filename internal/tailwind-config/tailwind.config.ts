@@ -1,11 +1,11 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
-  darkMode: ["class"],
+  darkMode: ["class", "selector"],
   content: [
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
     "../../apps/web/src/**/*.{js,ts,jsx,tsx,mdx}",
-    '../../packages/*/src/**/*.{ts,tsx,mdx}',
+    "../../packages/*/src/**/*.{ts,tsx,mdx}",
   ],
   theme: {
     container: {
@@ -17,8 +17,8 @@ const config: Config = {
     },
     extend: {
       fontFamily: {
-        sans: ['var(--font-geist-sans)'],
-        mono: ['var(--font-geist-mono)'],
+        sans: ["var(--font-geist-sans)"],
+        mono: ["var(--font-geist-mono)"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -76,6 +76,6 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  // plugins: [require("@tailwindcss/postcss")],
 };
 export default config;

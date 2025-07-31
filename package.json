@@ -31,6 +31,7 @@
   "devDependencies": {
     "@biomejs/biome": "2.1.2",
     "@sicap/tsconfig": "workspace:*",
+    "@tailwindcss/postcss": "^4.1.11",
     "dotenv-cli": "^8.0.0",
     "turbo": "^2.5.5"
   },

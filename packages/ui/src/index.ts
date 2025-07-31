@@ -1,4 +1,4 @@
-import "./styles/styles.css";
+export * from "./components/index.tsx";
+export * from "./lib/utils.ts";
 
-export * from "./components";
-export * from "./lib/utils";
+export * from "./hooks/index.ts";

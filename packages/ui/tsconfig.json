@@ -1,12 +1,13 @@
 {
   "extends": "@sicap/tsconfig/react-library.json",
-  "include": ["src/**/*.tsx", "src/**/*.d.ts", "src/**/*.ts"],
-  "exclude": ["dist", "build", "node_modules"],
   "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
     "baseUrl": ".",
     "paths": {
-      "@ui/*": ["./src/components/ui/*"],
-      "@ui/lib*": ["./src/lib*"]
+      "@sicap/ui/*": ["./src/*"]
     }
-  }
+  },
+  "include": ["."],
+  "exclude": ["node_modules", "dist"]
 }

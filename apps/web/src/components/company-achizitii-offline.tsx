@@ -2,9 +2,9 @@ import { formatNumber, moneyEur, moneyRon } from "@/utils";
 import { getCompanyAchizitiiOffline } from "@sicap/api";
 import { ListItem } from "./list-item";
 import { Pagination } from "./pagination";
-import { type SearchParams } from "./search-list";
+import type { SearchParams } from "./search-list";
 import { Chart } from "./chart";
-import { type SLUG } from "@/utils/types";
+import type { SLUG } from "@/utils/types";
 import { PerPage } from "./per-page";
 import { CSVDownload } from "./csv-download";
 

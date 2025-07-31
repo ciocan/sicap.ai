@@ -1,16 +1,18 @@
-import { SearchTotalHits } from "@elastic/elasticsearch/lib/api/types";
+import type { estypes } from "@elastic/elasticsearch";
 
 import { esClient } from "../config";
 import {
   ES_INDEX_DIRECT,
-  Fields,
+  type Fields,
   RESULTS_PER_PAGE,
   fieldsAchizitii,
   mapBucket,
   transformItem,
 } from "../utils";
-import { RootObject } from "./types";
-import { Args, Buckets, IndexName } from "../types";
+import type { RootObject } from "./types";
+import type { Args, Buckets, IndexName } from "../types";
+
+type SearchTotalHits = estypes.SearchTotalHits;
 
 const getQueryForSupplierId = (id: string | undefined) => {
   if (!id) {

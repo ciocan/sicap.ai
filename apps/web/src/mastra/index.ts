@@ -4,7 +4,8 @@ import { LangfuseExporter } from "langfuse-vercel";
 
 import { sicapAgent } from "./agents";
 import { storage, VECTOR_STORE_NAME, vector } from "./stores";
-import { env } from "../lib/env";
+import { env } from "@/lib/env";
+import { auth } from "@/lib/auth";
 
 const logger = new PinoLogger({
   name: "SICAP Agent",
@@ -37,5 +38,28 @@ export const mastra = new Mastra({
       allowHeaders: ["Content-Type", "Authorization"],
       credentials: false,
     },
+    middleware: [
+      {
+        handler: async (c, next) => {
+          const session = await auth();
+          const userId = session?.user?.id;
+          const resourceId = c.req.query("resourceid") || userId;
+
+          console.log({
+            path: c.req.path,
+            query: c.req.query(),
+            userId,
+            resourceId,
+          });
+
+          if (userId !== resourceId) {
+            // return c.json({ error: "Unauthorized" }, 401);
+          }
+
+          await next();
+        },
+        path: "/api/*",
+      },
+    ],
   },
 });

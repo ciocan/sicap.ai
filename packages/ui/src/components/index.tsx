@@ -1,24 +1,22 @@
-"use client";
-// styles
-import "../styles/styles.css";
-
-// components
-export * from "./mode-toggle";
-export * from "./ui/card";
-export * from "./ui/button";
-export * from "./ui/separator";
-export * from "./ui/dropdown-menu";
-export * from "./ui/input";
-export * from "./ui/badge";
-export * from "./ui/dialog";
-export * from "./ui/label";
-export * from "./ui/tooltip";
-export * from "./ui/form";
-export * from "./ui/checkbox";
-export * from "./ui/toast";
-export * from "./ui/toaster";
-export * from "./ui/use-toast";
-export * from "./ui/select";
-export * from "./ui/radio-group";
-export * from "./ui/scroll-area";
-export * from "./ui/avatar";
+export * from "./mode-toggle.tsx";
+export * from "./ui/card.tsx";
+export * from "./ui/button.tsx";
+export * from "./ui/separator.tsx";
+export * from "./ui/dropdown-menu.tsx";
+export * from "./ui/input.tsx";
+export * from "./ui/badge.tsx";
+export * from "./ui/dialog.tsx";
+export * from "./ui/label.tsx";
+export * from "./ui/tooltip.tsx";
+export * from "./ui/form.tsx";
+export * from "./ui/checkbox.tsx";
+export * from "./ui/toast.tsx";
+export * from "./ui/toaster.tsx";
+export * from "./ui/select.tsx";
+export * from "./ui/radio-group.tsx";
+export * from "./ui/scroll-area.tsx";
+export * from "./ui/avatar.tsx";
+export * from "./ui/sidebar.tsx";
+export * from "./ui/breadcrumb.tsx";
+export * from "./ui/sheet.tsx";
+export * from "./ui/skeleton.tsx";

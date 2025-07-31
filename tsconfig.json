@@ -1,11 +1,3 @@
 {
-  "extends": "@sicap/tsconfig/base.json",
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@ui": ["packages/ui/src/index.ts"],
-      "@ui/*": ["packages/ui/src/*"],
-      "@/*": ["apps/web/src/*"]
-    }
-  }
+  "extends": "@sicap/tsconfig/base.json"
 }

@@ -2,7 +2,7 @@ import { pick } from "ramda";
 
 import { esClient } from "../config";
 import { ES_INDEX_PUBLIC } from "../utils";
-import { RootObject } from "./types";
+import type { RootObject } from "./types";
 
 import {
   noticeProps,
@@ -57,9 +57,11 @@ export async function getContractLicitatii(id: string) {
         section2_2_New,
         contract._source.publicNotice?.caNoticeEdit_New?.section2_New?.section2_2_New || {},
       ),
+      // @ts-expect-error: TODO: fix this
       ...pick(["contractDate", "contractValue"], contract._source?.noticeContracts?.items[0] || {}),
       winner: {
         ...pick(
+          // @ts-expect-error: TODO: fix this
           ["name", "fiscalNumber", "entityId"],
           contract._source?.noticeContracts?.items[0]?.winner || {},
         ),

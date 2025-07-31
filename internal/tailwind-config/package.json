@@ -5,6 +5,7 @@
   "main": "index.ts",
   "types": "index.ts",
   "devDependencies": {
-    "tailwindcss": "^3.3.4"
+    "tailwindcss": "^4.1.11",
+    "@tailwindcss/postcss": "^4.1.11"
   }
 }

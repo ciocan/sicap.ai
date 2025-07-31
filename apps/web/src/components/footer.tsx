@@ -7,7 +7,7 @@ import { HostingLink } from "./hosting-link";
 export async function Footer() {
   return (
     <footer className="mt-auto">
-      <div className="mx-auto w-full max-w-screen-xl p-4 space-y-2 border-t border-t-1 border-secondary/80">
+      <div className="mx-auto w-full max-w-screen-xl p-4 space-y-2 border-t-1 border-secondary/80">
         <ul className="flex opacity-60 text-xs justify-center items-center gap-6">
           <li>
             <Link href="/confidentialitate" className="hover:underline">

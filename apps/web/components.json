@@ -5,16 +5,16 @@
   "tsx": true,
   "tailwind": {
     "config": "",
-    "css": "src/styles/globals.css",
+    "css": "../../packages/ui/src/styles/globals.css",
     "baseColor": "zinc",
     "cssVariables": true
   },
   "iconLibrary": "lucide",
   "aliases": {
-    "components": "@sicap/ui/ui/components",
-    "utils": "@sicap/ui/ui/lib/utils",
+    "components": "@/components",
+    "utils": "@ui/lib/utils",
+    "ui": "@sicap/ui/ui/components",
     "hooks": "@sicap/ui/ui/hooks",
-    "lib": "@sicap/ui/ui/lib",
-    "ui": "@sicap/ui/ui/components"
+    "lib": "@sicap/ui/ui/lib"
   }
 }

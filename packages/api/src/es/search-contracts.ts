@@ -1,4 +1,4 @@
-import { SearchTotalHits } from "@elastic/elasticsearch/lib/api/types";
+import type { estypes } from "@elastic/elasticsearch";
 
 import { esClient } from "./config";
 import {
@@ -6,14 +6,16 @@ import {
   ES_INDEX_PUBLIC,
   ES_INDEX_OFFLINE,
   RESULTS_PER_PAGE,
-  Fields,
+  type Fields,
   fieldsAchizitii,
   filedsLicitatii,
   transformItem,
   fieldsAchizitiiOffline,
 } from "./utils";
-import { IndexName, SearchProps } from "./types";
+import type { IndexName, SearchProps } from "./types";
 import { escapeQuery } from "../utils";
+
+type SearchTotalHits = estypes.SearchTotalHits;
 
 export async function searchContracts({
   query,

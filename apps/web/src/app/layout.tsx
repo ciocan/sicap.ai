@@ -6,8 +6,7 @@ import OpenStatusProvider from "@/components/openstatus-provider";
 import { BotIdClient } from "botid/client";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 
-import "@sicap/ui/src/styles/styles.css";
-import "@/app/globals.css";
+import "@sicap/ui/globals.css";
 
 import { siteConfig } from "@/config/site";
 import { ThemeProvider } from "@/components";

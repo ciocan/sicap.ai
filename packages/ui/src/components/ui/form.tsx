@@ -11,9 +11,9 @@ import * as z from "zod";
 
 const { FormProvider, Controller, useFormContext, useForm } = ReactHookForm;
 
-import { cn } from "../../lib/utils";
-import { Label } from "./label";
-import { useToast } from "./use-toast";
+import { cn } from "@sicap/ui/lib/utils";
+import { Label } from "@sicap/ui";
+import { useToast } from "@sicap/ui";
 
 const Form: typeof ReactHookForm.FormProvider = FormProvider;
 
