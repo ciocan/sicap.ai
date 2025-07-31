@@ -97,17 +97,25 @@ export const useSendMessage = (args: UseSendMessageArgs) => {
           console.warn("onFilePart not implemented", streamPart);
         },
         onFinishMessagePart(streamPart) {
-          // @ts-expect-error: TODO: fix this
-          setMessages((prev) => [
-            ...prev.slice(0, -1),
-            {
-              ...prev[prev.length - 1],
-              status: {
-                type: "complete",
-                reason: streamPart.finishReason === "stop" ? "stop" : "unknown",
+          setMessages((prev) => {
+            if (prev.length === 0) {
+              return prev;
+            }
+            const last = prev[prev.length - 1];
+            if (!last || typeof last !== "object" || !("role" in last)) {
+              return prev;
+            }
+            return [
+              ...prev.slice(0, -1),
+              {
+                ...last,
+                status: {
+                  type: "complete",
+                  reason: streamPart.finishReason === "stop" ? "stop" : "unknown",
+                },
               },
-            },
-          ]);
+            ];
+          });
           setIsRunning(false);
           setIsDisabled(false);
         },

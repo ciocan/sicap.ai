@@ -2,7 +2,7 @@ import { pick } from "ramda";
 
 import { esClient } from "../config";
 import { ES_INDEX_PUBLIC } from "../utils";
-import type { RootObject } from "./types";
+import type { RootObject, NoticeContractItem, Winner } from "./types";
 
 import {
   noticeProps,
@@ -32,6 +32,12 @@ export async function getContractLicitatii(id: string) {
     throw new Error(`Contractul nu a fost gasit: ${id}`);
   }
 
+  // Ensure we always work with correctly typed objects to avoid `never` key errors
+  const noticeContractItem: Partial<NoticeContractItem> =
+    contract._source.noticeContracts?.items?.[0] ?? {};
+
+  const winnerItem: Partial<Winner> = noticeContractItem.winner ?? {};
+
   const data = {
     ...pick(noticeProps, contract._source.item),
     ...{
@@ -57,17 +63,12 @@ export async function getContractLicitatii(id: string) {
         section2_2_New,
         contract._source.publicNotice?.caNoticeEdit_New?.section2_New?.section2_2_New || {},
       ),
-      // @ts-expect-error: TODO: fix this
-      ...pick(["contractDate", "contractValue"], contract._source?.noticeContracts?.items[0] || {}),
+      ...pick(["contractDate", "contractValue"] as const, noticeContractItem),
       winner: {
-        ...pick(
-          // @ts-expect-error: TODO: fix this
-          ["name", "fiscalNumber", "entityId"],
-          contract._source?.noticeContracts?.items[0]?.winner || {},
-        ),
+        ...pick(["name", "fiscalNumber", "entityId"] as const, winnerItem),
       },
-      winners: contract._source?.noticeContracts?.items[0]?.winners?.map((winner) => ({
-        ...pick(["entityId", "name", "fiscalNumber"], winner || {}),
+      winners: (noticeContractItem.winners ?? []).map((winner) => ({
+        ...pick(["entityId", "name", "fiscalNumber"] as const, winner),
       })),
       istoric: contract._source.istoric,
       cNotice:
