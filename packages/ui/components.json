@@ -11,10 +11,10 @@
   },
   "iconLibrary": "lucide",
   "aliases": {
-    "components": "@sicap/ui/ui/components",
-    "utils": "@sicap/ui/ui/lib/utils",
-    "hooks": "@sicap/ui/ui/hooks",
-    "lib": "@sicap/ui/ui/lib",
-    "ui": "@sicap/ui/ui/components"
+    "components": "@sicap/ui/components/ui",
+    "utils": "@sicap/ui/lib/utils",
+    "hooks": "@sicap/ui/hooks",
+    "lib": "@sicap/ui/lib",
+    "ui": "@sicap/ui/components/ui"
   }
 }

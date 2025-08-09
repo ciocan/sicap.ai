@@ -43,3 +43,6 @@ tsconfig.tsbuildinfo
 
 .mastra/
 .mastra/*
+output.txt
+*.db
+*.db-*

@@ -34,6 +34,7 @@ export const env = createEnv({
     NEXT_PUBLIC_CLOUDFLARE_HOST: z.string().optional(),
     NEXT_PUBLIC_OPENSTATUS_RUM_DSN: z.string().optional().default(""),
     NEXT_PUBLIC_TELEMETRY_DISABLED: z.string().transform((s) => s !== "false" && s !== "0"),
+    NEXT_PUBLIC_AGENT_API_URL: z.string().url().optional().default("http://localhost:4242"),
   },
   runtimeEnv: {
     ES_URL: process.env.ES_URL,
@@ -65,5 +66,6 @@ export const env = createEnv({
     LANGFUSE_PUBLIC_KEY: process.env.LANGFUSE_PUBLIC_KEY,
     LANGFUSE_SECRET_KEY: process.env.LANGFUSE_SECRET_KEY,
     LANGFUSE_BASEURL: process.env.LANGFUSE_BASEURL,
+    NEXT_PUBLIC_AGENT_API_URL: process.env.NEXT_PUBLIC_AGENT_API_URL,
   },
 });

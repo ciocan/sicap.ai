@@ -1,0 +1,43 @@
+{
+  "name": "@sicap/agent",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "mastra dev --port 4242",
+    "build": "mastra build --dir src/mastra",
+    "start": "mastra start --dir src/mastra"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "dependencies": {
+    "@ai-sdk/openai": "^2.0.7",
+    "@mastra/core": "0.0.0-ai-v5-20250801192614",
+    "@mastra/libsql": "0.0.0-ai-v5-20250801192614",
+    "@mastra/loggers": "0.0.0-ai-v5-20250801192614",
+    "@mastra/memory": "0.0.0-ai-v5-20250801192614",
+    "@mastra/server": "0.0.0-ai-v5-20250801192614",
+    "@opentelemetry/auto-instrumentations-node": "^0.62.0",
+    "@opentelemetry/core": "^2.0.1",
+    "@opentelemetry/exporter-trace-otlp-grpc": "^0.203.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.203.0",
+    "@opentelemetry/resources": "^2.0.1",
+    "@opentelemetry/sdk-node": "^0.203.0",
+    "@opentelemetry/sdk-trace-base": "^2.0.1",
+    "@opentelemetry/semantic-conventions": "^1.36.0",
+    "@sicap/api": "workspace:*",
+    "ai": "^5.0.8",
+    "langfuse-vercel": "^3.38.4",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^24.2.1",
+    "mastra": "0.0.0-ai-v5-20250801192614",
+    "typescript": "^5.9.2"
+  }
+}
