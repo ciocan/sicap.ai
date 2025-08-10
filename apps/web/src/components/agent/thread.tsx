@@ -131,6 +131,25 @@ const ThreadWelcome: FC = () => {
 };
 
 const ThreadWelcomeSuggestions: FC = () => {
+  const focusComposer = () => {
+    // Defer to allow the suggestion to populate the composer first
+    setTimeout(() => {
+      const input = document.getElementById("composer-input") as
+        | HTMLTextAreaElement
+        | HTMLInputElement
+        | null;
+      if (!input) {
+        return;
+      }
+      input.focus();
+      const length = input.value.length;
+      try {
+        input.setSelectionRange(length, length);
+      } catch {
+        // Some inputs may not support setSelectionRange; ignore
+      }
+    }, 0);
+  };
   const tabs = [
     {
       value: "explore",
@@ -263,6 +282,7 @@ const ThreadWelcomeSuggestions: FC = () => {
                         "max-w-full whitespace-normal break-words",
                       )}
                       aria-label={item.action}
+                      onClick={focusComposer}
                     >
                       <span className="font-medium">
                         {item.title} <span className="text-muted-foreground">{item.label}</span>
@@ -293,6 +313,7 @@ const Composer: FC = () => {
           rows={1}
           autoFocus
           aria-label="Mesaj input"
+          id="composer-input"
         />
         <ComposerAction />
       </ComposerPrimitive.Root>
