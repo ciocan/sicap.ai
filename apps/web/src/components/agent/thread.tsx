@@ -2,7 +2,6 @@ import type { FC } from "react";
 import {
   ArrowDownIcon,
   ArrowUpIcon,
-  PlusIcon,
   CopyIcon,
   CheckIcon,
   PencilIcon,
@@ -10,6 +9,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   Square,
+  HatGlasses,
 } from "lucide-react";
 import {
   ThreadPrimitive,
@@ -21,10 +21,10 @@ import {
 } from "@assistant-ui/react";
 import { motion } from "motion/react";
 
-import { TooltipIconButton } from "@sicap/ui/components/ui/assistant/tooltip-icon-button";
+import { TooltipIconButton } from "@sicap/ui";
 import { Button } from "@sicap/ui/components/ui/button";
-import { MarkdownText } from "./markdown-text.tsx";
-import { ToolFallback } from "./tool-fallback.tsx";
+import { MarkdownText } from "./markdown-text";
+import { ToolFallback } from "./tool-fallback";
 import { cn } from "@sicap/ui/lib/utils";
 
 export const Thread: FC = () => {
@@ -51,7 +51,6 @@ export const Thread: FC = () => {
           <motion.div className="min-h-6 min-w-6 shrink-0" />
         </ThreadPrimitive.If>
       </ThreadPrimitive.Viewport>
-
       <Composer />
     </ThreadPrimitive.Root>
   );
@@ -61,9 +60,9 @@ const ThreadScrollToBottom: FC = () => {
   return (
     <ThreadPrimitive.ScrollToBottom asChild>
       <TooltipIconButton
-        tooltip="Scroll to bottom"
+        tooltip="Derulează la jos"
         variant="outline"
-        className="dark:bg-background dark:hover:bg-accent absolute -top-12 z-10 self-center rounded-full p-4 disabled:invisible"
+        className="dark:bg-background dark:hover:bg-accent absolute -top-12 z-10 self-center rounded-full p-4 disabled:invisible text-primary"
       >
         <ArrowDownIcon />
       </TooltipIconButton>
@@ -158,18 +157,18 @@ const ThreadWelcomeSuggestions: FC = () => {
 
 const Composer: FC = () => {
   return (
-    <div className="bg-background relative mx-auto flex w-full max-w-[var(--thread-max-width)] flex-col gap-4 px-[var(--thread-padding-x)] pb-4 md:pb-6">
+    <div className="bg-background relative mx-auto flex w-full max-w-[var(--thread-max-width)] flex-col gap-4 px-[var(--thread-padding-x)] pb-0 md:pb-0">
       <ThreadScrollToBottom />
       <ThreadPrimitive.Empty>
         <ThreadWelcomeSuggestions />
       </ThreadPrimitive.Empty>
-      <ComposerPrimitive.Root className="focus-within:ring-offset-2 relative flex w-full flex-col rounded-2xl focus-within:ring-2 focus-within:ring-black dark:focus-within:ring-white">
+      <ComposerPrimitive.Root className="focus-within:ring-offset-2 relative flex w-full flex-col rounded-t-2xl focus-within:ring-2 focus-within:ring-black dark:focus-within:ring-white">
         <ComposerPrimitive.Input
-          placeholder="Send a message..."
-          className="bg-muted border-border dark:border-muted-foreground/15 focus:outline-primary placeholder:text-muted-foreground max-h-[calc(50dvh)] min-h-16 w-full resize-none rounded-t-2xl border-x border-t px-4 pt-2 pb-3 text-base outline-none"
+          placeholder="Trimite un mesaj..."
+          className="bg-muted border-border dark:border-muted-foreground/15 focus:outline-primary placeholder:text-muted-foreground max-h-[calc(50dvh)] min-h-16 w-full resize-none rounded-t-2xl border-x border-t px-4 pt-3 pb-3 text-base outline-none"
           rows={1}
           autoFocus
-          aria-label="Message input"
+          aria-label="Mesaj input"
         />
         <ComposerAction />
       </ComposerPrimitive.Root>
@@ -179,25 +178,15 @@ const Composer: FC = () => {
 
 const ComposerAction: FC = () => {
   return (
-    <div className="bg-muted border-border dark:border-muted-foreground/15 relative flex items-center justify-between rounded-b-2xl border-x border-b p-2">
-      <TooltipIconButton
-        tooltip="Attach file"
-        variant="ghost"
-        className="hover:bg-foreground/15 dark:hover:bg-background/50 scale-115 p-3.5"
-        onClick={() => {
-          console.log("Attachment clicked - not implemented");
-        }}
-      >
-        <PlusIcon />
-      </TooltipIconButton>
-
+    <div className="bg-muted border-border dark:border-muted-foreground/15 relative flex items-center justify-between rounded-b-0 border-x border-b p-2">
+      <div />
       <ThreadPrimitive.If running={false}>
         <ComposerPrimitive.Send asChild>
           <Button
             type="submit"
             variant="default"
             className="dark:border-muted-foreground/90 border-muted-foreground/60 hover:bg-primary/75 size-8 rounded-full border"
-            aria-label="Send message"
+            aria-label="Trimite mesaj"
           >
             <ArrowUpIcon className="size-5" />
           </Button>
@@ -210,7 +199,7 @@ const ComposerAction: FC = () => {
             type="button"
             variant="default"
             className="dark:border-muted-foreground/90 border-muted-foreground/60 hover:bg-primary/75 size-8 rounded-full border"
-            aria-label="Stop generating"
+            aria-label="Stop generează"
           >
             <Square className="size-3.5 fill-white dark:size-4 dark:fill-black" />
           </Button>
@@ -239,8 +228,8 @@ const AssistantMessage: FC = () => {
         animate={{ y: 0, opacity: 1 }}
         data-role="assistant"
       >
-        <div className="ring-border bg-background col-start-1 row-start-1 flex size-8 shrink-0 items-center justify-center rounded-full ring-1">
-          <StarIcon size={14} />
+        <div className="ring-border bg-secondary col-start-1 row-start-1 flex size-8 shrink-0 items-center justify-center rounded-full ring-1">
+          <HatGlasses className="size-5" />
         </div>
 
         <div className="text-foreground col-span-2 col-start-2 row-start-1 ml-4 leading-7 break-words">
@@ -336,13 +325,13 @@ const EditComposer: FC = () => {
 
         <div className="mx-3 mb-3 flex items-center justify-center gap-2 self-end">
           <ComposerPrimitive.Cancel asChild>
-            <Button variant="ghost" size="sm" aria-label="Cancel edit">
-              Cancel
+            <Button variant="ghost" size="sm" aria-label="Anulează editare">
+              Anulează
             </Button>
           </ComposerPrimitive.Cancel>
           <ComposerPrimitive.Send asChild>
-            <Button size="sm" aria-label="Update message">
-              Update
+            <Button size="sm" aria-label="Actualizează mesaj">
+              Actualizează
             </Button>
           </ComposerPrimitive.Send>
         </div>
@@ -359,7 +348,7 @@ const BranchPicker: FC<BranchPickerPrimitive.Root.Props> = ({ className, ...rest
       {...rest}
     >
       <BranchPickerPrimitive.Previous asChild>
-        <TooltipIconButton tooltip="Previous">
+        <TooltipIconButton tooltip="Anterioare">
           <ChevronLeftIcon />
         </TooltipIconButton>
       </BranchPickerPrimitive.Previous>
@@ -367,25 +356,10 @@ const BranchPicker: FC<BranchPickerPrimitive.Root.Props> = ({ className, ...rest
         <BranchPickerPrimitive.Number /> / <BranchPickerPrimitive.Count />
       </span>
       <BranchPickerPrimitive.Next asChild>
-        <TooltipIconButton tooltip="Next">
+        <TooltipIconButton tooltip="Următoare">
           <ChevronRightIcon />
         </TooltipIconButton>
       </BranchPickerPrimitive.Next>
     </BranchPickerPrimitive.Root>
   );
 };
-
-const StarIcon = ({ size = 14 }: { size?: number }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 16 16"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M8 0L9.79611 6.20389L16 8L9.79611 9.79611L8 16L6.20389 9.79611L0 8L6.20389 6.20389L8 0Z"
-      fill="currentColor"
-    />
-  </svg>
-);

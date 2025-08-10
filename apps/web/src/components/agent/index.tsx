@@ -4,19 +4,9 @@ import { useAISDKRuntime } from "@assistant-ui/react-ai-sdk";
 import { DefaultChatTransport } from "ai";
 import { useChat } from "@ai-sdk/react";
 
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-  Separator,
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbPage,
-} from "@sicap/ui";
+import { SidebarInset, SidebarProvider } from "@sicap/ui";
 import { AppSidebar } from "./app-sidebar";
-
-import { Thread } from "@sicap/ui/components/ui/assistant/thread";
+import { Main } from "./main";
 import { env } from "@/lib/env";
 
 export const Agent = () => {
@@ -29,23 +19,20 @@ export const Agent = () => {
 
   return (
     <AssistantRuntimeProvider runtime={runtime}>
-      <SidebarProvider>
-        <AppSidebar />
-        <SidebarInset>
-          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-            <SidebarTrigger />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem>
-                  <BreadcrumbPage>SICAP AI</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </header>
-          <Thread />
-          {/* <WeatherToolUI /> */}
-        </SidebarInset>
+      <SidebarProvider
+        style={
+          {
+            "--sidebar-width": "20rem",
+            "--sidebar-width-mobile": "20rem",
+          } as React.CSSProperties
+        }
+      >
+        <div className="flex h-dvh w-full pr-0.5">
+          <AppSidebar className="bg-secondary/60 dark:border-secondary-foreground/20" />
+          <SidebarInset>
+            <Main />
+          </SidebarInset>
+        </div>
       </SidebarProvider>
     </AssistantRuntimeProvider>
   );

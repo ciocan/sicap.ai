@@ -12,7 +12,7 @@ import remarkGfm from "remark-gfm";
 import { type FC, memo, useState } from "react";
 import { CheckIcon, CopyIcon } from "lucide-react";
 
-import { TooltipIconButton } from "@sicap/ui/components/ui/assistant/tooltip-icon-button";
+import { TooltipIconButton } from "@sicap/ui";
 import { cn } from "@sicap/ui/lib/utils";
 
 const MarkdownTextImpl = () => {

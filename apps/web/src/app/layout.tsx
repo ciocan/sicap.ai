@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Viewport } from "next";
 import { SessionProvider } from "next-auth/react";
 import { GeistSans, GeistMono } from "geist/font";
@@ -10,8 +11,6 @@ import "@sicap/ui/globals.css";
 
 import { siteConfig } from "@/config/site";
 import { ThemeProvider } from "@/components";
-import { Suspense } from "react";
-import FormbricksProvider from "./formbricks";
 import { env } from "@/lib/env";
 
 export const viewport: Viewport = {
@@ -107,9 +106,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             disableTransitionOnChange
           >
             <Suspense fallback={null}>
-              <FormbricksProvider>
-                <NuqsAdapter>{children}</NuqsAdapter>
-              </FormbricksProvider>
+              <NuqsAdapter>{children}</NuqsAdapter>
             </Suspense>
           </ThemeProvider>
         </SessionProvider>

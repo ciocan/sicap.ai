@@ -3,7 +3,7 @@ import { ThreadListItemPrimitive, ThreadListPrimitive } from "@assistant-ui/reac
 import { ArchiveIcon, PlusIcon } from "lucide-react";
 
 import { Button } from "@sicap/ui/components/ui/button";
-import { TooltipIconButton } from "@sicap/ui/components/ui/assistant/tooltip-icon-button";
+import { TooltipIconButton } from "@sicap/ui";
 
 export const ThreadList: FC = () => {
   return (

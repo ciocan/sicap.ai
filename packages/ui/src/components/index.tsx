@@ -20,3 +20,5 @@ export * from "./ui/sidebar.tsx";
 export * from "./ui/breadcrumb.tsx";
 export * from "./ui/sheet.tsx";
 export * from "./ui/skeleton.tsx";
+export * from "./ui/tooltip-icon-button.tsx";
+export * from "./ui/resizable.tsx";
