@@ -9,6 +9,7 @@ import { Thread } from "./thread";
 export function Main() {
   const { state } = useSidebar();
   const isMobile = useIsMobile();
+
   return (
     <>
       <header className="flex shrink-0 items-center justify-end gap-2 absolute right-1 top-2 z-10 mr-2 sm:mr-3.5">

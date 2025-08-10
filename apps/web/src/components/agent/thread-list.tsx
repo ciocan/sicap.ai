@@ -22,7 +22,7 @@ const ThreadListNew: FC = () => {
         variant="ghost"
       >
         <PlusIcon />
-        New Thread
+        Conversatie nouă
       </Button>
     </ThreadListPrimitive.New>
   );
@@ -46,7 +46,7 @@ const ThreadListItem: FC = () => {
 const ThreadListItemTitle: FC = () => {
   return (
     <p className="text-sm">
-      <ThreadListItemPrimitive.Title fallback="New Chat" />
+      <ThreadListItemPrimitive.Title fallback="Conversatie nouă..." />
     </p>
   );
 };
@@ -57,7 +57,7 @@ const ThreadListItemArchive: FC = () => {
       <TooltipIconButton
         className="hover:text-foreground/60 p-4 text-foreground ml-auto mr-1 size-4"
         variant="ghost"
-        tooltip="Archive thread"
+        tooltip="Arhivează conversatia"
       >
         <ArchiveIcon />
       </TooltipIconButton>

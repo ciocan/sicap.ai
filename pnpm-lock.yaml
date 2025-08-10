@@ -129,6 +129,12 @@ importers:
       '@mastra/client-js':
         specifier: 0.0.0-ai-v5-20250801192614
         version: 0.0.0-ai-v5-20250801192614(openapi-types@12.1.3)(react@19.1.1)(zod@3.25.76)
+      '@mastra/core':
+        specifier: 0.0.0-ai-v5-20250801192614
+        version: 0.0.0-ai-v5-20250801192614(openapi-types@12.1.3)(zod@3.25.76)
+      '@mastra/memory':
+        specifier: 0.0.0-ai-v5-20250801192614
+        version: 0.0.0-ai-v5-20250801192614(@mastra/core@0.0.0-ai-v5-20250801192614(openapi-types@12.1.3)(zod@3.25.76))
       '@mdx-js/loader':
         specifier: ^3.0.0
         version: 3.1.0(acorn@8.15.0)
@@ -315,7 +321,7 @@ importers:
         version: 0.29.12
       tsup:
         specifier: ^8.5.0
-        version: 8.5.0(@swc/core@1.13.3(@swc/helpers@0.5.17))(jiti@2.5.1)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.1)
+        version: 8.5.0(@swc/core@1.13.3)(jiti@2.5.1)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.1)
       typescript:
         specifier: ^5.8.3
         version: 5.9.2
@@ -430,7 +436,7 @@ importers:
         version: 4.1.11
       tsup:
         specifier: ^8.5.0
-        version: 8.5.0(@swc/core@1.13.3(@swc/helpers@0.5.17))(jiti@2.5.1)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.1)
+        version: 8.5.0(@swc/core@1.13.3)(jiti@2.5.1)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.1)
       typescript:
         specifier: ^5.8.3
         version: 5.9.2
@@ -13367,7 +13373,7 @@ snapshots:
 
   tslib@2.8.1: {}
 
-  tsup@8.5.0(@swc/core@1.13.3(@swc/helpers@0.5.17))(jiti@2.5.1)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.1):
+  tsup@8.5.0(@swc/core@1.13.3)(jiti@2.5.1)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.9.2)(yaml@2.8.1):
     dependencies:
       bundle-require: 5.1.0(esbuild@0.25.8)
       cac: 6.7.14

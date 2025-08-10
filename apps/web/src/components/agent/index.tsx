@@ -1,21 +1,19 @@
 "use client";
 import { AssistantRuntimeProvider } from "@assistant-ui/react";
-import { useAISDKRuntime } from "@assistant-ui/react-ai-sdk";
-import { DefaultChatTransport } from "ai";
-import { useChat } from "@ai-sdk/react";
+import { MastraClient } from "@mastra/client-js";
 
 import { SidebarInset, SidebarProvider } from "@sicap/ui";
 import { AppSidebar } from "./app-sidebar";
+import { useAgentRuntime } from "./use-agent";
 import { Main } from "./main";
 import { env } from "@/lib/env";
 
+export const mastraClient = new MastraClient({
+  baseUrl: env.NEXT_PUBLIC_AGENT_API_URL,
+});
+
 export const Agent = () => {
-  const chat = useChat({
-    transport: new DefaultChatTransport({
-      api: `${env.NEXT_PUBLIC_AGENT_API_URL}/api/agents/sicapAgent/stream`,
-    }),
-  });
-  const runtime = useAISDKRuntime(chat);
+  const { runtime } = useAgentRuntime();
 
   return (
     <AssistantRuntimeProvider runtime={runtime}>

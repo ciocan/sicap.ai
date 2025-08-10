@@ -30,6 +30,8 @@
     "@hono/swagger-ui": "^0.5.2",
     "@libsql/client": "^0.15.10",
     "@mastra/client-js": "0.0.0-ai-v5-20250801192614",
+    "@mastra/core": "0.0.0-ai-v5-20250801192614",
+    "@mastra/memory": "0.0.0-ai-v5-20250801192614",
     "@mdx-js/loader": "^3.0.0",
     "@mdx-js/react": "^3.0.0",
     "@next/mdx": "^14.0.0",
