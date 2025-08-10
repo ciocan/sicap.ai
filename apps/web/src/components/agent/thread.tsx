@@ -45,7 +45,7 @@ export const Thread: FC = () => {
         ["--thread-padding-x" as string]: "0.5rem",
       }}
     >
-      <ThreadPrimitive.Viewport className="relative flex min-w-0 flex-1 flex-col gap-6 overflow-y-scroll">
+      <ThreadPrimitive.Viewport className="relative flex min-w-0 flex-1 flex-col gap-6 overflow-y-scroll pb-24">
         <ThreadWelcome />
 
         <ThreadPrimitive.Messages
@@ -60,7 +60,9 @@ export const Thread: FC = () => {
           <motion.div className="min-h-6 min-w-6 shrink-0" />
         </ThreadPrimitive.If>
       </ThreadPrimitive.Viewport>
-      <Composer />
+      <div className="absolute bottom-0 left-0 right-0 bg-transparent">
+        <Composer />
+      </div>
     </ThreadPrimitive.Root>
   );
 };
@@ -304,12 +306,12 @@ const ThreadWelcomeSuggestions: FC = () => {
 
 const Composer: FC = () => {
   return (
-    <div className="bg-background relative mx-auto flex w-full max-w-[var(--thread-max-width)] flex-col gap-4 px-[var(--thread-padding-x)] pb-0 md:pb-0">
+    <div className="bg-transparent backdrop-blur-md relative mx-auto flex w-full max-w-[var(--thread-max-width)] flex-col gap-4 px-[var(--thread-padding-x)] pb-0 md:pb-0">
       <ThreadScrollToBottom />
       <ComposerPrimitive.Root className="relative border-8 border-primary-foreground border-b-0 flex w-full flex-col rounded-t-[1.5rem] focus-within:ring-1 focus-within:ring-secondary-foreground/30">
         <ComposerPrimitive.Input
           placeholder="Trimite un mesaj..."
-          className="bg-muted border-border dark:border-muted-foreground/15 focus:outline-primary placeholder:text-muted-foreground max-h-[calc(50dvh)] min-h-16 w-full resize-none rounded-t-2xl border-x border-t px-4 pt-3 pb-3 text-base outline-none"
+          className="bg-muted/70 backdrop-blur-sm border-border dark:border-muted-foreground/15 focus:outline-primary placeholder:text-muted-foreground max-h-[calc(50dvh)] min-h-16 w-full resize-none rounded-t-2xl border-x border-t px-4 pt-3 pb-3 text-base outline-none"
           rows={1}
           autoFocus
           aria-label="Mesaj input"
@@ -323,7 +325,7 @@ const Composer: FC = () => {
 
 const ComposerAction: FC = () => {
   return (
-    <div className="bg-muted border-border dark:border-muted-foreground/15 relative flex items-center justify-between rounded-b-0 border-x border-b p-2">
+    <div className="bg-muted/70 border-border dark:border-muted-foreground/15 relative flex items-center justify-between rounded-b-0 border-x border-b p-2">
       <div />
       <ThreadPrimitive.If running={false}>
         <ComposerPrimitive.Send asChild>
