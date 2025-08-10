@@ -11,7 +11,7 @@ export const ToolFallback: ToolCallMessagePartComponent = ({ toolName, argsText,
       <div className="flex items-center gap-2 px-4">
         <CheckIcon className="size-4" />
         <p className="flex-grow">
-          Used tool: <b>{toolName}</b>
+          Functie folosită: <b>{toolName}</b>
         </p>
         <Button onClick={() => setIsCollapsed(!isCollapsed)}>
           {isCollapsed ? <ChevronUpIcon /> : <ChevronDownIcon />}
@@ -24,7 +24,7 @@ export const ToolFallback: ToolCallMessagePartComponent = ({ toolName, argsText,
           </div>
           {result !== undefined && (
             <div className="border-t border-dashed px-4 pt-2">
-              <p className="font-semibold">Result:</p>
+              <p className="font-semibold">Rezultat:</p>
               <pre className="whitespace-pre-wrap">
                 {typeof result === "string" ? result : JSON.stringify(result, null, 2)}
               </pre>

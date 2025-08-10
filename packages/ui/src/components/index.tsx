@@ -22,3 +22,4 @@ export * from "./ui/sheet.tsx";
 export * from "./ui/skeleton.tsx";
 export * from "./ui/tooltip-icon-button.tsx";
 export * from "./ui/resizable.tsx";
+export * from "./ui/tabs.tsx";
