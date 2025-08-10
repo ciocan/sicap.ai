@@ -61,6 +61,7 @@
     "posthog-js": "^1.259.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-hotkeys-hook": "^5.1.0",
     "recharts": "^2.9.2",
     "remark-gfm": "^4.0.0",
     "tailwind-merge": "^3.3.1",

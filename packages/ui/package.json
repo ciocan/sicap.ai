@@ -51,6 +51,7 @@
     "motion": "^12.23.12",
     "next-themes": "^0.2.1",
     "react-hook-form": "^7.60.0",
+    "react-hotkeys-hook": "^5.1.0",
     "react-resizable-panels": "^3.0.4",
     "remark-gfm": "^4.0.1",
     "tailwind-merge": "^3.3.1",

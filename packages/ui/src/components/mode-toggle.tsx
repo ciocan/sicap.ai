@@ -1,6 +1,7 @@
 "use client";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useHotkeys } from "react-hotkeys-hook";
 import type { JSX } from "react";
 
 import { Button } from "@sicap/ui";
@@ -12,6 +13,9 @@ type ModeToggleProps = {
 
 export function ModeToggle({ onCapture, position }: ModeToggleProps): JSX.Element {
   const { theme, setTheme } = useTheme();
+  useHotkeys("mod+j", () => handleThemeChange(), {
+    enableOnFormTags: ["input", "textarea", "select"],
+  });
 
   const handleThemeChange = () => {
     switch (theme) {
