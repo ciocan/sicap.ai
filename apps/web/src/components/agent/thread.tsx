@@ -162,7 +162,7 @@ const Composer: FC = () => {
       <ThreadPrimitive.Empty>
         <ThreadWelcomeSuggestions />
       </ThreadPrimitive.Empty>
-      <ComposerPrimitive.Root className="focus-within:ring-offset-2 relative flex w-full flex-col rounded-t-2xl focus-within:ring-2 focus-within:ring-black dark:focus-within:ring-white">
+      <ComposerPrimitive.Root className="relative border-8 border-primary-foreground border-b-0 flex w-full flex-col rounded-t-[1.5rem] focus-within:ring-1 focus-within:ring-secondary-foreground/30">
         <ComposerPrimitive.Input
           placeholder="Trimite un mesaj..."
           className="bg-muted border-border dark:border-muted-foreground/15 focus:outline-primary placeholder:text-muted-foreground max-h-[calc(50dvh)] min-h-16 w-full resize-none rounded-t-2xl border-x border-t px-4 pt-3 pb-3 text-base outline-none"
