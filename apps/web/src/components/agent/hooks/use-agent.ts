@@ -1,5 +1,5 @@
 import { useExternalStoreRuntime } from "@assistant-ui/react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DefaultChatTransport, type UIMessage } from "ai";
 import type { MastraMessageV2 } from "@mastra/core/memory";
 import type { AppendMessage } from "@assistant-ui/react";
@@ -22,6 +22,8 @@ export function useAgentRuntime() {
   const mastraClient = useMastraClient();
   const threadList = useThreadList();
   const isCreatingNewThreadRef = useRef(false);
+  const redirectedThreadsRef = useRef(new Set<string>());
+  const [invalidThreadId, setInvalidThreadId] = useState<string | null>(null);
 
   const chat = useChat({
     transport: new DefaultChatTransport({
@@ -34,6 +36,9 @@ export function useAgentRuntime() {
     if (!threadId) {
       // Clear messages when no thread is selected
       chat.setMessages([]);
+      // Clear the redirected threads set and invalid thread state when switching to no thread
+      redirectedThreadsRef.current.clear();
+      setInvalidThreadId(null);
       return;
     }
 
@@ -58,8 +63,32 @@ export function useAgentRuntime() {
           .reverse()
           .find((m) => m.role === "assistant");
         lastSavedAssistantIdRef.current = lastAssistant?.id ?? null;
-      } catch {
-        // Thread may not exist yet; ignore transient errors during initialization
+        // Clear redirected threads set and invalid thread state on successful load
+        redirectedThreadsRef.current.clear();
+        setInvalidThreadId(null);
+      } catch (error) {
+        if (cancelled) {
+          return;
+        }
+
+        // Check if this is a thread not found error (404 or similar)
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        const errorStatus = (error as { status?: number })?.status;
+
+        const isThreadNotFound =
+          error instanceof Error &&
+          (errorMessage.includes("404") ||
+            errorMessage.includes("Not Found") ||
+            errorMessage.includes("not found") ||
+            errorStatus === 404);
+
+        if (isThreadNotFound) {
+          // Mark this thread as invalid for separate handling
+          setInvalidThreadId(threadId);
+          return;
+        }
+
+        // For other errors, silently continue (could be temporary network issues)
       }
     };
     void loadMessages();
@@ -67,6 +96,18 @@ export function useAgentRuntime() {
       cancelled = true;
     };
   }, [threadId, agentId, mastraClient, chat.setMessages]);
+
+  // Separate effect to handle invalid thread redirects
+  useEffect(() => {
+    if (invalidThreadId && !redirectedThreadsRef.current.has(invalidThreadId)) {
+      redirectedThreadsRef.current.add(invalidThreadId);
+      // Clear the invalid thread state and redirect
+      setInvalidThreadId(null);
+      if (threadList.onSwitchToNewThread) {
+        threadList.onSwitchToNewThread();
+      }
+    }
+  }, [invalidThreadId, threadList]);
 
   const messages = AISDKMessageConverter.useThreadMessages({
     isRunning: chat.status === "submitted" || chat.status === "streaming",
