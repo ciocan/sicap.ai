@@ -1,5 +1,5 @@
 import type { ExternalStoreThreadData, ExternalStoreThreadListAdapter } from "@assistant-ui/react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useMastraClient } from "./use-mastra-client";
 import { generateId } from "@/utils";
@@ -13,9 +13,20 @@ interface UseMastraThreadListArgs {
 
 export const useThreadList = (args: UseMastraThreadListArgs): ExternalStoreThreadListAdapter => {
   const [threads, setThreads] = useState<ExternalStoreThreadData<"regular">[]>([]);
-  const { agentId, threadId, resourceId, setThreadId } = args;
+  const { agentId, threadId, resourceId, setThreadId: setUrlThreadId } = args;
 
   const client = useMastraClient();
+
+  // Local selection state to ensure UI highlights correctly when list loads asynchronously
+  const [activeThreadId, setActiveThreadId] = useState<string>("");
+
+  const onSwitchToThread = useCallback(
+    (id: string) => {
+      setActiveThreadId(id);
+      setUrlThreadId(id);
+    },
+    [setUrlThreadId],
+  );
 
   const fetchThreads = useCallback(async () => {
     const updatedThreads = await client.getMemoryThreads({
@@ -40,6 +51,35 @@ export const useThreadList = (args: UseMastraThreadListArgs): ExternalStoreThrea
   useEffect(() => {
     fetchThreads();
   }, [fetchThreads]);
+
+  // Ensure initial selection is highlighted after threads load
+  const didSyncSelectionRef = useRef(false);
+  useEffect(() => {
+    if (didSyncSelectionRef.current) {
+      return;
+    }
+    if (!threadId) {
+      return;
+    }
+    if (threads.length === 0) {
+      return;
+    }
+    const exists = threads.some((t) => t.threadId === threadId);
+    if (!exists) {
+      return;
+    }
+    didSyncSelectionRef.current = true;
+    // Simulate a user switch to ensure primitives mark the item as active
+    onSwitchToThread(threadId);
+  }, [threads, threadId, onSwitchToThread]);
+
+  // Keep local active selection in sync with external threadId changes
+  useEffect(() => {
+    if (!threadId) {
+      return;
+    }
+    setActiveThreadId(threadId);
+  }, [threadId]);
 
   const onArchive = useCallback(
     async (threadId: string) => {
@@ -68,14 +108,14 @@ export const useThreadList = (args: UseMastraThreadListArgs): ExternalStoreThrea
       threadId,
     });
     await fetchThreads();
-    setThreadId(threadId);
-  }, [client, agentId, resourceId, fetchThreads, setThreadId]);
+    onSwitchToThread(threadId);
+  }, [client, agentId, resourceId, fetchThreads, onSwitchToThread]);
 
   return {
     threads,
-    threadId,
+    threadId: activeThreadId,
     onArchive,
     onSwitchToNewThread,
-    onSwitchToThread: setThreadId,
+    onSwitchToThread,
   };
 };

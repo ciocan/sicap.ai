@@ -1,9 +1,10 @@
 import { useExternalStoreRuntime } from "@assistant-ui/react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { DefaultChatTransport, type UIMessage } from "ai";
-import type { MastraMessageV2, MastraMessageV3 } from "@mastra/core/memory";
+import type { MastraMessageV2 } from "@mastra/core/memory";
 import type { AppendMessage } from "@assistant-ui/react";
 import { useChat } from "@ai-sdk/react";
+import { useQueryState, parseAsString } from "nuqs";
 
 import { AISDKMessageConverter } from "@/components/agent/utils/convert-message";
 import { toCreateMessage } from "@/components/agent/utils/to-create-message";
@@ -43,20 +44,8 @@ export function useAgentRuntime() {
     }
   }, []);
 
-  // TODO: replace with thread id from url
-  const [threadId, setThreadId] = useState<string>(() => {
-    if (typeof window === "undefined") {
-      return "";
-    }
-    return window.localStorage.getItem("sicap:threadId") ?? "";
-  });
-
-  // Persist thread id
-  useEffect(() => {
-    if (typeof window !== "undefined" && threadId) {
-      window.localStorage.setItem("sicap:threadId", threadId);
-    }
-  }, [threadId]);
+  // Thread id from URL query via nuqs (param: t)
+  const [threadId, setThreadId] = useQueryState("t", parseAsString.withDefault(""));
   //
 
   // load messages from memory on mount and only when threadId changes
@@ -67,7 +56,7 @@ export function useAgentRuntime() {
       chat.setMessages(uiMessages as UIMessage[]);
     };
     void loadMessages();
-  }, [threadId]);
+  }, [threadId, mastraClient, chat.setMessages]);
 
   // Ensure a Mastra memory thread exists for this resource
   useEffect(() => {
@@ -88,9 +77,6 @@ export function useAgentRuntime() {
 
         const newThreadId = generateId();
         setThreadId(newThreadId);
-        if (typeof window !== "undefined") {
-          window.localStorage.setItem("sicap:threadId", newThreadId);
-        }
         await mastraClient.createMemoryThread({
           agentId: AGENT_ID,
           resourceId,
@@ -108,7 +94,7 @@ export function useAgentRuntime() {
     return () => {
       cancelled = true;
     };
-  }, [mastraClient, resourceId, threadId]);
+  }, [mastraClient, resourceId, threadId, setThreadId]);
 
   const safeThreadId = threadId;
 
@@ -118,9 +104,6 @@ export function useAgentRuntime() {
     resourceId,
     setThreadId: (id: string) => {
       setThreadId(id);
-      if (typeof window !== "undefined") {
-        window.localStorage.setItem("sicap:threadId", id);
-      }
     },
   });
 
@@ -135,17 +118,11 @@ export function useAgentRuntime() {
       if (threads.length > 0) {
         const existingId = threads[0]!.id;
         setThreadId(existingId);
-        if (typeof window !== "undefined") {
-          window.localStorage.setItem("sicap:threadId", existingId);
-        }
         return existingId;
       }
       // Create a new one
       const newId = generateId();
       setThreadId(newId);
-      if (typeof window !== "undefined") {
-        window.localStorage.setItem("sicap:threadId", newId);
-      }
       await mastraClient.createMemoryThread({
         agentId: AGENT_ID,
         resourceId,
@@ -154,7 +131,7 @@ export function useAgentRuntime() {
       });
       return newId;
     };
-  }, [mastraClient, resourceId, threadId]);
+  }, [mastraClient, resourceId, threadId, setThreadId]);
 
   const messages = AISDKMessageConverter.useThreadMessages({
     isRunning: chat.status === "submitted" || chat.status === "streaming",
@@ -221,6 +198,9 @@ export function useAgentRuntime() {
     adapters: { threadList },
   });
 
+  // TODO: this is a temporary solution to persist the assistant's latest message after streaming completes
+  // we need to find a better way to do this, maybe by using the ai-sdk-react hooks
+  // BUG: it saves every time when the thread is loaded from memory
   // Persist the assistant's latest message after streaming completes
   const lastSavedAssistantIdRef = useRef<string | null>(null);
   useEffect(() => {
