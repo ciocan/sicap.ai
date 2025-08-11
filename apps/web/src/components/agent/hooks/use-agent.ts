@@ -48,6 +48,11 @@ export function useAgentRuntime() {
           return;
         }
         chat.setMessages(uiMessages as UIMessage[]);
+        // Track the last assistant message id from loaded history to prevent re-saving
+        const lastAssistant = [...(uiMessages as UIMessage[])]
+          .reverse()
+          .find((m) => m.role === "assistant");
+        lastSavedAssistantIdRef.current = lastAssistant?.id ?? null;
       } catch {
         // Thread may not exist yet; ignore transient errors during initialization
       }
@@ -169,9 +174,6 @@ export function useAgentRuntime() {
     adapters: { threadList },
   });
 
-  // TODO: this is a temporary solution to persist the assistant's latest message after streaming completes
-  // we need to find a better way to do this, maybe by using the ai-sdk-react hooks
-  // BUG: it saves every time when the thread is loaded from memory
   // Persist the assistant's latest message after streaming completes
   const lastSavedAssistantIdRef = useRef<string | null>(null);
   useEffect(() => {

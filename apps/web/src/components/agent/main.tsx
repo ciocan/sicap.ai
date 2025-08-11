@@ -1,7 +1,8 @@
 "use client";
-import { PanelLeftOpen } from "lucide-react";
+import { PanelLeftOpen, PlusIcon } from "lucide-react";
+import Link from "next/link";
 
-import { SidebarTrigger, useSidebar, useIsMobile, cn } from "@sicap/ui";
+import { SidebarTrigger, useSidebar, useIsMobile, cn, Button } from "@sicap/ui";
 
 import { DarkMode } from "@/components/dark-mode";
 import { Thread } from "./thread";
@@ -24,6 +25,21 @@ export function Main() {
       >
         <PanelLeftOpen className="size-4" />
       </SidebarTrigger>
+      <Button
+        variant="ghost"
+        size="icon"
+        className={cn(
+          "absolute left-8 top-0 mt-1 z-10 cursor-pointer transition-all duration-150",
+          state === "expanded" ? "-translate-x-12 opacity-0 pointer-events-none" : "translate-x-0",
+          isMobile ? "translate-x-0 opacity-100 pointer-events-auto" : "",
+        )}
+        asChild
+      >
+        <Link href="/agent">
+          <PlusIcon className="size-4" />
+          <span className="sr-only">Conversatie nouă</span>
+        </Link>
+      </Button>
       <Thread />
     </>
   );
