@@ -20,81 +20,46 @@ import { generateId } from "@/utils";
 import { env } from "@/lib/env";
 
 const AGENT_ID = "sicapAgent" as const;
+const resourceId = "anon-ae576d00-963f-4b0d-8abe-27b4ccab1229"; // TODO: replace with userId
 
 export function useAgentRuntime() {
+  const [threadId, setThreadId] = useQueryState("t", parseAsString);
+  const mastraClient = useMastraClient();
+
   const chat = useChat({
     transport: new DefaultChatTransport({
       api: `${env.NEXT_PUBLIC_AGENT_API_URL}/api/agents/sicapAgent/stream`,
     }),
   });
-  const mastraClient = useMastraClient();
-
-  // TODO: replace with user id
-  const resourceId = useMemo(() => {
-    if (typeof window === "undefined") {
-      return `anon-${generateId()}`;
-    } else {
-      const existing = window.localStorage.getItem("sicap:resourceId");
-      if (existing) {
-        return existing;
-      }
-      const created = `anon-${generateId()}`;
-      window.localStorage.setItem("sicap:resourceId", created);
-      return created;
-    }
-  }, []);
-
-  // Thread id from URL query via nuqs (param: t)
-  const [threadId, setThreadId] = useQueryState("t", parseAsString.withDefault(""));
-  //
 
   // load messages from memory on mount and only when threadId changes
   useEffect(() => {
-    const loadMessages = async () => {
-      const thread = mastraClient.getMemoryThread(threadId, AGENT_ID);
-      const { uiMessages } = await thread.getMessages();
-      chat.setMessages(uiMessages as UIMessage[]);
-    };
-    void loadMessages();
-  }, [threadId, mastraClient, chat.setMessages]);
-
-  // Ensure a Mastra memory thread exists for this resource
-  useEffect(() => {
+    if (!threadId) {
+      // Clear messages when no thread is selected
+      chat.setMessages([]);
+      return;
+    }
     let cancelled = false;
-    const ensureThread = async () => {
+    const loadMessages = async () => {
       try {
-        if (threadId) {
-          return; // Already set
-        }
-        const threads = await mastraClient.getMemoryThreads({ agentId: AGENT_ID, resourceId });
+        const thread = mastraClient.getMemoryThread(threadId, AGENT_ID);
+        const { uiMessages } = await thread.getMessages();
         if (cancelled) {
           return;
         }
-        if (threads.length > 0) {
-          setThreadId(threads[0]!.id);
-          return;
-        }
-
-        const newThreadId = generateId();
-        setThreadId(newThreadId);
-        await mastraClient.createMemoryThread({
-          agentId: AGENT_ID,
-          resourceId,
-          metadata: {},
-          threadId: newThreadId,
-        });
-        if (cancelled) {
-          return;
-        }
+        chat.setMessages(uiMessages as UIMessage[]);
       } catch {
-        // Swallow in UI hook; logging could be added via an observability layer
+        // Thread may not exist yet; ignore transient errors during initialization
       }
     };
-    void ensureThread();
+    void loadMessages();
     return () => {
       cancelled = true;
     };
-  }, [mastraClient, resourceId, threadId, setThreadId]);
+  }, [threadId, mastraClient, chat.setMessages]);
+
+  // Do not auto-select or auto-create a thread when URL has no `t`.
+  // Sidebar/thread list remains unselected until user acts.
 
   const safeThreadId = threadId;
 
@@ -102,7 +67,7 @@ export function useAgentRuntime() {
     agentId: AGENT_ID,
     threadId: safeThreadId,
     resourceId,
-    setThreadId: (id: string) => {
+    setThreadId: (id: string | null) => {
       setThreadId(id);
     },
   });
@@ -111,27 +76,33 @@ export function useAgentRuntime() {
   const ensureThreadId = useMemo(() => {
     return async (): Promise<string> => {
       if (threadId) {
-        return threadId;
+        // Ensure the thread exists on the server for the current id
+        try {
+          const thread = mastraClient.getMemoryThread(threadId, AGENT_ID);
+          await thread.get();
+          return threadId;
+        } catch {
+          await mastraClient.createMemoryThread({
+            agentId: AGENT_ID,
+            resourceId,
+            metadata: {},
+            threadId,
+          });
+          return threadId;
+        }
       }
-      // Try to fetch an existing thread
-      const threads = await mastraClient.getMemoryThreads({ agentId: AGENT_ID, resourceId });
-      if (threads.length > 0) {
-        const existingId = threads[0]!.id;
-        setThreadId(existingId);
-        return existingId;
-      }
-      // Create a new one
+      // No thread selected: create a new one lazily on first message
       const newId = generateId();
-      setThreadId(newId);
       await mastraClient.createMemoryThread({
         agentId: AGENT_ID,
         resourceId,
         metadata: {},
         threadId: newId,
       });
+      setThreadId(newId);
       return newId;
     };
-  }, [mastraClient, resourceId, threadId, setThreadId]);
+  }, [mastraClient, threadId, setThreadId]);
 
   const messages = AISDKMessageConverter.useThreadMessages({
     isRunning: chat.status === "submitted" || chat.status === "streaming",
@@ -237,7 +208,7 @@ export function useAgentRuntime() {
       }
     };
     void persist();
-  }, [chat.messages, chat.status, ensureThreadId, mastraClient, resourceId]);
+  }, [chat.messages, chat.status, ensureThreadId, mastraClient]);
 
   return { runtime };
 }
