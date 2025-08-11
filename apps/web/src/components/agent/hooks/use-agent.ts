@@ -1,10 +1,9 @@
 import { useExternalStoreRuntime } from "@assistant-ui/react";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { DefaultChatTransport, type UIMessage } from "ai";
 import type { MastraMessageV2 } from "@mastra/core/memory";
 import type { AppendMessage } from "@assistant-ui/react";
 import { useChat } from "@ai-sdk/react";
-import { useQueryState, parseAsString } from "nuqs";
 
 import { AISDKMessageConverter } from "@/components/agent/utils/convert-message";
 import { toCreateMessage } from "@/components/agent/utils/to-create-message";
@@ -15,20 +14,17 @@ import {
   buildMastraMessageFromUIMessage,
 } from "@/components/agent/utils/runtime";
 import { useMastraClient } from "./use-mastra-client";
-import { useThreadList } from "./use-thread-list";
-import { generateId } from "@/utils";
+import { useThreadContext, useThreadList } from "./thread-context";
 import { env } from "@/lib/env";
 
-const AGENT_ID = "sicapAgent" as const;
-const resourceId = "anon-ae576d00-963f-4b0d-8abe-27b4ccab1229"; // TODO: replace with userId
-
 export function useAgentRuntime() {
-  const [threadId, setThreadId] = useQueryState("t", parseAsString.withDefault(""));
+  const { agentId, resourceId, threadId, ensureThreadId } = useThreadContext();
   const mastraClient = useMastraClient();
+  const threadList = useThreadList();
 
   const chat = useChat({
     transport: new DefaultChatTransport({
-      api: `${env.NEXT_PUBLIC_AGENT_API_URL}/api/agents/sicapAgent/stream`,
+      api: `${env.NEXT_PUBLIC_AGENT_API_URL}/api/agents/${agentId}/stream`,
     }),
   });
 
@@ -42,7 +38,7 @@ export function useAgentRuntime() {
     let cancelled = false;
     const loadMessages = async () => {
       try {
-        const thread = mastraClient.getMemoryThread(threadId, AGENT_ID);
+        const thread = mastraClient.getMemoryThread(threadId, agentId);
         const { uiMessages } = await thread.getMessages();
         if (cancelled) {
           return;
@@ -61,51 +57,7 @@ export function useAgentRuntime() {
     return () => {
       cancelled = true;
     };
-  }, [threadId, mastraClient, chat.setMessages]);
-
-  // Do not auto-select or auto-create a thread when URL has no `t`.
-  // Sidebar/thread list remains unselected until user acts.
-
-  const threadList = useThreadList({
-    agentId: AGENT_ID,
-    threadId,
-    resourceId,
-    setThreadId: (id: string) => {
-      setThreadId(id);
-    },
-  });
-
-  // Ensure a thread id synchronously before persisting messages
-  const ensureThreadId = useMemo(() => {
-    return async (): Promise<string> => {
-      if (threadId) {
-        // Ensure the thread exists on the server for the current id
-        try {
-          const thread = mastraClient.getMemoryThread(threadId, AGENT_ID);
-          await thread.get();
-          return threadId;
-        } catch {
-          await mastraClient.createMemoryThread({
-            agentId: AGENT_ID,
-            resourceId,
-            metadata: {},
-            threadId,
-          });
-          return threadId;
-        }
-      }
-      // No thread selected: create a new one lazily on first message
-      const newId = generateId();
-      await mastraClient.createMemoryThread({
-        agentId: AGENT_ID,
-        resourceId,
-        metadata: {},
-        threadId: newId,
-      });
-      setThreadId(newId);
-      return newId;
-    };
-  }, [mastraClient, threadId, setThreadId]);
+  }, [threadId, agentId, mastraClient, chat.setMessages]);
 
   const messages = AISDKMessageConverter.useThreadMessages({
     isRunning: chat.status === "submitted" || chat.status === "streaming",
@@ -128,7 +80,7 @@ export function useAgentRuntime() {
           resourceId,
         });
         await mastraClient.saveMessageToMemory({
-          agentId: AGENT_ID,
+          agentId,
           messages: [mastraMessage] as unknown as MastraMessageV2[], // TODO: fix this, its temporary until we have a v3 api (ai-v5 sdk)
         });
       } catch (error) {
@@ -148,7 +100,7 @@ export function useAgentRuntime() {
           resourceId,
         });
         await mastraClient.saveMessageToMemory({
-          agentId: AGENT_ID,
+          agentId,
           messages: [mastraMessage] as unknown as MastraMessageV2[], // TODO: fix this, its temporary until we have a v3 api (ai-v5 sdk)
         });
       } catch (error) {
@@ -196,7 +148,7 @@ export function useAgentRuntime() {
           resourceId,
         });
         await mastraClient.saveMessageToMemory({
-          agentId: AGENT_ID,
+          agentId,
           messages: [mastraMessage] as unknown as MastraMessageV2[], // TODO: fix this, its temporary until we have a v3 api (ai-v5 sdk)
         });
         lastSavedAssistantIdRef.current = lastAssistant.id;
@@ -208,7 +160,7 @@ export function useAgentRuntime() {
       }
     };
     void persist();
-  }, [chat.messages, chat.status, ensureThreadId, mastraClient]);
+  }, [chat.messages, chat.status, ensureThreadId, mastraClient, agentId, resourceId]);
 
   return { runtime };
 }

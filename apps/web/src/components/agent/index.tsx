@@ -5,10 +5,10 @@ import { SidebarInset, SidebarProvider } from "@sicap/ui";
 import { AppSidebar } from "./app-sidebar";
 import { useAgentRuntime } from "./hooks/use-agent";
 import { Main } from "./main";
+import { ThreadProvider } from "./hooks/thread-context";
 
-export const Agent = () => {
+function AgentContent() {
   const { runtime } = useAgentRuntime();
-
   return (
     <AssistantRuntimeProvider runtime={runtime}>
       <SidebarProvider
@@ -27,5 +27,13 @@ export const Agent = () => {
         </div>
       </SidebarProvider>
     </AssistantRuntimeProvider>
+  );
+}
+
+export const Agent = () => {
+  return (
+    <ThreadProvider>
+      <AgentContent />
+    </ThreadProvider>
   );
 };
