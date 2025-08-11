@@ -5,13 +5,14 @@ import { useMastraClient } from "./use-mastra-client";
 
 interface UseMastraThreadListArgs {
   agentId: string;
-  threadId: string | null;
+  threadId: string;
   resourceId: string;
-  setThreadId(threadId: string | null): void;
+  setThreadId(threadId: string): void;
 }
 
 export const useThreadList = (args: UseMastraThreadListArgs): ExternalStoreThreadListAdapter => {
   const [threads, setThreads] = useState<ExternalStoreThreadData<"regular">[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const { agentId, threadId, resourceId, setThreadId: setUrlThreadId } = args;
 
   const client = useMastraClient();
@@ -24,6 +25,7 @@ export const useThreadList = (args: UseMastraThreadListArgs): ExternalStoreThrea
   );
 
   const fetchThreads = useCallback(async () => {
+    setIsLoading(true);
     const updatedThreads = await client.getMemoryThreads({
       agentId,
       resourceId,
@@ -41,13 +43,9 @@ export const useThreadList = (args: UseMastraThreadListArgs): ExternalStoreThrea
           status: "regular",
         })),
     );
+    setIsLoading(false);
   }, [client, agentId, resourceId]);
 
-  useEffect(() => {
-    fetchThreads();
-  }, [fetchThreads]);
-
-  // Keep the thread list fresh; selection comes only from the URL param
   useEffect(() => {
     void fetchThreads();
   }, [fetchThreads]);
@@ -70,15 +68,16 @@ export const useThreadList = (args: UseMastraThreadListArgs): ExternalStoreThrea
     [client, agentId, fetchThreads],
   );
 
-  const onSwitchToNewThread = useCallback(async () => {
-    // Redirect to /agent (no t); messages and selection cleared
-    setUrlThreadId(null);
-    await fetchThreads();
-  }, [fetchThreads, setUrlThreadId]);
+  const onSwitchToNewThread = useCallback(() => {
+    setUrlThreadId("");
+  }, [setUrlThreadId]);
+
+  console.log("threadId", threadId);
 
   return {
+    isLoading,
     threads,
-    threadId: threadId ?? "",
+    threadId,
     onArchive,
     onSwitchToNewThread,
     onSwitchToThread,

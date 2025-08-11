@@ -23,7 +23,7 @@ const AGENT_ID = "sicapAgent" as const;
 const resourceId = "anon-ae576d00-963f-4b0d-8abe-27b4ccab1229"; // TODO: replace with userId
 
 export function useAgentRuntime() {
-  const [threadId, setThreadId] = useQueryState("t", parseAsString);
+  const [threadId, setThreadId] = useQueryState("t", parseAsString.withDefault(""));
   const mastraClient = useMastraClient();
 
   const chat = useChat({
@@ -66,13 +66,11 @@ export function useAgentRuntime() {
   // Do not auto-select or auto-create a thread when URL has no `t`.
   // Sidebar/thread list remains unselected until user acts.
 
-  const safeThreadId = threadId;
-
   const threadList = useThreadList({
     agentId: AGENT_ID,
-    threadId: safeThreadId,
+    threadId,
     resourceId,
-    setThreadId: (id: string | null) => {
+    setThreadId: (id: string) => {
       setThreadId(id);
     },
   });
