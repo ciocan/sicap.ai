@@ -1,18 +1,15 @@
-import {
-  useAssistantRuntime,
-  useThreadList,
-  useThreadComposer,
-  useLocalRuntime,
-  type ChatModelAdapter,
-} from "@assistant-ui/react";
-import { useAISDKRuntime } from "@assistant-ui/react-ai-sdk";
+import { useExternalStoreRuntime } from "@assistant-ui/react";
 import { MastraClient } from "@mastra/client-js";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import type { MastraMessageV2 } from "@mastra/core/memory";
-import type { ThreadHistoryAdapter } from "@assistant-ui/react";
 
+import { AISDKMessageConverter } from "./utils/convert-message";
+import { toCreateMessage } from "./utils/to-create-message";
+import { sliceMessagesUntil } from "./utils/slice-messages";
+import { getVercelAIMessages } from "./utils/get-vercel-messages";
 import { env } from "@/lib/env";
+import { generateId } from "@/utils";
 
 export const mastraClient = new MastraClient({
   baseUrl: env.NEXT_PUBLIC_AGENT_API_URL,
@@ -20,9 +17,6 @@ export const mastraClient = new MastraClient({
 
 export function useAgent() {
   const agent = mastraClient.getAgent("sicapAgent");
-  const runtime = useAssistantRuntime();
-  const threadList = useThreadList();
-  const threadComposer = useThreadComposer();
 
   const createThread = async () => {
     const thread = await mastraClient.createMemoryThread({
@@ -50,48 +44,45 @@ export function useAgent() {
 }
 
 export function useAgentRuntime() {
-  const historyAdapter: ThreadHistoryAdapter = {
-    async load() {
-      // Load messages from your storage
-      const response = await fetch(`/api/thread/current`);
-      const { messages } = await response.json();
-      return { messages };
-    },
-    async append(message) {
-      console.log("append", message);
-    },
-  };
-
   const chat = useChat({
     transport: new DefaultChatTransport({
       api: `${env.NEXT_PUBLIC_AGENT_API_URL}/api/agents/sicapAgent/stream`,
     }),
   });
 
-  const runtime = useAISDKRuntime(chat, {
-    adapters: {
-      threadList: {
-        onSwitchToNewThread: async () => {
-          // const thread = await mastraClient.createMemoryThread({
-          //   resourceId: "123", // TODO: replace with user id
-          //   agentId: "sicapAgent",
-          // });
-          console.log("onSwitchToNewThread");
-        },
-        onSwitchToThread: async (threadId) => {
-          console.log("onSwitchToThread", threadId);
-        },
-        onRename: async (threadId, newTitle) => {
-          console.log("onRename", threadId, newTitle);
-        },
-        onArchive: async (threadId) => {
-          console.log("onArchive", threadId);
-        },
-        onDelete: async (threadId) => {
-          console.log("onDelete", threadId);
-        },
-      },
+  const messages = AISDKMessageConverter.useThreadMessages({
+    isRunning: chat.status === "submitted" || chat.status === "streaming",
+    messages: chat.messages,
+  });
+
+  const runtime = useExternalStoreRuntime({
+    isRunning: chat.status === "submitted" || chat.status === "streaming",
+    messages,
+    setMessages: (messages) => chat.setMessages(messages.flatMap(getVercelAIMessages)),
+    onCancel: async () => chat.stop(),
+    onNew: async (message) => {
+      await chat.sendMessage(await toCreateMessage(message));
     },
+    onEdit: async (message) => {
+      const newMessages = sliceMessagesUntil(chat.messages, message.parentId);
+      chat.setMessages(newMessages);
+
+      await chat.sendMessage(await toCreateMessage(message));
+    },
+    onReload: async (parentId: string | null) => {
+      const newMessages = sliceMessagesUntil(chat.messages, parentId);
+      chat.setMessages(newMessages);
+
+      await chat.regenerate();
+    },
+    onAddToolResult: ({ toolCallId, result }) => {
+      chat.addToolResult({
+        tool: toolCallId,
+        toolCallId,
+        output: result,
+      });
+    },
+    adapters: {},
   });
 
   return { runtime };
