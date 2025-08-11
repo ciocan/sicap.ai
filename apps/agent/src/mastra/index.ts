@@ -45,14 +45,27 @@ export const mastra = new Mastra({
           // const userId = session?.user?.id;
           // const resourceId = c.req.query("resourceid") || userId;
 
-          console.log("Middleware request", {
-            path: c.req.path,
-            query: c.req.query(),
-            // cookie: c.req.raw.headers.get("cookie"),
-            // headers: c.req.raw.headers,
-            // userId,
-            // resourceId,
-          });
+          const body = c.req.method.toUpperCase() === "POST" ? await c.req.json() : undefined;
+          const formattedBody = body ? JSON.stringify(body, null, 2) : undefined;
+
+          const ignoreEndpoints = [
+            "/api/telemetry",
+            "/api/agents/sicapAgent/voice",
+            "/api/agents/sicapAgent/evals",
+            "/api/scores",
+          ].some((endpoint) => c.req.path.includes(endpoint));
+
+          if (!ignoreEndpoints) {
+            console.log("----------------------------------------------------------------");
+            console.log("Middleware request", {
+              method: c.req.method,
+              path: c.req.path,
+              query: c.req.query(),
+              body: formattedBody,
+              // cookie: c.req.raw.headers.get("cookie"),
+              // headers: c.req.raw.headers,
+            });
+          }
 
           // if (userId !== resourceId) {
           //   return c.json({ error: "Unauthorized" }, 401);

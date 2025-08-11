@@ -11,9 +11,7 @@ interface UseMastraThreadListArgs {
   setThreadId(threadId: string): void;
 }
 
-export const useMastraThreadList = (
-  args: UseMastraThreadListArgs,
-): ExternalStoreThreadListAdapter => {
+export const useThreadList = (args: UseMastraThreadListArgs): ExternalStoreThreadListAdapter => {
   const [threads, setThreads] = useState<ExternalStoreThreadData<"regular">[]>([]);
   const { agentId, threadId, resourceId, setThreadId } = args;
 
