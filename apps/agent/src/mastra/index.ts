@@ -31,35 +31,37 @@ export const mastra = new Mastra({
       }),
     },
   },
-  // server: {
-  //   cors: {
-  //     origin: "*",
-  //     allowMethods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  //     allowHeaders: ["Content-Type", "Authorization"],
-  //     credentials: false,
-  //   },
-  //   middleware: [
-  //     {
-  //       handler: async (c, next) => {
-  //         const session = await auth();
-  //         const userId = session?.user?.id;
-  //         const resourceId = c.req.query("resourceid") || userId;
+  server: {
+    cors: {
+      origin: "*",
+      allowMethods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+      allowHeaders: ["Content-Type", "Authorization"],
+      credentials: false,
+    },
+    middleware: [
+      {
+        handler: async (c, next) => {
+          // const session = await auth();
+          // const userId = session?.user?.id;
+          // const resourceId = c.req.query("resourceid") || userId;
 
-  //         console.log({
-  //           path: c.req.path,
-  //           query: c.req.query(),
-  //           userId,
-  //           resourceId,
-  //         });
+          console.log("Middleware request", {
+            path: c.req.path,
+            query: c.req.query(),
+            // cookie: c.req.raw.headers.get("cookie"),
+            // headers: c.req.raw.headers,
+            // userId,
+            // resourceId,
+          });
 
-  //         if (userId !== resourceId) {
-  //           return c.json({ error: "Unauthorized" }, 401);
-  //         }
+          // if (userId !== resourceId) {
+          //   return c.json({ error: "Unauthorized" }, 401);
+          // }
 
-  //         await next();
-  //       },
-  //       path: "/api/*",
-  //     },
-  //   ],
-  // },
+          await next();
+        },
+        path: "/api/*",
+      },
+    ],
+  },
 });

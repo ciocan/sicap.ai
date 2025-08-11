@@ -1,21 +1,18 @@
 import { useExternalStoreRuntime } from "@assistant-ui/react";
-import { MastraClient } from "@mastra/client-js";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import type { MastraMessageV2 } from "@mastra/core/memory";
 
-import { AISDKMessageConverter } from "./utils/convert-message";
-import { toCreateMessage } from "./utils/to-create-message";
-import { sliceMessagesUntil } from "./utils/slice-messages";
-import { getVercelAIMessages } from "./utils/get-vercel-messages";
+import { AISDKMessageConverter } from "../utils/convert-message";
+import { toCreateMessage } from "../utils/to-create-message";
+import { sliceMessagesUntil } from "../utils/slice-messages";
+import { getVercelAIMessages } from "../utils/get-vercel-messages";
+import { useMastraClient } from "./use-mastra-client";
+import { useMastraThreadList } from "./use-thread-list";
 import { env } from "@/lib/env";
-import { generateId } from "@/utils";
-
-export const mastraClient = new MastraClient({
-  baseUrl: env.NEXT_PUBLIC_AGENT_API_URL,
-});
 
 export function useAgent() {
+  const mastraClient = useMastraClient();
   const agent = mastraClient.getAgent("sicapAgent");
 
   const createThread = async () => {
@@ -50,6 +47,13 @@ export function useAgentRuntime() {
     }),
   });
 
+  const threadList = useMastraThreadList({
+    agentId: "sicapAgent",
+    threadId: "thread-123", // TODO: replace with real thread id
+    resourceId: "user-123", // TODO: replace with user id
+    setThreadId: () => {}, // TODO: replace with real setThreadId function
+  });
+
   const messages = AISDKMessageConverter.useThreadMessages({
     isRunning: chat.status === "submitted" || chat.status === "streaming",
     messages: chat.messages,
@@ -82,7 +86,7 @@ export function useAgentRuntime() {
         output: result,
       });
     },
-    adapters: {},
+    adapters: { threadList },
   });
 
   return { runtime };
