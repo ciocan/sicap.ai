@@ -75,7 +75,14 @@ export const sicapAgent = new Agent({
         scope: "resource",
       },
       threads: {
-        generateTitle: true,
+        generateTitle: {
+          model: openai("gpt-5-nano"),
+          instructions: `
+            Genereaza un titlu pentru conversatia curenta.
+            Titlul trebuie sa fie scurt si sa descrie contextul conversatiei.
+            Titlul trebuie sa fie in limba romana.
+          `,
+        },
       },
     },
   }),
