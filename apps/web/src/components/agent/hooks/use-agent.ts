@@ -1,6 +1,6 @@
 import { useExternalStoreRuntime } from "@assistant-ui/react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { DefaultChatTransport } from "ai";
+import { DefaultChatTransport, type UIMessage } from "ai";
 import type { MastraMessageV2, MastraMessageV3 } from "@mastra/core/memory";
 import type { AppendMessage } from "@assistant-ui/react";
 import { useChat } from "@ai-sdk/react";
@@ -19,35 +19,6 @@ import { generateId } from "@/utils";
 import { env } from "@/lib/env";
 
 const AGENT_ID = "sicapAgent" as const;
-
-export function useAgent() {
-  const mastraClient = useMastraClient();
-  const agent = mastraClient.getAgent("sicapAgent");
-
-  const createThread = async () => {
-    const thread = await mastraClient.createMemoryThread({
-      resourceId: "123", // TODO: replace with user id
-      agentId: "sicapAgent",
-    });
-
-    return thread;
-  };
-
-  const addMessage = async (message: MastraMessageV3) => {
-    const savedMessages = await mastraClient.saveMessageToMemory({
-      messages: [message] as unknown as MastraMessageV2[], // TODO: fix this, its temporary until we have a v3 api (ai-v5 sdk)
-      agentId: "sicapAgent",
-    });
-
-    return savedMessages;
-  };
-
-  return {
-    agent,
-    createThread,
-    addMessage,
-  };
-}
 
 export function useAgentRuntime() {
   const chat = useChat({
@@ -87,6 +58,16 @@ export function useAgentRuntime() {
     }
   }, [threadId]);
   //
+
+  // load messages from memory on mount and only when threadId changes
+  useEffect(() => {
+    const loadMessages = async () => {
+      const thread = mastraClient.getMemoryThread(threadId, AGENT_ID);
+      const { uiMessages } = await thread.getMessages();
+      chat.setMessages(uiMessages as UIMessage[]);
+    };
+    void loadMessages();
+  }, [threadId]);
 
   // Ensure a Mastra memory thread exists for this resource
   useEffect(() => {
@@ -187,7 +168,6 @@ export function useAgentRuntime() {
     setMessages: (messages) => chat.setMessages(messages.flatMap(getVercelAIMessages)),
     onCancel: async () => chat.stop(),
     onNew: async (message: AppendMessage) => {
-      console.log("onNew", message);
       // Persist the user message to Mastra memory
       try {
         const ensuredThreadId = await ensureThreadId();
