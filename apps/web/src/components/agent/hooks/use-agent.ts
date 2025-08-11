@@ -21,6 +21,7 @@ export function useAgentRuntime() {
   const { agentId, resourceId, threadId, ensureThreadId } = useThreadContext();
   const mastraClient = useMastraClient();
   const threadList = useThreadList();
+  const isCreatingNewThreadRef = useRef(false);
 
   const chat = useChat({
     transport: new DefaultChatTransport({
@@ -35,6 +36,14 @@ export function useAgentRuntime() {
       chat.setMessages([]);
       return;
     }
+
+    // Skip loading messages if we're in the middle of creating a new thread
+    // This prevents race condition where the first message gets duplicated
+    if (isCreatingNewThreadRef.current) {
+      isCreatingNewThreadRef.current = false;
+      return;
+    }
+
     let cancelled = false;
     const loadMessages = async () => {
       try {
@@ -73,7 +82,14 @@ export function useAgentRuntime() {
     onNew: async (message: AppendMessage) => {
       // Persist the user message to Mastra memory
       try {
+        const wasNewThread = !threadId; // Check if we're creating a new thread
         const ensuredThreadId = await ensureThreadId();
+
+        // If this was a new thread creation, set the flag to prevent message loading race condition
+        if (wasNewThread) {
+          isCreatingNewThreadRef.current = true;
+        }
+
         const mastraMessage = buildMastraMessageFromAppendMessage({
           message,
           threadId: ensuredThreadId,
