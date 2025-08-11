@@ -19,6 +19,9 @@ interface ThreadContextValue {
   threads: ExternalStoreThreadData<"regular">[];
   fetchThreads: () => Promise<void>;
 
+  // hydration state
+  isHydrated: boolean;
+
   // actions
   onArchive: (threadId: string) => Promise<void>;
   onSwitchToThread: (id: string) => void;
@@ -47,6 +50,7 @@ export function ThreadProvider({
   const [threadId, setThreadId] = useQueryState("t", parseAsString.withDefault(""));
   const [threads, setThreads] = useState<ExternalStoreThreadData<"regular">[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   const client = useMastraClient();
 
@@ -75,6 +79,14 @@ export function ThreadProvider({
   useEffect(() => {
     void fetchThreads();
   }, [fetchThreads]);
+
+  // Handle hydration state - wait for next tick to ensure URL params are parsed
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsHydrated(true);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   const onArchive = useCallback(
     async (archiveThreadId: string) => {
@@ -143,6 +155,7 @@ export function ThreadProvider({
       isLoading,
       threads,
       fetchThreads,
+      isHydrated,
       onArchive,
       onSwitchToThread,
       onSwitchToNewThread,
@@ -156,6 +169,7 @@ export function ThreadProvider({
       isLoading,
       threads,
       fetchThreads,
+      isHydrated,
       onArchive,
       onSwitchToThread,
       onSwitchToNewThread,
@@ -175,8 +189,26 @@ export function useThreadContext(): ThreadContextValue {
 }
 
 export const useThreadList = (): ExternalStoreThreadListAdapter => {
-  const { isLoading, threads, threadId, onArchive, onSwitchToNewThread, onSwitchToThread } =
-    useThreadContext();
+  const {
+    isLoading,
+    threads,
+    threadId,
+    onArchive,
+    onSwitchToNewThread,
+    onSwitchToThread,
+    isHydrated,
+  } = useThreadContext();
 
-  return { isLoading, threads, threadId, onArchive, onSwitchToNewThread, onSwitchToThread };
+  // Return proper threadId only after hydration, otherwise empty string
+  // This ensures @assistant-ui/react components don't render with stale state
+  const effectiveThreadId = isHydrated ? threadId : "";
+
+  return {
+    isLoading,
+    threads,
+    threadId: effectiveThreadId,
+    onArchive,
+    onSwitchToNewThread,
+    onSwitchToThread,
+  };
 };
