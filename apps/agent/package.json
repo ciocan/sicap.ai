@@ -19,7 +19,7 @@
     "node": ">=20.9.0"
   },
   "dependencies": {
-    "@ai-sdk/openai": "^2.0.7",
+    "@ai-sdk/openai": "^2.0.12",
     "@mastra/core": "0.0.0-ai-v5-20250801192614",
     "@mastra/libsql": "0.0.0-ai-v5-20250801192614",
     "@mastra/loggers": "0.0.0-ai-v5-20250801192614",
