@@ -34,7 +34,7 @@
     "@opentelemetry/sdk-trace-base": "^2.0.1",
     "@opentelemetry/semantic-conventions": "^1.36.0",
     "@sicap/api": "workspace:*",
-    "ai": "^5.0.8",
+    "ai": "^5.0.12",
     "langfuse-vercel": "^3.38.4",
     "zod": "^3.25.76"
   },
