@@ -29,11 +29,11 @@
     "scc": "scc -i ts,tsx,md,json,sh,m --no-cocomo --exclude-dir='packages/ui,apps/web/src/lib/db/migrations'"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.1.2",
+    "@biomejs/biome": "2.1.4",
     "@sicap/tsconfig": "workspace:*",
     "@tailwindcss/postcss": "^4.1.11",
-    "dotenv-cli": "^8.0.0",
+    "dotenv-cli": "^10.0.0",
     "turbo": "^2.5.5"
   },
-  "packageManager": "pnpm@10.13.1"
+  "packageManager": "pnpm@10.14.0"
 }

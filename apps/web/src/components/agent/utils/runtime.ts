@@ -1,5 +1,5 @@
 import type { AppendMessage } from "@assistant-ui/react";
-import type { MastraMessageV3 } from "@mastra/core/memory";
+import type { MastraMessageV2, MastraMessageV3 } from "@mastra/core/memory";
 import type { ModelMessage, UIMessage } from "ai";
 
 import { generateId } from "@/utils";

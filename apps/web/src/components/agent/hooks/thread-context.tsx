@@ -57,8 +57,6 @@ export function ThreadProvider({
   const agentId = providedAgentId;
   const resourceId = providedResourceId;
 
-  const defaultThreadTitle = `Conversatie nouă ${new Date().toLocaleString("ro-RO")}`;
-
   const fetchThreads = useCallback(async () => {
     setIsLoading(true);
     try {
@@ -96,7 +94,7 @@ export function ThreadProvider({
       const threadData = await thread.get();
       await thread.update({
         ...threadData,
-        title: threadData.title ?? defaultThreadTitle,
+        title: threadData.title ?? "",
         metadata: {
           ...threadData?.metadata,
           isArchived: true,
@@ -104,7 +102,7 @@ export function ThreadProvider({
       });
       await fetchThreads();
     },
-    [client, agentId, fetchThreads, defaultThreadTitle],
+    [client, agentId, fetchThreads],
   );
 
   const onSwitchToThread = useCallback(
@@ -126,7 +124,6 @@ export function ThreadProvider({
         return threadId;
       } catch {
         await client.createMemoryThread({
-          title: defaultThreadTitle,
           agentId,
           resourceId,
           metadata: {},
@@ -139,7 +136,6 @@ export function ThreadProvider({
     }
     const newId = generateId();
     await client.createMemoryThread({
-      title: `Conversatie nouă ${new Date().toLocaleString("ro-RO")}`,
       agentId,
       resourceId,
       metadata: {},
@@ -148,7 +144,7 @@ export function ThreadProvider({
     setThreadId(newId);
     await fetchThreads();
     return newId;
-  }, [threadId, client, agentId, resourceId, fetchThreads, setThreadId, defaultThreadTitle]);
+  }, [threadId, client, agentId, resourceId, fetchThreads, setThreadId]);
 
   const value: ThreadContextValue = useMemo(
     () => ({

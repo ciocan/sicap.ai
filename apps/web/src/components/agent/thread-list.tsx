@@ -1,9 +1,15 @@
 import type { FC } from "react";
-import { ThreadListItemPrimitive, ThreadListPrimitive } from "@assistant-ui/react";
+import {
+  ThreadListItemPrimitive,
+  ThreadListPrimitive,
+  useThreadListItem,
+  useThreadList,
+} from "@assistant-ui/react";
 import { ArchiveIcon, PlusIcon } from "lucide-react";
 
 import { Button } from "@sicap/ui/components/ui/button";
 import { TooltipIconButton } from "@sicap/ui";
+import { timeAgo } from "@/utils";
 
 export const ThreadList: FC = () => {
   return (
@@ -33,10 +39,17 @@ const ThreadListItems: FC = () => {
 };
 
 const ThreadListItem: FC = () => {
+  const titlePart = useThreadListItem((t) => t.title);
+  const [_, createdAt] = titlePart?.split("New Thread") ?? [];
+  const title = "Conversatie nouă";
   return (
     <ThreadListItemPrimitive.Root className="group/item data-active:bg-muted hover:bg-muted focus-visible:bg-muted focus-visible:ring-ring flex items-center gap-2 rounded-lg transition-all focus-visible:outline-none focus-visible:ring-2">
-      <ThreadListItemPrimitive.Trigger className="flex-grow px-3 py-2 text-start">
-        <ThreadListItemTitle />
+      <ThreadListItemPrimitive.Trigger className="flex-grow px-3 py-1 text-start">
+        {/* <ThreadListItemTitle /> */}
+        <p>{title}</p>
+        <span className="text-xs text-muted-foreground" title={createdAt}>
+          {timeAgo(createdAt ?? new Date())}
+        </span>
       </ThreadListItemPrimitive.Trigger>
       <ThreadListItemArchive />
     </ThreadListItemPrimitive.Root>

@@ -4,9 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "mastra dev --port 4242",
+    "dev": "mastra dev --port 4242 --inspect",
     "build": "mastra build --dir src/mastra",
-    "start": "mastra start --dir src/mastra"
+    "start": "mastra start --dir src/mastra",
+    "lint": "biome check --write",
+    "fmt": "biome format --write",
+    "mastra": "mastra"
   },
   "keywords": [],
   "author": "",

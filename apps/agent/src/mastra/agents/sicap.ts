@@ -23,7 +23,7 @@ export const sicapAgent = new Agent({
     Nu folosi NICIODATA diacritice in parametrii de input pentru tool-uri.
 
 `,
-  model: openai("gpt-5-mini"),
+  model: openai("gpt-5-nano"),
   tools: { searchContractsTool },
   memory: new Memory({
     storage,

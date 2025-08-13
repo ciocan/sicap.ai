@@ -114,6 +114,8 @@ export function useAgentRuntime() {
     messages: chat.messages,
   });
 
+  // console.log("messages", messages);
+
   // RUNTIME
   const runtime = useExternalStoreRuntime({
     isRunning: chat.status === "submitted" || chat.status === "streaming",

@@ -1,3 +1,6 @@
+import { format as formatTimeAgo, type TDate, register } from "timeago.js";
+import ro from "timeago.js/lib/lang/ro";
+
 import { ES_INDEX_DIRECT, ES_INDEX_OFFLINE, ES_INDEX_PUBLIC } from "@sicap/api/dist/es/utils.mjs";
 
 export const allowedSlugs = ["firma", "autoritate", "cpv"];
@@ -93,3 +96,6 @@ export const generateId = (): string =>
   typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
     ? crypto.randomUUID()
     : `id_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+
+register("ro", ro);
+export const timeAgo = (date: TDate) => formatTimeAgo(date, "ro");
