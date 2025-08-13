@@ -33,6 +33,11 @@ export function useAgentRuntime() {
 
   // load messages from memory on mount and only when threadId changes
   useEffect(() => {
+    // Stop any ongoing streaming when switching threads
+    if (chat.status === "streaming" || chat.status === "submitted") {
+      chat.stop();
+    }
+
     if (!threadId) {
       // Clear messages when no thread is selected
       chat.setMessages([]);
@@ -123,16 +128,16 @@ export function useAgentRuntime() {
     onCancel: async () => chat.stop(),
     onNew: async (message: AppendMessage) => {
       const wasNewThread = !threadId; // Check if we're creating a new thread
-      
+
       // If this is a new thread, set the flag BEFORE creating the thread
       // This ensures the flag is set before threadId changes
       if (wasNewThread) {
         isCreatingNewThreadRef.current = true;
       }
-      
+
       // Get or create the thread ID
       const ensuredThreadId = await ensureThreadId();
-      
+
       // Always persist the user message to memory
       try {
         const mastraMessage = buildMastraMessageFromAppendMessage({
@@ -147,7 +152,7 @@ export function useAgentRuntime() {
       } catch (error) {
         console.error("---onNew--- Error persisting user message", error);
       }
-      
+
       await chat.sendMessage(await toCreateMessage(message));
     },
     onEdit: async (message: AppendMessage) => {
@@ -193,12 +198,12 @@ export function useAgentRuntime() {
     if (isRunning) {
       return;
     }
-    
+
     // Reset the flag after the first message completes on a new thread
     if (isCreatingNewThreadRef.current) {
       isCreatingNewThreadRef.current = false;
     }
-    
+
     const lastAssistant = [...chat.messages].reverse().find((m) => m.role === "assistant");
     if (!lastAssistant) {
       return;
@@ -210,14 +215,14 @@ export function useAgentRuntime() {
     const persist = async () => {
       try {
         const ensuredThreadId = await ensureThreadId();
-        
+
         // Only persist the assistant message (user message was already persisted in onNew)
         const assistantMastraMessage = buildMastraMessageFromUIMessage({
           message: lastAssistant,
           threadId: ensuredThreadId,
           resourceId,
         });
-        
+
         await mastraClient.saveMessageToMemory({
           agentId,
           messages: [assistantMastraMessage] as unknown as MastraMessageV2[], // TODO: fix this, its temporary until we have a v3 api (ai-v5 sdk)
