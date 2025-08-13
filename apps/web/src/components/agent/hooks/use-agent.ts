@@ -45,7 +45,6 @@ export function useAgentRuntime() {
     // Skip loading messages if we're in the middle of creating a new thread
     // This prevents race condition where the first message gets duplicated
     if (isCreatingNewThreadRef.current) {
-      isCreatingNewThreadRef.current = false;
       return;
     }
 
@@ -123,16 +122,19 @@ export function useAgentRuntime() {
     setMessages: (messages) => chat.setMessages(messages.flatMap(getVercelAIMessages)),
     onCancel: async () => chat.stop(),
     onNew: async (message: AppendMessage) => {
-      // Persist the user message to Mastra memory
+      const wasNewThread = !threadId; // Check if we're creating a new thread
+      
+      // If this is a new thread, set the flag BEFORE creating the thread
+      // This ensures the flag is set before threadId changes
+      if (wasNewThread) {
+        isCreatingNewThreadRef.current = true;
+      }
+      
+      // Get or create the thread ID
+      const ensuredThreadId = await ensureThreadId();
+      
+      // Always persist the user message to memory
       try {
-        const wasNewThread = !threadId; // Check if we're creating a new thread
-        const ensuredThreadId = await ensureThreadId();
-
-        // If this was a new thread creation, set the flag to prevent message loading race condition
-        if (wasNewThread) {
-          isCreatingNewThreadRef.current = true;
-        }
-
         const mastraMessage = buildMastraMessageFromAppendMessage({
           message,
           threadId: ensuredThreadId,
@@ -145,6 +147,7 @@ export function useAgentRuntime() {
       } catch (error) {
         console.error("---onNew--- Error persisting user message", error);
       }
+      
       await chat.sendMessage(await toCreateMessage(message));
     },
     onEdit: async (message: AppendMessage) => {
@@ -183,13 +186,19 @@ export function useAgentRuntime() {
     adapters: { threadList },
   });
 
-  // Persist the assistant's latest message after streaming completes
+  // Persist assistant messages after streaming completes
   const lastSavedAssistantIdRef = useRef<string | null>(null);
   useEffect(() => {
     const isRunning = chat.status === "submitted" || chat.status === "streaming";
     if (isRunning) {
       return;
     }
+    
+    // Reset the flag after the first message completes on a new thread
+    if (isCreatingNewThreadRef.current) {
+      isCreatingNewThreadRef.current = false;
+    }
+    
     const lastAssistant = [...chat.messages].reverse().find((m) => m.role === "assistant");
     if (!lastAssistant) {
       return;
@@ -201,14 +210,17 @@ export function useAgentRuntime() {
     const persist = async () => {
       try {
         const ensuredThreadId = await ensureThreadId();
-        const mastraMessage = buildMastraMessageFromUIMessage({
+        
+        // Only persist the assistant message (user message was already persisted in onNew)
+        const assistantMastraMessage = buildMastraMessageFromUIMessage({
           message: lastAssistant,
           threadId: ensuredThreadId,
           resourceId,
         });
+        
         await mastraClient.saveMessageToMemory({
           agentId,
-          messages: [mastraMessage] as unknown as MastraMessageV2[], // TODO: fix this, its temporary until we have a v3 api (ai-v5 sdk)
+          messages: [assistantMastraMessage] as unknown as MastraMessageV2[], // TODO: fix this, its temporary until we have a v3 api (ai-v5 sdk)
         });
         lastSavedAssistantIdRef.current = lastAssistant.id;
       } catch (error) {
