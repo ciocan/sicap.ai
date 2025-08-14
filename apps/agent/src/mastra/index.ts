@@ -65,9 +65,6 @@ export const mastra = new Mastra({
           runtimeContext.set("userId", userId);
           runtimeContext.set("sessionId", sessionId);
 
-          const body = c.req.method.toUpperCase() === "POST" ? await c.req.json() : undefined;
-          const formattedBody = body ? JSON.stringify(body, null, 2) : undefined;
-
           const ignoreEndpoints = [
             "/api/telemetry",
             "/api/agents/sicapAgent/voice",
@@ -84,7 +81,6 @@ export const mastra = new Mastra({
               method: c.req.method,
               path: c.req.path,
               query: c.req.query(),
-              // body: formattedBody,
               userId,
               sessionId,
               // cookie: c.req.raw.headers.get("cookie"),

@@ -29,20 +29,21 @@ export function useAgentRuntime() {
   const sessionId = useMemo(() => getSessionId(threadId), [threadId]);
 
   // Create MastraClient with headers
-  const mastraClient = useMastraClient({
-    userId: resourceId,
-    sessionId,
-  });
+  const mastraClient = useMastraClient({ userId: resourceId, sessionId });
 
-  const chat = useChat({
-    transport: new DefaultChatTransport({
-      api: `${env.NEXT_PUBLIC_AGENT_API_URL}/api/agents/${agentId}/stream`,
-      headers: {
-        "x-user-id": resourceId,
-        "x-session-id": sessionId,
-      },
-    }),
-  });
+  const transport = useMemo(
+    () =>
+      new DefaultChatTransport({
+        api: `${env.NEXT_PUBLIC_AGENT_API_URL}/api/agents/${agentId}/stream`,
+        headers: {
+          "x-user-id": resourceId,
+          "x-session-id": sessionId,
+        },
+      }),
+    [agentId, resourceId, sessionId],
+  );
+
+  const chat = useChat({ transport });
 
   // load messages from memory on mount and only when threadId changes
   useEffect(() => {
@@ -166,7 +167,12 @@ export function useAgentRuntime() {
         console.error("---onNew--- Error persisting user message", error);
       }
 
-      await chat.sendMessage(await toCreateMessage(message));
+      await chat.sendMessage(await toCreateMessage(message), {
+        headers: {
+          "x-user-id": resourceId,
+          "x-session-id": ensuredThreadId,
+        },
+      });
     },
     onEdit: async (message: AppendMessage) => {
       const newMessages = sliceMessagesUntil(chat.messages, message.parentId);
