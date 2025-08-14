@@ -19,8 +19,8 @@
     "node": ">=20.9.0"
   },
   "dependencies": {
-    "@ai-sdk/openai": "^2.0.12",
-    "@mastra/core": "0.0.0-ai-v5-20250801192614",
+    "@ai-sdk/openai": "^2.0.14",
+    "@mastra/core": "0.0.0-ai-v5-20250813235735",
     "@mastra/libsql": "0.0.0-ai-v5-20250801192614",
     "@mastra/loggers": "0.0.0-ai-v5-20250801192614",
     "@mastra/memory": "0.0.0-ai-v5-20250801192614",
@@ -34,13 +34,13 @@
     "@opentelemetry/sdk-trace-base": "^2.0.1",
     "@opentelemetry/semantic-conventions": "^1.36.0",
     "@sicap/api": "workspace:*",
-    "ai": "^5.0.12",
+    "ai": "^5.0.14",
     "langfuse-vercel": "^3.38.4",
     "zod": "^3.25.76"
   },
   "devDependencies": {
     "@types/node": "^24.2.1",
-    "mastra": "0.0.0-ai-v5-20250801192614",
+    "mastra": "0.0.0-ai-v5-20250813235735",
     "typescript": "^5.9.2"
   }
 }
