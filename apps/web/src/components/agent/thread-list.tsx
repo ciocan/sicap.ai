@@ -3,7 +3,6 @@ import {
   ThreadListItemPrimitive,
   ThreadListPrimitive,
   useThreadListItem,
-  useThreadList,
 } from "@assistant-ui/react";
 import { ArchiveIcon, PlusIcon } from "lucide-react";
 
@@ -39,14 +38,12 @@ const ThreadListItems: FC = () => {
 };
 
 const ThreadListItem: FC = () => {
-  const titlePart = useThreadListItem((t) => t.title);
-  const [_, createdAt] = titlePart?.split("New Thread") ?? [];
-  const title = "Conversatie nouă";
+  const listItem = useThreadListItem((t) => t.title);
+  const [title, createdAt] = listItem?.split("||") ?? [];
   return (
     <ThreadListItemPrimitive.Root className="group/item data-active:bg-muted hover:bg-muted focus-visible:bg-muted focus-visible:ring-ring flex items-center gap-2 rounded-lg transition-all focus-visible:outline-none focus-visible:ring-2">
       <ThreadListItemPrimitive.Trigger className="flex-grow px-3 py-1 text-start">
-        {/* <ThreadListItemTitle /> */}
-        <p>{title}</p>
+        <p className="text-sm">{title}</p>
         <span className="text-xs text-muted-foreground" title={createdAt}>
           {timeAgo(createdAt ?? new Date())}
         </span>

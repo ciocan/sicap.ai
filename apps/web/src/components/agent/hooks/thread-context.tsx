@@ -60,29 +60,27 @@ export function ThreadProvider({
   const sessionId = useMemo(() => getSessionId(threadId), [threadId]);
 
   // Create client with headers
-  const client = useMastraClient({
-    userId: resourceId,
-    sessionId,
-  });
+  const mastraClient = useMastraClient({ userId: resourceId, sessionId });
 
   const fetchThreads = useCallback(async () => {
     setIsLoading(true);
     try {
-      const updatedThreads = await client.getMemoryThreads({ agentId, resourceId });
-      setThreads(
-        updatedThreads
-          .filter((thread) => !thread.metadata?.isArchived)
-          .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-          .map((thread) => ({
-            threadId: thread.id,
-            title: thread.title,
-            status: "regular" as const,
-          })),
-      );
+      const updatedThreads = await mastraClient.getMemoryThreads({ agentId, resourceId });
+
+      const threads = updatedThreads
+        .filter((thread) => !thread.metadata?.isArchived)
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        .map((thread) => ({
+          threadId: thread.id,
+          status: "regular" as const,
+          title: `${thread.title}||${thread.createdAt}`, // TODO: fix this, its temporary until a better way is implemented in assistant-ui/react
+        }));
+
+      setThreads(threads);
     } finally {
       setIsLoading(false);
     }
-  }, [client, agentId, resourceId]);
+  }, [mastraClient, agentId, resourceId]);
 
   useEffect(() => {
     void fetchThreads();
@@ -98,7 +96,7 @@ export function ThreadProvider({
 
   const onArchive = useCallback(
     async (archiveThreadId: string) => {
-      const thread = client.getMemoryThread(archiveThreadId, agentId);
+      const thread = mastraClient.getMemoryThread(archiveThreadId, agentId);
       const threadData = await thread.get();
       await thread.update({
         ...threadData,
@@ -110,7 +108,7 @@ export function ThreadProvider({
       });
       await fetchThreads();
     },
-    [client, agentId, fetchThreads],
+    [mastraClient, agentId, fetchThreads],
   );
 
   const onSwitchToThread = useCallback(
@@ -125,16 +123,20 @@ export function ThreadProvider({
   }, [setThreadId]);
 
   const ensureThreadId = useCallback(async (): Promise<string> => {
+    const title = "Conversatie noua";
+    const metadata = { hasDefaultTitle: true }; // TODO: temporary until genTitle is fixed
+
     if (threadId) {
       try {
-        const thread = client.getMemoryThread(threadId, agentId);
+        const thread = mastraClient.getMemoryThread(threadId, agentId);
         await thread.get();
         return threadId;
       } catch {
-        await client.createMemoryThread({
+        await mastraClient.createMemoryThread({
+          title,
           agentId,
           resourceId,
-          metadata: {},
+          metadata,
           threadId,
         });
         // Ensure list includes it
@@ -143,16 +145,17 @@ export function ThreadProvider({
       }
     }
     const newId = generateId();
-    await client.createMemoryThread({
+    await mastraClient.createMemoryThread({
+      title,
       agentId,
       resourceId,
-      metadata: {},
+      metadata,
       threadId: newId,
     });
     setThreadId(newId);
     await fetchThreads();
     return newId;
-  }, [threadId, client, agentId, resourceId, fetchThreads, setThreadId]);
+  }, [threadId, mastraClient, agentId, resourceId, fetchThreads, setThreadId]);
 
   const value: ThreadContextValue = useMemo(
     () => ({
