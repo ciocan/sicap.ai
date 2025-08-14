@@ -1,5 +1,5 @@
 import { useExternalStoreRuntime } from "@assistant-ui/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { DefaultChatTransport, type UIMessage } from "ai";
 import type { MastraMessageV2 } from "@mastra/core/memory";
 import type { AppendMessage } from "@assistant-ui/react";
@@ -16,18 +16,31 @@ import {
 import { useMastraClient } from "./use-mastra-client";
 import { useThreadContext, useThreadList } from "./thread-context";
 import { env } from "@/lib/env";
+import { getSessionId } from "@/utils/session";
 
 export function useAgentRuntime() {
   const { agentId, resourceId, threadId, ensureThreadId } = useThreadContext();
-  const mastraClient = useMastraClient();
   const threadList = useThreadList();
   const isCreatingNewThreadRef = useRef(false);
   const redirectedThreadsRef = useRef(new Set<string>());
   const [invalidThreadId, setInvalidThreadId] = useState<string | null>(null);
 
+  // Generate a stable sessionId for this browser session
+  const sessionId = useMemo(() => getSessionId(threadId), [threadId]);
+
+  // Create MastraClient with headers
+  const mastraClient = useMastraClient({
+    userId: resourceId,
+    sessionId,
+  });
+
   const chat = useChat({
     transport: new DefaultChatTransport({
       api: `${env.NEXT_PUBLIC_AGENT_API_URL}/api/agents/${agentId}/stream`,
+      headers: {
+        "x-user-id": resourceId,
+        "x-session-id": sessionId,
+      },
     }),
   });
 

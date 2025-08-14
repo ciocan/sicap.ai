@@ -5,6 +5,7 @@ import { useQueryState, parseAsString } from "nuqs";
 
 import { useMastraClient } from "./use-mastra-client";
 import { generateId } from "@/utils";
+import { getSessionId } from "@/utils/session";
 
 interface ThreadContextValue {
   agentId: string;
@@ -52,10 +53,17 @@ export function ThreadProvider({
   const [isLoading, setIsLoading] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
 
-  const client = useMastraClient();
-
   const agentId = providedAgentId;
   const resourceId = providedResourceId;
+
+  // Get sessionId for tracking
+  const sessionId = useMemo(() => getSessionId(threadId), [threadId]);
+
+  // Create client with headers
+  const client = useMastraClient({
+    userId: resourceId,
+    sessionId,
+  });
 
   const fetchThreads = useCallback(async () => {
     setIsLoading(true);

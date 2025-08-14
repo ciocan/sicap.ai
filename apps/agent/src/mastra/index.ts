@@ -4,11 +4,9 @@ import { LangfuseExporter } from "langfuse-vercel";
 
 import { sicapAgent } from "./agents";
 import { storage, VECTOR_STORE_NAME, vector } from "./stores";
-// import { env } from "@/lib/env";
-// import { auth } from "@/lib/auth";
 
 const logger = new PinoLogger({
-  name: "SICAP Agent",
+  name: "sicapAgent",
   level: "info",
 });
 
@@ -22,6 +20,9 @@ export const mastra = new Mastra({
   telemetry: {
     serviceName: "ai",
     enabled: true,
+    sampling: {
+      type: "always_on",
+    },
     export: {
       type: "custom",
       exporter: new LangfuseExporter({
@@ -34,8 +35,19 @@ export const mastra = new Mastra({
   server: {
     cors: {
       origin: "*",
-      allowMethods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-      allowHeaders: ["Content-Type", "Authorization"],
+      allowMethods: [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE",
+        "PATCH",
+        "OPTIONS",
+        "HEAD",
+        "CONNECT",
+        "TRACE",
+        "STREAM",
+      ],
+      allowHeaders: ["Content-Type", "Authorization", "x-user-id", "x-session-id", "x-resource-id"],
       credentials: false,
     },
     middleware: [
@@ -44,6 +56,14 @@ export const mastra = new Mastra({
           // const session = await auth();
           // const userId = session?.user?.id;
           // const resourceId = c.req.query("resourceid") || userId;
+
+          // Extract userId from headers for Langfuse tracking
+          const userId = c.req.header("x-user-id");
+          const sessionId = c.req.header("x-session-id");
+
+          const runtimeContext = c.get("runtimeContext");
+          runtimeContext.set("userId", userId);
+          runtimeContext.set("sessionId", sessionId);
 
           const body = c.req.method.toUpperCase() === "POST" ? await c.req.json() : undefined;
           const formattedBody = body ? JSON.stringify(body, null, 2) : undefined;
@@ -57,19 +77,20 @@ export const mastra = new Mastra({
 
           if (!ignoreEndpoints) {
             console.log("----------------------------------------------------------------");
+            if (c.req.path.includes("/api/agents/sicapAgent/stream")) {
+              console.log("------------STREAM----------------------------------------------------");
+            }
             console.log("Middleware request", {
               method: c.req.method,
               path: c.req.path,
               query: c.req.query(),
-              body: formattedBody,
+              // body: formattedBody,
+              userId,
+              sessionId,
               // cookie: c.req.raw.headers.get("cookie"),
               // headers: c.req.raw.headers,
             });
           }
-
-          // if (userId !== resourceId) {
-          //   return c.json({ error: "Unauthorized" }, 401);
-          // }
 
           await next();
         },

@@ -25,6 +25,21 @@ export const sicapAgent = new Agent({
 `,
   model: openai("gpt-5-nano"),
   tools: { searchContractsTool },
+  defaultStreamOptions: ({ runtimeContext }) => {
+    const userId = runtimeContext.get("userId") as string;
+    const sessionId = runtimeContext.get("sessionId") as string;
+    console.log("-------------------------------- defaultStreamOptions", { userId, sessionId });
+    return {
+      runtimeContext,
+      telemetry: {
+        isEnabled: true,
+        metadata: {
+          sessionId,
+          userId,
+        },
+      },
+    };
+  },
   memory: new Memory({
     storage,
     vector,
