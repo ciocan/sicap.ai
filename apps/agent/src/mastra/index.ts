@@ -35,18 +35,7 @@ export const mastra = new Mastra({
   server: {
     cors: {
       origin: "*",
-      allowMethods: [
-        "GET",
-        "POST",
-        "PUT",
-        "DELETE",
-        "PATCH",
-        "OPTIONS",
-        "HEAD",
-        "CONNECT",
-        "TRACE",
-        "STREAM",
-      ],
+      allowMethods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"],
       allowHeaders: ["Content-Type", "Authorization", "x-user-id", "x-session-id", "x-resource-id"],
       credentials: false,
     },

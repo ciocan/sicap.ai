@@ -28,7 +28,6 @@ export const sicapAgent = new Agent({
   defaultStreamOptions: ({ runtimeContext }) => {
     const userId = runtimeContext.get("userId") as string;
     const sessionId = runtimeContext.get("sessionId") as string;
-    console.log("-------------------------------- defaultStreamOptions", { userId, sessionId });
     return {
       runtimeContext,
       telemetry: {
