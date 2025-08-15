@@ -22,6 +22,34 @@
       "when": 1755268589070,
       "tag": "0002_adorable_oracle",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1755278621303,
+      "tag": "0003_lying_toad",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1755281093618,
+      "tag": "0004_breezy_spectrum",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1755281458453,
+      "tag": "0005_supreme_smasher",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1755282329712,
+      "tag": "0006_wooden_sumo",
+      "breakpoints": true
     }
   ]
 }

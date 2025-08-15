@@ -1,6 +1,7 @@
-import { auth } from "@/lib/auth";
-import { Agent } from "@/components/agent";
 import { headers } from "next/headers";
+
+import { Agent } from "@/components/agent";
+import { auth } from "@/lib/auth";
 
 export default async function Page() {
   const headersList = await headers();
@@ -8,6 +9,6 @@ export default async function Page() {
     headers: headersList,
   });
   const userId = session?.user?.id ?? undefined;
-  
+
   return <Agent userId={userId} />;
 }

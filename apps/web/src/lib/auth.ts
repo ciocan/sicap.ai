@@ -1,10 +1,9 @@
 import { betterAuth } from "better-auth";
 import { nextCookies } from "better-auth/next-js";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { eq } from "drizzle-orm";
 import { Logger } from "next-axiom";
 
-import { db, user, account, session, verification } from "../db/schema";
+import { db, userTable, accountTable, sessionTable, verificationTable } from "@/db/schema";
 import { addSubscriber, addSubscriberToLists, messageSubscriber } from "./listmonk";
 import { env } from "./env";
 
@@ -15,72 +14,56 @@ export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "sqlite",
     schema: {
-      user,
-      session,
-      account,
-      verification,
+      user: userTable,
+      session: sessionTable,
+      account: accountTable,
+      verification: verificationTable,
     },
   }),
+  account: {
+    accountLinking: {
+      trustedProviders: ["google"],
+    },
+  },
   socialProviders: {
     google: {
       clientId: env.GOOGLE_ID!,
       clientSecret: env.GOOGLE_SECRET,
-      // mapProfileToUser: (profile) => {
-      //   return {
-      //     firstName: profile.given_name,
-      //     lastName: profile.family_name,
-      //   };
-      // },
-    },
-  },
-  user: {
-    additionalFields: {
-      createdAt: {
-        type: "string",
-        required: false,
-      },
-      updatedAt: {
-        type: "string",
-        required: false,
+      mapProfileToUser: (profile) => {
+        return {
+          firstName: profile.given_name,
+          lastName: profile.family_name,
+        };
       },
     },
   },
-  // Custom pages
   pages: {
     signIn: "/autentificare",
     signUp: "/",
     error: "/eroare",
   },
-  // Session configuration
   session: {
     expiresIn: 60 * 60 * 24 * 7, // 7 days
     updateAge: 60 * 60 * 24, // 1 day
+    cookieCache: {
+      enabled: true,
+      maxAge: 5 * 60, // Cache duration in seconds
+    },
   },
-  // User lifecycle events for listmonk integration
   databaseHooks: {
     user: {
       create: {
-        after: async (u) => {
-          log.info("User created", { userId: u.id });
-
+        after: async (user) => {
+          log.info("User created", { userId: user.id });
           try {
-            await db
-              .update(user)
-              .set({
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-              })
-              .where(eq(user.id, u.id))
-              .returning();
-
-            if (u.email && u.name) {
+            if (user.email && user.name) {
               await addSubscriber({
-                email: u.email,
-                name: u.name,
-                attribs: { userId: u.id },
+                email: user.email,
+                name: user.name,
+                attribs: { userId: user.id },
               });
-              await addSubscriberToLists({ email: u.email, lists: ["users"] });
-              await messageSubscriber({ email: u.email, template: "welcome" });
+              await addSubscriberToLists({ email: user.email, lists: ["users"] });
+              await messageSubscriber({ email: user.email, template: "welcome" });
             }
           } catch (e) {
             console.error("Error in user creation hook:", e);
@@ -88,18 +71,8 @@ export const auth = betterAuth({
         },
       },
       update: {
-        after: async (u) => {
-          log.info("User updated", { userId: u.id });
-
-          try {
-            await db
-              .update(user)
-              .set({ updatedAt: new Date().toISOString() })
-              .where(eq(user.id, u.id))
-              .returning();
-          } catch (e) {
-            console.error("Error in user update hook:", e);
-          }
+        after: async (user) => {
+          log.info("User updated", { userId: user.id });
         },
       },
     },
@@ -116,5 +89,19 @@ export const auth = betterAuth({
     },
     plugins: [nextCookies()], // make sure this is the last plugin in the array
   },
-  trustedOrigins: [env.NEXTAUTH_URL],
+  trustedOrigins: [env.NEXTAUTH_URL, env.AGENT_API_URL],
+  advanced: {
+    useSecureCookies: true,
+    crossSubDomainCookies: {
+      enabled: process.env.NODE_ENV === "production",
+      domain: ".sicap.ai",
+    },
+  },
+  onAPIError: {
+    onError: (error) => {
+      console.error("API Error", error);
+    },
+    errorURL: `${env.NEXT_PUBLIC_BASE_URL}/eroare`,
+    throw: true,
+  },
 });

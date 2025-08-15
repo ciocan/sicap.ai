@@ -21,6 +21,7 @@ export const env = createEnv({
     LANGFUSE_PUBLIC_KEY: z.string().optional(),
     LANGFUSE_SECRET_KEY: z.string().optional(),
     LANGFUSE_BASEURL: z.string().url().optional().default("https://cloud.langfuse.com"),
+    AGENT_API_URL: z.string().url().optional().default("http://localhost:4242"),
   },
   client: {
     NEXT_PUBLIC_FORMBRICKS_API_HOST: z.string().min(1),
@@ -68,6 +69,7 @@ export const env = createEnv({
     LANGFUSE_SECRET_KEY: process.env.LANGFUSE_SECRET_KEY,
     LANGFUSE_BASEURL: process.env.LANGFUSE_BASEURL,
     NEXT_PUBLIC_AGENT_API_URL: process.env.NEXT_PUBLIC_AGENT_API_URL,
+    AGENT_API_URL: process.env.AGENT_API_URL,
     NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
   },
 });

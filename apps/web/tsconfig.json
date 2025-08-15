@@ -1,14 +1,15 @@
 {
-  "extends": "@sicap/tsconfig/nextjs.json",
-  "compilerOptions": {
-    "allowImportingTsExtensions": true,
-    "plugins": [{ "name": "next" }],
-    "baseUrl": "./src/",
-    "paths": {
-      "@/*": ["./*"],
-      "@sicap/ui/*": ["../../packages/ui/src/*"]
-    }
-  },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", "dist", ".mastra"]
+    "extends": "@sicap/tsconfig/nextjs.json",
+    "compilerOptions": {
+        "strict": true,
+        "allowImportingTsExtensions": true,
+        "plugins": [{ "name": "next" }],
+        "baseUrl": "./src/",
+        "paths": {
+            "@/*": ["./*"],
+            "@sicap/ui/*": ["../../packages/ui/src/*"]
+        }
+    },
+    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+    "exclude": ["node_modules", "dist", ".mastra"]
 }

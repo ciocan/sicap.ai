@@ -10,23 +10,49 @@ export const db = drizzle({
   },
 });
 
-export const user = sqliteTable(
+export const userTable = sqliteTable(
   "user",
   {
     id: text("id").notNull().primaryKey(),
     name: text("name"),
     email: text("email").notNull(),
-    emailVerified: integer("emailVerified", { mode: "timestamp_ms" }),
+    emailVerified: integer("emailVerified", { mode: "boolean" })
+      .$defaultFn(() => false)
+      .notNull(),
     image: text("image"),
-    updatedAt: text("updated_at"),
-    createdAt: text("created_at"),
+    createdAt: integer("createdAt", { mode: "timestamp" })
+      .$defaultFn(() => /* @__PURE__ */ new Date())
+      .notNull(),
+    updatedAt: integer("updatedAt", { mode: "timestamp" })
+      .$defaultFn(() => /* @__PURE__ */ new Date())
+      .notNull(),
   },
   (user) => ({
     emailIndex: uniqueIndex("users__email__idx").on(user.email),
   }),
 );
 
-export const account = sqliteTable(
+export const sessionTable = sqliteTable(
+  "session",
+  {
+    id: text("id").primaryKey(),
+    expiresAt: integer("expiresAt", { mode: "timestamp" }).notNull(),
+    token: text("token").notNull().unique(),
+    createdAt: integer("createdAt", { mode: "timestamp" }).notNull(),
+    updatedAt: integer("updatedAt", { mode: "timestamp" }).notNull(),
+    ipAddress: text("ipAddress"),
+    userAgent: text("userAgent"),
+    userId: text("userId")
+      .notNull()
+      .references(() => userTable.id, { onDelete: "cascade" }),
+  },
+  (session) => ({
+    tokenIndex: uniqueIndex("session__token__idx").on(session.token),
+    userIdIndex: index("session__userId__idx").on(session.userId),
+  }),
+);
+
+export const accountTable = sqliteTable(
   "account",
   {
     id: text("id").primaryKey(),
@@ -34,7 +60,7 @@ export const account = sqliteTable(
     providerId: text("providerId").notNull(),
     userId: text("userId")
       .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
+      .references(() => userTable.id, { onDelete: "cascade" }),
     accessToken: text("accessToken"),
     refreshToken: text("refreshToken"),
     idToken: text("idToken"),
@@ -54,35 +80,19 @@ export const account = sqliteTable(
   }),
 );
 
-export const session = sqliteTable(
-  "session",
-  {
-    id: text("id").primaryKey(),
-    expiresAt: integer("expiresAt", { mode: "timestamp" }).notNull(),
-    token: text("token").notNull().unique(),
-    createdAt: integer("createdAt", { mode: "timestamp" }).notNull(),
-    updatedAt: integer("updatedAt", { mode: "timestamp" }).notNull(),
-    ipAddress: text("ipAddress"),
-    userAgent: text("userAgent"),
-    userId: text("userId")
-      .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
-  },
-  (session) => ({
-    tokenIndex: uniqueIndex("session__token__idx").on(session.token),
-    userIdIndex: index("session__userId__idx").on(session.userId),
-  }),
-);
-
-export const verification = sqliteTable(
+export const verificationTable = sqliteTable(
   "verification",
   {
     id: text("id").primaryKey(),
     identifier: text("identifier").notNull(),
     value: text("value").notNull(),
     expiresAt: integer("expiresAt", { mode: "timestamp" }).notNull(),
-    createdAt: integer("createdAt", { mode: "timestamp" }),
-    updatedAt: integer("updatedAt", { mode: "timestamp" }),
+    createdAt: integer("createdAt", { mode: "timestamp" }).$defaultFn(
+      () => /* @__PURE__ */ new Date(),
+    ),
+    updatedAt: integer("updatedAt", { mode: "timestamp" }).$defaultFn(
+      () => /* @__PURE__ */ new Date(),
+    ),
   },
   (verification) => ({
     identifierIndex: index("verification__identifier__idx").on(verification.identifier),
