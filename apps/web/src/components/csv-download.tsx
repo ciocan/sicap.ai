@@ -1,8 +1,8 @@
 "use client";
 import { Button, Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@sicap/ui";
 import { Download } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 import { stringify } from "csv-stringify/sync";
 
 import type { getCompanyLicitatii } from "@sicap/api";
@@ -17,9 +17,9 @@ interface Props {
 }
 
 export function CSVDownload({ items }: Props) {
-  const session = useSession();
+  const { data: session } = authClient.useSession();
   const router = useRouter();
-  const isAuthenticated = session.status === "authenticated";
+  const isAuthenticated = !!session?.user;
 
   const handleDownload = () => {
     captureCSVDownloadButtonClick({ isAuthenticated });

@@ -1,8 +1,7 @@
 "use client";
-import { signIn, signOut } from "next-auth/react";
-
 import { Button } from "@sicap/ui";
 import { captureGoogleSignInButtonClick } from "@/lib/telemetry";
+import { authClient } from "@/lib/auth-client";
 
 const GoogleIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -30,7 +29,7 @@ export function SignOut() {
   return (
     <Button
       className="text-xs text-neutral-700 dark:text-neutral-300 mt-2 mb-6"
-      onClick={() => signOut()}
+      onClick={() => authClient.signOut()}
     >
       Deconectare
     </Button>
@@ -40,7 +39,10 @@ export function SignOut() {
 export function SignIn() {
   const handleSignIn = () => {
     captureGoogleSignInButtonClick();
-    signIn("google");
+    authClient.signIn.social({
+      provider: "google",
+      callbackURL: "/",
+    });
   };
 
   return (

@@ -1,16 +1,14 @@
 import { useEffect } from "react";
-import { useSession } from "next-auth/react";
-
 import { identifyUser } from "@/lib/telemetry";
+import { authClient } from "@/lib/auth-client";
 
 export function useIdentify() {
-  const session = useSession();
-  const { status, data } = session;
+  const { data: session, isPending } = authClient.useSession();
 
-  const isAuthenticated = status === "authenticated";
-  const isLoading = status === "loading";
-  const user = data?.user;
-  const { id: userId } = user ?? {};
+  const isAuthenticated = !!session?.user;
+  const isLoading = isPending;
+  const user = session?.user;
+  const userId = user?.id;
 
   useEffect(() => {
     if (isAuthenticated && userId) {
@@ -18,5 +16,5 @@ export function useIdentify() {
     }
   }, [isAuthenticated, userId, user]);
 
-  return { isAuthenticated, isLoading, user, userId, status };
+  return { isAuthenticated, isLoading, user, userId, status: isAuthenticated ? "authenticated" : "unauthenticated" };
 }

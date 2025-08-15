@@ -1,5 +1,11 @@
 import posthogJs from "posthog-js";
-import type { User } from "@auth/core/types";
+// Using a generic user type since BetterAuth user types are compatible
+interface User {
+  id: string;
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+}
 
 import { env } from "./env";
 

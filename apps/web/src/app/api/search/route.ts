@@ -5,7 +5,9 @@ import { dbIds } from "@/utils";
 import { saveSearch } from "@sicap/api";
 
 export const POST = withAxiom(async (request: AxiomRequest) => {
-  const session = await auth();
+  const session = await auth.api.getSession({
+    headers: request.headers,
+  });
   const userId = session?.user?.id;
   const data = await request.json();
   const db = data?.db?.split(",") || dbIds;

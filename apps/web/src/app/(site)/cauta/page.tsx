@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 
 import { SearchList, type SearchParams } from "@/components";
 import { checkSearchTerms } from "@/utils";
@@ -21,7 +22,10 @@ export async function generateMetadata({ searchParams }: PageProps) {
 }
 
 export default async function Page({ searchParams }: PageProps) {
-	const session = await auth();
+	const headersList = await headers();
+	const session = await auth.api.getSession({
+		headers: headersList,
+	});
 
 	if (!session?.user && !checkSearchTerms(await searchParams)) {
 		redirect("/autentificare");

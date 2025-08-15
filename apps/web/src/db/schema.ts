@@ -1,12 +1,4 @@
-import {
-  integer,
-  sqliteTable,
-  text,
-  primaryKey,
-  uniqueIndex,
-  index,
-} from "drizzle-orm/sqlite-core";
-import type { AdapterAccount } from "@auth/core/adapters";
+import { integer, sqliteTable, text, uniqueIndex, index } from "drizzle-orm/sqlite-core";
 import { drizzle } from "drizzle-orm/libsql";
 
 import { env } from "@/lib/env";
@@ -18,7 +10,7 @@ export const db = drizzle({
   },
 });
 
-export const users = sqliteTable(
+export const user = sqliteTable(
   "user",
   {
     id: text("id").notNull().primaryKey(),
@@ -34,84 +26,65 @@ export const users = sqliteTable(
   }),
 );
 
-export const accounts = sqliteTable(
+export const account = sqliteTable(
   "account",
   {
+    id: text("id").primaryKey(),
+    accountId: text("accountId").notNull(),
+    providerId: text("providerId").notNull(),
     userId: text("userId")
       .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
-    type: text("type").$type<AdapterAccount["type"]>().notNull(),
-    provider: text("provider").notNull(),
-    providerAccountId: text("providerAccountId").notNull(),
-    refresh_token: text("refresh_token"),
-    access_token: text("access_token"),
-    expires_at: integer("expires_at"),
-    token_type: text("token_type"),
+      .references(() => user.id, { onDelete: "cascade" }),
+    accessToken: text("accessToken"),
+    refreshToken: text("refreshToken"),
+    idToken: text("idToken"),
+    accessTokenExpiresAt: integer("accessTokenExpiresAt", { mode: "timestamp" }),
+    refreshTokenExpiresAt: integer("refreshTokenExpiresAt", { mode: "timestamp" }),
     scope: text("scope"),
-    id_token: text("id_token"),
-    session_state: text("session_state"),
+    password: text("password"),
+    createdAt: integer("createdAt", { mode: "timestamp" }).notNull(),
+    updatedAt: integer("updatedAt", { mode: "timestamp" }).notNull(),
   },
   (account) => ({
-    compoundKey: primaryKey({
-      columns: [account.provider, account.providerAccountId],
-    }),
-    providerProviderAccountIdIndex: uniqueIndex("accounts__provider__providerAccountId__idx").on(
-      account.provider,
-      account.providerAccountId,
+    providerAccountIdIndex: uniqueIndex("account__providerId__accountId__idx").on(
+      account.providerId,
+      account.accountId,
     ),
-    userIdIndex: index("accounts__userId__idx").on(account.userId),
+    userIdIndex: index("account__userId__idx").on(account.userId),
   }),
 );
 
-export const sessions = sqliteTable(
+export const session = sqliteTable(
   "session",
   {
-    sessionToken: text("sessionToken").notNull().primaryKey(),
+    id: text("id").primaryKey(),
+    expiresAt: integer("expiresAt", { mode: "timestamp" }).notNull(),
+    token: text("token").notNull().unique(),
+    createdAt: integer("createdAt", { mode: "timestamp" }).notNull(),
+    updatedAt: integer("updatedAt", { mode: "timestamp" }).notNull(),
+    ipAddress: text("ipAddress"),
+    userAgent: text("userAgent"),
     userId: text("userId")
       .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
-    expires: integer("expires", { mode: "timestamp_ms" }).notNull(),
+      .references(() => user.id, { onDelete: "cascade" }),
   },
   (session) => ({
-    sessionTokenIndex: uniqueIndex("sessions__sessionToken__idx").on(session.sessionToken),
-    userIdIndex: index("sessions__userId__idx").on(session.userId),
+    tokenIndex: uniqueIndex("session__token__idx").on(session.token),
+    userIdIndex: index("session__userId__idx").on(session.userId),
   }),
 );
 
-export const verificationTokens = sqliteTable(
-  "verificationToken",
+export const verification = sqliteTable(
+  "verification",
   {
+    id: text("id").primaryKey(),
     identifier: text("identifier").notNull(),
-    token: text("token").notNull(),
-    expires: integer("expires", { mode: "timestamp_ms" }).notNull(),
+    value: text("value").notNull(),
+    expiresAt: integer("expiresAt", { mode: "timestamp" }).notNull(),
+    createdAt: integer("createdAt", { mode: "timestamp" }),
+    updatedAt: integer("updatedAt", { mode: "timestamp" }),
   },
-  (vt) => ({
-    compositePk: primaryKey({
-      columns: [vt.identifier, vt.token],
-    }),
-    tokenIndex: uniqueIndex("verification_tokens__token__idx").on(vt.token),
-  }),
-);
-
-export const authenticators = sqliteTable(
-  "authenticator",
-  {
-    credentialID: text("credentialID").notNull().unique(),
-    userId: text("userId")
-      .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
-    providerAccountId: text("providerAccountId").notNull(),
-    credentialPublicKey: text("credentialPublicKey").notNull(),
-    counter: integer("counter").notNull(),
-    credentialDeviceType: text("credentialDeviceType").notNull(),
-    credentialBackedUp: integer("credentialBackedUp", {
-      mode: "boolean",
-    }).notNull(),
-    transports: text("transports"),
-  },
-  (authenticator) => ({
-    compositePK: primaryKey({
-      columns: [authenticator.userId, authenticator.credentialID],
-    }),
+  (verification) => ({
+    identifierIndex: index("verification__identifier__idx").on(verification.identifier),
   }),
 );

@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import type { Viewport } from "next";
-import { SessionProvider } from "next-auth/react";
 import { GeistSans, GeistMono } from "geist/font";
 import { AxiomWebVitals } from "next-axiom";
 import OpenStatusProvider from "@/components/openstatus-provider";
@@ -98,18 +97,16 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <BotIdClient protect={protectedRoutes} />
       </head>
       <body className="min-h-screen bg-background font-sans antialiased">
-        <SessionProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <Suspense fallback={null}>
-              <NuqsAdapter>{children}</NuqsAdapter>
-            </Suspense>
-          </ThemeProvider>
-        </SessionProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Suspense fallback={null}>
+            <NuqsAdapter>{children}</NuqsAdapter>
+          </Suspense>
+        </ThemeProvider>
         <OpenStatusProvider dsn={env.NEXT_PUBLIC_OPENSTATUS_RUM_DSN} />
       </body>
       <AxiomWebVitals />
