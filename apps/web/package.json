@@ -5,7 +5,6 @@
   "scripts": {
     "dev": "next dev --port=3042",
     "build": "next build",
-    "postbuild": "next-sitemap",
     "sitemap": "next-sitemap",
     "start": "PORT=3042 node .next/standalone/apps/web/server.js",
     "lint": "biome lint ./src",

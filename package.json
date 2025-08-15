@@ -16,7 +16,7 @@
     "start": "dotenv -- turbo start",
     "lint": "turbo lint",
     "typecheck": "pnpm turbo typecheck",
-    "clean": "pnpx rimraf pnpm-lock.yaml --glob **/node_modules **/dist **/.next **/.cache **/.turbo",
+    "clean": "pnpx rimraf pnpm-lock.yaml --glob **/node_modules **/dist **/.next **/.cache **/.turbo **/.mastra",
     "fmt": "turbo fmt",
     "ui:add": "pnpm --filter ui ui:add",
     "db:generate": "pnpm with-env turbo run --filter=@sicap/web db:generate",
