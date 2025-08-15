@@ -1,7 +1,7 @@
 import { integer, sqliteTable, text, uniqueIndex, index } from "drizzle-orm/sqlite-core";
 import { drizzle } from "drizzle-orm/libsql";
 
-import { env } from "@/lib/env";
+import { env } from "../lib/env";
 
 export const db = drizzle({
   connection: {

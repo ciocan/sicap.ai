@@ -1,10 +1,11 @@
-import { SignIn } from "@/components/auth";
-import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { Check } from "lucide-react";
 
+import { auth } from "@sicap/data/auth";
 import { Badge } from "@sicap/ui";
+
+import { SignIn } from "@/components/auth";
 
 const items = [
   {

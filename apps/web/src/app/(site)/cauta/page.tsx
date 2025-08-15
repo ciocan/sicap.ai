@@ -2,9 +2,10 @@ import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 
+import { auth } from "@sicap/data/auth";
+
 import { SearchList, type SearchParams } from "@/components";
 import { checkSearchTerms } from "@/utils";
-import { auth } from "@/lib/auth";
 
 export type PageProps = {
   searchParams: Promise<SearchParams>;

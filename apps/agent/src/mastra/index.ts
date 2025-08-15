@@ -61,7 +61,7 @@ export const mastra = new Mastra({
             return c.json({ error: "userId is required" }, 400);
           }
 
-          const { threadId } = await c.req.json<{ threadId?: string }>();
+          const { threadId } = await c.req.json();
 
           if (!threadId) {
             return c.json({ error: "threadId is required" }, 400);
@@ -69,7 +69,7 @@ export const mastra = new Mastra({
 
           const thread = await agent.fetchMemory({ threadId, resourceId: userId });
 
-          const runtimeContext = new RuntimeContext<{ resourceId: string }>();
+          const runtimeContext = new RuntimeContext();
           runtimeContext.set("resourceId", userId);
 
           if (thread.messages.filter((m) => m.role === "user").length > 1) {
@@ -111,21 +111,29 @@ export const mastra = new Mastra({
     ],
     middleware: [
       {
+        path: "/*",
+        handler: async (c, next) => {
+          console.log("====================== AUTH MIDDLEWARE ==============================");
+          // const a = await auth.api.getSession({
+          //   headers: c.req.raw.headers,
+          // });
+          console.log("====================== --------------- ==============================");
+          await next();
+        },
+      },
+      {
         handler: async (c, next) => {
           const userId = c.req.header("x-user-id");
           const sessionId = c.req.header("x-session-id");
-
           const runtimeContext = c.get("runtimeContext");
           runtimeContext.set("userId", userId);
           runtimeContext.set("sessionId", sessionId);
-
           const ignoreEndpoints = [
             "/api/telemetry",
             "/api/agents/sicapAgent/voice",
             "/api/agents/sicapAgent/evals",
             "/api/scores",
           ].some((endpoint) => c.req.path.includes(endpoint));
-
           if (!ignoreEndpoints) {
             console.log("----------------------------------------------------------------");
             if (c.req.path.includes("/api/agents/sicapAgent/stream")) {
@@ -141,7 +149,6 @@ export const mastra = new Mastra({
               // headers: c.req.raw.headers,
             });
           }
-
           await next();
         },
         path: "/*",

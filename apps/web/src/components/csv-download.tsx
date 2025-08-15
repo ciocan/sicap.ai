@@ -2,10 +2,11 @@
 import { Button, Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@sicap/ui";
 import { Download } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { authClient } from "@/lib/auth-client";
 import { stringify } from "csv-stringify/sync";
 
 import type { getCompanyLicitatii } from "@sicap/api";
+import { authClient } from "@sicap/data/auth-client";
+
 import type { Awaited } from "@/utils/types";
 import { captureCSVDownloadButtonClick } from "@/lib/telemetry";
 import { escapeCsvString } from "@/utils";

@@ -1,6 +1,8 @@
 import { useEffect } from "react";
+
+import { authClient } from "@sicap/data/auth-client";
+
 import { identifyUser } from "@/lib/telemetry";
-import { authClient } from "@/lib/auth-client";
 
 export function useIdentify() {
   const { data: session, isPending } = authClient.useSession();
@@ -16,5 +18,11 @@ export function useIdentify() {
     }
   }, [isAuthenticated, userId, user]);
 
-  return { isAuthenticated, isLoading, user, userId, status: isAuthenticated ? "authenticated" : "unauthenticated" };
+  return {
+    isAuthenticated,
+    isLoading,
+    user,
+    userId,
+    status: isAuthenticated ? "authenticated" : "unauthenticated",
+  };
 }

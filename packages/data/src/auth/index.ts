@@ -3,9 +3,9 @@ import { nextCookies } from "better-auth/next-js";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { Logger } from "next-axiom";
 
-import { db, userTable, accountTable, sessionTable, verificationTable } from "@/db/schema";
-import { addSubscriber, addSubscriberToLists, messageSubscriber } from "./listmonk";
-import { env } from "./env";
+import { db, userTable, accountTable, sessionTable, verificationTable } from "../db/schema";
+import { addSubscriber, addSubscriberToLists, messageSubscriber } from "../lib/listmonk";
+import { env } from "../lib/env";
 
 const log = new Logger();
 

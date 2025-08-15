@@ -1,4 +1,4 @@
-import { callAPI } from "@/utils/api";
+import { callAPI } from "./api";
 import { env } from "./env";
 
 const emailTemplates = {

@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 
+import { auth } from "@sicap/data/auth";
 import { Agent } from "@/components/agent";
-import { auth } from "@/lib/auth";
 
 export default async function Page() {
   const headersList = await headers();

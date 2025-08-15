@@ -1,7 +1,8 @@
 "use client";
 import { Button } from "@sicap/ui";
+import { authClient } from "@sicap/data/auth-client";
+
 import { captureGoogleSignInButtonClick } from "@/lib/telemetry";
-import { authClient } from "@/lib/auth-client";
 
 const GoogleIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
