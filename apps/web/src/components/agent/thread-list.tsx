@@ -6,7 +6,18 @@ import {
 } from "@assistant-ui/react";
 import { ArchiveIcon, PlusIcon } from "lucide-react";
 
-import { TooltipIconButton } from "@sicap/ui";
+import {
+  TooltipIconButton,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@sicap/ui";
 import { formatDateTime } from "@sicap/api/dist/utils/date.mjs";
 
 import { useIsActiveThread } from "./hooks/thread-context";
@@ -44,10 +55,14 @@ const ThreadListItem: FC = () => {
   const isActive = useIsActiveThread();
   const listItem = useThreadListItem();
   const [title, createdAt] = listItem?.title?.split("||") ?? [];
-  const displayTitle = isActive ? title : `${title?.substring(0, 35) ?? "Se incarca lista"}...`;
+  const displayTitle = isActive
+    ? title
+    : title && title.length > 35
+      ? `${title.substring(0, 35)}...`
+      : (title ?? "Lista se incarca...");
 
   return (
-    <ThreadListItemPrimitive.Root className="group/item data-active:bg-muted hover:bg-muted focus-visible:bg-muted focus-visible:ring-ring flex items-center gap-2 rounded-lg transition-all focus-visible:outline-none focus-visible:ring-2">
+    <ThreadListItemPrimitive.Root className="group/item data-active:bg-primary-foreground data-active:dark:bg-muted hover:bg-muted focus-visible:bg-muted focus-visible:ring-ring flex items-center gap-2 rounded-lg transition-all focus-visible:outline-none focus-visible:ring-2">
       <ThreadListItemPrimitive.Trigger className="flex-grow px-3 py-1 text-start cursor-pointer">
         <p className="text-sm">{displayTitle}</p>
         {createdAt && (
@@ -65,19 +80,43 @@ const ThreadListItemArchive: FC = () => {
   const isActive = useIsActiveThread();
 
   return (
-    <ThreadListItemPrimitive.Archive asChild>
-      <TooltipIconButton
-        className="hover:text-foreground/60 p-4 text-foreground ml-auto mr-1 size-4 opacity-0 translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all duration-200 cursor-pointer"
-        variant="ghost"
-        tooltip="Arhivează conversatia"
-        onClick={() => {
-          if (isActive) {
-            window.history.replaceState(null, "", "/agent");
-          }
-        }}
-      >
-        <ArchiveIcon />
-      </TooltipIconButton>
-    </ThreadListItemPrimitive.Archive>
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <TooltipIconButton
+          className="hover:text-foreground/60 p-4 text-foreground ml-auto mr-1 size-4 opacity-0 translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all duration-200 cursor-pointer"
+          variant="ghost"
+          tooltip="Arhivează conversatia"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <ArchiveIcon />
+          <span className="sr-only">Arhivează conversatia</span>
+        </TooltipIconButton>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Arhivează conversatia</AlertDialogTitle>
+          <AlertDialogDescription>
+            Vrei să arhivezi această conversație? Această acțiune nu poate fi revocata.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Anulează</AlertDialogCancel>
+          <AlertDialogAction asChild>
+            <ThreadListItemPrimitive.Archive asChild>
+              <AlertDialogAction
+                className="bg-destructive hover:bg-destructive/80 text-destructive-foreground"
+                onClick={() => {
+                  if (isActive) {
+                    window.history.replaceState(null, "", "/agent");
+                  }
+                }}
+              >
+                Arhivează
+              </AlertDialogAction>
+            </ThreadListItemPrimitive.Archive>
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };

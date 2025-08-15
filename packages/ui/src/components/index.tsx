@@ -24,3 +24,4 @@ export * from "./ui/tooltip-icon-button.tsx";
 export * from "./ui/resizable.tsx";
 export * from "./ui/tabs.tsx";
 export * from "./ui/loader.tsx";
+export * from "./ui/alert-dialog.tsx";
