@@ -1,8 +1,6 @@
 {
-  "version": "5",
+  "version": "6",
   "dialect": "sqlite",
-  "id": "88445c43-e550-46cc-bf6d-37158274635c",
-  "prevId": "402ebdbd-e5cf-442b-b4bc-86273cca35d6",
   "tables": {
     "account": {
       "name": "account",
@@ -88,12 +86,17 @@
       "indexes": {
         "accounts__provider__providerAccountId__idx": {
           "name": "accounts__provider__providerAccountId__idx",
-          "columns": ["provider", "providerAccountId"],
+          "columns": [
+            "provider",
+            "providerAccountId"
+          ],
           "isUnique": true
         },
         "accounts__userId__idx": {
           "name": "accounts__userId__idx",
-          "columns": ["userId"],
+          "columns": [
+            "userId"
+          ],
           "isUnique": false
         }
       },
@@ -101,19 +104,27 @@
         "account_userId_user_id_fk": {
           "name": "account_userId_user_id_fk",
           "tableFrom": "account",
+          "columnsFrom": [
+            "userId"
+          ],
           "tableTo": "user",
-          "columnsFrom": ["userId"],
-          "columnsTo": ["id"],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {
         "account_provider_providerAccountId_pk": {
-          "columns": ["provider", "providerAccountId"]
+          "columns": [
+            "provider",
+            "providerAccountId"
+          ]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "checkConstraints": {}
     },
     "session": {
       "name": "session",
@@ -143,12 +154,16 @@
       "indexes": {
         "sessions__sessionToken__idx": {
           "name": "sessions__sessionToken__idx",
-          "columns": ["sessionToken"],
+          "columns": [
+            "sessionToken"
+          ],
           "isUnique": true
         },
         "sessions__userId__idx": {
           "name": "sessions__userId__idx",
-          "columns": ["userId"],
+          "columns": [
+            "userId"
+          ],
           "isUnique": false
         }
       },
@@ -156,15 +171,20 @@
         "session_userId_user_id_fk": {
           "name": "session_userId_user_id_fk",
           "tableFrom": "session",
+          "columnsFrom": [
+            "userId"
+          ],
           "tableTo": "user",
-          "columnsFrom": ["userId"],
-          "columnsTo": ["id"],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "checkConstraints": {}
     },
     "user": {
       "name": "user",
@@ -222,13 +242,16 @@
       "indexes": {
         "users__email__idx": {
           "name": "users__email__idx",
-          "columns": ["email"],
+          "columns": [
+            "email"
+          ],
           "isUnique": true
         }
       },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "checkConstraints": {}
     },
     "verificationToken": {
       "name": "verificationToken",
@@ -258,23 +281,31 @@
       "indexes": {
         "verification_tokens__token__idx": {
           "name": "verification_tokens__token__idx",
-          "columns": ["token"],
+          "columns": [
+            "token"
+          ],
           "isUnique": true
         }
       },
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "verificationToken_identifier_token_pk": {
-          "columns": ["identifier", "token"]
+          "columns": [
+            "identifier",
+            "token"
+          ]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {},
+      "checkConstraints": {}
     }
   },
   "enums": {},
   "_meta": {
-    "schemas": {},
     "tables": {},
     "columns": {}
-  }
+  },
+  "id": "88445c43-e550-46cc-bf6d-37158274635c",
+  "prevId": "402ebdbd-e5cf-442b-b4bc-86273cca35d6",
+  "views": {}
 }

@@ -27,7 +27,8 @@
     "AGENT_DB_AUTH_TOKEN",
     "LANGFUSE_PUBLIC_KEY",
     "LANGFUSE_SECRET_KEY",
-    "LANGFUSE_BASEURL"
+    "LANGFUSE_BASEURL",
+    "NEXT_PUBLIC_BASE_URL"
   ],
   "tasks": {
     "build": {
@@ -83,6 +84,12 @@
       "cache": false
     },
     "db:migrate": {
+      "cache": false
+    },
+    "db:push": {
+      "cache": false
+    },
+    "db:check": {
       "cache": false
     },
     "sitemap": {

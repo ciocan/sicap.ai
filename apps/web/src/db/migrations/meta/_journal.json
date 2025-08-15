@@ -15,6 +15,13 @@
       "when": 1700209426257,
       "tag": "0001_new_sabretooth",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1755268589070,
+      "tag": "0002_adorable_oracle",
+      "breakpoints": true
     }
   ]
 }

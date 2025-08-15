@@ -11,6 +11,7 @@ import { env } from "./env";
 const log = new Logger();
 
 export const auth = betterAuth({
+  debug: process.env.NODE_ENV === "development",
   database: drizzleAdapter(db, {
     provider: "sqlite",
     schema: {
