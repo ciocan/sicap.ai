@@ -15,11 +15,11 @@ import {
 } from "@/components/agent/utils/runtime";
 import { useMastraClient } from "./use-mastra-client";
 import { useThreadContext, useThreadList } from "./thread-context";
-import { env } from "@/lib/env";
 import { getSessionId } from "@/utils/session";
+import { env } from "@/lib/env";
 
 export function useAgentRuntime() {
-  const { agentId, resourceId, threadId, ensureThreadId } = useThreadContext();
+  const { agentId, resourceId, threadId, ensureThreadId, fetchThreads } = useThreadContext();
   const threadList = useThreadList();
   const isCreatingNewThreadRef = useRef(false);
   const redirectedThreadsRef = useRef(new Set<string>());
@@ -105,7 +105,6 @@ export function useAgentRuntime() {
           setInvalidThreadId(threadId);
           return;
         }
-
         // For other errors, silently continue (could be temporary network issues)
       }
     };
@@ -132,9 +131,6 @@ export function useAgentRuntime() {
     messages: chat.messages,
   });
 
-  // console.log("messages", messages);
-
-  // RUNTIME
   const runtime = useExternalStoreRuntime({
     isRunning: chat.status === "submitted" || chat.status === "streaming",
     messages,
@@ -163,6 +159,18 @@ export function useAgentRuntime() {
           agentId,
           messages: [mastraMessage] as unknown as MastraMessageV2[], // TODO: fix this, its temporary until we have a v3 api (ai-v5 sdk)
         });
+
+        if (messages.length === 0) {
+          mastraClient
+            .request("/gen-title", {
+              method: "POST",
+              body: { threadId: ensuredThreadId },
+            })
+            .then(fetchThreads)
+            .catch((error) => {
+              console.error("---useEffect:lastSavedAssistant--- Error generating title", error);
+            });
+        }
       } catch (error) {
         console.error("---onNew--- Error persisting user message", error);
       }
@@ -214,11 +222,11 @@ export function useAgentRuntime() {
   const lastSavedAssistantIdRef = useRef<string | null>(null);
   useEffect(() => {
     const isRunning = chat.status === "submitted" || chat.status === "streaming";
+
     if (isRunning) {
       return;
     }
 
-    // Reset the flag after the first message completes on a new thread
     if (isCreatingNewThreadRef.current) {
       isCreatingNewThreadRef.current = false;
     }
@@ -246,6 +254,7 @@ export function useAgentRuntime() {
           agentId,
           messages: [assistantMastraMessage] as unknown as MastraMessageV2[], // TODO: fix this, its temporary until we have a v3 api (ai-v5 sdk)
         });
+
         lastSavedAssistantIdRef.current = lastAssistant.id;
       } catch (error) {
         console.error(

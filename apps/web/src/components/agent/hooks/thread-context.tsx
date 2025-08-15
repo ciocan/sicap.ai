@@ -123,7 +123,7 @@ export function ThreadProvider({
   }, [setThreadId]);
 
   const ensureThreadId = useCallback(async (): Promise<string> => {
-    const title = "Conversatie noua";
+    const title = "Conversatie noua...";
     const metadata = { hasDefaultTitle: true }; // TODO: temporary until genTitle is fixed
 
     if (threadId) {
