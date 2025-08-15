@@ -1,6 +1,10 @@
 "use client";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import type { ExternalStoreThreadData, ExternalStoreThreadListAdapter } from "@assistant-ui/react";
+import {
+  type ExternalStoreThreadData,
+  type ExternalStoreThreadListAdapter,
+  useThreadListItem,
+} from "@assistant-ui/react";
 import { useQueryState, parseAsString } from "nuqs";
 
 import { useMastraClient } from "./use-mastra-client";
@@ -222,4 +226,10 @@ export const useThreadList = (): ExternalStoreThreadListAdapter => {
     onSwitchToNewThread,
     onSwitchToThread,
   };
+};
+
+export const useIsActiveThread = () => {
+  const { threadId: activeThreadId } = useThreadContext();
+  const listItemId = useThreadListItem((item) => item.id);
+  return listItemId === activeThreadId;
 };
