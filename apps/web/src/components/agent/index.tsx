@@ -14,13 +14,13 @@ function AgentContent() {
       <SidebarProvider
         style={
           {
-            "--sidebar-width": "20rem",
+            "--sidebar-width": "24rem",
             "--sidebar-width-mobile": "20rem",
           } as React.CSSProperties
         }
       >
         <div className="flex h-dvh w-full pr-0.5">
-          <AppSidebar className="bg-secondary/60 dark:border-secondary-foreground/20" />
+          <AppSidebar className="bg-secondary/60 dark:border-secondary-foreground/20 px-2" />
           <SidebarInset>
             <Main />
           </SidebarInset>

@@ -21,7 +21,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { state } = useSidebar();
   return (
     <Sidebar {...props}>
-      <SidebarHeader className="mb-2 border-b dark:border-secondary-foreground/20">
+      <SidebarHeader className="my-2 dark:border-secondary-foreground/20">
         <div className="flex items-center justify-between">
           <SidebarTrigger
             className={`mr-2 transition-all duration-150 cursor-pointer text-primary ${

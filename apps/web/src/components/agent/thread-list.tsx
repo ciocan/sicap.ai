@@ -36,10 +36,7 @@ export const ThreadList: FC = () => {
 const ThreadListNew: FC = () => {
   return (
     <ThreadListPrimitive.New asChild>
-      <Button
-        className="data-active:bg-muted hover:bg-muted flex items-center justify-start gap-1 rounded-lg px-2.5 py-2 text-start cursor-pointer"
-        variant="ghost"
-      >
+      <Button className="flex items-center justify-center gap-2 bg-primary/80 mb-6">
         <PlusIcon />
         Conversatie nouă
       </Button>
@@ -55,10 +52,13 @@ const ThreadListItem: FC = () => {
   const isActive = useIsActiveThread();
   const listItem = useThreadListItem();
   const [title, createdAt] = listItem?.title?.split("||") ?? [];
+
+  const cutOff = 42;
+
   const displayTitle = isActive
     ? title
-    : title && title.length > 35
-      ? `${title.substring(0, 35)}...`
+    : title && title.length > cutOff
+      ? `${title.substring(0, cutOff)}...`
       : (title ?? "Lista se incarca...");
 
   return (
