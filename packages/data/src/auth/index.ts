@@ -1,10 +1,17 @@
 import { betterAuth } from "better-auth";
-import { jwt } from "better-auth/plugins";
+import { jwt, bearer, openAPI } from "better-auth/plugins";
 import { nextCookies } from "better-auth/next-js";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { Logger } from "next-axiom";
 
-import { db, userTable, accountTable, sessionTable, verificationTable } from "../db/schema";
+import {
+  db,
+  userTable,
+  accountTable,
+  sessionTable,
+  verificationTable,
+  jwksTable,
+} from "../db/schema";
 import { addSubscriber, addSubscriberToLists, messageSubscriber } from "../lib/listmonk";
 import { env } from "../lib/env";
 
@@ -19,6 +26,7 @@ export const auth = betterAuth({
       session: sessionTable,
       account: accountTable,
       verification: verificationTable,
+      jwks: jwksTable,
     },
   }),
   account: {
@@ -84,23 +92,21 @@ export const auth = betterAuth({
         },
       },
     },
-    telemetry: {
-      debug: process.env.NODE_ENV !== "production",
-      enabled: false,
-    },
-    plugins: [
-      jwt({
-        jwt: {
-          definePayload: ({ user }) => {
-            return {
-              userId: user.id,
-            };
-          },
-        },
-      }),
-      nextCookies(),
-    ], // make sure nextCookies is the last plugin in the array
   },
+  telemetry: {
+    debug: process.env.NODE_ENV !== "production",
+    enabled: false,
+  },
+  plugins: [
+    openAPI(),
+    bearer(),
+    jwt({
+      jwt: {
+        definePayload: ({ user }) => ({ id: user.id }),
+      },
+    }),
+    nextCookies(),
+  ], // make sure nextCookies is the last plugin in the array
   trustedOrigins: [env.NEXTAUTH_URL, env.AGENT_API_URL],
   advanced: {
     useSecureCookies: true,
@@ -108,6 +114,11 @@ export const auth = betterAuth({
       enabled: process.env.NODE_ENV === "production",
       domain: ".sicap.ai",
     },
+  },
+  rateLimit: {
+    enabled: true,
+    window: 60,
+    max: 20,
   },
   onAPIError: {
     onError: (error) => {

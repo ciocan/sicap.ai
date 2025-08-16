@@ -6,7 +6,7 @@ import type { NextConfig } from "next";
 import path from "node:path";
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["@sicap/ui"],
+  transpilePackages: ["@sicap/ui", "@sicap/data"],
   serverExternalPackages: ["@mastra/*"],
   webpack(config) {
     config.resolve.alias = {

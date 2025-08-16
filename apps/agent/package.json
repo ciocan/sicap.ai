@@ -36,6 +36,7 @@
     "@sicap/api": "workspace:*",
     "@sicap/data": "workspace:*",
     "ai": "^5.0.14",
+    "jose": "^6.0.12",
     "langfuse-vercel": "^3.38.4",
     "zod": "^3.25.76"
   },

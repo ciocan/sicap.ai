@@ -5,6 +5,7 @@ import { Agent } from "@/components/agent";
 
 export default async function Page() {
   const headersList = await headers();
+
   const session = await auth.api.getSession({
     headers: headersList,
   });

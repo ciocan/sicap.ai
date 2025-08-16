@@ -1,3 +1,4 @@
+"use client";
 import { useMemo } from "react";
 import { MastraClient } from "@mastra/client-js";
 
@@ -11,6 +12,15 @@ interface UseMastraClientArgs {
 export const useMastraClient = (args?: UseMastraClientArgs) => {
   return useMemo(() => {
     const headers: Record<string, string> = {};
+
+    // Check if we're in the browser before accessing sessionStorage
+    if (typeof window !== "undefined") {
+      const jwtToken = sessionStorage.getItem("jwt_token");
+
+      if (jwtToken) {
+        headers["Authorization"] = `Bearer ${jwtToken}`;
+      }
+    }
 
     if (args?.userId) {
       headers["x-user-id"] = args.userId;

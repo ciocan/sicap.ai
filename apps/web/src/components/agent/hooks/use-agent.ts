@@ -31,18 +31,23 @@ export function useAgentRuntime() {
   // Create MastraClient with headers
   const mastraClient = useMastraClient({ userId: resourceId, sessionId });
 
-  const transport = useMemo(
-    () =>
-      new DefaultChatTransport({
+  const transport = useMemo(() => {
+    if (typeof window !== "undefined") {
+      const jwtToken = sessionStorage.getItem("jwt_token");
+
+      return new DefaultChatTransport({
         api: `${env.NEXT_PUBLIC_AGENT_API_URL}/api/agents/${agentId}/stream`,
         headers: {
           "x-user-id": resourceId,
           "x-session-id": sessionId,
+          Authorization: jwtToken ? `Bearer ${jwtToken}` : "",
         },
         credentials: "include",
-      }),
-    [agentId, resourceId, sessionId],
-  );
+      });
+    }
+
+    return undefined;
+  }, [agentId, resourceId, sessionId]);
 
   const chat = useChat({ transport });
 

@@ -5,10 +5,9 @@ import { LangfuseExporter } from "langfuse-vercel";
 import { registerApiRoute } from "@mastra/core/server";
 import { openai } from "@ai-sdk/openai";
 
-import { auth } from "@sicap/data/auth";
-
 import { sicapAgent } from "./agents";
 import { storage, VECTOR_STORE_NAME, vector } from "./stores";
+import { validateToken } from "../lib/jwt";
 
 const logger = new PinoLogger({
   name: "sicapAgent",
@@ -54,12 +53,6 @@ export const mastra = new Mastra({
     apiRoutes: [
       registerApiRoute("/gen-title", {
         method: "POST",
-        middleware: [
-          async (c, next) => {
-            console.log(`!!!!!!! /gen-title ${c.req.method} ${c.req.url}`);
-            await next();
-          },
-        ],
         handler: async (c) => {
           const mastra = c.get("mastra");
           const agent = mastra.getAgent("sicapAgent");
@@ -81,7 +74,6 @@ export const mastra = new Mastra({
           runtimeContext.set("resourceId", userId);
 
           if (thread.messages.filter((m) => m.role === "user").length > 1) {
-            console.log("-------------------------------- not-generated");
             return c.json({ message: "not-generated" });
           }
 
@@ -121,62 +113,39 @@ export const mastra = new Mastra({
       {
         path: "/*",
         handler: async (c, next) => {
-          console.log("====================== AUTH MIDDLEWARE ==============================");
-          const headers = c.req.raw.headers;
-          console.log("headers", headers);
-          // try {
-          //   const session = await auth.api.getSession({ headers });
+          if (["__refresh", "/api/telemetry"].some((path) => c.req.path.includes(path))) {
+            return next();
+          }
 
-          //   console.log("session", session);
-
-          //   if (!session) {
-          //     console.log("No session found, rejecting request");
-          //     return c.json({ error: "Unauthorized" }, 401);
-          //   }
-
-          //   console.log("Session found for user:", session.user.id);
-          //   // Add user info to runtime context
-          //   const runtimeContext = c.get("runtimeContext");
-          //   runtimeContext.set("userId", session.user.id);
-          // } catch (error) {
-          //   console.error("Auth middleware error:", error);
-          //   return c.json({ error: "Authentication failed" }, 401);
-          // }
-          console.log("====================== --------------- ==============================");
-          await next();
-        },
-      },
-      {
-        handler: async (c, next) => {
           const userId = c.req.header("x-user-id");
           const sessionId = c.req.header("x-session-id");
+          const jwtToken = c.req.header("Authorization")?.split(" ")[1];
+
+          console.log(`======== ${c.req.path}=============================`);
+          console.log("userId", userId);
+          console.log("sessionId", sessionId);
+          console.log("----------------------------------------------------------");
+
+          if (!jwtToken || !userId) {
+            return c.json({ error: "Unauthorized" }, 401);
+          }
+
+          try {
+            const payload = await validateToken(jwtToken);
+            if (payload.id !== userId) {
+              return c.json({ error: "Unauthorized" }, 401);
+            }
+          } catch (error) {
+            console.error("Auth middleware error:", error);
+            return c.json({ error: "Authentication failed" }, 401);
+          }
+
           const runtimeContext = c.get("runtimeContext");
           runtimeContext.set("userId", userId);
           runtimeContext.set("sessionId", sessionId);
-          const ignoreEndpoints = [
-            "/api/telemetry",
-            "/api/agents/sicapAgent/voice",
-            "/api/agents/sicapAgent/evals",
-            "/api/scores",
-          ].some((endpoint) => c.req.path.includes(endpoint));
-          if (!ignoreEndpoints) {
-            console.log("----------------------------------------------------------------");
-            if (c.req.path.includes("/api/agents/sicapAgent/stream")) {
-              console.log("------------STREAM----------------------------------------------------");
-            }
-            console.log("Middleware request", {
-              method: c.req.method,
-              path: c.req.path,
-              query: c.req.query(),
-              userId,
-              sessionId,
-              // cookie: c.req.raw.headers.get("cookie"),
-              // headers: c.req.raw.headers,
-            });
-          }
+
           await next();
         },
-        path: "/*",
       },
     ],
   },
