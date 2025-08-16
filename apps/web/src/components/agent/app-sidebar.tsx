@@ -58,9 +58,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarFooter className="border-t dark:border-secondary-foreground/20">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg">
-              <NavUser />
-            </SidebarMenuButton>
+            <NavUser />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
