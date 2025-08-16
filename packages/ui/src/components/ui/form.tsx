@@ -5,15 +5,13 @@ import type * as LabelPrimitive from "@radix-ui/react-label";
 import { Slot } from "@radix-ui/react-slot";
 import * as ReactHookForm from "react-hook-form";
 import type { ControllerProps, FieldPath, FieldValues } from "react-hook-form";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
 const { FormProvider, Controller, useFormContext, useForm } = ReactHookForm;
 
 import { cn } from "@sicap/ui/lib/utils";
-import { Label } from "@sicap/ui";
-import { useToast } from "@sicap/ui";
+import { Label, toast } from "@sicap/ui";
 
 const Form: typeof ReactHookForm.FormProvider = FormProvider;
 
@@ -141,18 +139,15 @@ const FormMessage = React.forwardRef<HTMLParagraphElement, FormMessageProps>(
   ({ className, children, withToast, ...props }, ref) => {
     const { error, formMessageId } = useFormField();
     const body = error ? String(error?.message) : children;
-    const { toast } = useToast();
 
     React.useEffect(() => {
       if (!error) {
         return;
       }
-      toast({
-        title: "Eroare!",
+      toast.error("Eroare!", {
         description: error.message,
-        variant: "destructive",
       });
-    }, [error, toast]);
+    }, [error]);
 
     if (withToast) {
       return null;

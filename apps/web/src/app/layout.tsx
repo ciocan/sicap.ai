@@ -11,6 +11,7 @@ import "@sicap/ui/globals.css";
 import { siteConfig } from "@/config/site";
 import { ThemeProvider } from "@/components";
 import { env } from "@/lib/env";
+import { Toaster } from "@sicap/ui";
 
 export const viewport: Viewport = {
   themeColor: [
@@ -106,6 +107,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <Suspense fallback={null}>
             <NuqsAdapter>{children}</NuqsAdapter>
           </Suspense>
+          <Toaster className="pointer-events-auto" position="top-center" richColors closeButton />
         </ThemeProvider>
         <OpenStatusProvider dsn={env.NEXT_PUBLIC_OPENSTATUS_RUM_DSN} />
       </body>

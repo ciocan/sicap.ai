@@ -5,6 +5,8 @@ import type { MastraMessageV2 } from "@mastra/core/memory";
 import type { AppendMessage } from "@assistant-ui/react";
 import { useChat } from "@ai-sdk/react";
 
+import { toast } from "@sicap/ui";
+
 import { AISDKMessageConverter } from "@/components/agent/utils/convert-message";
 import { toCreateMessage } from "@/components/agent/utils/to-create-message";
 import { sliceMessagesUntil } from "@/components/agent/utils/slice-messages";
@@ -16,6 +18,7 @@ import {
 import { useMastraClient } from "./use-mastra-client";
 import { useThreadContext, useThreadList } from "./thread-context";
 import { getSessionId } from "@/utils/session";
+import { useIdentify } from "@/hooks";
 import { env } from "@/lib/env";
 
 export function useAgentRuntime() {
@@ -24,6 +27,7 @@ export function useAgentRuntime() {
   const isCreatingNewThreadRef = useRef(false);
   const redirectedThreadsRef = useRef(new Set<string>());
   const [invalidThreadId, setInvalidThreadId] = useState<string | null>(null);
+  const { isAuthenticated } = useIdentify();
 
   // Generate a stable sessionId for this browser session
   const sessionId = useMemo(() => getSessionId(threadId), [threadId]);
@@ -35,12 +39,16 @@ export function useAgentRuntime() {
     if (typeof window !== "undefined") {
       const jwtToken = sessionStorage.getItem("jwt_token");
 
+      if (!resourceId || !jwtToken) {
+        return undefined;
+      }
+
       return new DefaultChatTransport({
         api: `${env.NEXT_PUBLIC_AGENT_API_URL}/api/agents/${agentId}/stream`,
         headers: {
           "x-user-id": resourceId,
           "x-session-id": sessionId,
-          Authorization: jwtToken ? `Bearer ${jwtToken}` : "",
+          Authorization: `Bearer ${jwtToken}`,
         },
         credentials: "include",
       });
@@ -143,6 +151,13 @@ export function useAgentRuntime() {
     setMessages: (messages) => chat.setMessages(messages.flatMap(getVercelAIMessages)),
     onCancel: async () => chat.stop(),
     onNew: async (message: AppendMessage) => {
+      if (!isAuthenticated || !resourceId) {
+        toast.warning("Atenție!", {
+          description: "Trebuie să te autentifici pentru a folosi agentul.",
+        });
+        return;
+      }
+
       const wasNewThread = !threadId; // Check if we're creating a new thread
 
       // If this is a new thread, set the flag BEFORE creating the thread
@@ -189,6 +204,13 @@ export function useAgentRuntime() {
       });
     },
     onEdit: async (message: AppendMessage) => {
+      if (!isAuthenticated || !resourceId) {
+        toast.warning("Atenție!", {
+          description: "Trebuie să te autentifici pentru a folosi agentul.",
+        });
+        return;
+      }
+
       const newMessages = sliceMessagesUntil(chat.messages, message.parentId);
       chat.setMessages(newMessages);
       // Persist the edited user message to Mastra memory
@@ -246,6 +268,10 @@ export function useAgentRuntime() {
     }
 
     const persist = async () => {
+      if (!resourceId || !isAuthenticated) {
+        return;
+      }
+
       try {
         const ensuredThreadId = await ensureThreadId();
 
@@ -270,7 +296,15 @@ export function useAgentRuntime() {
       }
     };
     void persist();
-  }, [chat.messages, chat.status, ensureThreadId, mastraClient, agentId, resourceId]);
+  }, [
+    chat.messages,
+    chat.status,
+    ensureThreadId,
+    mastraClient,
+    agentId,
+    resourceId,
+    isAuthenticated,
+  ]);
 
   return { runtime };
 }

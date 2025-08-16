@@ -121,9 +121,10 @@ export const mastra = new Mastra({
           const sessionId = c.req.header("x-session-id");
           const jwtToken = c.req.header("Authorization")?.split(" ")[1];
 
-          console.log(`======== ${c.req.path}=============================`);
+          console.log(`========${c.req.method} ${c.req.path}=============================`);
           console.log("userId", userId);
           console.log("sessionId", sessionId);
+          console.log("jwtToken", !!jwtToken);
           console.log("----------------------------------------------------------");
 
           if (!jwtToken || !userId) {

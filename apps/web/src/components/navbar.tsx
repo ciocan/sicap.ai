@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu as MenuIcon, UserSquare2 } from "lucide-react";
 
-import { Button, DropdownMenu, DropdownMenuTrigger, Separator, Toaster } from "@sicap/ui";
+import { Button, DropdownMenu, DropdownMenuTrigger, Separator } from "@sicap/ui";
 import { Search } from "@/components/search";
 import { Menu } from "./menu";
 import { useIdentify } from "@/hooks";
@@ -38,7 +38,6 @@ export function Navbar() {
           </nav>
         </div>
       </header>
-      <Toaster />
       <Separator />
     </>
   );

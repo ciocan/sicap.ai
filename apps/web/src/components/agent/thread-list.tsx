@@ -23,12 +23,15 @@ import { formatDateTime } from "@sicap/api/dist/utils/date.mjs";
 import { useIsActiveThread } from "./hooks/thread-context";
 import { Button } from "@sicap/ui/components/ui/button";
 import { timeAgo } from "@/utils";
+import { useIdentify } from "@/hooks";
 
 export const ThreadList: FC = () => {
+  const { isAuthenticated } = useIdentify();
+
   return (
     <ThreadListPrimitive.Root className="text-foreground flex flex-col items-stretch gap-1.5">
       <ThreadListNew />
-      <ThreadListItems />
+      {isAuthenticated && <ThreadListItems />}
     </ThreadListPrimitive.Root>
   );
 };

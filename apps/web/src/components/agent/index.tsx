@@ -30,13 +30,9 @@ function AgentContent() {
   );
 }
 
-interface AgentProps {
-  userId?: string;
-}
-
-export const Agent = ({ userId }: AgentProps) => {
+export const Agent = () => {
   return (
-    <ThreadProvider resourceId={userId}>
+    <ThreadProvider agentId="sicapAgent">
       <AgentContent />
     </ThreadProvider>
   );

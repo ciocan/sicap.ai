@@ -10,10 +10,11 @@ import { useQueryState, parseAsString } from "nuqs";
 import { useMastraClient } from "./use-mastra-client";
 import { generateId } from "@/utils";
 import { getSessionId } from "@/utils/session";
+import { useIdentify } from "@/hooks";
 
 interface ThreadContextValue {
   agentId: string;
-  resourceId: string;
+  resourceId?: string;
 
   // selection
   threadId: string;
@@ -40,25 +41,15 @@ const ThreadContext = createContext<ThreadContextValue | null>(null);
 
 interface ThreadProviderProps {
   children: React.ReactNode;
-  agentId?: string;
-  resourceId?: string;
+  agentId: string;
 }
 
-const DEFAULT_AGENT_ID = "sicapAgent" as const;
-const DEFAULT_RESOURCE_ID = "anon-ae576d00-963f-4b0d-8abe-27b4ccab1229" as const; // TODO: replace with userId
-
-export function ThreadProvider({
-  children,
-  agentId: providedAgentId = DEFAULT_AGENT_ID,
-  resourceId: providedResourceId = DEFAULT_RESOURCE_ID,
-}: ThreadProviderProps) {
+export function ThreadProvider({ children, agentId }: ThreadProviderProps) {
   const [threadId, setThreadId] = useQueryState("t", parseAsString.withDefault(""));
   const [threads, setThreads] = useState<ExternalStoreThreadData<"regular">[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
-
-  const agentId = providedAgentId;
-  const resourceId = providedResourceId;
+  const { isAuthenticated, userId: resourceId } = useIdentify();
 
   // Get sessionId for tracking
   const sessionId = useMemo(() => getSessionId(threadId), [threadId]);
@@ -67,6 +58,10 @@ export function ThreadProvider({
   const mastraClient = useMastraClient({ userId: resourceId, sessionId });
 
   const fetchThreads = useCallback(async () => {
+    if (!isAuthenticated || !resourceId) {
+      return;
+    }
+
     setIsLoading(true);
     try {
       const updatedThreads = await mastraClient.getMemoryThreads({ agentId, resourceId });
@@ -84,7 +79,7 @@ export function ThreadProvider({
     } finally {
       setIsLoading(false);
     }
-  }, [mastraClient, agentId, resourceId]);
+  }, [mastraClient, agentId, resourceId, isAuthenticated]);
 
   useEffect(() => {
     void fetchThreads();
@@ -127,6 +122,10 @@ export function ThreadProvider({
   }, [setThreadId]);
 
   const ensureThreadId = useCallback(async (): Promise<string> => {
+    if (!isAuthenticated || !resourceId) {
+      return Promise.resolve("");
+    }
+
     const title = "Conversatie noua...";
     const metadata = { hasDefaultTitle: true }; // TODO: temporary until genTitle is fixed
 
@@ -159,7 +158,7 @@ export function ThreadProvider({
     setThreadId(newId);
     await fetchThreads();
     return newId;
-  }, [threadId, mastraClient, agentId, resourceId, fetchThreads, setThreadId]);
+  }, [threadId, mastraClient, agentId, resourceId, fetchThreads, setThreadId, isAuthenticated]);
 
   const value: ThreadContextValue = useMemo(
     () => ({
