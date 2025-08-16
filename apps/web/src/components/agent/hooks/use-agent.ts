@@ -39,6 +39,7 @@ export function useAgentRuntime() {
           "x-user-id": resourceId,
           "x-session-id": sessionId,
         },
+        credentials: "include",
       }),
     [agentId, resourceId, sessionId],
   );

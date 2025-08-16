@@ -84,7 +84,7 @@ export const auth = betterAuth({
       },
     },
     telemetry: {
-      debug: false,
+      debug: process.env.NODE_ENV !== "production",
       enabled: false,
     },
     plugins: [nextCookies()], // make sure this is the last plugin in the array

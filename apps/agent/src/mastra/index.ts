@@ -5,6 +5,8 @@ import { LangfuseExporter } from "langfuse-vercel";
 import { registerApiRoute } from "@mastra/core/server";
 import { openai } from "@ai-sdk/openai";
 
+import { auth } from "@sicap/data/auth";
+
 import { sicapAgent } from "./agents";
 import { storage, VECTOR_STORE_NAME, vector } from "./stores";
 
@@ -37,17 +39,23 @@ export const mastra = new Mastra({
   },
   server: {
     cors: {
-      origin: "*",
+      origin: [process.env.BETTER_AUTH_URL ?? ""],
       allowMethods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"],
-      allowHeaders: ["Content-Type", "Authorization", "x-user-id", "x-session-id", "x-resource-id"],
-      credentials: false,
+      allowHeaders: [
+        "Content-Type",
+        "Authorization",
+        "x-user-id",
+        "x-session-id",
+        "x-resource-id",
+        "Cookie",
+      ],
+      credentials: true,
     },
     apiRoutes: [
       registerApiRoute("/gen-title", {
         method: "POST",
         middleware: [
           async (c, next) => {
-            // TODO: add auth middleware
             console.log(`!!!!!!! /gen-title ${c.req.method} ${c.req.url}`);
             await next();
           },
@@ -58,7 +66,7 @@ export const mastra = new Mastra({
           const userId = c.req.header("x-user-id");
 
           if (!userId) {
-            return c.json({ error: "userId is required" }, 400);
+            return c.json({ error: "User not authenticated" }, 401);
           }
 
           const { threadId } = await c.req.json();
@@ -114,9 +122,25 @@ export const mastra = new Mastra({
         path: "/*",
         handler: async (c, next) => {
           console.log("====================== AUTH MIDDLEWARE ==============================");
-          // const a = await auth.api.getSession({
-          //   headers: c.req.raw.headers,
-          // });
+          // const headers = c.req.raw.headers;
+          // try {
+          //   const session = await auth.api.getSession({ headers });
+
+          //   console.log("session", session);
+
+          //   if (!session) {
+          //     console.log("No session found, rejecting request");
+          //     return c.json({ error: "Unauthorized" }, 401);
+          //   }
+
+          //   console.log("Session found for user:", session.user.id);
+          //   // Add user info to runtime context
+          //   const runtimeContext = c.get("runtimeContext");
+          //   runtimeContext.set("userId", session.user.id);
+          // } catch (error) {
+          //   console.error("Auth middleware error:", error);
+          //   return c.json({ error: "Authentication failed" }, 401);
+          // }
           console.log("====================== --------------- ==============================");
           await next();
         },
