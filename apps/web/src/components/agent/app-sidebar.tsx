@@ -15,6 +15,7 @@ import {
   Button,
 } from "@sicap/ui";
 import { ThreadList } from "./thread-list";
+import { NavUser } from "./nav-user";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { state } = useSidebar();
@@ -57,7 +58,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarFooter className="border-t dark:border-secondary-foreground/20">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg">User Menu - test</SidebarMenuButton>
+            <SidebarMenuButton size="lg">
+              <NavUser />
+            </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>

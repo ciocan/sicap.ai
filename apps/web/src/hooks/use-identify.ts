@@ -19,6 +19,7 @@ export function useIdentify() {
   }, [isAuthenticated, userId, user]);
 
   return {
+    authClient,
     isAuthenticated,
     isLoading,
     user,
