@@ -4,7 +4,6 @@ import { MastraClient } from "@mastra/client-js";
 import { env } from "@/lib/env";
 
 interface UseMastraClientArgs {
-  baseUrl?: string;
   userId?: string;
   sessionId?: string;
 }
@@ -22,11 +21,11 @@ export const useMastraClient = (args?: UseMastraClientArgs) => {
     }
 
     return new MastraClient({
-      baseUrl: args?.baseUrl ?? env.NEXT_PUBLIC_AGENT_API_URL ?? "http://localhost:4111",
+      baseUrl: env.NEXT_PUBLIC_AGENT_API_URL,
       retries: 3,
       backoffMs: 100,
       maxBackoffMs: 5000,
       headers,
     });
-  }, [args?.baseUrl, args?.userId, args?.sessionId]);
+  }, [args?.userId, args?.sessionId]);
 };

@@ -1,6 +1,7 @@
 import { defineConfig } from "drizzle-kit";
 
-import { env } from "./src/lib/env.js";
+// @ts-ignore TODO: fix this
+import { env } from "./src/lib/env";
 
 export default defineConfig({
   dialect: "turso",

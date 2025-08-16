@@ -50,6 +50,13 @@
       "when": 1755282329712,
       "tag": "0006_wooden_sumo",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1755334514967,
+      "tag": "0007_warm_goliath",
+      "breakpoints": true
     }
   ]
 }

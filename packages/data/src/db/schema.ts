@@ -27,9 +27,7 @@ export const userTable = sqliteTable(
       .$defaultFn(() => /* @__PURE__ */ new Date())
       .notNull(),
   },
-  (user) => ({
-    emailIndex: uniqueIndex("users__email__idx").on(user.email),
-  }),
+  (user) => [uniqueIndex("users__email__idx").on(user.email)],
 );
 
 export const sessionTable = sqliteTable(
@@ -46,10 +44,10 @@ export const sessionTable = sqliteTable(
       .notNull()
       .references(() => userTable.id, { onDelete: "cascade" }),
   },
-  (session) => ({
-    tokenIndex: uniqueIndex("session__token__idx").on(session.token),
-    userIdIndex: index("session__userId__idx").on(session.userId),
-  }),
+  (session) => [
+    uniqueIndex("session__token__idx").on(session.token),
+    index("session__userId__idx").on(session.userId),
+  ],
 );
 
 export const accountTable = sqliteTable(
@@ -71,13 +69,10 @@ export const accountTable = sqliteTable(
     createdAt: integer("createdAt", { mode: "timestamp" }).notNull(),
     updatedAt: integer("updatedAt", { mode: "timestamp" }).notNull(),
   },
-  (account) => ({
-    providerAccountIdIndex: uniqueIndex("account__providerId__accountId__idx").on(
-      account.providerId,
-      account.accountId,
-    ),
-    userIdIndex: index("account__userId__idx").on(account.userId),
-  }),
+  (account) => [
+    uniqueIndex("account__providerId__accountId__idx").on(account.providerId, account.accountId),
+    index("account__userId__idx").on(account.userId),
+  ],
 );
 
 export const verificationTable = sqliteTable(
@@ -94,7 +89,17 @@ export const verificationTable = sqliteTable(
       () => /* @__PURE__ */ new Date(),
     ),
   },
-  (verification) => ({
-    identifierIndex: index("verification__identifier__idx").on(verification.identifier),
-  }),
+  (verification) => [index("verification__identifier__idx").on(verification.identifier)],
 );
+
+export const jwksTable = sqliteTable("jwks", {
+  id: text("id").primaryKey(),
+  publicKey: text("publicKey").notNull(),
+  privateKey: text("privateKey").notNull(),
+  createdAt: integer("createdAt", { mode: "timestamp" }).$defaultFn(
+    () => /* @__PURE__ */ new Date(),
+  ),
+  updatedAt: integer("updatedAt", { mode: "timestamp" }).$defaultFn(
+    () => /* @__PURE__ */ new Date(),
+  ),
+});

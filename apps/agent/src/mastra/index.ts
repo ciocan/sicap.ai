@@ -122,7 +122,8 @@ export const mastra = new Mastra({
         path: "/*",
         handler: async (c, next) => {
           console.log("====================== AUTH MIDDLEWARE ==============================");
-          // const headers = c.req.raw.headers;
+          const headers = c.req.raw.headers;
+          console.log("headers", headers);
           // try {
           //   const session = await auth.api.getSession({ headers });
 
