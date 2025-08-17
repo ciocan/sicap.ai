@@ -1,5 +1,4 @@
 {
-  "extends": "@sicap/tsconfig/base.json",
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",

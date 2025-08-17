@@ -1,5 +1,5 @@
 import { betterAuth } from "better-auth";
-import { jwt, bearer, openAPI } from "better-auth/plugins";
+import { openAPI } from "better-auth/plugins";
 import { nextCookies } from "better-auth/next-js";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { Logger } from "next-axiom";
@@ -97,16 +97,7 @@ export const auth = betterAuth({
     debug: process.env.NODE_ENV !== "production",
     enabled: false,
   },
-  plugins: [
-    openAPI(),
-    bearer(),
-    jwt({
-      jwt: {
-        definePayload: ({ user }) => ({ id: user.id }),
-      },
-    }),
-    nextCookies(),
-  ], // make sure nextCookies is the last plugin in the array
+  plugins: [openAPI(), nextCookies()], // make sure nextCookies is the last plugin in the array
   trustedOrigins: [env.NEXTAUTH_URL, env.AGENT_API_URL],
   advanced: {
     useSecureCookies: true,

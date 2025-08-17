@@ -15,14 +15,14 @@ import {
   buildMastraMessageFromAppendMessage,
   buildMastraMessageFromUIMessage,
 } from "@/components/agent/utils/runtime";
-import { useMastraClient } from "./use-mastra-client";
 import { useThreadContext, useThreadList } from "./thread-context";
 import { getSessionId } from "@/utils/session";
 import { useIdentify } from "@/hooks";
 import { env } from "@/lib/env";
 
 export function useAgentRuntime() {
-  const { agentId, resourceId, threadId, ensureThreadId, fetchThreads } = useThreadContext();
+  const { agentId, resourceId, threadId, ensureThreadId, fetchThreads, mastraClient } =
+    useThreadContext();
   const threadList = useThreadList();
   const isCreatingNewThreadRef = useRef(false);
   const redirectedThreadsRef = useRef(new Set<string>());
@@ -32,30 +32,15 @@ export function useAgentRuntime() {
   // Generate a stable sessionId for this browser session
   const sessionId = useMemo(() => getSessionId(threadId), [threadId]);
 
-  // Create MastraClient with headers
-  const mastraClient = useMastraClient({ userId: resourceId, sessionId });
-
   const transport = useMemo(() => {
-    if (typeof window !== "undefined") {
-      const jwtToken = sessionStorage.getItem("jwt_token");
-
-      if (!resourceId || !jwtToken) {
-        return undefined;
-      }
-
-      return new DefaultChatTransport({
-        api: `${env.NEXT_PUBLIC_AGENT_API_URL}/api/agents/${agentId}/stream`,
-        headers: {
-          "x-user-id": resourceId,
-          "x-session-id": sessionId,
-          Authorization: `Bearer ${jwtToken}`,
-        },
-        credentials: "include",
-      });
-    }
-
-    return undefined;
-  }, [agentId, resourceId, sessionId]);
+    return new DefaultChatTransport({
+      api: `${env.NEXT_PUBLIC_AGENT_API_URL}/api/agents/${agentId}/stream`,
+      headers: {
+        "x-session-id": sessionId,
+      },
+      credentials: "include",
+    });
+  }, [agentId, sessionId]);
 
   const chat = useChat({ transport });
 
@@ -85,10 +70,22 @@ export function useAgentRuntime() {
     const loadMessages = async () => {
       try {
         const thread = mastraClient.getMemoryThread(threadId, agentId);
+
+        const originalRequest = thread.request.bind(thread);
+        thread.request = async (path, options) => {
+          const modifiedOptions = {
+            ...options,
+            credentials: "include" as RequestCredentials,
+          };
+          return originalRequest(path, modifiedOptions);
+        };
+
         const { uiMessages } = await thread.getMessages();
+
         if (cancelled) {
           return;
         }
+
         chat.setMessages(uiMessages as UIMessage[]);
         // Track the last assistant message id from loaded history to prevent re-saving
         const lastAssistant = [...(uiMessages as UIMessage[])]
@@ -185,6 +182,8 @@ export function useAgentRuntime() {
           mastraClient
             .request("/gen-title", {
               method: "POST",
+              // @ts-expect-error TODO: fix this, its temporary until mastraClient is updated with credentials
+              credentials: "include" as RequestCredentials,
               body: { threadId: ensuredThreadId },
             })
             .then(fetchThreads)
@@ -198,7 +197,6 @@ export function useAgentRuntime() {
 
       await chat.sendMessage(await toCreateMessage(message), {
         headers: {
-          "x-user-id": resourceId,
           "x-session-id": ensuredThreadId,
         },
       });

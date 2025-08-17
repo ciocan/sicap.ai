@@ -11,6 +11,7 @@ import { useMastraClient } from "./use-mastra-client";
 import { generateId } from "@/utils";
 import { getSessionId } from "@/utils/session";
 import { useIdentify } from "@/hooks";
+import { MastraClient } from "@mastra/client-js";
 
 interface ThreadContextValue {
   agentId: string;
@@ -35,6 +36,9 @@ interface ThreadContextValue {
 
   // utilities
   ensureThreadId: () => Promise<string>;
+
+  // client
+  mastraClient: MastraClient;
 }
 
 const ThreadContext = createContext<ThreadContextValue | null>(null);
@@ -55,7 +59,7 @@ export function ThreadProvider({ children, agentId }: ThreadProviderProps) {
   const sessionId = useMemo(() => getSessionId(threadId), [threadId]);
 
   // Create client with headers
-  const mastraClient = useMastraClient({ userId: resourceId, sessionId });
+  const mastraClient = useMastraClient({ sessionId });
 
   const fetchThreads = useCallback(async () => {
     if (!isAuthenticated || !resourceId) {
@@ -96,6 +100,16 @@ export function ThreadProvider({ children, agentId }: ThreadProviderProps) {
   const onArchive = useCallback(
     async (archiveThreadId: string) => {
       const thread = mastraClient.getMemoryThread(archiveThreadId, agentId);
+
+      const originalRequest = thread.request.bind(thread);
+      thread.request = async (path, options) => {
+        const modifiedOptions = {
+          ...options,
+          credentials: "include" as RequestCredentials,
+        };
+        return originalRequest(path, modifiedOptions);
+      };
+
       const threadData = await thread.get();
       await thread.update({
         ...threadData,
@@ -132,6 +146,16 @@ export function ThreadProvider({ children, agentId }: ThreadProviderProps) {
     if (threadId) {
       try {
         const thread = mastraClient.getMemoryThread(threadId, agentId);
+
+        const originalRequest = thread.request.bind(thread);
+        thread.request = async (path, options) => {
+          const modifiedOptions = {
+            ...options,
+            credentials: "include" as RequestCredentials,
+          };
+          return originalRequest(path, modifiedOptions);
+        };
+
         await thread.get();
         return threadId;
       } catch {
@@ -174,6 +198,7 @@ export function ThreadProvider({ children, agentId }: ThreadProviderProps) {
       onSwitchToThread,
       onSwitchToNewThread,
       ensureThreadId,
+      mastraClient,
     }),
     [
       agentId,
@@ -188,6 +213,7 @@ export function ThreadProvider({ children, agentId }: ThreadProviderProps) {
       onSwitchToThread,
       onSwitchToNewThread,
       ensureThreadId,
+      mastraClient,
     ],
   );
 

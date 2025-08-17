@@ -1,5 +1,5 @@
 import { Mastra } from "@mastra/core/mastra";
-import { RuntimeContext } from "@mastra/core/runtime-context";
+import { RuntimeContext } from "@mastra/core/di";
 import { PinoLogger } from "@mastra/loggers";
 import { LangfuseExporter } from "langfuse-vercel";
 import { registerApiRoute } from "@mastra/core/server";
@@ -7,7 +7,8 @@ import { openai } from "@ai-sdk/openai";
 
 import { sicapAgent } from "./agents";
 import { storage, VECTOR_STORE_NAME, vector } from "./stores";
-import { validateToken } from "../lib/jwt";
+
+import { auth } from "@sicap/data/auth";
 
 const logger = new PinoLogger({
   name: "sicapAgent",
@@ -40,14 +41,7 @@ export const mastra = new Mastra({
     cors: {
       origin: [process.env.BETTER_AUTH_URL ?? ""],
       allowMethods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"],
-      allowHeaders: [
-        "Content-Type",
-        "Authorization",
-        "x-user-id",
-        "x-session-id",
-        "x-resource-id",
-        "Cookie",
-      ],
+      allowHeaders: ["Content-Type", "Authorization", "x-session-id", "x-resource-id", "Cookie"],
       credentials: true,
     },
     apiRoutes: [
@@ -56,10 +50,14 @@ export const mastra = new Mastra({
         handler: async (c) => {
           const mastra = c.get("mastra");
           const agent = mastra.getAgent("sicapAgent");
-          const userId = c.req.header("x-user-id");
+          // @ts-expect-error TODO: fix this
+          const userId = c.get("userId");
+
+          console.log("------ /gen-title: userId >>", userId, "<<");
 
           if (!userId) {
-            return c.json({ error: "User not authenticated" }, 401);
+            console.error("/gen-title: missing userId");
+            return c.json({ error: "missing userId" }, 500);
           }
 
           const { threadId } = await c.req.json();
@@ -68,14 +66,16 @@ export const mastra = new Mastra({
             return c.json({ error: "threadId is required" }, 400);
           }
 
+          // @ts-expect-error TODO: fix this
           const thread = await agent.fetchMemory({ threadId, resourceId: userId });
-
-          const runtimeContext = new RuntimeContext();
-          runtimeContext.set("resourceId", userId);
 
           if (thread.messages.filter((m) => m.role === "user").length > 1) {
             return c.json({ message: "not-generated" });
           }
+
+          const runtimeContext = new RuntimeContext();
+          runtimeContext.set("userId", userId);
+          runtimeContext.set("resourceId", userId);
 
           const title = await agent.genTitle(
             thread.messages[0],
@@ -98,6 +98,7 @@ export const mastra = new Mastra({
 
           await memory.createThread({
             threadId,
+            // @ts-expect-error TODO: fix this
             resourceId: userId,
             title,
             metadata: {
@@ -117,33 +118,26 @@ export const mastra = new Mastra({
             return next();
           }
 
-          const userId = c.req.header("x-user-id");
-          const sessionId = c.req.header("x-session-id");
-          const jwtToken = c.req.header("Authorization")?.split(" ")[1];
+          const session = await auth.api.getSession({
+            headers: c.req.raw.headers,
+          });
 
-          console.log(`========${c.req.method} ${c.req.path}=============================`);
-          console.log("userId", userId);
-          console.log("sessionId", sessionId);
-          console.log("jwtToken", !!jwtToken);
-          console.log("----------------------------------------------------------");
-
-          if (!jwtToken || !userId) {
+          if (!session) {
+            console.error(`===== 401 ===== ${c.req.method} ${c.req.path} ==== UNAUTHORIZED ====`);
             return c.json({ error: "Unauthorized" }, 401);
           }
 
-          try {
-            const payload = await validateToken(jwtToken);
-            if (payload.id !== userId) {
-              return c.json({ error: "Unauthorized" }, 401);
-            }
-          } catch (error) {
-            console.error("Auth middleware error:", error);
-            return c.json({ error: "Authentication failed" }, 401);
-          }
+          const sessionId = c.req.header("x-session-id");
+          const userId = session.user.id;
 
           const runtimeContext = c.get("runtimeContext");
           runtimeContext.set("userId", userId);
           runtimeContext.set("sessionId", sessionId);
+
+          c.set("userId", userId);
+
+          console.log(`======== ${c.req.method} ${c.req.path}`);
+          console.log("userId - sessionId", userId, sessionId);
 
           await next();
         },
