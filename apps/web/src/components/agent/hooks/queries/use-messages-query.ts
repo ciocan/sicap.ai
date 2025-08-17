@@ -3,18 +3,7 @@ import type { UIMessage } from "ai";
 import type { MastraClient } from "@mastra/client-js";
 import type { MastraMessageV2 } from "@mastra/core/memory";
 
-// Helper to configure mastra client with credentials
-const configureMastraClient = (client: any) => {
-  const originalRequest = client.request.bind(client);
-  client.request = async (path: string, options: any) => {
-    const modifiedOptions = {
-      ...options,
-      credentials: "include" as RequestCredentials,
-    };
-    return originalRequest(path, modifiedOptions);
-  };
-  return client;
-};
+import { configureMastraClient } from "@/components/agent/utils/runtime";
 
 // Query key factory for messages
 export const messagesQueryKeys = {

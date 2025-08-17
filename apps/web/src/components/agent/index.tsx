@@ -19,8 +19,8 @@ function AgentContent() {
           } as React.CSSProperties
         }
       >
-        <div className="flex h-dvh w-full pr-0.5">
-          <AppSidebar className="bg-secondary/60 dark:border-secondary-foreground/20 px-2" />
+        <div className="flex h-dvh w-full">
+          <AppSidebar className="bg-secondary/60 dark:border-secondary-foreground/20" />
           <SidebarInset>
             <Main />
           </SidebarInset>

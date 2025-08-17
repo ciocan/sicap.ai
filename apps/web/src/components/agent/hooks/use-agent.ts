@@ -14,31 +14,20 @@ import { getVercelAIMessages } from "@/components/agent/utils/get-vercel-message
 import {
   buildMastraMessageFromAppendMessage,
   buildMastraMessageFromUIMessage,
+  configureMastraClient,
 } from "@/components/agent/utils/runtime";
+import { useIsCreatingNewThread, useSetIsCreatingNewThread } from "@/components/agent/stores";
 import { useThreadContext, useThreadList } from "./thread-context";
 import { getSessionId } from "@/utils/session";
 import { useIdentify } from "@/hooks";
 import { env } from "@/lib/env";
-import { useIsCreatingNewThread, useSetIsCreatingNewThread } from "@/stores";
-
-// Helper to configure mastra client with credentials
-const configureMastraClient = (client: any) => {
-  const originalRequest = client.request.bind(client);
-  client.request = async (path: string, options: any) => {
-    const modifiedOptions = {
-      ...options,
-      credentials: "include" as RequestCredentials,
-    };
-    return originalRequest(path, modifiedOptions);
-  };
-  return client;
-};
 
 export function useAgentRuntime() {
   const { agentId, resourceId, threadId, ensureThreadId, refetchThreads, mastraClient } =
     useThreadContext();
   const threadList = useThreadList();
   const redirectedThreadsRef = useRef(new Set<string>());
+  const threadsCreatedInSessionRef = useRef(new Set<string>());
   const { isAuthenticated } = useIdentify();
 
   // Use Zustand store for thread state
@@ -70,11 +59,17 @@ export function useAgentRuntime() {
     if (!threadId) {
       chat.setMessages([]);
       redirectedThreadsRef.current.clear();
+      threadsCreatedInSessionRef.current.clear();
       return;
     }
 
     // Skip loading if creating a new thread to prevent race conditions
     if (isCreatingNewThread) {
+      return;
+    }
+
+    // Skip loading messages for threads created in this session - chat already has correct state
+    if (threadsCreatedInSessionRef.current.has(threadId)) {
       return;
     }
 
@@ -155,6 +150,11 @@ export function useAgentRuntime() {
       }
 
       const ensuredThreadId = await ensureThreadId();
+
+      // Track that this thread was created in this session
+      if (wasNewThread) {
+        threadsCreatedInSessionRef.current.add(ensuredThreadId);
+      }
 
       try {
         const mastraMessage = buildMastraMessageFromAppendMessage({

@@ -56,7 +56,7 @@ const ThreadListItem: FC = () => {
   const listItem = useThreadListItem();
   const [title, createdAt] = listItem?.title?.split("||") ?? [];
 
-  const cutOff = 42;
+  const cutOff = 32;
 
   const displayTitle = isActive
     ? title
@@ -66,8 +66,8 @@ const ThreadListItem: FC = () => {
 
   return (
     <ThreadListItemPrimitive.Root className="group/item data-active:bg-primary-foreground data-active:dark:bg-muted hover:bg-muted focus-visible:bg-muted focus-visible:ring-ring flex items-center gap-2 rounded-lg transition-all focus-visible:outline-none focus-visible:ring-2">
-      <ThreadListItemPrimitive.Trigger className="flex-grow px-3 py-1 text-start cursor-pointer">
-        <p className="text-sm">{displayTitle}</p>
+      <ThreadListItemPrimitive.Trigger className="flex-grow px-3 py-2 text-start cursor-pointer flex flex-col gap-0.5">
+        <p>{displayTitle}</p>
         {createdAt && (
           <span className="text-xs text-muted-foreground" title={formatDateTime(createdAt)}>
             {timeAgo(createdAt)}
