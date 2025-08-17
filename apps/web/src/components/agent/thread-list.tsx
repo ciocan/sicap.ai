@@ -20,18 +20,16 @@ import {
 } from "@sicap/ui";
 import { formatDateTime } from "@sicap/api/dist/utils/date.mjs";
 
-import { useIsActiveThread } from "./hooks/thread-context";
+import { useIsActiveThread, useThreadContext } from "./hooks/thread-context";
 import { Button } from "@sicap/ui/components/ui/button";
 import { timeAgo } from "@/utils";
 import { useIdentify } from "@/hooks";
 
 export const ThreadList: FC = () => {
-  const { isAuthenticated } = useIdentify();
-
   return (
     <ThreadListPrimitive.Root className="text-foreground flex flex-col items-stretch gap-1.5">
       <ThreadListNew />
-      {isAuthenticated && <ThreadListItems />}
+      <ThreadListItems />
     </ThreadListPrimitive.Root>
   );
 };
@@ -48,6 +46,19 @@ const ThreadListNew: FC = () => {
 };
 
 const ThreadListItems: FC = () => {
+  const { isLoading } = useThreadContext();
+  const { isAuthenticated } = useIdentify();
+
+  if (isLoading || !isAuthenticated) {
+    return (
+      <div className="flex flex-col gap-1.5">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="animate-pulse bg-muted rounded-lg px-3 py-2 h-12" />
+        ))}
+      </div>
+    );
+  }
+
   return <ThreadListPrimitive.Items components={{ ThreadListItem }} />;
 };
 
