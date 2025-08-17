@@ -82,7 +82,7 @@ export function useArchiveThreadMutation({
     mutationFn: async (threadId: string) => {
       const thread = configureMastraClient(mastraClient.getMemoryThread(threadId, agentId));
       const threadData = await thread.get();
-      
+
       await thread.update({
         ...threadData,
         title: threadData.title ?? "",
@@ -116,16 +116,18 @@ export function useCreateThreadMutation({
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ 
-      threadId, 
-      title = "Conversatie noua...", 
-      metadata = { hasDefaultTitle: true } 
-    }: { 
-      threadId: string; 
-      title?: string; 
-      metadata?: Record<string, any> 
+    mutationFn: async ({
+      threadId,
+      title = "Conversatie noua...",
+      metadata = { hasDefaultTitle: true },
+    }: {
+      threadId: string;
+      title?: string;
+      metadata?: Record<string, any>;
     }) => {
-      if (!resourceId) throw new Error("Resource ID is required");
+      if (!resourceId) {
+        throw new Error("Resource ID is required");
+      }
 
       await mastraClient.createMemoryThread({
         title,

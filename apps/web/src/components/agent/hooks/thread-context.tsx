@@ -151,7 +151,7 @@ export function ThreadProvider({ children, agentId }: ThreadProviderProps) {
         return threadId;
       }
     }
-    
+
     // No threadId, create a new one
     const newId = generateId();
     await createThreadMutation.mutateAsync({
@@ -161,23 +161,37 @@ export function ThreadProvider({ children, agentId }: ThreadProviderProps) {
     });
     setThreadId(newId);
     return newId;
-  }, [threadId, mastraClient, agentId, resourceId, setThreadId, isAuthenticated, createThreadMutation]);
-
-  // Memoize stable values separately to reduce re-renders
-  const stableActions = useMemo(() => ({
-    onArchive,
-    onSwitchToThread,
-    onSwitchToNewThread,
-    ensureThreadId,
-    refetchThreads: fetchThreads, // Renamed for backwards compatibility
-    setThreadId,
-  }), [onArchive, onSwitchToThread, onSwitchToNewThread, ensureThreadId, fetchThreads, setThreadId]);
-
-  const stableConfig = useMemo(() => ({
+  }, [
+    threadId,
+    mastraClient,
     agentId,
     resourceId,
-    mastraClient,
-  }), [agentId, resourceId, mastraClient]);
+    setThreadId,
+    isAuthenticated,
+    createThreadMutation,
+  ]);
+
+  // Memoize stable values separately to reduce re-renders
+  const stableActions = useMemo(
+    () => ({
+      onArchive,
+      onSwitchToThread,
+      onSwitchToNewThread,
+      ensureThreadId,
+      refetchThreads: fetchThreads, // Renamed for backwards compatibility
+      setThreadId,
+    }),
+    [onArchive, onSwitchToThread, onSwitchToNewThread, ensureThreadId, fetchThreads, setThreadId],
+  );
+
+  const stableConfig = useMemo(
+    () => ({
+      agentId,
+      resourceId,
+      mastraClient,
+    }),
+    [agentId, resourceId, mastraClient],
+  );
 
   const value: ThreadContextValue = useMemo(
     () => ({
@@ -188,14 +202,7 @@ export function ThreadProvider({ children, agentId }: ThreadProviderProps) {
       threads,
       isHydrated,
     }),
-    [
-      stableConfig,
-      stableActions,
-      threadId,
-      isLoading,
-      threads,
-      isHydrated,
-    ],
+    [stableConfig, stableActions, threadId, isLoading, threads, isHydrated],
   );
 
   return <ThreadContext.Provider value={value}>{children}</ThreadContext.Provider>;
@@ -224,14 +231,18 @@ export const useThreadList = (): ExternalStoreThreadListAdapter => {
   // This ensures @assistant-ui/react components don't render with stale state
   const effectiveThreadId = isHydrated ? threadId : "";
 
-  return {
-    isLoading,
-    threads,
-    threadId: effectiveThreadId,
-    onArchive,
-    onSwitchToNewThread,
-    onSwitchToThread,
-  };
+  // Memoize to provide a stable adapter reference and avoid re-renders/loops
+  return useMemo(
+    () => ({
+      isLoading,
+      threads,
+      threadId: effectiveThreadId,
+      onArchive,
+      onSwitchToNewThread,
+      onSwitchToThread,
+    }),
+    [isLoading, threads, effectiveThreadId, onArchive, onSwitchToNewThread, onSwitchToThread],
+  );
 };
 
 export const useIsActiveThread = () => {

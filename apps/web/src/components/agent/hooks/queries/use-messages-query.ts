@@ -88,11 +88,11 @@ export function useSaveMessageMutation({
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ 
-      messages, 
-      threadId 
-    }: { 
-      messages: MastraMessageV2[]; 
+    mutationFn: async ({
+      messages,
+      threadId,
+    }: {
+      messages: MastraMessageV2[];
       threadId: string;
     }) => {
       await mastraClient.saveMessageToMemory({
@@ -111,11 +111,7 @@ export function useSaveMessageMutation({
 }
 
 // Generate title mutation
-export function useGenerateTitleMutation({
-  mastraClient,
-}: {
-  mastraClient: MastraClient;
-}) {
+export function useGenerateTitleMutation({ mastraClient }: { mastraClient: MastraClient }) {
   return useMutation({
     mutationFn: async (threadId: string) => {
       const result = await mastraClient.request("/gen-title", {
@@ -144,8 +140,10 @@ export function useThreadExistsQuery({
   return useQuery({
     queryKey: ["thread-exists", threadId, agentId],
     queryFn: async () => {
-      if (!threadId) return false;
-      
+      if (!threadId) {
+        return false;
+      }
+
       try {
         const thread = configureMastraClient(mastraClient.getMemoryThread(threadId, agentId));
         await thread.get();
@@ -163,7 +161,7 @@ export function useThreadExistsQuery({
         if (isThreadNotFound) {
           return false;
         }
-        
+
         throw error; // Re-throw other errors
       }
     },

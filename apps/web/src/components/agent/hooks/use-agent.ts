@@ -1,5 +1,5 @@
 import { useExternalStoreRuntime } from "@assistant-ui/react";
-import { useEffect, useRef, useState, useMemo, useCallback } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import { DefaultChatTransport, type UIMessage } from "ai";
 import type { MastraMessageV2 } from "@mastra/core/memory";
 import type { AppendMessage } from "@assistant-ui/react";
@@ -19,6 +19,7 @@ import { useThreadContext, useThreadList } from "./thread-context";
 import { getSessionId } from "@/utils/session";
 import { useIdentify } from "@/hooks";
 import { env } from "@/lib/env";
+import { useIsCreatingNewThread, useSetIsCreatingNewThread } from "@/stores";
 
 // Helper to configure mastra client with credentials
 const configureMastraClient = (client: any) => {
@@ -37,10 +38,12 @@ export function useAgentRuntime() {
   const { agentId, resourceId, threadId, ensureThreadId, refetchThreads, mastraClient } =
     useThreadContext();
   const threadList = useThreadList();
-  const isCreatingNewThreadRef = useRef(false);
   const redirectedThreadsRef = useRef(new Set<string>());
-  const [invalidThreadId, setInvalidThreadId] = useState<string | null>(null);
   const { isAuthenticated } = useIdentify();
+
+  // Use Zustand store for thread state
+  const isCreatingNewThread = useIsCreatingNewThread();
+  const setIsCreatingNewThread = useSetIsCreatingNewThread();
 
   // Generate a stable sessionId for this browser session
   const sessionId = useMemo(() => getSessionId(threadId), [threadId]);
@@ -67,40 +70,40 @@ export function useAgentRuntime() {
     if (!threadId) {
       chat.setMessages([]);
       redirectedThreadsRef.current.clear();
-      setInvalidThreadId(null);
       return;
     }
 
     // Skip loading if creating a new thread to prevent race conditions
-    if (isCreatingNewThreadRef.current) {
+    if (isCreatingNewThread) {
       return;
     }
 
     let cancelled = false;
-    
+
     const loadMessages = async () => {
       try {
-        const thread = configureMastraClient(
-          mastraClient.getMemoryThread(threadId, agentId)
-        );
+        const thread = configureMastraClient(mastraClient.getMemoryThread(threadId, agentId));
 
         const { uiMessages } = await thread.getMessages();
 
-        if (cancelled) return;
+        if (cancelled) {
+          return;
+        }
 
         chat.setMessages(uiMessages as UIMessage[]);
-        
+
         // Track the last assistant message id from loaded history to prevent re-saving
         const lastAssistant = [...(uiMessages as UIMessage[])]
           .reverse()
           .find((m) => m.role === "assistant");
         lastSavedAssistantIdRef.current = lastAssistant?.id ?? null;
-        
+
         // Clear error states on successful load
         redirectedThreadsRef.current.clear();
-        setInvalidThreadId(null);
       } catch (error) {
-        if (cancelled) return;
+        if (cancelled) {
+          return;
+        }
 
         const errorMessage = error instanceof Error ? error.message : String(error);
         const errorStatus = (error as { status?: number })?.status;
@@ -112,30 +115,21 @@ export function useAgentRuntime() {
           errorStatus === 404;
 
         if (isThreadNotFound) {
-          setInvalidThreadId(threadId);
+          // Thread doesn't exist, redirect to new thread
+          if (threadList.onSwitchToNewThread) {
+            threadList.onSwitchToNewThread();
+          }
         }
         // For other errors, silently continue (could be temporary network issues)
       }
     };
 
     void loadMessages();
-    
+
     return () => {
       cancelled = true;
     };
   }, [threadId, agentId, mastraClient]);
-
-  // Separate effect to handle invalid thread redirects
-  useEffect(() => {
-    if (invalidThreadId && !redirectedThreadsRef.current.has(invalidThreadId)) {
-      redirectedThreadsRef.current.add(invalidThreadId);
-      // Clear the invalid thread state and redirect
-      setInvalidThreadId(null);
-      if (threadList.onSwitchToNewThread) {
-        threadList.onSwitchToNewThread();
-      }
-    }
-  }, [invalidThreadId, threadList]);
 
   const messages = AISDKMessageConverter.useThreadMessages({
     isRunning: chat.status === "submitted" || chat.status === "streaming",
@@ -157,7 +151,7 @@ export function useAgentRuntime() {
 
       const wasNewThread = !threadId;
       if (wasNewThread) {
-        isCreatingNewThreadRef.current = true;
+        setIsCreatingNewThread(true);
       }
 
       const ensuredThreadId = await ensureThreadId();
@@ -168,7 +162,7 @@ export function useAgentRuntime() {
           threadId: ensuredThreadId,
           resourceId,
         });
-        
+
         await mastraClient.saveMessageToMemory({
           agentId,
           messages: [mastraMessage] as unknown as MastraMessageV2[],
@@ -208,7 +202,7 @@ export function useAgentRuntime() {
 
       const newMessages = sliceMessagesUntil(chat.messages, message.parentId);
       chat.setMessages(newMessages);
-      
+
       try {
         const ensuredThreadId = await ensureThreadId();
         const mastraMessage = buildMastraMessageFromAppendMessage({
@@ -216,7 +210,7 @@ export function useAgentRuntime() {
           threadId: ensuredThreadId,
           resourceId,
         });
-        
+
         await mastraClient.saveMessageToMemory({
           agentId,
           messages: [mastraMessage] as unknown as MastraMessageV2[],
@@ -224,7 +218,7 @@ export function useAgentRuntime() {
       } catch (error) {
         console.error("Error persisting edited message", error);
       }
-      
+
       await chat.sendMessage(await toCreateMessage(message));
     },
     onReload: async (parentId: string | null) => {
@@ -248,23 +242,25 @@ export function useAgentRuntime() {
 
   useEffect(() => {
     const isRunning = chat.status === "submitted" || chat.status === "streaming";
-    
-    if (isRunning) return;
 
-    // Reset new thread flag when streaming completes
-    if (isCreatingNewThreadRef.current) {
-      isCreatingNewThreadRef.current = false;
+    if (isRunning) {
+      return;
     }
 
-    const lastAssistant = [...chat.messages]
-      .reverse()
-      .find((m) => m.role === "assistant");
-      
+    // Reset new thread flag when streaming completes
+    if (isCreatingNewThread) {
+      setIsCreatingNewThread(false);
+    }
+
+    const lastAssistant = [...chat.messages].reverse().find((m) => m.role === "assistant");
+
     if (!lastAssistant || lastAssistant.id === lastSavedAssistantIdRef.current) {
       return;
     }
 
-    if (!resourceId || !isAuthenticated) return;
+    if (!resourceId || !isAuthenticated) {
+      return;
+    }
 
     const persist = async () => {
       try {
@@ -287,7 +283,15 @@ export function useAgentRuntime() {
     };
 
     void persist();
-  }, [chat.status, chat.messages, ensureThreadId, mastraClient, agentId, resourceId, isAuthenticated]);
+  }, [
+    chat.status,
+    chat.messages,
+    ensureThreadId,
+    mastraClient,
+    agentId,
+    resourceId,
+    isAuthenticated,
+  ]);
 
   return { runtime };
 }
