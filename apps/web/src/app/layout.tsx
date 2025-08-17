@@ -10,6 +10,7 @@ import "@sicap/ui/globals.css";
 
 import { siteConfig } from "@/config/site";
 import { ThemeProvider } from "@/components";
+import { QueryProvider } from "@/components/providers/query-provider";
 import { env } from "@/lib/env";
 import { Toaster } from "@sicap/ui";
 
@@ -104,10 +105,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
           enableSystem
           disableTransitionOnChange
         >
-          <Suspense fallback={null}>
-            <NuqsAdapter>{children}</NuqsAdapter>
-          </Suspense>
-          <Toaster className="pointer-events-auto" position="top-center" richColors closeButton />
+          <QueryProvider>
+            <Suspense fallback={null}>
+              <NuqsAdapter>{children}</NuqsAdapter>
+            </Suspense>
+            <Toaster className="pointer-events-auto" position="top-center" richColors closeButton />
+          </QueryProvider>
         </ThemeProvider>
         <OpenStatusProvider dsn={env.NEXT_PUBLIC_OPENSTATUS_RUM_DSN} />
       </body>

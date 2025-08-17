@@ -9,6 +9,7 @@ import { useQueryState, parseAsString } from "nuqs";
 import type { MastraClient } from "@mastra/client-js";
 
 import { useMastraClient } from "./use-mastra-client";
+import { useThreadsQuery, useArchiveThreadMutation, useCreateThreadMutation } from "./queries";
 import { generateId } from "@/utils";
 import { getSessionId } from "@/utils/session";
 import { useIdentify } from "@/hooks";
@@ -21,10 +22,10 @@ interface ThreadContextValue {
   threadId: string;
   setThreadId: (id: string) => void;
 
-  // list
+  // list (from React Query)
   isLoading: boolean;
   threads: ExternalStoreThreadData<"regular">[];
-  fetchThreads: () => Promise<void>;
+  refetchThreads: () => Promise<void>;
 
   // hydration state
   isHydrated: boolean;
@@ -50,8 +51,6 @@ interface ThreadProviderProps {
 
 export function ThreadProvider({ children, agentId }: ThreadProviderProps) {
   const [threadId, setThreadId] = useQueryState("t", parseAsString.withDefault(""));
-  const [threads, setThreads] = useState<ExternalStoreThreadData<"regular">[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
   const { isAuthenticated, userId: resourceId } = useIdentify();
 
@@ -61,33 +60,37 @@ export function ThreadProvider({ children, agentId }: ThreadProviderProps) {
   // Create client with headers
   const mastraClient = useMastraClient({ sessionId });
 
+  // React Query hooks
+  const {
+    data: threads = [],
+    isLoading,
+    refetch: refetchThreads,
+  } = useThreadsQuery({
+    mastraClient,
+    agentId,
+    resourceId,
+    isAuthenticated,
+  });
+
+  const archiveThreadMutation = useArchiveThreadMutation({
+    mastraClient,
+    agentId,
+    resourceId,
+  });
+
+  const createThreadMutation = useCreateThreadMutation({
+    mastraClient,
+    agentId,
+    resourceId,
+  });
+
+  // Wrapper function for backwards compatibility
   const fetchThreads = useCallback(async () => {
     if (!isAuthenticated || !resourceId) {
       return;
     }
-
-    setIsLoading(true);
-    try {
-      const updatedThreads = await mastraClient.getMemoryThreads({ agentId, resourceId });
-
-      const threads = updatedThreads
-        .filter((thread) => !thread.metadata?.isArchived)
-        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-        .map((thread) => ({
-          threadId: thread.id,
-          status: "regular" as const,
-          title: `${thread.title}||${thread.createdAt}`, // TODO: fix this, its temporary until a better way is implemented in assistant-ui/react
-        }));
-
-      setThreads(threads);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [mastraClient, agentId, resourceId, isAuthenticated]);
-
-  useEffect(() => {
-    void fetchThreads();
-  }, [fetchThreads]);
+    await refetchThreads();
+  }, [refetchThreads, isAuthenticated, resourceId]);
 
   // Handle hydration state - wait for next tick to ensure URL params are parsed
   useEffect(() => {
@@ -95,33 +98,13 @@ export function ThreadProvider({ children, agentId }: ThreadProviderProps) {
       setIsHydrated(true);
     }, 0);
     return () => clearTimeout(timer);
-  }, []);
+  }, []); // Empty dependency array is correct here
 
   const onArchive = useCallback(
     async (archiveThreadId: string) => {
-      const thread = mastraClient.getMemoryThread(archiveThreadId, agentId);
-
-      const originalRequest = thread.request.bind(thread);
-      thread.request = async (path, options) => {
-        const modifiedOptions = {
-          ...options,
-          credentials: "include" as RequestCredentials,
-        };
-        return originalRequest(path, modifiedOptions);
-      };
-
-      const threadData = await thread.get();
-      await thread.update({
-        ...threadData,
-        title: threadData.title ?? "",
-        metadata: {
-          ...threadData?.metadata,
-          isArchived: true,
-        },
-      });
-      await fetchThreads();
+      await archiveThreadMutation.mutateAsync(archiveThreadId);
     },
-    [mastraClient, agentId, fetchThreads],
+    [archiveThreadMutation],
   );
 
   const onSwitchToThread = useCallback(
@@ -145,8 +128,8 @@ export function ThreadProvider({ children, agentId }: ThreadProviderProps) {
 
     if (threadId) {
       try {
+        // Check if thread exists
         const thread = mastraClient.getMemoryThread(threadId, agentId);
-
         const originalRequest = thread.request.bind(thread);
         thread.request = async (path, options) => {
           const modifiedOptions = {
@@ -159,61 +142,59 @@ export function ThreadProvider({ children, agentId }: ThreadProviderProps) {
         await thread.get();
         return threadId;
       } catch {
-        await mastraClient.createMemoryThread({
-          title,
-          agentId,
-          resourceId,
-          metadata,
+        // Thread doesn't exist, create it with the current threadId
+        await createThreadMutation.mutateAsync({
           threadId,
+          title,
+          metadata,
         });
-        // Ensure list includes it
-        await fetchThreads();
         return threadId;
       }
     }
+    
+    // No threadId, create a new one
     const newId = generateId();
-    await mastraClient.createMemoryThread({
-      title,
-      agentId,
-      resourceId,
-      metadata,
+    await createThreadMutation.mutateAsync({
       threadId: newId,
+      title,
+      metadata,
     });
     setThreadId(newId);
-    await fetchThreads();
     return newId;
-  }, [threadId, mastraClient, agentId, resourceId, fetchThreads, setThreadId, isAuthenticated]);
+  }, [threadId, mastraClient, agentId, resourceId, setThreadId, isAuthenticated, createThreadMutation]);
+
+  // Memoize stable values separately to reduce re-renders
+  const stableActions = useMemo(() => ({
+    onArchive,
+    onSwitchToThread,
+    onSwitchToNewThread,
+    ensureThreadId,
+    refetchThreads: fetchThreads, // Renamed for backwards compatibility
+    setThreadId,
+  }), [onArchive, onSwitchToThread, onSwitchToNewThread, ensureThreadId, fetchThreads, setThreadId]);
+
+  const stableConfig = useMemo(() => ({
+    agentId,
+    resourceId,
+    mastraClient,
+  }), [agentId, resourceId, mastraClient]);
 
   const value: ThreadContextValue = useMemo(
     () => ({
-      agentId,
-      resourceId,
+      ...stableConfig,
+      ...stableActions,
       threadId,
-      setThreadId,
       isLoading,
       threads,
-      fetchThreads,
       isHydrated,
-      onArchive,
-      onSwitchToThread,
-      onSwitchToNewThread,
-      ensureThreadId,
-      mastraClient,
     }),
     [
-      agentId,
-      resourceId,
+      stableConfig,
+      stableActions,
       threadId,
-      setThreadId,
       isLoading,
       threads,
-      fetchThreads,
       isHydrated,
-      onArchive,
-      onSwitchToThread,
-      onSwitchToNewThread,
-      ensureThreadId,
-      mastraClient,
     ],
   );
 

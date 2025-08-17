@@ -1,5 +1,5 @@
 import { useExternalStoreRuntime } from "@assistant-ui/react";
-import { useEffect, useRef, useState, useMemo } from "react";
+import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import { DefaultChatTransport, type UIMessage } from "ai";
 import type { MastraMessageV2 } from "@mastra/core/memory";
 import type { AppendMessage } from "@assistant-ui/react";
@@ -20,8 +20,21 @@ import { getSessionId } from "@/utils/session";
 import { useIdentify } from "@/hooks";
 import { env } from "@/lib/env";
 
+// Helper to configure mastra client with credentials
+const configureMastraClient = (client: any) => {
+  const originalRequest = client.request.bind(client);
+  client.request = async (path: string, options: any) => {
+    const modifiedOptions = {
+      ...options,
+      credentials: "include" as RequestCredentials,
+    };
+    return originalRequest(path, modifiedOptions);
+  };
+  return client;
+};
+
 export function useAgentRuntime() {
-  const { agentId, resourceId, threadId, ensureThreadId, fetchThreads, mastraClient } =
+  const { agentId, resourceId, threadId, ensureThreadId, refetchThreads, mastraClient } =
     useThreadContext();
   const threadList = useThreadList();
   const isCreatingNewThreadRef = useRef(false);
@@ -44,7 +57,7 @@ export function useAgentRuntime() {
 
   const chat = useChat({ transport });
 
-  // load messages from memory on mount and only when threadId changes
+  // Load messages when threadId changes
   useEffect(() => {
     // Stop any ongoing streaming when switching threads
     if (chat.status === "streaming" || chat.status === "submitted") {
@@ -52,78 +65,65 @@ export function useAgentRuntime() {
     }
 
     if (!threadId) {
-      // Clear messages when no thread is selected
       chat.setMessages([]);
-      // Clear the redirected threads set and invalid thread state when switching to no thread
       redirectedThreadsRef.current.clear();
       setInvalidThreadId(null);
       return;
     }
 
-    // Skip loading messages if we're in the middle of creating a new thread
-    // This prevents race condition where the first message gets duplicated
+    // Skip loading if creating a new thread to prevent race conditions
     if (isCreatingNewThreadRef.current) {
       return;
     }
 
     let cancelled = false;
+    
     const loadMessages = async () => {
       try {
-        const thread = mastraClient.getMemoryThread(threadId, agentId);
-
-        const originalRequest = thread.request.bind(thread);
-        thread.request = async (path, options) => {
-          const modifiedOptions = {
-            ...options,
-            credentials: "include" as RequestCredentials,
-          };
-          return originalRequest(path, modifiedOptions);
-        };
+        const thread = configureMastraClient(
+          mastraClient.getMemoryThread(threadId, agentId)
+        );
 
         const { uiMessages } = await thread.getMessages();
 
-        if (cancelled) {
-          return;
-        }
+        if (cancelled) return;
 
         chat.setMessages(uiMessages as UIMessage[]);
+        
         // Track the last assistant message id from loaded history to prevent re-saving
         const lastAssistant = [...(uiMessages as UIMessage[])]
           .reverse()
           .find((m) => m.role === "assistant");
         lastSavedAssistantIdRef.current = lastAssistant?.id ?? null;
-        // Clear redirected threads set and invalid thread state on successful load
+        
+        // Clear error states on successful load
         redirectedThreadsRef.current.clear();
         setInvalidThreadId(null);
       } catch (error) {
-        if (cancelled) {
-          return;
-        }
+        if (cancelled) return;
 
-        // Check if this is a thread not found error (404 or similar)
         const errorMessage = error instanceof Error ? error.message : String(error);
         const errorStatus = (error as { status?: number })?.status;
 
         const isThreadNotFound =
-          error instanceof Error &&
-          (errorMessage.includes("404") ||
-            errorMessage.includes("Not Found") ||
-            errorMessage.includes("not found") ||
-            errorStatus === 404);
+          errorMessage.includes("404") ||
+          errorMessage.includes("Not Found") ||
+          errorMessage.includes("not found") ||
+          errorStatus === 404;
 
         if (isThreadNotFound) {
-          // Mark this thread as invalid for separate handling
           setInvalidThreadId(threadId);
-          return;
         }
         // For other errors, silently continue (could be temporary network issues)
       }
     };
+
     void loadMessages();
+    
     return () => {
       cancelled = true;
     };
-  }, [threadId, agentId, mastraClient, chat.setMessages]);
+  }, [threadId, agentId, mastraClient]);
 
   // Separate effect to handle invalid thread redirects
   useEffect(() => {
@@ -155,44 +155,41 @@ export function useAgentRuntime() {
         return;
       }
 
-      const wasNewThread = !threadId; // Check if we're creating a new thread
-
-      // If this is a new thread, set the flag BEFORE creating the thread
-      // This ensures the flag is set before threadId changes
+      const wasNewThread = !threadId;
       if (wasNewThread) {
         isCreatingNewThreadRef.current = true;
       }
 
-      // Get or create the thread ID
       const ensuredThreadId = await ensureThreadId();
 
-      // Always persist the user message to memory
       try {
         const mastraMessage = buildMastraMessageFromAppendMessage({
           message,
           threadId: ensuredThreadId,
           resourceId,
         });
+        
         await mastraClient.saveMessageToMemory({
           agentId,
-          messages: [mastraMessage] as unknown as MastraMessageV2[], // TODO: fix this, its temporary until we have a v3 api (ai-v5 sdk)
+          messages: [mastraMessage] as unknown as MastraMessageV2[],
         });
 
+        // Generate title for new threads
         if (messages.length === 0) {
-          mastraClient
+          void mastraClient
             .request("/gen-title", {
               method: "POST",
-              // @ts-expect-error TODO: fix this, its temporary until mastraClient is updated with credentials
+              // @ts-expect-error TODO: fix this when mastra client supports credentials properly
               credentials: "include" as RequestCredentials,
               body: { threadId: ensuredThreadId },
             })
-            .then(fetchThreads)
+            .then(refetchThreads)
             .catch((error) => {
-              console.error("---useEffect:lastSavedAssistant--- Error generating title", error);
+              console.error("Error generating title", error);
             });
         }
       } catch (error) {
-        console.error("---onNew--- Error persisting user message", error);
+        console.error("Error persisting user message", error);
       }
 
       await chat.sendMessage(await toCreateMessage(message), {
@@ -211,7 +208,7 @@ export function useAgentRuntime() {
 
       const newMessages = sliceMessagesUntil(chat.messages, message.parentId);
       chat.setMessages(newMessages);
-      // Persist the edited user message to Mastra memory
+      
       try {
         const ensuredThreadId = await ensureThreadId();
         const mastraMessage = buildMastraMessageFromAppendMessage({
@@ -219,13 +216,15 @@ export function useAgentRuntime() {
           threadId: ensuredThreadId,
           resourceId,
         });
+        
         await mastraClient.saveMessageToMemory({
           agentId,
-          messages: [mastraMessage] as unknown as MastraMessageV2[], // TODO: fix this, its temporary until we have a v3 api (ai-v5 sdk)
+          messages: [mastraMessage] as unknown as MastraMessageV2[],
         });
       } catch (error) {
-        console.error("---onEdit--- Error persisting edited message", error);
+        console.error("Error persisting edited message", error);
       }
+      
       await chat.sendMessage(await toCreateMessage(message));
     },
     onReload: async (parentId: string | null) => {
@@ -246,34 +245,30 @@ export function useAgentRuntime() {
 
   // Persist assistant messages after streaming completes
   const lastSavedAssistantIdRef = useRef<string | null>(null);
+
   useEffect(() => {
     const isRunning = chat.status === "submitted" || chat.status === "streaming";
+    
+    if (isRunning) return;
 
-    if (isRunning) {
-      return;
-    }
-
+    // Reset new thread flag when streaming completes
     if (isCreatingNewThreadRef.current) {
       isCreatingNewThreadRef.current = false;
     }
 
-    const lastAssistant = [...chat.messages].reverse().find((m) => m.role === "assistant");
-    if (!lastAssistant) {
+    const lastAssistant = [...chat.messages]
+      .reverse()
+      .find((m) => m.role === "assistant");
+      
+    if (!lastAssistant || lastAssistant.id === lastSavedAssistantIdRef.current) {
       return;
     }
-    if (lastAssistant.id === lastSavedAssistantIdRef.current) {
-      return;
-    }
+
+    if (!resourceId || !isAuthenticated) return;
 
     const persist = async () => {
-      if (!resourceId || !isAuthenticated) {
-        return;
-      }
-
       try {
         const ensuredThreadId = await ensureThreadId();
-
-        // Only persist the assistant message (user message was already persisted in onNew)
         const assistantMastraMessage = buildMastraMessageFromUIMessage({
           message: lastAssistant,
           threadId: ensuredThreadId,
@@ -282,27 +277,17 @@ export function useAgentRuntime() {
 
         await mastraClient.saveMessageToMemory({
           agentId,
-          messages: [assistantMastraMessage] as unknown as MastraMessageV2[], // TODO: fix this, its temporary until we have a v3 api (ai-v5 sdk)
+          messages: [assistantMastraMessage] as unknown as MastraMessageV2[],
         });
 
         lastSavedAssistantIdRef.current = lastAssistant.id;
       } catch (error) {
-        console.error(
-          "---useEffect:lastSavedAssistant--- Error persisting assistant message",
-          error,
-        );
+        console.error("Error persisting assistant message", error);
       }
     };
+
     void persist();
-  }, [
-    chat.messages,
-    chat.status,
-    ensureThreadId,
-    mastraClient,
-    agentId,
-    resourceId,
-    isAuthenticated,
-  ]);
+  }, [chat.status, chat.messages, ensureThreadId, mastraClient, agentId, resourceId, isAuthenticated]);
 
   return { runtime };
 }
