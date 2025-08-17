@@ -33,6 +33,7 @@
     "@sicap/data": "workspace:*",
     "@sicap/ui": "workspace:*",
     "@t3-oss/env-nextjs": "^0.8.0",
+    "@tanstack/react-query": "^5.85.3",
     "@types/mdx": "^2.0.9",
     "ai": "^5.0.12",
     "better-auth": "^1.3.6",

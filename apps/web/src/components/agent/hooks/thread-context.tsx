@@ -6,12 +6,12 @@ import {
   useThreadListItem,
 } from "@assistant-ui/react";
 import { useQueryState, parseAsString } from "nuqs";
+import type { MastraClient } from "@mastra/client-js";
 
 import { useMastraClient } from "./use-mastra-client";
 import { generateId } from "@/utils";
 import { getSessionId } from "@/utils/session";
 import { useIdentify } from "@/hooks";
-import { MastraClient } from "@mastra/client-js";
 
 interface ThreadContextValue {
   agentId: string;
