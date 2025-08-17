@@ -3,6 +3,7 @@ import { RuntimeContext } from "@mastra/core/di";
 import { PinoLogger } from "@mastra/loggers";
 import { LangfuseExporter } from "langfuse-vercel";
 import { registerApiRoute } from "@mastra/core/server";
+import { VercelDeployer } from "@mastra/deployer-vercel";
 import { openai } from "@ai-sdk/openai";
 
 import { sicapAgent } from "./agents";
@@ -37,6 +38,7 @@ export const mastra = new Mastra({
       }),
     },
   },
+  deployer: new VercelDeployer(),
   server: {
     cors: {
       origin: [process.env.BETTER_AUTH_URL ?? ""],

@@ -47,9 +47,8 @@ const ThreadListNew: FC = () => {
 
 const ThreadListItems: FC = () => {
   const { isLoading } = useThreadContext();
-  const { isAuthenticated } = useIdentify();
 
-  if (isLoading || !isAuthenticated) {
+  if (isLoading) {
     return (
       <div className="flex flex-col gap-1.5">
         {Array.from({ length: 6 }).map((_, i) => (
@@ -63,9 +62,14 @@ const ThreadListItems: FC = () => {
 };
 
 const ThreadListItem: FC = () => {
+  const { isAuthenticated } = useIdentify();
   const isActive = useIsActiveThread();
   const listItem = useThreadListItem();
   const [title, createdAt] = listItem?.title?.split("||") ?? [];
+
+  if (!isAuthenticated) {
+    return null;
+  }
 
   const cutOff = 32;
 
