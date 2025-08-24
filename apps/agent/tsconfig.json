@@ -8,11 +8,7 @@
     "strict": true,
     "skipLibCheck": true,
     "noEmit": true,
-    "outDir": "dist",
-    "paths": {
-      "@sicap/data/*": ["../../packages/data/src/*"],
-      "@sicap/api/*": ["../../packages/api/src/*"]
-    }
+    "outDir": "dist"
   },
   "include": ["src/**/*"]
 }

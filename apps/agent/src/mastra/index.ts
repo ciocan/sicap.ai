@@ -9,7 +9,7 @@ import { openai } from "@ai-sdk/openai";
 import { sicapAgent } from "./agents";
 import { storage, VECTOR_STORE_NAME, vector } from "./stores";
 
-import { auth } from "@sicap/data/auth";
+import { auth } from "@sicap/data";
 
 const logger = new PinoLogger({
   name: "sicapAgent",

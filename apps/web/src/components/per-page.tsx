@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import type { Route } from "next";
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@sicap/ui";
 
@@ -18,7 +19,7 @@ export function PerPage({ total, pathname = "cauta" }: PerPageProps) {
     setValue(value);
     const params = new URLSearchParams(searchParams.toString());
     params.set("perPage", value);
-    router.push(`${pathname}?${params.toString()}`);
+    router.push(`${pathname}?${params.toString()}` as Route);
   };
 
   return (

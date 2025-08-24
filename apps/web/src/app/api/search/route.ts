@@ -1,11 +1,11 @@
-import { withAxiom, type AxiomRequest } from "next-axiom";
+import type { NextRequest } from "next/server";
 
 import { saveSearch } from "@sicap/api";
 import { auth } from "@sicap/data/auth";
 
 import { dbIds } from "@/utils";
 
-export const POST = withAxiom(async (request: AxiomRequest) => {
+export const POST = async (request: NextRequest) => {
   const session = await auth.api.getSession({
     headers: request.headers,
   });
@@ -24,4 +24,4 @@ export const POST = withAxiom(async (request: AxiomRequest) => {
   });
 
   return Response.json(data);
-});
+};

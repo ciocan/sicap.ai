@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { withAxiom } from "next-axiom";
+import { Logger } from "next-axiom";
 
 import {
   ES_INDEX_DIRECT,
@@ -21,33 +21,33 @@ const searchFunctionMap = {
   [ES_INDEX_PUBLIC]: searchAuthorityLicitatii,
 };
 
-export const GET = withBearerToken(
-  withAxiom(async (request, context: { params: RouteParams }) => {
-    const searchParams = new URLSearchParams(request.url?.split("?")[1]);
-    const searchType = context?.params?.searchType;
+export const GET = withBearerToken(async (request, context) => {
+  const params = (context as { params: RouteParams }).params;
+  const searchParams = new URLSearchParams(request.url?.split("?")[1]);
+  const searchType = params?.searchType;
 
-    const authorityFiscalCode = searchParams.get("authorityFiscalCode");
-    const pitId = searchParams.get("pitId");
-    const searchAfter = searchParams.get("searchAfter");
+  const authorityFiscalCode = searchParams.get("authorityFiscalCode");
+  const pitId = searchParams.get("pitId");
+  const searchAfter = searchParams.get("searchAfter");
 
-    if (!authorityFiscalCode || !pitId) {
-      return new NextResponse("Missing authorityFiscalCode or pitId", {
-        status: 400,
-      });
-    }
+  if (!authorityFiscalCode || !pitId) {
+    return new NextResponse("Missing authorityFiscalCode or pitId", {
+      status: 400,
+    });
+  }
 
-    const searchFunction = searchFunctionMap[searchType];
+  const searchFunction = searchFunctionMap[searchType];
+  const logger = new Logger({ source: "authority/[searchType]" });
 
-    if (!searchFunction) {
-      request.log.error(`Invalid searchType: ${searchType}`);
-      return new NextResponse("Invalid searchType", { status: 400 });
-    }
+  if (!searchFunction) {
+    logger.error(`Invalid searchType: ${searchType}`);
+    return new NextResponse("Invalid searchType", { status: 400 });
+  }
 
-    try {
-      return NextResponse.json(await searchFunction(authorityFiscalCode, pitId, searchAfter));
-    } catch (error) {
-      request.log.error(String(error));
-      return new NextResponse("Invalid pitId", { status: 500 });
-    }
-  }),
-);
+  try {
+    return NextResponse.json(await searchFunction(authorityFiscalCode, pitId, searchAfter));
+  } catch (error) {
+    logger.error(String(error));
+    return new NextResponse("Invalid pitId", { status: 500 });
+  }
+});

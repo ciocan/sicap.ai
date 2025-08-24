@@ -3,14 +3,16 @@
   "version": "0.0.0",
   "type": "module",
   "exports": {
-    "./auth": "./src/auth/index.ts",
-    "./auth-client": "./src/auth/client.ts",
-    "./db": "./src/db/index.ts",
-    "./schema": "./src/db/schema.ts",
-    ".": "./src/index.ts"
+    "./auth": "./dist/auth/index.js",
+    "./auth-client": "./dist/auth/client.js",
+    "./db": "./dist/db/index.js",
+    "./schema": "./dist/db/schema.js",
+    ".": "./dist/index.js"
   },
   "license": "MIT",
   "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
     "lint": "biome lint ./src",
     "check-types": "tsc --noEmit",
     "fmt": "biome format --write ./src",
@@ -35,6 +37,7 @@
     "drizzle-orm": "^0.44.4",
     "libsql": "^0.5.17",
     "next-axiom": "^1.9.2",
+    "tsup": "^8.5.0",
     "zod": "^3.25.76"
   }
 }

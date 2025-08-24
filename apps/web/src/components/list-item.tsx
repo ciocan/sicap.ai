@@ -1,14 +1,11 @@
 import Link from "next/link";
 import { Building, Briefcase } from "lucide-react";
+import type { Route } from "next";
 
 import { Card, CardHeader, CardContent, CardDescription, CardTitle, Badge } from "@sicap/ui";
 import type { SearchItemDirect, SearchItemPublic, IndexName, SearchItemOffline } from "@sicap/api";
 import { getDay, getMonth, getYear } from "@sicap/api/utils/date";
-import {
-  ES_INDEX_DIRECT,
-  ES_INDEX_PUBLIC,
-  ES_INDEX_OFFLINE,
-} from "@sicap/api/browser/constants";
+import { ES_INDEX_DIRECT, ES_INDEX_PUBLIC, ES_INDEX_OFFLINE } from "@sicap/api/browser/constants";
 import { getIndexSlug, moneyEur, moneyRon } from "@/utils";
 
 interface ListItemProps {
@@ -51,11 +48,11 @@ export function ListItem({ id, index, fields }: ListItemProps) {
 
   const indexSlug = getIndexSlug(index);
 
-  const contractLink = `/${indexSlug}/contract/${id}`;
-  const cpvLink = `/${indexSlug}/cpv/${cpvCode}`;
+  const contractLink = `/${indexSlug}/contract/${id}` as Route;
+  const cpvLink = `/${indexSlug}/cpv/${cpvCode}` as Route;
   const ronValue = Number(value);
-  const contractingAuthorityLink = `/${indexSlug}/autoritate/${contractingAuthorityId}`;
-  const supplierLink = supplierId ? `/${indexSlug}/firma/${supplierId}` : "#";
+  const contractingAuthorityLink = `/${indexSlug}/autoritate/${contractingAuthorityId}` as Route;
+  const supplierLink = (supplierId ? `/${indexSlug}/firma/${supplierId}` : "#") as Route;
   const indexText =
     index === ES_INDEX_DIRECT
       ? "Achizitie directa"

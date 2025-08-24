@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ExternalLink } from "lucide-react";
+import type { Route } from "next";
 
 import { moneyRon } from "@/utils";
 import { formatDate, formatDateTime, getContractLicitatii } from "@sicap/api";
@@ -33,7 +34,7 @@ export async function ContractLicitatii({ id }: { id: string }) {
     istoric ? "istoric." : ""
   }e-licitatie.ro/pub/notices/ca-notices/view-c/${id}`;
 
-  const supplierUrl = winner.entityId ? `/licitatii/firma/${winner.entityId}` : "#";
+  const supplierUrl = (winner.entityId ? `/licitatii/firma/${winner.entityId}` : "#") as Route;
 
   return (
     <div className="border dark:border-secondary p-4 rounded-sm">

@@ -96,6 +96,9 @@
     "db:check": {
       "cache": false
     },
+    "agent:dev": {
+      "cache": false
+    },
     "sitemap": {
       "cache": false
     }

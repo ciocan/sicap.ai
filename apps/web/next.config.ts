@@ -6,6 +6,7 @@ import type { NextConfig } from "next";
 import path from "node:path";
 
 const nextConfig: NextConfig = {
+  typedRoutes: true,
   transpilePackages: ["@sicap/ui", "@sicap/data"],
   serverExternalPackages: ["@mastra/*"],
   webpack(config) {

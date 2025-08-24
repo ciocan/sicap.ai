@@ -310,6 +310,7 @@ const Composer: FC = () => {
     <div className="bg-transparent backdrop-blur-md relative mx-auto flex w-full max-w-[var(--thread-max-width)] flex-col gap-4 px-[var(--thread-padding-x)] pb-0 md:pb-0">
       <ThreadScrollToBottom />
       <ComposerPrimitive.Root className="relative border-8 border-primary-foreground border-b-0 flex w-full flex-col rounded-t-[1.5rem] focus-within:ring-1 focus-within:ring-secondary-foreground/30">
+        {/* biome-ignore lint/correctness/useUniqueElementIds: id used to focus the input */}
         <ComposerPrimitive.Input
           placeholder="Trimite un mesaj..."
           className="bg-muted/70 backdrop-blur-sm border-border dark:border-muted-foreground/15 focus:outline-primary placeholder:text-muted-foreground max-h-[calc(50dvh)] min-h-16 w-full resize-none rounded-t-2xl border-x border-t px-4 pt-3 pb-3 text-base outline-none"

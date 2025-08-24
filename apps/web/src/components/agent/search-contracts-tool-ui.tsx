@@ -53,7 +53,7 @@ export const SearchContractsToolUI: ToolCallMessagePartComponent = ({
   const [showAll, setShowAll] = useState(false);
 
   // Parse arguments
-  let args: Record<string, unknown> = {};
+  let args: Record<string, string> = { query: "" };
   try {
     args = JSON.parse(argsText);
   } catch {

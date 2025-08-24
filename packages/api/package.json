@@ -12,7 +12,7 @@
       "import": "./src/utils/date.ts"
     },
     "./types": {
-      "types": "./src/es/types.ts", 
+      "types": "./src/es/types.ts",
       "import": "./src/es/types.ts"
     },
     "./es/utils": {
