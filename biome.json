@@ -23,7 +23,8 @@
       "correctness": {
         "noUnusedVariables": "warn",
         "useExhaustiveDependencies": "warn",
-        "noUnusedImports": "warn"
+        "noUnusedImports": "warn",
+        "useUniqueElementIds": "warn"
       },
       "security": {
         "noDangerouslySetInnerHtml": "off"

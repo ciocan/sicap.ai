@@ -34,6 +34,7 @@ import {
 } from "@sicap/ui";
 import { MarkdownText } from "./markdown-text";
 import { ToolFallback } from "./tool-fallback";
+import { SearchContractsToolUI } from "./search-contracts-tool-ui";
 import { cn } from "@sicap/ui/lib/utils";
 
 export const Thread: FC = () => {
@@ -383,7 +384,12 @@ const AssistantMessage: FC = () => {
           <MessagePrimitive.Content
             components={{
               Text: MarkdownText,
-              tools: { Fallback: ToolFallback },
+              tools: {
+                Fallback: ToolFallback,
+                by_name: {
+                  searchContractsTool: SearchContractsToolUI,
+                },
+              },
             }}
           />
           <MessageError />
