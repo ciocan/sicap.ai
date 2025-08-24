@@ -10,7 +10,8 @@
     "noEmit": true,
     "outDir": "dist",
     "paths": {
-      "@sicap/data/*": ["../../packages/data/src/*"]
+      "@sicap/data/*": ["../../packages/data/src/*"],
+      "@sicap/api/*": ["../../packages/api/src/*"]
     }
   },
   "include": ["src/**/*"]

@@ -1,7 +1,7 @@
 import { format as formatTimeAgo, type TDate, register } from "timeago.js";
 import ro from "timeago.js/lib/lang/ro";
 
-import { ES_INDEX_DIRECT, ES_INDEX_OFFLINE, ES_INDEX_PUBLIC } from "@sicap/api/dist/es/utils.mjs";
+import { ES_INDEX_DIRECT, ES_INDEX_OFFLINE, ES_INDEX_PUBLIC } from "@sicap/api/es/utils";
 
 export const allowedSlugs = ["firma", "autoritate", "cpv"];
 

@@ -1,14 +1,34 @@
 {
   "name": "@sicap/api",
   "version": "0.1.0",
-  "types": "./dist/index.d.mts",
-  "main": "./dist/index.mjs",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./utils/date": {
+      "types": "./src/utils/date.ts",
+      "import": "./src/utils/date.ts"
+    },
+    "./types": {
+      "types": "./src/es/types.ts", 
+      "import": "./src/es/types.ts"
+    },
+    "./es/utils": {
+      "types": "./src/es/utils.ts",
+      "import": "./src/es/utils.ts"
+    },
+    "./browser/constants": {
+      "types": "./src/browser/constants.ts",
+      "import": "./src/browser/constants.ts"
+    }
+  },
   "license": "MIT",
   "scripts": {
     "build": "tsup",
-    "lint": "biome lint ./src",
-    "typecheck": "tsc --project tsconfig.json --noEmit",
     "dev": "tsup --watch",
+    "lint": "biome lint ./src",
     "check-types": "tsc --noEmit",
     "fmt": "biome format --write ./src",
     "clean": "pnpm dlx rimraf node_modules .turbo .dist"

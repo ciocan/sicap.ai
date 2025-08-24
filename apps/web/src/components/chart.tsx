@@ -13,7 +13,7 @@ import type { TooltipProps } from "recharts";
 
 import { Label, RadioGroup, RadioGroupItem } from "@sicap/ui";
 import { formatNumber, moneyRon } from "@/utils";
-import { formatDateAs } from "@sicap/api/dist/utils/date.mjs";
+import { formatDateAs } from "@sicap/api/utils/date";
 
 interface StatItem {
   key: string;

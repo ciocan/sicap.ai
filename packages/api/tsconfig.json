@@ -4,8 +4,8 @@
   "exclude": ["dist", "build", "node_modules"],
   "compilerOptions": {
     "lib": ["ESNext"],
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "target": "ESNext",
     "outDir": "./dist"
   }

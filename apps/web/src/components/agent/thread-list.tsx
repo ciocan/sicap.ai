@@ -18,7 +18,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@sicap/ui";
-import { formatDateTime } from "@sicap/api/dist/utils/date.mjs";
+import { formatDateTime } from "@sicap/api/utils/date";
 
 import { useIsActiveThread, useThreadContext } from "./hooks/thread-context";
 import { Button } from "@sicap/ui/components/ui/button";
