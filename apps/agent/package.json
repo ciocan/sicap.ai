@@ -19,8 +19,8 @@
     "node": ">=20.9.0"
   },
   "dependencies": {
-    "@ai-sdk/openai": "^2.0.14",
-    "@libsql/client": "^0.15.11",
+    "@ai-sdk/openai": "^2.0.22",
+    "@libsql/client": "^0.15.14",
     "@mastra/core": "0.0.0-ai-v5-20250813235735",
     "@mastra/deployer-vercel": "^0.11.13",
     "@mastra/libsql": "0.0.0-ai-v5-20250813235735",
@@ -38,15 +38,15 @@
     "@sicap/api": "workspace:*",
     "@sicap/data": "workspace:*",
     "@t3-oss/env-nextjs": "^0.8.0",
-    "ai": "^5.0.14",
+    "ai": "^5.0.26",
     "drizzle-orm": "^0.44.4",
-    "jose": "^6.0.12",
+    "jose": "^6.1.0",
     "langfuse-vercel": "^3.38.4",
     "next-axiom": "^1.9.2",
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@types/node": "^24.2.1",
+    "@types/node": "^24.3.0",
     "mastra": "0.0.0-ai-v5-20250813235735",
     "typescript": "^5.9.2"
   }
