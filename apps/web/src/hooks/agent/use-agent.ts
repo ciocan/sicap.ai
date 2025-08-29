@@ -1,17 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useQueryState, parseAsString } from "nuqs";
 import { useRouter } from "next/navigation";
 import { DefaultChatTransport } from "ai";
 import { useChat } from "@ai-sdk/react";
 
-import { useThread } from "./use-threads";
+import { useThreadQuery, useThreadId } from "./use-threads";
 
 export function useAgent() {
-  const [threadId, setThreadId] = useQueryState("t", parseAsString.withDefault(""));
-  const [newThreadId] = useState(crypto.randomUUID());
-  const { data, isLoading: isLoadingThread } = useThread(threadId);
+  const { threadId, setThreadId, newThreadId } = useThreadId();
+  const { data, isLoading: isLoadingThread } = useThreadQuery(threadId);
   const [input, setInput] = useState("");
   const router = useRouter();
 
