@@ -17,9 +17,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@sicap/ui";
-import { useQueryClient } from "@tanstack/react-query";
 import { timeAgo } from "@/utils";
-import { useThreadsQuery, useThreadId } from "@/hooks/agent/use-threads";
+import { useThreadsQuery, useThreadId, useArchiveThreadMutation } from "@/hooks/agent/use-threads";
 
 interface Thread {
   id: string;
@@ -29,29 +28,8 @@ interface Thread {
 
 export function ThreadList() {
   const { data, isLoading } = useThreadsQuery();
-  const { threadId: activeThreadId, setThreadId } = useThreadId();
-  const queryClient = useQueryClient();
-
-  const handleArchiveThread = async (threadId: string) => {
-    try {
-      const response = await fetch(`/api/agent/thread/archive`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ threadId }),
-      });
-
-      if (response.ok) {
-        // If we're archiving the active thread, redirect to new thread
-        if (threadId === activeThreadId) {
-          setThreadId("");
-        }
-        // Refresh the thread list
-        await queryClient.invalidateQueries({ queryKey: ["threads"] });
-      }
-    } catch (error) {
-      console.error("Failed to archive thread:", error);
-    }
-  };
+  const { threadId: activeThreadId } = useThreadId();
+  const { mutate: handleArchiveThread } = useArchiveThreadMutation();
 
   if (isLoading) {
     return (

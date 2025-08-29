@@ -5,11 +5,12 @@ import { useRouter } from "next/navigation";
 import { DefaultChatTransport } from "ai";
 import { useChat } from "@ai-sdk/react";
 
-import { useThreadQuery, useThreadId } from "./use-threads";
+import { useThreadQuery, useThreadId, useGenerateThreadTitleMutation } from "./use-threads";
 
 export function useAgent() {
-  const { threadId, setThreadId, newThreadId } = useThreadId();
+  const { threadId, newThreadId } = useThreadId();
   const { data, isLoading: isLoadingThread } = useThreadQuery(threadId);
+  const { mutate: generateThreadTitle } = useGenerateThreadTitleMutation();
   const [input, setInput] = useState("");
   const router = useRouter();
 
@@ -18,9 +19,13 @@ export function useAgent() {
     transport: new DefaultChatTransport({
       api: "/api/agent/chat",
     }),
-    onFinish: () => {
+    onFinish: ({ messages }) => {
+      if (messages.length === 2) {
+        const message = messages[0]?.parts[0]?.type === "text" ? messages[0]?.parts[0]?.text : "";
+        generateThreadTitle({ threadId: newThreadId, message });
+      }
+
       if (!threadId) {
-        setThreadId(newThreadId);
         router.replace(`/agent2?t=${newThreadId}`);
       }
     },
