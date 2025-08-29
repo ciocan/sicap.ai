@@ -1,17 +1,21 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 export function useAgent() {
   const [input, setInput] = useState("");
   const { messages, sendMessage, status } = useChat();
 
+  const threadId = useMemo(() => {
+    return crypto.randomUUID();
+  }, []);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (input.trim()) {
-      sendMessage({ text: input });
+      sendMessage({ text: input }, { body: { threadId } });
       setInput("");
     }
   };

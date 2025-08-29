@@ -27,16 +27,16 @@ export const sicapAgent = new Agent({
   tools: { searchContractsTool },
   defaultVNextStreamOptions: ({ runtimeContext }) => {
     const userId = runtimeContext.get("userId") as string;
-    const sessionId = runtimeContext.get("sessionId") as string;
+    const threadId = runtimeContext.get("threadId") as string;
 
-    console.log("--- STREAM --- : userId >>", userId, "<<", "sessionId >>", sessionId, "<<");
+    console.log("--- STREAM --- : userId >>", userId, "<<", "threadId >>", threadId, "<<");
 
     return {
       runtimeContext,
       telemetry: {
         isEnabled: true,
         metadata: {
-          sessionId,
+          sessionId: threadId,
           userId,
         },
       },

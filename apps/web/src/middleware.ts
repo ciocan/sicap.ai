@@ -7,7 +7,7 @@ export const config = {
 
 export const middleware = (request: NextRequest, event: NextFetchEvent) => {
   const logger = new Logger({ source: "middleware" });
-  logger.middleware(request);
+  // logger.middleware(request);
 
   event.waitUntil(logger.flush());
 

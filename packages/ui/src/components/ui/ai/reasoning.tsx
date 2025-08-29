@@ -12,6 +12,7 @@ import {
 } from "@sicap/ui/components/ui/collapsible";
 import { cn } from "@sicap/ui/lib/utils";
 import { Response } from "@sicap/ui/components/ui/ai/response";
+import { Loader } from "../loaders.tsx";
 
 type ReasoningContextValue = {
   isStreaming: boolean;
@@ -123,9 +124,9 @@ export const ReasoningTrigger = memo(({ className, children, ...props }: Reasoni
         <>
           <BrainIcon className="size-4" />
           {isStreaming || duration === 0 ? (
-            <p>Thinking...</p>
+            <Loader variant="text-shimmer" text="Gândesc..." size="sm" />
           ) : (
-            <p>Thought for {duration} seconds</p>
+            <p>Am gândit {duration} secunde</p>
           )}
           <ChevronDownIcon
             className={cn(

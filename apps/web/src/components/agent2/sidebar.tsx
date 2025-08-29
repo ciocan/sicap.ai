@@ -36,7 +36,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenuItem className="mr-2">
               <SidebarMenuButton size="sm" asChild>
                 <Button variant="ghost" size="sm" asChild>
-                  <Link href="/agent" className="">
+                  <Link href="/agent2" className="">
                     <span className="text-center text-lg pr-4 w-full text-primary flex items-center gap-2 justify-center">
                       <HatGlasses className="size-5" />
                       <span className="flex items-center gap-0">
