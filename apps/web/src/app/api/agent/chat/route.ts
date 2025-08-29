@@ -4,7 +4,7 @@ import { RuntimeContext } from "@mastra/core/runtime-context";
 import { mastra } from "@/agent/mastra";
 import { auth } from "@sicap/data";
 
-export const maxDuration = 30;
+export const maxDuration = 300;
 
 export async function POST(req: Request) {
   const { messages, threadId }: { messages: UIMessage[]; threadId: string } = await req.json();
@@ -14,14 +14,10 @@ export async function POST(req: Request) {
   });
 
   if (!session) {
-    console.error(`===== 401 ==== UNAUTHORIZED ====`);
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const userId = session.user.id;
-
-  console.log("---- threadId ----", threadId);
-  console.log("---- userId ----", userId);
 
   const agent = mastra.getAgent("sicapAgent");
   const runtimeContext = new RuntimeContext();
