@@ -22,11 +22,13 @@ export async function GET(req: Request) {
         return Response.json({ error: "Memory not found" }, { status: 404 });
       }
 
-      const threads = await memory.getThreadsByResourceId({
+      const allThreads = await memory.getThreadsByResourceId({
         resourceId: userId,
-        orderBy: "createdAt",
+        orderBy: "updatedAt",
         sortDirection: "DESC",
       });
+
+      const threads = allThreads.filter((thread) => !thread.metadata?.isArchived);
 
       return Response.json({ threads }, { status: 200 });
     } catch {

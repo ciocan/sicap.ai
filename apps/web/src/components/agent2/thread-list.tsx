@@ -1,7 +1,23 @@
 import Link from "next/link";
-import { PlusIcon } from "lucide-react";
+import { PlusIcon, MoreHorizontal, Archive } from "lucide-react";
 
-import { Button } from "@sicap/ui/components/ui/button";
+import {
+  Button,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@sicap/ui";
+import { useQueryClient } from "@tanstack/react-query";
 import { timeAgo } from "@/utils";
 import { useThreadsQuery, useThreadId } from "@/hooks/agent/use-threads";
 
@@ -13,7 +29,29 @@ interface Thread {
 
 export function ThreadList() {
   const { data, isLoading } = useThreadsQuery();
-  const { threadId: activeThreadId } = useThreadId();
+  const { threadId: activeThreadId, setThreadId } = useThreadId();
+  const queryClient = useQueryClient();
+
+  const handleArchiveThread = async (threadId: string) => {
+    try {
+      const response = await fetch(`/api/agent/thread/archive`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ threadId }),
+      });
+
+      if (response.ok) {
+        // If we're archiving the active thread, redirect to new thread
+        if (threadId === activeThreadId) {
+          setThreadId("");
+        }
+        // Refresh the thread list
+        await queryClient.invalidateQueries({ queryKey: ["threads"] });
+      }
+    } catch (error) {
+      console.error("Failed to archive thread:", error);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -37,16 +75,60 @@ export function ThreadList() {
         const isActive = thread.id === activeThreadId;
         const title = thread.title.startsWith("New Thread") ? "Conversatie noua..." : thread.title;
         return (
-          <Link
+          <div
             key={thread.id}
-            href={`/agent2?t=${thread.id}`}
-            className={`block p-3 rounded-lg transition-colors ${
+            className={`group/item relative rounded-lg transition-colors ${
               isActive ? "bg-accent text-accent-foreground" : "hover:bg-accent"
             }`}
           >
-            <div className="text-sm font-medium line-clamp-1">{title}</div>
-            <div className="text-xs text-muted-foreground mt-1">{timeAgo(thread.createdAt)}</div>
-          </Link>
+            <Link href={`/agent2?t=${thread.id}`} className="block p-3 pr-12">
+              <div className="text-sm font-medium line-clamp-1">{title}</div>
+              <div className="text-xs text-muted-foreground mt-1">{timeAgo(thread.createdAt)}</div>
+            </Link>
+            <div className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover/item:opacity-100 transition-opacity">
+              <AlertDialog>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 w-8 p-0"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <MoreHorizontal className="h-4 w-4" />
+                      <span className="sr-only">Optiuni thread</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <AlertDialogTrigger asChild>
+                      <DropdownMenuItem className="cursor-pointer">
+                        <Archive className="mr-2 h-4 w-4" />
+                        Arhiveaza
+                      </DropdownMenuItem>
+                    </AlertDialogTrigger>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Arhiveaza conversatia</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Esti sigur ca vrei sa arhivezi aceasta conversatie? Aceasta actiune nu poate
+                      fi anulata.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Anuleaza</AlertDialogCancel>
+                    <AlertDialogAction
+                      className="bg-destructive hover:bg-destructive/80 text-destructive-foreground"
+                      onClick={() => handleArchiveThread(thread.id)}
+                    >
+                      Arhiveaza
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
+          </div>
         );
       })}
     </div>
