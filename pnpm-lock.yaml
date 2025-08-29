@@ -144,11 +144,23 @@ importers:
       '@mastra/core':
         specifier: 0.15.2
         version: 0.15.2(openapi-types@12.1.3)(react@19.1.1)(zod@3.25.76)
+      '@mastra/deployer-vercel':
+        specifier: ^0.11.18
+        version: 0.11.18(@mastra/core@0.15.2(openapi-types@12.1.3)(react@19.1.1)(zod@3.25.76))(rollup@4.49.0)(typescript@5.9.2)(zod@3.25.76)
+      '@mastra/libsql':
+        specifier: 0.13.7
+        version: 0.13.7(@mastra/core@0.15.2(openapi-types@12.1.3)(react@19.1.1)(zod@3.25.76))
+      '@mastra/loggers':
+        specifier: 0.10.9
+        version: 0.10.9(@mastra/core@0.15.2(openapi-types@12.1.3)(react@19.1.1)(zod@3.25.76))
       '@mastra/memory':
         specifier: 0.14.2
         version: 0.14.2(@mastra/core@0.15.2(openapi-types@12.1.3)(react@19.1.1)(zod@3.25.76))(react@19.1.1)(zod@3.25.76)
+      '@mastra/server':
+        specifier: 0.15.2
+        version: 0.15.2(@mastra/core@0.15.2(openapi-types@12.1.3)(react@19.1.1)(zod@3.25.76))(zod@3.25.76)
       '@mdx-js/loader':
-        specifier: ^3.0.0
+        specifier: ^3.1.0
         version: 3.1.0(acorn@8.15.0)
       '@mdx-js/react':
         specifier: ^3.0.0
@@ -298,6 +310,9 @@ importers:
       drizzle-kit:
         specifier: ^0.31.4
         version: 0.31.4
+      mastra:
+        specifier: 0.11.2
+        version: 0.11.2(@mastra/core@0.15.2(openapi-types@12.1.3)(react@19.1.1)(zod@3.25.76))(@opentelemetry/api@1.9.0)(@types/json-schema@7.0.15)(typescript@5.9.2)(zod@3.25.76)
       postcss:
         specifier: ^8.5.6
         version: 8.5.6
@@ -7345,6 +7360,18 @@ snapshots:
       - typescript
       - zod
 
+  '@mastra/deployer-vercel@0.11.18(@mastra/core@0.15.2(openapi-types@12.1.3)(react@19.1.1)(zod@3.25.76))(rollup@4.49.0)(typescript@5.9.2)(zod@3.25.76)':
+    dependencies:
+      '@mastra/core': 0.15.2(openapi-types@12.1.3)(react@19.1.1)(zod@3.25.76)
+      '@mastra/deployer': 0.15.2(@mastra/core@0.15.2(openapi-types@12.1.3)(react@19.1.1)(zod@3.25.76))(typescript@5.9.2)(zod@3.25.76)
+      '@rollup/plugin-virtual': 3.0.2(rollup@4.49.0)
+      fs-extra: 11.3.1
+    transitivePeerDependencies:
+      - rollup
+      - supports-color
+      - typescript
+      - zod
+
   '@mastra/deployer@0.15.2(@mastra/core@0.15.2(openapi-types@12.1.3)(react@19.1.1)(zod@3.25.76))(typescript@5.9.2)(zod@3.25.76)':
     dependencies:
       '@babel/core': 7.28.3
@@ -8843,6 +8870,10 @@ snapshots:
   '@rollup/plugin-virtual@3.0.2(rollup@4.47.1)':
     optionalDependencies:
       rollup: 4.47.1
+
+  '@rollup/plugin-virtual@3.0.2(rollup@4.49.0)':
+    optionalDependencies:
+      rollup: 4.49.0
 
   '@rollup/pluginutils@5.2.0(rollup@4.47.1)':
     dependencies:

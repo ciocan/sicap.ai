@@ -1,0 +1,36 @@
+import { Mastra } from "@mastra/core/mastra";
+import { PinoLogger } from "@mastra/loggers";
+import { LangfuseExporter } from "langfuse-vercel";
+
+import { sicapAgent } from "@/agent/sicap";
+import { storage, VECTOR_STORE_NAME, vector } from "@/agent/stores";
+import { env } from "@/lib/env";
+
+const logger = new PinoLogger({
+  name: "sicapAgent",
+  level: "info",
+});
+
+export const mastra = new Mastra({
+  agents: { sicapAgent },
+  storage,
+  vectors: {
+    [VECTOR_STORE_NAME]: vector,
+  },
+  logger,
+  telemetry: {
+    serviceName: "ai",
+    enabled: true,
+    sampling: {
+      type: "always_on",
+    },
+    export: {
+      type: "custom",
+      exporter: new LangfuseExporter({
+        publicKey: env.LANGFUSE_PUBLIC_KEY,
+        secretKey: env.LANGFUSE_SECRET_KEY,
+        baseUrl: env.LANGFUSE_BASEURL,
+      }),
+    },
+  },
+});
