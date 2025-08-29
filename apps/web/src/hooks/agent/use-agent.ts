@@ -9,7 +9,8 @@ import { useChat } from "@ai-sdk/react";
 import { useThread } from "./use-threads";
 
 export function useAgent() {
-  const [threadId] = useQueryState("t", parseAsString.withDefault(""));
+  const [threadId, setThreadId] = useQueryState("t", parseAsString.withDefault(""));
+  const [newThreadId] = useState(crypto.randomUUID());
   const { data, isLoading: isLoadingThread } = useThread(threadId);
   const [input, setInput] = useState("");
   const router = useRouter();
@@ -19,6 +20,12 @@ export function useAgent() {
     transport: new DefaultChatTransport({
       api: "/api/agent/chat",
     }),
+    onFinish: () => {
+      if (!threadId) {
+        setThreadId(newThreadId);
+        router.replace(`/agent2?t=${newThreadId}`);
+      }
+    },
   });
 
   useEffect(() => {
@@ -29,21 +36,18 @@ export function useAgent() {
     } else if (error) {
       router.replace("/agent2");
     }
-  }, [data, setMessages, router.replace]);
+  }, [data, setMessages, router]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    const newThreadId = crypto.randomUUID();
-    router.replace(`/agent2?t=${newThreadId}`);
-
-    if (input.trim()) {
-      sendMessage({ text: input }, { body: { threadId } });
-      setInput("");
-    }
+    const threadIdToUse = threadId || newThreadId;
+    sendMessage({ text: input }, { body: { threadId: threadIdToUse } });
+    setInput("");
   };
 
   return {
+    data,
+    threadId,
     messages,
     status,
     input,

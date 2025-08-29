@@ -27,14 +27,17 @@ import { useAgent } from "@/hooks/agent/use-agent";
 import { useIdentify } from "@/hooks/use-identify";
 
 export default function Thread() {
-  const { messages, status, setInput, input, handleSubmit, isLoadingThread } = useAgent();
+  const { messages, status, setInput, input, handleSubmit, data, isLoadingThread } = useAgent();
   const { user } = useIdentify();
 
   return (
     <div className="relative mt-auto flex mx-auto h-full w-full flex-col justify-self-end overflow-hidden">
       <div className="flex h-full flex-col">
-        {isLoadingThread && <Loader variant="dots" size="sm" className="mx-auto mt-4" />}
-        {!isLoadingThread && messages.length === 0 && <ThreadWelcome onSetInput={setInput} />}
+        {messages.length === 0 &&
+          !isLoadingThread &&
+          (!data?.uiMessages || data?.uiMessages.length === 0) && (
+            <ThreadWelcome onSetInput={setInput} />
+          )}
         <div className="relative mb-0 flex-1 overflow-hidden">
           <Conversation className="h-full pb-2">
             <ConversationContent className="pb-28 max-w-3xl mx-auto">
