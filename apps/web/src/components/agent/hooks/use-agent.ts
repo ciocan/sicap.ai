@@ -14,7 +14,6 @@ import { getVercelAIMessages } from "@/components/agent/utils/get-vercel-message
 import {
   buildMastraMessageFromAppendMessage,
   buildMastraMessageFromUIMessage,
-  configureMastraClient,
 } from "@/components/agent/utils/runtime";
 import { useIsCreatingNewThread, useSetIsCreatingNewThread } from "@/components/agent/stores";
 import { useThreadContext, useThreadList } from "./thread-context";
@@ -77,7 +76,7 @@ export function useAgentRuntime() {
 
     const loadMessages = async () => {
       try {
-        const thread = configureMastraClient(mastraClient.getMemoryThread(threadId, agentId));
+        const thread = mastraClient.getMemoryThread(threadId, agentId);
 
         const { uiMessages } = await thread.getMessages();
 
@@ -173,8 +172,6 @@ export function useAgentRuntime() {
           void mastraClient
             .request("/gen-title", {
               method: "POST",
-              // @ts-expect-error TODO: fix this when mastra client supports credentials properly
-              credentials: "include" as RequestCredentials,
               body: { threadId: ensuredThreadId },
             })
             .then(refetchThreads)

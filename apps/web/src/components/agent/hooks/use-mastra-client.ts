@@ -16,25 +16,18 @@ export const useMastraClient = (args?: UseMastraClientArgs) => {
       headers["x-session-id"] = args.sessionId;
     }
 
+    const abortController = new AbortController();
+
     const client = new MastraClient({
       baseUrl: env.NEXT_PUBLIC_AGENT_API_URL,
       retries: 3,
       backoffMs: 100,
       maxBackoffMs: 5000,
       headers,
+      credentials: "include",
+      abortSignal: abortController.signal,
     });
 
-    const originalRequest = client.request.bind(client);
-
-    client.request = async (path, options) => {
-      const modifiedOptions = {
-        ...options,
-        credentials: "include" as RequestCredentials,
-      };
-
-      return originalRequest(path, modifiedOptions);
-    };
-
-    return client;
+    return { client, abortController };
   }, [args?.sessionId]);
 };

@@ -21,13 +21,13 @@
   "dependencies": {
     "@ai-sdk/openai": "^2.0.22",
     "@libsql/client": "^0.15.14",
-    "@mastra/core": "0.0.0-ai-v5-20250813235735",
-    "@mastra/deployer-vercel": "^0.11.13",
-    "@mastra/libsql": "0.0.0-ai-v5-20250813235735",
-    "@mastra/loggers": "0.0.0-ai-v5-20250813235735",
-    "@mastra/memory": "0.0.0-ai-v5-20250813235735",
-    "@mastra/server": "0.0.0-ai-v5-20250813235735",
-    "@opentelemetry/auto-instrumentations-node": "^0.62.0",
+    "@mastra/core": "0.15.2",
+    "@mastra/deployer-vercel": "^0.11.18",
+    "@mastra/libsql": "0.13.7",
+    "@mastra/loggers": "0.10.9",
+    "@mastra/memory": "0.14.2",
+    "@mastra/server": "0.15.2",
+    "@opentelemetry/auto-instrumentations-node": "^0.62.1",
     "@opentelemetry/core": "^2.0.1",
     "@opentelemetry/exporter-trace-otlp-grpc": "^0.203.0",
     "@opentelemetry/exporter-trace-otlp-http": "^0.203.0",
@@ -38,7 +38,7 @@
     "@sicap/api": "workspace:*",
     "@sicap/data": "workspace:*",
     "@t3-oss/env-nextjs": "^0.8.0",
-    "ai": "^5.0.26",
+    "ai": "^5.0.27",
     "drizzle-orm": "^0.44.4",
     "jose": "^6.1.0",
     "langfuse-vercel": "^3.38.4",
@@ -47,7 +47,7 @@
   },
   "devDependencies": {
     "@types/node": "^24.3.0",
-    "mastra": "0.0.0-ai-v5-20250813235735",
+    "mastra": "0.11.2",
     "typescript": "^5.9.2"
   }
 }

@@ -3,7 +3,9 @@ import { AssistantRuntimeProvider } from "@assistant-ui/react";
 
 import { SidebarInset, SidebarProvider } from "@sicap/ui";
 import { AppSidebar } from "./app-sidebar";
-import { useAgentRuntime } from "./hooks/use-agent";
+import { useAgentRuntime } from "./hooks/use-agent-mastra";
+// import { useAgentRuntime } from "./hooks/use-agent";
+
 import { Main } from "./main";
 import { ThreadProvider } from "./hooks/thread-context";
 

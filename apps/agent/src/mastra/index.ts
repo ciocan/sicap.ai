@@ -53,7 +53,7 @@ export const mastra = new Mastra({
           const mastra = c.get("mastra");
           const agent = mastra.getAgent("sicapAgent");
           // @ts-expect-error TODO: fix this
-          const userId = c.get("userId");
+          const userId = c.get("userId") as string;
 
           console.log("------ /gen-title: userId >>", userId, "<<");
 
@@ -62,17 +62,14 @@ export const mastra = new Mastra({
             return c.json({ error: "missing userId" }, 500);
           }
 
-          const { threadId } = await c.req.json();
+          const { threadId, message } = await c.req.json();
 
           if (!threadId) {
             return c.json({ error: "threadId is required" }, 400);
           }
 
-          // @ts-expect-error TODO: fix this
-          const thread = await agent.fetchMemory({ threadId, resourceId: userId });
-
-          if (thread.messages.filter((m) => m.role === "user").length > 1) {
-            return c.json({ message: "not-generated" });
+          if (!message) {
+            return c.json({ error: "message is required" }, 400);
           }
 
           const runtimeContext = new RuntimeContext();
@@ -80,7 +77,7 @@ export const mastra = new Mastra({
           runtimeContext.set("resourceId", userId);
 
           const title = await agent.genTitle(
-            thread.messages[0],
+            { role: "user", content: message },
             runtimeContext,
             openai("gpt-5-nano"),
             `
@@ -100,7 +97,6 @@ export const mastra = new Mastra({
 
           await memory.createThread({
             threadId,
-            // @ts-expect-error TODO: fix this
             resourceId: userId,
             title,
             metadata: {

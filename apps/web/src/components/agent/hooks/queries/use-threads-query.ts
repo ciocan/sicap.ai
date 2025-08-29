@@ -2,8 +2,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { ExternalStoreThreadData } from "@assistant-ui/react";
 import type { MastraClient } from "@mastra/client-js";
 
-import { configureMastraClient } from "@/components/agent/utils/runtime";
-
 // Query key factory for threads
 export const threadsQueryKeys = {
   all: ["threads"] as const,
@@ -69,7 +67,7 @@ export function useArchiveThreadMutation({
 
   return useMutation({
     mutationFn: async (threadId: string) => {
-      const thread = configureMastraClient(mastraClient.getMemoryThread(threadId, agentId));
+      const thread = mastraClient.getMemoryThread(threadId, agentId);
       const threadData = await thread.get();
 
       await thread.update({

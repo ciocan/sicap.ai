@@ -1,6 +1,5 @@
 import type { AppendMessage } from "@assistant-ui/react";
-import type { MastraMessageV3 } from "@mastra/core/memory";
-import type { MastraClient, RequestOptions } from "@mastra/client-js";
+import type { MastraMessageV3 } from "@mastra/core/agent/message-list";
 import type { UIMessage } from "ai";
 
 import { generateId } from "@/utils";
@@ -78,18 +77,3 @@ export function buildMastraMessageFromUIMessage({
     },
   } satisfies MastraMessageV3;
 }
-
-// Helper to configure mastra client with credentials
-export const configureMastraClient = (
-  client: ReturnType<typeof MastraClient.prototype.getMemoryThread>,
-) => {
-  const originalRequest = client.request.bind(client);
-  client.request = async (path: string, options: RequestOptions) => {
-    const modifiedOptions = {
-      ...options,
-      credentials: "include" as RequestCredentials,
-    };
-    return originalRequest(path, modifiedOptions);
-  };
-  return client;
-};

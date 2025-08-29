@@ -40,6 +40,9 @@ interface ThreadContextValue {
 
   // client
   mastraClient: MastraClient;
+
+  // abort controller
+  abortController: AbortController;
 }
 
 const ThreadContext = createContext<ThreadContextValue | null>(null);
@@ -58,7 +61,7 @@ export function ThreadProvider({ children, agentId }: ThreadProviderProps) {
   const sessionId = useMemo(() => getSessionId(threadId), [threadId]);
 
   // Create client with headers
-  const mastraClient = useMastraClient({ sessionId });
+  const { client: mastraClient, abortController } = useMastraClient({ sessionId });
 
   // React Query hooks
   const {
@@ -130,14 +133,6 @@ export function ThreadProvider({ children, agentId }: ThreadProviderProps) {
       try {
         // Check if thread exists
         const thread = mastraClient.getMemoryThread(threadId, agentId);
-        const originalRequest = thread.request.bind(thread);
-        thread.request = async (path, options) => {
-          const modifiedOptions = {
-            ...options,
-            credentials: "include" as RequestCredentials,
-          };
-          return originalRequest(path, modifiedOptions);
-        };
 
         await thread.get();
         return threadId;
@@ -189,8 +184,9 @@ export function ThreadProvider({ children, agentId }: ThreadProviderProps) {
       agentId,
       resourceId,
       mastraClient,
+      abortController,
     }),
-    [agentId, resourceId, mastraClient],
+    [agentId, resourceId, mastraClient, abortController],
   );
 
   const value: ThreadContextValue = useMemo(
@@ -201,8 +197,9 @@ export function ThreadProvider({ children, agentId }: ThreadProviderProps) {
       isLoading,
       threads,
       isHydrated,
+      abortController,
     }),
-    [stableConfig, stableActions, threadId, isLoading, threads, isHydrated],
+    [stableConfig, stableActions, threadId, isLoading, threads, isHydrated, abortController],
   );
 
   return <ThreadContext.Provider value={value}>{children}</ThreadContext.Provider>;
