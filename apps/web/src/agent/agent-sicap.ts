@@ -29,7 +29,7 @@ export const sicapAgent = new Agent({
     const userId = runtimeContext.get("userId") as string;
     const threadId = runtimeContext.get("threadId") as string;
 
-    console.log("--- STREAM --- : userId >>", userId, "<<", "threadId >>", threadId, "<<");
+    console.log("--- STREAM  --- : userId >>", userId, "<<", "threadId >>", threadId, "<<");
 
     return {
       runtimeContext,

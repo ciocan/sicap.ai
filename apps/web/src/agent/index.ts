@@ -24,9 +24,6 @@ export const mastra = new Mastra({
   telemetry: {
     serviceName: "ai",
     enabled: true,
-    sampling: {
-      type: "always_on",
-    },
     export: {
       type: "custom",
       exporter: new LangfuseExporter({
