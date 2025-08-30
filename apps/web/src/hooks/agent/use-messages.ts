@@ -12,9 +12,10 @@ const voteMessage = async ({
   vote: "up" | "down";
   branchIndex?: number;
 }) => {
-  const response = await fetch(`/api/agent/thread/message/vote`, {
-    method: "POST",
-    body: JSON.stringify({ threadId, messageId, vote, branchIndex }),
+  const response = await fetch(`/api/agent/messages/${messageId}/vote`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ threadId, vote, branchIndex }),
   });
   return response.json();
 };

@@ -6,7 +6,7 @@ import type { UIMessage } from "ai";
 import { useIdentify } from "@/hooks/use-identify";
 
 const fetchThread = async (threadId: string) => {
-  const response = await fetch(`/api/agent/thread?threadId=${threadId}`);
+  const response = await fetch(`/api/agent/threads/${threadId}`);
   return response.json();
 };
 
@@ -15,16 +15,36 @@ const fetchThreads = async () => {
   return response.json();
 };
 
+export const generateThreadTitle = async ({
+  threadId,
+  message,
+}: {
+  threadId: string;
+  message: string;
+}) => {
+  if (!threadId || !message) {
+    throw new Error("threadId and message are required");
+  }
+
+  try {
+    await fetch(`/api/agent/threads/${threadId}/gen-title`, {
+      method: "PUT",
+      body: JSON.stringify({ message }),
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (error) {
+    console.error("Failed to generate thread title:", error);
+  }
+};
+
 export const useArchiveThreadMutation = () => {
   const { threadId: activeThreadId, setThreadId } = useThreadId();
   const queryClient = useQueryClient();
 
   const handleArchiveThread = async (threadId: string) => {
     try {
-      const response = await fetch(`/api/agent/thread/archive`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ threadId }),
+      const response = await fetch(`/api/agent/threads/${threadId}/archive`, {
+        method: "PUT",
       });
 
       if (response.ok) {
@@ -43,27 +63,6 @@ export const useArchiveThreadMutation = () => {
       queryClient.invalidateQueries({ queryKey: ["threads"] });
     },
   });
-};
-
-export const generateThreadTitle = async ({
-  threadId,
-  message,
-}: {
-  threadId: string;
-  message: string;
-}) => {
-  if (!threadId || !message) {
-    throw new Error("threadId and message are required");
-  }
-
-  try {
-    await fetch(`/api/agent/thread/gen-title`, {
-      method: "POST",
-      body: JSON.stringify({ threadId, message }),
-    });
-  } catch (error) {
-    console.error("Failed to generate thread title:", error);
-  }
 };
 
 export const useGenerateThreadTitleMutation = () => {
