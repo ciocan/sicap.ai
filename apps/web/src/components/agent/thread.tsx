@@ -40,6 +40,7 @@ import {
 
 import { ThreadWelcome } from "./welcome";
 import { MessageActions } from "./message-actions";
+import { SearchResults } from "./search-results";
 
 import { useAgent } from "@/hooks/agent/use-agent";
 import { useIdentify } from "@/hooks/use-identify";
@@ -76,7 +77,7 @@ export default function Thread() {
           )}
         <div className="relative mb-0 flex-1 overflow-hidden">
           <Conversation className="h-full pb-8">
-            <ConversationContent className="pb-28 max-w-3xl mx-auto">
+            <ConversationContent className="pb-28 max-w-5xl mx-auto">
               {messages.map((message, messageIndex) => (
                 <div key={message.id}>
                   {message.role === "assistant" &&
@@ -160,15 +161,51 @@ export default function Thread() {
                             default:
                               if (part.type.startsWith("tool-")) {
                                 const toolPart = part as ToolUIPart;
+
+                                if (
+                                  toolPart.type === "tool-searchContractsTool" &&
+                                  toolPart.output &&
+                                  toolPart.state === "output-available"
+                                ) {
+                                  const searchOutput = toolPart.output as {
+                                    took: number;
+                                    total: number;
+                                    items: Array<{
+                                      id: string;
+                                      index: string;
+                                      fields: any;
+                                    }>;
+                                  };
+                                  return (
+                                    <div key={`${message.id}-${i}`} className="space-y-4">
+                                      <Tool>
+                                        <ToolHeader type={toolPart.type} state={toolPart.state} />
+                                        <ToolContent>
+                                          <ToolInput input={toolPart.input} />
+                                        </ToolContent>
+                                      </Tool>
+                                      <SearchResults
+                                        took={searchOutput.took}
+                                        total={searchOutput.total}
+                                        items={searchOutput.items}
+                                      />
+                                    </div>
+                                  );
+                                }
+
                                 return (
                                   <Tool key={`${message.id}-${i}`}>
                                     <ToolHeader type={toolPart.type} state={toolPart.state} />
                                     <ToolContent>
                                       <ToolInput input={toolPart.input} />
                                       {(toolPart.output || toolPart.errorText) && (
-                                        <ToolOutput 
-                                          output={toolPart.output ? JSON.stringify(toolPart.output, null, 2) : undefined} 
-                                          errorText={toolPart.errorText} 
+                                        <ToolOutput
+                                          output={
+                                            toolPart.output
+                                              ? JSON.stringify(toolPart.output, null, 2)
+                                              : undefined
+                                          }
+                                          errorText={toolPart.errorText}
                                         />
                                       )}
                                     </ToolContent>
@@ -193,7 +230,7 @@ export default function Thread() {
             </ConversationContent>
             <ConversationScrollButton />
           </Conversation>
-          <div className="sticky bottom-0 overflow-auto bg-transparent max-w-3xl mx-auto px-2 pt-[2px]">
+          <div className="sticky bottom-0 overflow-auto bg-transparent max-w-5xl mx-auto px-2 pt-[2px]">
             <PromptInput
               className="relative border-8 border-primary-foreground border-b-0 flex w-full bg-muted/70 backdrop-blur-sm flex-col rounded-none rounded-t-[1.5rem] focus-within:ring-1 focus-within:ring-secondary-foreground/30"
               onSubmit={handleSubmit}

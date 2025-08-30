@@ -10,10 +10,10 @@ const inputSchema = z.object({
     .number()
     .int()
     .min(1)
-    .max(100)
+    .max(10)
     .optional()
-    .default(20)
-    .describe("Numărul de rezultate pe pagină (implicit 20, maxim 100)"),
+    .default(5)
+    .describe("Numărul de rezultate pe pagină (implicit 5, maxim 10)"),
   db: z
     .array(z.enum(["licitatii-publice", "achizitii-directe", "achizitii-offline"]))
     .default(["licitatii-publice", "achizitii-directe", "achizitii-offline"])
