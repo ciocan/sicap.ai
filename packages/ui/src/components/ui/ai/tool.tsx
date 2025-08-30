@@ -17,7 +17,7 @@ import {
   CollapsibleTrigger,
 } from "@sicap/ui/components/ui/collapsible";
 import { cn } from "@sicap/ui/lib/utils";
-import { CodeBlock } from "@sicap/ui/components/ui/ai/code-block.tsx";
+import { CodeBlock } from "@sicap/ui/components/ui/ai/code-block";
 
 export type ToolProps = ComponentProps<typeof Collapsible>;
 

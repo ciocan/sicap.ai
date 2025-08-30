@@ -1,5 +1,6 @@
 "use client";
 import { HatGlasses } from "lucide-react";
+import type { ToolUIPart } from "ai";
 
 import {
   Conversation,
@@ -29,6 +30,13 @@ import {
   BranchPrevious,
   BranchSelector,
 } from "@sicap/ui/components/ui/ai/branch";
+import {
+  Tool,
+  ToolHeader,
+  ToolContent,
+  ToolInput,
+  ToolOutput,
+} from "@sicap/ui/components/ui/ai/tool";
 
 import { ThreadWelcome } from "./welcome";
 import { MessageActions } from "./message-actions";
@@ -150,6 +158,23 @@ export default function Thread() {
                                 </Reasoning>
                               );
                             default:
+                              if (part.type.startsWith("tool-")) {
+                                const toolPart = part as ToolUIPart;
+                                return (
+                                  <Tool key={`${message.id}-${i}`}>
+                                    <ToolHeader type={toolPart.type} state={toolPart.state} />
+                                    <ToolContent>
+                                      <ToolInput input={toolPart.input} />
+                                      {(toolPart.output || toolPart.errorText) && (
+                                        <ToolOutput 
+                                          output={toolPart.output ? JSON.stringify(toolPart.output, null, 2) : undefined} 
+                                          errorText={toolPart.errorText} 
+                                        />
+                                      )}
+                                    </ToolContent>
+                                  </Tool>
+                                );
+                              }
                               return null;
                           }
                         })}
