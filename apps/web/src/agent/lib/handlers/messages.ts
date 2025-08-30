@@ -33,19 +33,23 @@ export function voteMessageHandler<
       const { uiMessages } = await memory.query({
         resourceId: userId,
         threadId,
-        selectBy: {
-          include: [{ id: messageId }],
-        },
       });
 
       if (!uiMessages) {
-        throw new HTTPException(404, { message: "Message not found in memory" });
+        throw new HTTPException(404, { message: "Thread messages not found" });
       }
 
-      const message = uiMessages.find((msg) => msg.id === messageId);
+      let message = uiMessages.find((msg) => msg.id === messageId);
 
       if (!message) {
-        throw new HTTPException(404, { message: "Message not found in list" });
+        const assistantMessages = uiMessages.filter((msg) => msg.role === "assistant");
+        if (assistantMessages.length > 0) {
+          message = assistantMessages[assistantMessages.length - 1];
+        }
+
+        if (!message) {
+          throw new HTTPException(404, { message: "No assistant message found to vote on" });
+        }
       }
 
       const storage = mastra.getStorage();
@@ -55,7 +59,7 @@ export function voteMessageHandler<
       }
 
       const updatedMessageMetadata = {
-        id: messageId,
+        id: message.id,
         content: {
           metadata: {
             vote: {
@@ -70,9 +74,10 @@ export function voteMessageHandler<
         messages: [updatedMessageMetadata],
       });
 
-      const response: SuccessResponse & { message: any } = {
+      const response: SuccessResponse & { message: unknown; originalMessageId: string } = {
         success: true,
         message: updatedMessage,
+        originalMessageId: messageId,
       };
       return c.json(response);
     } catch (error) {

@@ -23,7 +23,7 @@ const voteMessage = async ({
 export const useVoteMessageMutation = ({
   onSuccess,
 }: {
-  onSuccess?: (data: { success: boolean; message: MastraMessageV2 }) => void;
+  onSuccess?: (data: { success: boolean; message: MastraMessageV2; originalMessageId: string }) => void;
 } = {}) => {
   return useMutation({
     mutationFn: voteMessage,

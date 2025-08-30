@@ -13,9 +13,11 @@ export function useAgent() {
   const { data, isLoading: isLoadingThread } = useThreadQuery(threadId);
   const { mutate: generateThreadTitle } = useGenerateThreadTitleMutation();
   const { mutate: voteMessage } = useVoteMessageMutation({
-    onSuccess: ({ message }) => {
+    onSuccess: ({ message, originalMessageId }) => {
       const newMetadata = message.content.metadata;
-      setMessages(messages.map((m) => (m.id === message.id ? { ...m, metadata: newMetadata } : m)));
+      setMessages(
+        messages.map((m) => (m.id === originalMessageId ? { ...m, metadata: newMetadata } : m)),
+      );
     },
   });
   const [input, setInput] = useState("");
