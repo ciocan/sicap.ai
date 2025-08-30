@@ -67,7 +67,7 @@ export default function Thread() {
             <ThreadWelcome onSetInput={setInput} />
           )}
         <div className="relative mb-0 flex-1 overflow-hidden">
-          <Conversation className="h-full pb-2">
+          <Conversation className="h-full pb-8">
             <ConversationContent className="pb-28 max-w-3xl mx-auto">
               {messages.map((message, messageIndex) => (
                 <div key={message.id}>
