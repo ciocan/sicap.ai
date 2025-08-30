@@ -21,9 +21,9 @@ export function chatHandler<
     runtimeContext.set("userId", userId);
     runtimeContext.set("threadId", threadId);
 
-    const stream = await agent.streamVNext(messages as unknown as UIMessage[], {
+    const stream = await agent.stream(messages as unknown as UIMessage[], {
       runId: threadId,
-      format: "aisdk",
+      // format: "aisdk",
       runtimeContext,
       memory: {
         thread: {

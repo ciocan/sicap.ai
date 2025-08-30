@@ -63,7 +63,7 @@ export function voteMessageHandler<
         content: {
           metadata: {
             vote: {
-              ...(message.metadata?.vote ?? {}),
+              ...((message.metadata as any)?.vote ?? {}),
               [branchIndex ?? 0]: vote,
             },
           },

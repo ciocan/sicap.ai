@@ -16,7 +16,7 @@ export const sicapAgent = new Agent({
   instructions: promptInstructions,
   model: openai("gpt-5-mini"),
   tools: { searchContractsTool },
-  defaultVNextStreamOptions: ({ runtimeContext }) => {
+  defaultStreamOptions: ({ runtimeContext }) => {
     const userId = runtimeContext.get("userId") as string;
     const threadId = runtimeContext.get("threadId") as string;
     return {
