@@ -98,7 +98,7 @@ export const auth = betterAuth({
     enabled: false,
   },
   plugins: [openAPI(), nextCookies()], // make sure nextCookies is the last plugin in the array
-  trustedOrigins: [env.NEXTAUTH_URL, env.AGENT_API_URL],
+  trustedOrigins: [env.NEXTAUTH_URL],
   advanced: {
     useSecureCookies: true,
     crossSubDomainCookies: {
