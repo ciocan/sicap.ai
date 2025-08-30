@@ -19,6 +19,7 @@ import {
 } from "@sicap/ui";
 import { timeAgo } from "@/utils";
 import { useThreadsQuery, useThreadId, useArchiveThreadMutation } from "@/hooks/agent/use-threads";
+import { cn } from "@sicap/ui/lib/utils";
 
 interface Thread {
   id: string;
@@ -60,7 +61,14 @@ export function ThreadList() {
             }`}
           >
             <Link href={`/agent?t=${thread.id}`} className="block p-3 pr-12">
-              <div className="text-sm font-medium line-clamp-1">{title}</div>
+              <div
+                className={cn(
+                  "text-sm font-medium line-clamp-1",
+                  isActive && "text-primary line-clamp-none",
+                )}
+              >
+                {title}
+              </div>
               <div className="text-xs text-muted-foreground mt-1">{timeAgo(thread.createdAt)}</div>
             </Link>
             <div className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover/item:opacity-100 transition-opacity">
