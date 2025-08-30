@@ -5,7 +5,7 @@ import Link from "next/link";
 import { SidebarTrigger, useSidebar, useIsMobile, cn, Button } from "@sicap/ui";
 
 import { DarkMode } from "@/components/dark-mode";
-import { Thread } from "./thread";
+import Thread from "./thread";
 
 export function Main() {
   const { state } = useSidebar();

@@ -1,4 +1,4 @@
-import { mastra } from "@/agent/mastra";
+import { mastra } from "@/agent";
 import { auth } from "@sicap/data";
 
 export async function GET(req: Request) {

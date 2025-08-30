@@ -59,7 +59,7 @@ export function useAgent() {
       }
 
       if (!threadId) {
-        router.replace(`/agent2?t=${newThreadId}`);
+        router.replace(`/agent?t=${newThreadId}`);
       }
     },
   });
@@ -70,7 +70,7 @@ export function useAgent() {
     if (uiMessages && uiMessages.length > 0) {
       setMessages(uiMessages);
     } else if (error) {
-      router.replace("/agent2");
+      router.replace("/agent");
     }
   }, [data, setMessages, router]);
 

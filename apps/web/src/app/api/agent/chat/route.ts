@@ -1,7 +1,7 @@
 import type { UIMessage } from "ai";
 import { RuntimeContext } from "@mastra/core/runtime-context";
 
-import { mastra } from "@/agent/mastra";
+import { mastra } from "@/agent";
 import { auth } from "@sicap/data";
 
 export const maxDuration = 300;

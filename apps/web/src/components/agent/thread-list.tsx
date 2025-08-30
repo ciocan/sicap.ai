@@ -1,13 +1,12 @@
-import type { FC } from "react";
-import {
-  ThreadListItemPrimitive,
-  ThreadListPrimitive,
-  useThreadListItem,
-} from "@assistant-ui/react";
-import { ArchiveIcon, PlusIcon } from "lucide-react";
+import Link from "next/link";
+import { PlusIcon, MoreHorizontal, Archive } from "lucide-react";
 
 import {
-  TooltipIconButton,
+  Button,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -18,123 +17,98 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@sicap/ui";
-import { formatDateTime } from "@sicap/api/utils/date";
-
-import { useIsActiveThread, useThreadContext } from "./hooks/thread-context";
-import { Button } from "@sicap/ui/components/ui/button";
 import { timeAgo } from "@/utils";
-import { useIdentify } from "@/hooks";
+import { useThreadsQuery, useThreadId, useArchiveThreadMutation } from "@/hooks/agent/use-threads";
 
-export const ThreadList: FC = () => {
-  return (
-    <ThreadListPrimitive.Root className="text-foreground flex flex-col items-stretch gap-1.5">
-      <ThreadListNew />
-      <ThreadListItems />
-    </ThreadListPrimitive.Root>
-  );
-};
+interface Thread {
+  id: string;
+  title: string;
+  createdAt: string;
+}
 
-const ThreadListNew: FC = () => {
-  return (
-    <ThreadListPrimitive.New asChild>
-      <Button className="flex items-center justify-center gap-2 bg-primary/80 mb-6">
-        <PlusIcon />
-        Conversatie nouă
-      </Button>
-    </ThreadListPrimitive.New>
-  );
-};
-
-const ThreadListItems: FC = () => {
-  const { isLoading } = useThreadContext();
+export function ThreadList() {
+  const { data, isLoading } = useThreadsQuery();
+  const { threadId: activeThreadId } = useThreadId();
+  const { mutate: handleArchiveThread } = useArchiveThreadMutation();
 
   if (isLoading) {
     return (
-      <div className="flex flex-col gap-1.5">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="animate-pulse bg-muted rounded-lg px-3 py-2 h-12" />
-        ))}
-      </div>
+      <div className="p-4 text-sm text-muted-foreground">Se incarca lista de conversatii...</div>
     );
   }
 
-  return <ThreadListPrimitive.Items components={{ ThreadListItem }} />;
-};
-
-const ThreadListItem: FC = () => {
-  const { isAuthenticated } = useIdentify();
-  const isActive = useIsActiveThread();
-  const listItem = useThreadListItem();
-  const [title, createdAt] = listItem?.title?.split("||") ?? [];
-
-  if (!isAuthenticated) {
-    return null;
+  if (!data?.threads?.length) {
+    return <div className="p-4 text-sm text-muted-foreground">Nu exista conversatii</div>;
   }
 
-  const cutOff = 32;
-
-  const displayTitle = isActive
-    ? title
-    : title && title.length > cutOff
-      ? `${title.substring(0, cutOff)}...`
-      : (title ?? "Lista se incarca...");
-
   return (
-    <ThreadListItemPrimitive.Root className="group/item data-active:bg-primary-foreground data-active:dark:bg-muted hover:bg-muted focus-visible:bg-muted focus-visible:ring-ring flex items-center gap-2 rounded-lg transition-all focus-visible:outline-none focus-visible:ring-2">
-      <ThreadListItemPrimitive.Trigger className="flex-grow px-3 py-2 text-start cursor-pointer flex flex-col gap-0.5">
-        <p>{displayTitle}</p>
-        {createdAt && (
-          <span className="text-xs text-muted-foreground" title={formatDateTime(createdAt)}>
-            {timeAgo(createdAt)}
-          </span>
-        )}
-      </ThreadListItemPrimitive.Trigger>
-      <ThreadListItemArchive />
-    </ThreadListItemPrimitive.Root>
+    <div className="space-y-1">
+      <Button variant="outline" size="sm" asChild className="w-full justify-start my-4">
+        <Link href="/agent">
+          <PlusIcon className="size-4 mr-2" />
+          Conversatie noua
+        </Link>
+      </Button>
+      {data.threads.map((thread: Thread) => {
+        const isActive = thread.id === activeThreadId;
+        const title = thread.title.startsWith("New Thread") ? "Conversatie noua..." : thread.title;
+        return (
+          <div
+            key={thread.id}
+            className={`group/item relative rounded-lg transition-colors ${
+              isActive ? "bg-accent text-accent-foreground" : "hover:bg-accent"
+            }`}
+          >
+            <Link href={`/agent?t=${thread.id}`} className="block p-3 pr-12">
+              <div className="text-sm font-medium line-clamp-1">{title}</div>
+              <div className="text-xs text-muted-foreground mt-1">{timeAgo(thread.createdAt)}</div>
+            </Link>
+            <div className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover/item:opacity-100 transition-opacity">
+              <AlertDialog>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 w-8 p-0"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <MoreHorizontal className="h-4 w-4" />
+                      <span className="sr-only">Optiuni thread</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <AlertDialogTrigger asChild>
+                      <DropdownMenuItem className="cursor-pointer">
+                        <Archive className="mr-2 h-4 w-4" />
+                        Arhiveaza
+                      </DropdownMenuItem>
+                    </AlertDialogTrigger>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Arhiveaza conversatia</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Esti sigur ca vrei sa arhivezi aceasta conversatie? Aceasta actiune nu poate
+                      fi anulata.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Anuleaza</AlertDialogCancel>
+                    <AlertDialogAction
+                      className="bg-destructive hover:bg-destructive/80 text-destructive-foreground"
+                      onClick={() => handleArchiveThread(thread.id)}
+                    >
+                      Arhiveaza
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
+          </div>
+        );
+      })}
+    </div>
   );
-};
-
-const ThreadListItemArchive: FC = () => {
-  const isActive = useIsActiveThread();
-
-  return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <TooltipIconButton
-          className="hover:text-foreground/60 p-4 text-foreground ml-auto mr-1 size-4 opacity-0 translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all duration-200 cursor-pointer"
-          variant="ghost"
-          tooltip="Arhivează conversatia"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <ArchiveIcon />
-          <span className="sr-only">Arhivează conversatia</span>
-        </TooltipIconButton>
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Arhivează conversatia</AlertDialogTitle>
-          <AlertDialogDescription>
-            Vrei să arhivezi această conversație? Această acțiune nu poate fi revocata.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Anulează</AlertDialogCancel>
-          <AlertDialogAction asChild>
-            <ThreadListItemPrimitive.Archive asChild>
-              <AlertDialogAction
-                className="bg-destructive hover:bg-destructive/80 text-destructive-foreground"
-                onClick={() => {
-                  if (isActive) {
-                    window.history.replaceState(null, "", "/agent");
-                  }
-                }}
-              >
-                Arhivează
-              </AlertDialogAction>
-            </ThreadListItemPrimitive.Archive>
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  );
-};
+}

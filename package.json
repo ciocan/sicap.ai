@@ -11,8 +11,8 @@
   "scripts": {
     "build": "dotenv -- turbo build",
     "dev": "dotenv -- turbo dev",
-    "agent:dev": "pnpm with-env turbo --ui=stream run --filter=@sicap/agent dev",
-    "agent:build": "pnpm with-env turbo --ui=stream run --filter=@sicap/agent build",
+    "mastra:dev": "pnpm with-env turbo --filter=@sicap/web mastra:dev",
+    "mastra:build": "pnpm with-env turbo --filter=@sicap/web mastra:build",
     "start": "dotenv -- turbo start",
     "lint": "turbo lint",
     "typecheck": "pnpm turbo typecheck",

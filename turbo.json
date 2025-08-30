@@ -96,7 +96,10 @@
     "db:check": {
       "cache": false
     },
-    "agent:dev": {
+    "mastra:dev": {
+      "cache": false
+    },
+    "mastra:build": {
       "cache": false
     },
     "sitemap": {

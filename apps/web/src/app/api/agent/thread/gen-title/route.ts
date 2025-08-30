@@ -1,4 +1,4 @@
-import { mastra } from "@/agent/mastra";
+import { mastra } from "@/agent";
 import { openai } from "@ai-sdk/openai";
 import { RuntimeContext } from "@mastra/core/runtime-context";
 import { auth } from "@sicap/data";

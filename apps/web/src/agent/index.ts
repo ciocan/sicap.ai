@@ -13,6 +13,9 @@ const logger = new PinoLogger({
 
 export const mastra = new Mastra({
   agents: { sicapAgent },
+  server: {
+    port: 4242,
+  },
   storage,
   vectors: {
     [VECTOR_STORE_NAME]: vector,
