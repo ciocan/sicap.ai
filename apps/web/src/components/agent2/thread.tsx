@@ -1,5 +1,5 @@
 "use client";
-import { HatGlasses, RefreshCcwIcon, CopyIcon } from "lucide-react";
+import { HatGlasses, RefreshCcwIcon, CopyIcon, ThumbsDown, ThumbsUp } from "lucide-react";
 
 import {
   Conversation,
@@ -36,6 +36,12 @@ import { ThreadWelcome } from "./welcome";
 import { useAgent } from "@/hooks/agent/use-agent";
 import { useIdentify } from "@/hooks/use-identify";
 
+interface MessageMetadata {
+  vote: {
+    [key: number]: "up" | "down";
+  };
+}
+
 export default function Thread() {
   const {
     messages,
@@ -47,6 +53,8 @@ export default function Thread() {
     isLoadingThread,
     handleRegenerate,
     currentBranchIndex,
+    handleThumbsDown,
+    handleThumbsUp,
   } = useAgent();
   const { user } = useIdentify();
 
@@ -68,20 +76,22 @@ export default function Thread() {
                     <Branch defaultBranch={currentBranchIndex}>
                       <BranchMessages>
                         {message.parts
-                          .filter((part: any) => part.type === "text")
-                          .map((part: any, partIndex: number) => (
-                            <Message from={message.role} key={`${message.id}-branch-${partIndex}`}>
-                              <MessageContent>
-                                <Response>{part.text}</Response>
-                                {messageIndex === messages.length - 1 && (
+                          .filter((part) => part.type === "text")
+                          .map((part, partIndex) => {
+                            const isLastMessage = messageIndex === messages.length - 1;
+                            const voteMetadata = message.metadata as MessageMetadata;
+                            const isVotedUp = voteMetadata?.vote?.[partIndex] === "up";
+                            const isVotedDown = voteMetadata?.vote?.[partIndex] === "down";
+                            const isVoted = isVotedUp || isVotedDown;
+
+                            return (
+                              <Message
+                                from={message.role}
+                                key={`${message.id}-branch-${partIndex}`}
+                              >
+                                <MessageContent>
+                                  <Response>{part.text}</Response>
                                   <Actions className="mt-2">
-                                    <Action
-                                      onClick={() => handleRegenerate(message.id)}
-                                      label="Regenerează"
-                                      tooltip="Regenerează mesajul"
-                                    >
-                                      <RefreshCcwIcon className="size-3" />
-                                    </Action>
                                     <Action
                                       onClick={() => navigator.clipboard.writeText(part.text)}
                                       label="Copiază"
@@ -89,12 +99,64 @@ export default function Thread() {
                                     >
                                       <CopyIcon className="size-3" />
                                     </Action>
+                                    {isVoted ? (
+                                      isVotedUp ? (
+                                        <Action
+                                          onClick={() => {}}
+                                          label="Raspuns bun"
+                                          tooltip="Raspuns bun"
+                                          disabled
+                                          className="text-primary"
+                                        >
+                                          <ThumbsUp className="size-3" />
+                                        </Action>
+                                      ) : (
+                                        <Action
+                                          onClick={() => {}}
+                                          label="Răspuns slab"
+                                          tooltip="Răspuns slab"
+                                          disabled
+                                          className="text-primary"
+                                        >
+                                          <ThumbsDown className="size-3" />
+                                        </Action>
+                                      )
+                                    ) : (
+                                      <>
+                                        <Action
+                                          onClick={() => handleThumbsUp(message.id, partIndex)}
+                                          label="Raspuns bun"
+                                          tooltip="Raspuns bun"
+                                        >
+                                          <ThumbsUp className="size-3" />
+                                        </Action>
+                                        <Action
+                                          onClick={() => handleThumbsDown(message.id, partIndex)}
+                                          label="Răspuns slab"
+                                          tooltip="Răspuns slab"
+                                        >
+                                          <ThumbsDown className="size-3" />
+                                        </Action>
+                                      </>
+                                    )}
+                                    {isLastMessage && (
+                                      <Action
+                                        onClick={() => handleRegenerate(message.id)}
+                                        label="Regenerează"
+                                        tooltip="Regenerează mesajul"
+                                      >
+                                        <RefreshCcwIcon className="size-3" />
+                                      </Action>
+                                    )}
                                   </Actions>
-                                )}
-                              </MessageContent>
-                              <MessageAvatar name="SICAP" src={<HatGlasses className="size-4" />} />
-                            </Message>
-                          ))}
+                                </MessageContent>
+                                <MessageAvatar
+                                  name="SICAP"
+                                  src={<HatGlasses className="size-4" />}
+                                />
+                              </Message>
+                            );
+                          })}
                       </BranchMessages>
                       <BranchSelector from={message.role}>
                         <BranchPrevious />
@@ -105,22 +167,21 @@ export default function Thread() {
                   ) : (
                     <Message from={message.role} key={message.id}>
                       <MessageContent>
-                        {message.parts.map((part: any, i: number) => {
+                        {message.parts.map((part, i: number) => {
                           const isLastMessage = messageIndex === messages.length - 1;
+
+                          const voteMetadata = message.metadata as MessageMetadata;
+                          const isVotedUp = voteMetadata?.vote?.[0] === "up";
+                          const isVotedDown = voteMetadata?.vote?.[0] === "down";
+                          const isVoted = isVotedUp || isVotedDown;
+
                           switch (part.type) {
                             case "text":
                               return (
                                 <div key={`${message.id}-${i}`}>
                                   <Response>{part.text}</Response>
-                                  {message.role === "assistant" && isLastMessage && (
+                                  {message.role === "assistant" && (
                                     <Actions className="mt-2">
-                                      <Action
-                                        onClick={() => handleRegenerate(message.id)}
-                                        label="Regenerează"
-                                        tooltip="Regenerează mesajul"
-                                      >
-                                        <RefreshCcwIcon className="size-3" />
-                                      </Action>
                                       <Action
                                         onClick={() => navigator.clipboard.writeText(part.text)}
                                         label="Copiază"
@@ -128,6 +189,55 @@ export default function Thread() {
                                       >
                                         <CopyIcon className="size-3" />
                                       </Action>
+                                      {isVoted ? (
+                                        isVotedUp ? (
+                                          <Action
+                                            onClick={() => {}}
+                                            label="Raspuns bun"
+                                            tooltip="Raspuns bun"
+                                            disabled
+                                            className="text-primary"
+                                          >
+                                            <ThumbsUp className="size-3" />
+                                          </Action>
+                                        ) : (
+                                          <Action
+                                            onClick={() => {}}
+                                            label="Răspuns slab"
+                                            tooltip="Răspuns slab"
+                                            disabled
+                                            className="text-primary"
+                                          >
+                                            <ThumbsDown className="size-3" />
+                                          </Action>
+                                        )
+                                      ) : (
+                                        <>
+                                          <Action
+                                            onClick={() => handleThumbsUp(message.id)}
+                                            label="Raspuns bun"
+                                            tooltip="Raspuns bun"
+                                          >
+                                            <ThumbsUp className="size-3" />
+                                          </Action>
+                                          <Action
+                                            onClick={() => handleThumbsDown(message.id)}
+                                            label="Răspuns slab"
+                                            tooltip="Răspuns slab"
+                                          >
+                                            <ThumbsDown className="size-3" />
+                                          </Action>
+                                        </>
+                                      )}
+                                      {isLastMessage && (
+                                        <Action
+                                          onClick={() => handleRegenerate(message.id)}
+                                          label="Regenerează"
+                                          tooltip="Regenerează mesajul"
+                                        >
+                                          <RefreshCcwIcon className="size-3" />
+                                        </Action>
+                                      )}
                                     </Actions>
                                   )}
                                 </div>

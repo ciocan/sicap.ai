@@ -4,14 +4,20 @@ import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { DefaultChatTransport, type UIMessage } from "ai";
 import { useChat } from "@ai-sdk/react";
-import { clone } from "remeda";
 
 import { useThreadQuery, useThreadId, useGenerateThreadTitleMutation } from "./use-threads";
+import { useVoteMessageMutation } from "./use-messages";
 
 export function useAgent() {
   const { threadId, newThreadId } = useThreadId();
   const { data, isLoading: isLoadingThread } = useThreadQuery(threadId);
   const { mutate: generateThreadTitle } = useGenerateThreadTitleMutation();
+  const { mutate: voteMessage } = useVoteMessageMutation({
+    onSuccess: ({ message }) => {
+      const newMetadata = message.content.metadata;
+      setMessages(messages.map((m) => (m.id === message.id ? { ...m, metadata: newMetadata } : m)));
+    },
+  });
   const [input, setInput] = useState("");
   const [currentBranchIndex, setCurrentBranchIndex] = useState(0);
   const router = useRouter();
@@ -88,6 +94,14 @@ export function useAgent() {
     setCurrentBranchIndex(totalBranches);
   };
 
+  const handleThumbsDown = (messageId: string, branchIndex?: number) => {
+    voteMessage({ threadId, messageId, vote: "down", branchIndex });
+  };
+
+  const handleThumbsUp = (messageId: string, branchIndex?: number) => {
+    voteMessage({ threadId, messageId, vote: "up", branchIndex });
+  };
+
   return {
     data,
     threadId,
@@ -99,5 +113,7 @@ export function useAgent() {
     isLoadingThread,
     handleRegenerate,
     currentBranchIndex,
+    handleThumbsDown,
+    handleThumbsUp,
   };
 }
