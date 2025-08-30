@@ -1,5 +1,5 @@
 "use client";
-import { HatGlasses } from "lucide-react";
+import { HatGlasses, RefreshCcwIcon, CopyIcon } from "lucide-react";
 
 import {
   Conversation,
@@ -21,13 +21,33 @@ import {
   ReasoningTrigger,
 } from "@sicap/ui/components/ui/ai/reasoning";
 import { Response } from "@sicap/ui/components/ui/ai/response";
+import {
+  Branch,
+  BranchMessages,
+  BranchPage,
+  BranchNext,
+  BranchPrevious,
+  BranchSelector,
+} from "@sicap/ui/components/ui/ai/branch";
+import { Actions, Action } from "@sicap/ui/components/ui/ai/actions";
+
 import { ThreadWelcome } from "./welcome";
 
 import { useAgent } from "@/hooks/agent/use-agent";
 import { useIdentify } from "@/hooks/use-identify";
 
 export default function Thread() {
-  const { messages, status, setInput, input, handleSubmit, data, isLoadingThread } = useAgent();
+  const {
+    messages,
+    status,
+    setInput,
+    input,
+    handleSubmit,
+    data,
+    isLoadingThread,
+    handleRegenerate,
+    currentBranchIndex,
+  } = useAgent();
   const { user } = useIdentify();
 
   return (
@@ -41,37 +61,101 @@ export default function Thread() {
         <div className="relative mb-0 flex-1 overflow-hidden">
           <Conversation className="h-full pb-2">
             <ConversationContent className="pb-28 max-w-3xl mx-auto">
-              {messages.map((message) => (
+              {messages.map((message, messageIndex) => (
                 <div key={message.id}>
-                  <Message from={message.role} key={message.id}>
-                    <MessageContent>
-                      {message.parts.map((part, i) => {
-                        switch (part.type) {
-                          case "text":
-                            return <Response key={`${message.id}-${i}`}>{part.text}</Response>;
-                          case "reasoning":
-                            return (
-                              <Reasoning
-                                className="w-full"
-                                isStreaming={status === "streaming"}
-                                key={`${message.id}-${i}`}
-                              >
-                                <ReasoningTrigger />
-                                <ReasoningContent>{part.text}</ReasoningContent>
-                              </Reasoning>
-                            );
-                          default:
-                            return null;
+                  {message.role === "assistant" &&
+                  message.parts.filter((part) => part.type === "text").length > 1 ? (
+                    <Branch defaultBranch={currentBranchIndex}>
+                      <BranchMessages>
+                        {message.parts
+                          .filter((part: any) => part.type === "text")
+                          .map((part: any, partIndex: number) => (
+                            <Message from={message.role} key={`${message.id}-branch-${partIndex}`}>
+                              <MessageContent>
+                                <Response>{part.text}</Response>
+                                {messageIndex === messages.length - 1 && (
+                                  <Actions className="mt-2">
+                                    <Action
+                                      onClick={() => handleRegenerate(message.id)}
+                                      label="Regenerează"
+                                      tooltip="Regenerează mesajul"
+                                    >
+                                      <RefreshCcwIcon className="size-3" />
+                                    </Action>
+                                    <Action
+                                      onClick={() => navigator.clipboard.writeText(part.text)}
+                                      label="Copiază"
+                                      tooltip="Copiază mesajul"
+                                    >
+                                      <CopyIcon className="size-3" />
+                                    </Action>
+                                  </Actions>
+                                )}
+                              </MessageContent>
+                              <MessageAvatar name="SICAP" src={<HatGlasses className="size-4" />} />
+                            </Message>
+                          ))}
+                      </BranchMessages>
+                      <BranchSelector from={message.role}>
+                        <BranchPrevious />
+                        <BranchPage />
+                        <BranchNext />
+                      </BranchSelector>
+                    </Branch>
+                  ) : (
+                    <Message from={message.role} key={message.id}>
+                      <MessageContent>
+                        {message.parts.map((part: any, i: number) => {
+                          const isLastMessage = messageIndex === messages.length - 1;
+                          switch (part.type) {
+                            case "text":
+                              return (
+                                <div key={`${message.id}-${i}`}>
+                                  <Response>{part.text}</Response>
+                                  {message.role === "assistant" && isLastMessage && (
+                                    <Actions className="mt-2">
+                                      <Action
+                                        onClick={() => handleRegenerate(message.id)}
+                                        label="Regenerează"
+                                        tooltip="Regenerează mesajul"
+                                      >
+                                        <RefreshCcwIcon className="size-3" />
+                                      </Action>
+                                      <Action
+                                        onClick={() => navigator.clipboard.writeText(part.text)}
+                                        label="Copiază"
+                                        tooltip="Copiază mesajul"
+                                      >
+                                        <CopyIcon className="size-3" />
+                                      </Action>
+                                    </Actions>
+                                  )}
+                                </div>
+                              );
+                            case "reasoning":
+                              return (
+                                <Reasoning
+                                  className="w-full"
+                                  isStreaming={status === "streaming"}
+                                  key={`${message.id}-${i}`}
+                                >
+                                  <ReasoningTrigger />
+                                  <ReasoningContent>{part.text}</ReasoningContent>
+                                </Reasoning>
+                              );
+                            default:
+                              return null;
+                          }
+                        })}
+                      </MessageContent>
+                      <MessageAvatar
+                        name={message.role === "user" ? user?.name : "SICAP"}
+                        src={
+                          message.role === "user" ? user?.image : <HatGlasses className="size-4" />
                         }
-                      })}
-                    </MessageContent>
-                    <MessageAvatar
-                      name={message.role === "user" ? user?.name : "SICAP"}
-                      src={
-                        message.role === "user" ? user?.image : <HatGlasses className="size-4" />
-                      }
-                    />
-                  </Message>
+                      />
+                    </Message>
+                  )}
                 </div>
               ))}
               {status === "submitted" && <Loader variant="dots" size="sm" />}

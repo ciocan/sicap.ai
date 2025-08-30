@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { DefaultChatTransport } from "ai";
+import { DefaultChatTransport, type UIMessage } from "ai";
 import { useChat } from "@ai-sdk/react";
+import { clone } from "remeda";
 
 import { useThreadQuery, useThreadId, useGenerateThreadTitleMutation } from "./use-threads";
 
@@ -12,17 +13,43 @@ export function useAgent() {
   const { data, isLoading: isLoadingThread } = useThreadQuery(threadId);
   const { mutate: generateThreadTitle } = useGenerateThreadTitleMutation();
   const [input, setInput] = useState("");
+  const [currentBranchIndex, setCurrentBranchIndex] = useState(0);
   const router = useRouter();
 
-  const { messages, sendMessage, status, setMessages } = useChat({
+  const messagesBeforeRegenRef = useRef<UIMessage[]>([]);
+  const messageIdToRegenRef = useRef<string | null>(null);
+
+  const { messages, sendMessage, status, setMessages, regenerate } = useChat({
     id: threadId,
     transport: new DefaultChatTransport({
       api: "/api/agent/chat",
     }),
-    onFinish: ({ messages }) => {
+    onFinish: ({ messages, message }) => {
+      if (messageIdToRegenRef.current && message.role === "assistant") {
+        const originalMessages = messagesBeforeRegenRef.current;
+        const originalMessage = originalMessages.find(
+          (msg) => msg.id === messageIdToRegenRef.current,
+        );
+
+        if (originalMessage) {
+          const mergedMessage = {
+            ...originalMessage,
+            parts: [...originalMessage.parts, ...message.parts],
+          };
+
+          const updatedMessages = originalMessages.map((msg) =>
+            msg.id === messageIdToRegenRef.current ? mergedMessage : msg,
+          );
+          setMessages(updatedMessages);
+        }
+
+        messageIdToRegenRef.current = null;
+        messagesBeforeRegenRef.current = [];
+      }
+
       if (messages.length === 2) {
         const message = messages[0]?.parts[0]?.type === "text" ? messages[0]?.parts[0]?.text : "";
-        generateThreadTitle({ threadId: newThreadId, message });
+        generateThreadTitle({ threadId: threadId || newThreadId, message });
       }
 
       if (!threadId) {
@@ -48,6 +75,19 @@ export function useAgent() {
     setInput("");
   };
 
+  const handleRegenerate = (messageId: string) => {
+    messagesBeforeRegenRef.current = JSON.parse(JSON.stringify(messages));
+    messageIdToRegenRef.current = messageId;
+
+    const totalBranches = messages
+      .filter((message) => message.id === messageId)
+      .map((message) => message.parts.filter((part) => part.type === "text").length)
+      .reduce((acc, curr) => acc + curr, 0);
+
+    regenerate({ messageId, body: { threadId } });
+    setCurrentBranchIndex(totalBranches);
+  };
+
   return {
     data,
     threadId,
@@ -57,5 +97,7 @@ export function useAgent() {
     setInput,
     handleSubmit,
     isLoadingThread,
+    handleRegenerate,
+    currentBranchIndex,
   };
 }

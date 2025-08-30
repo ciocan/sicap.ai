@@ -2,7 +2,7 @@ import { Mastra } from "@mastra/core/mastra";
 import { PinoLogger } from "@mastra/loggers";
 import { LangfuseExporter } from "langfuse-vercel";
 
-import { sicapAgent } from "@/agent/sicap";
+import { sicapAgent } from "@/agent/agent-sicap";
 import { storage, VECTOR_STORE_NAME, vector } from "@/agent/stores";
 import { env } from "@/lib/env";
 
