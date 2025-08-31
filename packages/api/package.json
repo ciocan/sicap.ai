@@ -44,6 +44,7 @@
   "dependencies": {
     "@elastic/elasticsearch": "^8.10.0",
     "dayjs": "^1.11.10",
+    "elastic-builder": "^3.0.0",
     "ramda": "^0.29.1"
   }
 }

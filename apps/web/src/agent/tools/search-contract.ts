@@ -139,8 +139,6 @@ export const searchContractsTool = createTool({
         euFunds,
       },
     });
-    console.log("searchContractsTool:context", context);
-    console.log("searchContractsTool:results", JSON.stringify(results, null, 2));
     return results;
   },
 });

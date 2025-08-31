@@ -275,6 +275,9 @@ importers:
       dayjs:
         specifier: ^1.11.10
         version: 1.11.15
+      elastic-builder:
+        specifier: ^3.0.0
+        version: 3.0.0
       ramda:
         specifier: ^0.29.1
         version: 0.29.1
@@ -4411,6 +4414,9 @@ packages:
 
   ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
+
+  elastic-builder@3.0.0:
+    resolution: {integrity: sha512-O5fQl6jYUe5V5vca4m716wvy1JZSJE219xsfQ6M8wzP3YBGn29MhYbWT4j0UQMLSq/SD4nhLvyvzspf/ZoeKmA==}
 
   electron-to-chromium@1.5.211:
     resolution: {integrity: sha512-IGBvimJkotaLzFnwIVgW9/UD/AOJ2tByUmeOrtqBfACSbAw5b1G0XpvdaieKyc7ULmbwXVx+4e4Be8pOPBrYkw==}
@@ -11556,6 +11562,10 @@ snapshots:
   eastasianwidth@0.2.0: {}
 
   ee-first@1.1.1: {}
+
+  elastic-builder@3.0.0:
+    dependencies:
+      lodash: 4.17.21
 
   electron-to-chromium@1.5.211: {}
 
