@@ -5,7 +5,8 @@ import { LangfuseClient } from "@langfuse/client";
 import { ToolCallFilter } from "@mastra/memory/processors";
 
 import { searchContractsTool } from "@/agent/tools/search-contract";
-import { searchAuthoritiesTool } from "@/agent/tools/search-authority";
+import { searchAuthoritiesTool } from "@/agent/tools/search-authorities";
+import { searchCompaniesTool } from "@/agent/tools/search-companies";
 
 import { storage, vector } from "@/agent/stores";
 
@@ -18,7 +19,7 @@ export const sicapAgent = new Agent({
   name: "SICAP Agent",
   instructions: promptInstructions,
   model: openai("gpt-5-mini"),
-  tools: { searchContractsTool, searchAuthoritiesTool },
+  tools: { searchContractsTool, searchAuthoritiesTool, searchCompaniesTool },
   defaultStreamOptions: ({ runtimeContext }) => {
     const userId = runtimeContext.get("userId") as string;
     const threadId = runtimeContext.get("threadId") as string;
