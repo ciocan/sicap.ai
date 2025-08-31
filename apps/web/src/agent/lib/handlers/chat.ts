@@ -14,16 +14,15 @@ export function chatHandler<
   return async (c: Context<E, P, I>) => {
     const userId = c.get("userId") as string;
     const validated = c.req.valid("json");
-    const { messages, threadId } = validated;
+    const { threadId, message } = validated;
 
     const agent = getAgent();
     const runtimeContext = new RuntimeContext();
     runtimeContext.set("userId", userId);
     runtimeContext.set("threadId", threadId);
 
-    const stream = await agent.stream(messages as unknown as UIMessage[], {
+    const stream = await agent.stream([message] as unknown as UIMessage[], {
       runId: threadId,
-      // format: "aisdk",
       runtimeContext,
       memory: {
         thread: {
@@ -35,7 +34,6 @@ export function chatHandler<
 
     const response = new Response(
       stream.toUIMessageStreamResponse({
-        originalMessages: messages as unknown as UIMessage[],
         sendReasoning: true,
         sendSources: true,
       }).body,

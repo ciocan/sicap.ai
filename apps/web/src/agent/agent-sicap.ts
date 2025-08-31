@@ -2,6 +2,7 @@ import { Agent } from "@mastra/core/agent";
 import { Memory } from "@mastra/memory";
 import { openai } from "@ai-sdk/openai";
 import { LangfuseClient } from "@langfuse/client";
+import { ToolCallFilter } from "@mastra/memory/processors";
 
 import { searchContractsTool } from "@/agent/tools";
 import { storage, vector } from "@/agent/stores";
@@ -33,6 +34,7 @@ export const sicapAgent = new Agent({
   memory: new Memory({
     storage,
     vector,
+    processors: [new ToolCallFilter()],
     embedder: openai.embedding("text-embedding-3-small"),
     options: {
       lastMessages: 10,

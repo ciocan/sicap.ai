@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { DefaultChatTransport, type UIMessage } from "ai";
 import { useChat } from "@ai-sdk/react";
 
+import { toast } from "@sicap/ui";
+
 import { useThreadQuery, useThreadId, useGenerateThreadTitleMutation } from "./use-threads";
 import { useVoteMessageMutation } from "./use-messages";
 
@@ -29,7 +31,11 @@ export function useAgent() {
 
   const { messages, sendMessage, status, setMessages, regenerate } = useChat({
     id: threadId,
+    experimental_throttle: 100,
     transport: new DefaultChatTransport({
+      prepareSendMessagesRequest: ({ messages, id, body }) => {
+        return { id, body: { ...body, message: messages.at(-1) } };
+      },
       api: "/api/agent/chat",
     }),
     onFinish: ({ messages, message }) => {
@@ -63,6 +69,9 @@ export function useAgent() {
       if (!threadId) {
         router.replace(`/agent?t=${newThreadId}`);
       }
+    },
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
 

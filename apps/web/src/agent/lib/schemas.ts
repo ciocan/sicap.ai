@@ -34,8 +34,8 @@ export const UIMessageSchema = z
   .passthrough(); // Allow additional properties from AI SDK
 
 export const ChatRequestSchema = z.object({
-  messages: z.array(UIMessageSchema),
   threadId: z.string(),
+  message: UIMessageSchema,
 });
 
 // Thread schemas
