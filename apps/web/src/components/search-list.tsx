@@ -1,5 +1,5 @@
 import { dbIds, formatNumber } from "@/utils";
-import { IndexName, searchContracts } from "@sicap/api";
+import { type IndexName, searchContracts } from "@sicap/api";
 
 import { ListItem } from "./list-item";
 import { Pagination } from "./pagination";

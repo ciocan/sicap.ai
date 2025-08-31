@@ -18,7 +18,7 @@ export async function searchCompanies(
   city?: string,
   county?: string,
 ): Promise<Company[]> {
-  const mustQueries: esb.Query[] = [esb.wildcardQuery("data.entityName", `*${query}*`)];
+  const mustQueries: esb.Query[] = [esb.matchQuery("data.entityName", query)];
 
   if (city) {
     mustQueries.push(esb.matchQuery("data.city", city));

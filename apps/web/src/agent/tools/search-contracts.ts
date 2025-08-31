@@ -1,7 +1,7 @@
 import { createTool } from "@mastra/core";
 import { z } from "zod";
 
-import { searchContracts } from "@sicap/api";
+import { searchContractsAgent } from "@sicap/api";
 
 const inputSchema = z.object({
   query: z.string().optional().describe("Textul de căutare introdus de utilizator"),
@@ -119,7 +119,7 @@ export const searchContractsTool = createTool({
       countySupplier,
       euFunds,
     } = context;
-    const results = await searchContracts({
+    const results = await searchContractsAgent({
       query,
       page,
       perPage,
