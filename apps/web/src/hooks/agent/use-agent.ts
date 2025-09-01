@@ -29,7 +29,7 @@ export function useAgent() {
   const messagesBeforeRegenRef = useRef<UIMessage[]>([]);
   const messageIdToRegenRef = useRef<string | null>(null);
 
-  const { messages, sendMessage, status, setMessages, regenerate } = useChat({
+  const { messages, sendMessage, status, setMessages, regenerate, stop } = useChat({
     id: threadId,
     experimental_throttle: 100,
     transport: new DefaultChatTransport({
@@ -87,6 +87,15 @@ export function useAgent() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (status === "streaming" || status === "submitted") {
+      stop();
+      return;
+    }
+
+    if (!input.trim()) {
+      return;
+    }
     const threadIdToUse = threadId || newThreadId;
     sendMessage({ text: input }, { body: { threadId: threadIdToUse } });
     setInput("");

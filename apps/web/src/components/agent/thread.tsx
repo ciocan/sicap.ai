@@ -247,7 +247,7 @@ export default function Thread() {
                 <PromptInputTools></PromptInputTools>
                 <PromptInputSubmit
                   className="ml-auto"
-                  disabled={!input.trim() || status === "streaming"}
+                  disabled={!input.trim() && status !== "streaming" && status !== "submitted"}
                   status={status}
                 />
               </PromptInputToolbar>
