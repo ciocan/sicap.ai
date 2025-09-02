@@ -1,20 +1,23 @@
-import { formatNumber, moneyEur, moneyRon } from "@/utils";
+import { notFound } from "next/navigation";
+
 import { getCompanyLicitatii } from "@sicap/api";
+
+import { formatNumber, moneyEur, moneyRon } from "@/utils";
+import type { SLUG } from "@/utils/types";
+import type { SearchParams } from "./search-list";
 import { ListItem } from "./list-item";
 import { Pagination } from "./pagination";
-import { type SearchParams } from "./search-list";
 import { Chart } from "./chart";
-import { type SLUG } from "@/utils/types";
 import { PerPage } from "./per-page";
 import { CSVDownload } from "./csv-download";
 
-interface CompanyAchizitiiProps {
+interface CompanyLicitatiiProps {
   id: string;
   slug: SLUG;
   searchParams: SearchParams;
 }
 
-export async function CompanyLicitatii({ id, slug, searchParams }: CompanyAchizitiiProps) {
+export async function CompanyLicitatii({ id, slug, searchParams }: CompanyLicitatiiProps) {
   const { p: page = 1, perPage = 20 } = searchParams;
   const propMappings = {
     autoritate: { authorityId: id },
@@ -22,7 +25,12 @@ export async function CompanyLicitatii({ id, slug, searchParams }: CompanyAchizi
     cpv: { cpvCode: id },
   };
   const companyProps = propMappings[slug];
-  const results = await getCompanyLicitatii({ ...companyProps, page, perPage });
+  let results: Awaited<ReturnType<typeof getCompanyLicitatii>>;
+  try {
+    results = await getCompanyLicitatii({ ...companyProps, page, perPage });
+  } catch {
+    return notFound();
+  }
   const { total, contractingAuthority, supplier, stats } = results;
   const { nationalIDNumber, officialName, city, county } = contractingAuthority;
 
