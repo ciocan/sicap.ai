@@ -7,140 +7,167 @@ import { formatDate, formatDateTime, getContractLicitatii } from "@sicap/api";
 import { RowItem } from "./utils";
 
 export async function ContractLicitatii({ id }: { id: string }) {
-  const contract = await getContractLicitatii(id);
-  const {
-    noticeNo,
-    contractTitle,
-    ronContractValue,
-    city,
-    county,
-    contractingAuthorityNameAndFN,
-    sysProcedureState,
-    sysProcedureType,
-    sysAcquisitionContractType,
-    contractDate,
-    cpvCodeAndName,
-    cpvCode,
-    shortDescription,
-    descriptionList,
-    winner,
-    istoric,
-    cNotice,
-  } = contract;
+	let contract: Awaited<ReturnType<typeof getContractLicitatii>>;
+	try {
+		contract = await getContractLicitatii(id);
+	} catch {
+		return notFound();
+	}
+	const {
+		noticeNo,
+		contractTitle,
+		ronContractValue,
+		city,
+		county,
+		contractingAuthorityNameAndFN,
+		sysProcedureState,
+		sysProcedureType,
+		sysAcquisitionContractType,
+		contractDate,
+		cpvCodeAndName,
+		cpvCode,
+		shortDescription,
+		descriptionList,
+		winner,
+		istoric,
+		cNotice,
+	} = contract;
 
-  const hasCNotice = !!cNotice.noticeNo && !!cNotice.publicationDate;
+	const hasCNotice = !!cNotice.noticeNo && !!cNotice.publicationDate;
 
-  const seapUrl = `https://${
-    istoric ? "istoric." : ""
-  }e-licitatie.ro/pub/notices/ca-notices/view-c/${id}`;
+	const seapUrl = `https://${
+		istoric ? "istoric." : ""
+	}e-licitatie.ro/pub/notices/ca-notices/view-c/${id}`;
 
-  const supplierUrl = (winner.entityId ? `/licitatii/firma/${winner.entityId}` : "#") as Route;
+	const supplierUrl = (
+		winner.entityId ? `/licitatii/firma/${winner.entityId}` : "#"
+	) as Route;
 
-  return (
-    <div className="border dark:border-secondary p-4 rounded-sm">
-      <div className="flex sm:flex-row flex-col justify-between gap-2">
-        <h1 className="text-lg font-semibold">{contractTitle}</h1>
-        <a
-          href={seapUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="hover:underline flex items-center gap-1 border-gray-200 dark:border-gray-500 border rounded-sm px-2 py-1 justify-center w-[90px] place-self-end text-primary"
-        >
-          <span>SEAP</span>
-          <ExternalLink className="w-[1rem]" />
-        </a>
-      </div>
-      <div className="grid sm:grid-cols-[25%,75%] mt-4">
-        <RowItem label="ID licitatie atribuita" value={noticeNo} />
-        <RowItem
-          label="ID anunt de participare"
-          value={
-            hasCNotice ? (
-              <>
-                <Link
-                  href={`https://sicap.pro/anunturi/${cNotice.noticeNo}`}
-                  className="underline text-primary font-semibold pr-2"
-                  target="_blank"
-                >
-                  {cNotice.noticeNo}
-                </Link>
-                <span className="text-gray-400">- {formatDateTime(cNotice.publicationDate)}</span>
-              </>
-            ) : (
-              <span>-</span>
-            )
-          }
-        />
-        <RowItem label="Data" value={formatDate(contractDate ?? "")} />
-        <RowItem
-          label="Valoare"
-          value={<div className="font-semibold font-mono">{moneyRon(ronContractValue)}</div>}
-        />
-        <RowItem
-          label="Stare"
-          value={
-            <span className={sysProcedureState.id === 5 ? "" : "text-red-500"}>
-              {sysProcedureState.text}
-            </span>
-          }
-        />
-        <RowItem label="Tip procedura:" value={sysProcedureType.text} />
-        <RowItem label="Tipul contractului::" value={sysAcquisitionContractType.text} />
-        <RowItem
-          label="Autoritatea contractanta"
-          value={
-            <Link
-              href={`/licitatii/autoritate/${contract.entityId}`}
-              className="underline text-primary font-semibold"
-            >
-              {contractingAuthorityNameAndFN}
-            </Link>
-          }
-        />
-        <RowItem label="Localitate" value={`${city} ${county ? `, ${county?.text}` : ""}`} />
-        <RowItem
-          label="Furnizor"
-          value={
-            <Link href={supplierUrl} className="underline text-primary font-semibold">
-              {winner.fiscalNumber} - {winner.name}
-            </Link>
-          }
-        />
-        <RowItem
-          label="Cod CPV"
-          value={
-            <Link
-              href={`/licitatii/cpv/${cpvCode}`}
-              className="underline text-primary font-semibold"
-            >
-              {cpvCodeAndName}
-            </Link>
-          }
-        />
-        <RowItem label="Descriere:" value={<samp className="text-xs">{shortDescription}</samp>} />
-        <RowItem
-          label="Loturi:"
-          value={
-            <div>
-              {descriptionList?.map((item) => (
-                <div
-                  key={item.lotNumber}
-                  className="mb-2 border-b dark:border-b-gray-700 border-b-gray-100"
-                >
-                  {item.estimatedValue && (
-                    <div className="font-semibold font-mono">{moneyRon(item.estimatedValue)}</div>
-                  )}
-                  <div className="mb-3">
-                    <div className="text-gray-400">{item.mainLocation}</div>
-                    <div className="text-gray-400">{item.contractTitle}</div>
-                    <samp className="text-xs">{item.shortDescription}</samp>
-                  </div>
-                </div>
-              ))}
-            </div>
-          }
-        />
-      </div>
-    </div>
-  );
+	return (
+		<div className="border dark:border-secondary p-4 rounded-sm">
+			<div className="flex sm:flex-row flex-col justify-between gap-2">
+				<h1 className="text-lg font-semibold">{contractTitle}</h1>
+				<a
+					href={seapUrl}
+					target="_blank"
+					rel="noreferrer"
+					className="hover:underline flex items-center gap-1 border-gray-200 dark:border-gray-500 border rounded-sm px-2 py-1 justify-center w-[90px] place-self-end text-primary"
+				>
+					<span>SEAP</span>
+					<ExternalLink className="w-[1rem]" />
+				</a>
+			</div>
+			<div className="grid sm:grid-cols-[25%,75%] mt-4">
+				<RowItem label="ID licitatie atribuita" value={noticeNo} />
+				<RowItem
+					label="ID anunt de participare"
+					value={
+						hasCNotice ? (
+							<>
+								<Link
+									href={`https://sicap.pro/anunturi/${cNotice.noticeNo}`}
+									className="underline text-primary font-semibold pr-2"
+									target="_blank"
+								>
+									{cNotice.noticeNo}
+								</Link>
+								<span className="text-gray-400">
+									- {formatDateTime(cNotice.publicationDate)}
+								</span>
+							</>
+						) : (
+							<span>-</span>
+						)
+					}
+				/>
+				<RowItem label="Data" value={formatDate(contractDate ?? "")} />
+				<RowItem
+					label="Valoare"
+					value={
+						<div className="font-semibold font-mono">
+							{moneyRon(ronContractValue)}
+						</div>
+					}
+				/>
+				<RowItem
+					label="Stare"
+					value={
+						<span className={sysProcedureState.id === 5 ? "" : "text-red-500"}>
+							{sysProcedureState.text}
+						</span>
+					}
+				/>
+				<RowItem label="Tip procedura:" value={sysProcedureType.text} />
+				<RowItem
+					label="Tipul contractului::"
+					value={sysAcquisitionContractType.text}
+				/>
+				<RowItem
+					label="Autoritatea contractanta"
+					value={
+						<Link
+							href={`/licitatii/autoritate/${contract.entityId}`}
+							className="underline text-primary font-semibold"
+						>
+							{contractingAuthorityNameAndFN}
+						</Link>
+					}
+				/>
+				<RowItem
+					label="Localitate"
+					value={`${city} ${county ? `, ${county?.text}` : ""}`}
+				/>
+				<RowItem
+					label="Furnizor"
+					value={
+						<Link
+							href={supplierUrl}
+							className="underline text-primary font-semibold"
+						>
+							{winner.fiscalNumber} - {winner.name}
+						</Link>
+					}
+				/>
+				<RowItem
+					label="Cod CPV"
+					value={
+						<Link
+							href={`/licitatii/cpv/${cpvCode}`}
+							className="underline text-primary font-semibold"
+						>
+							{cpvCodeAndName}
+						</Link>
+					}
+				/>
+				<RowItem
+					label="Descriere:"
+					value={<samp className="text-xs">{shortDescription}</samp>}
+				/>
+				<RowItem
+					label="Loturi:"
+					value={
+						<div>
+							{descriptionList?.map((item) => (
+								<div
+									key={item.lotNumber}
+									className="mb-2 border-b dark:border-b-gray-700 border-b-gray-100"
+								>
+									{item.estimatedValue && (
+										<div className="font-semibold font-mono">
+											{moneyRon(item.estimatedValue)}
+										</div>
+									)}
+									<div className="mb-3">
+										<div className="text-gray-400">{item.mainLocation}</div>
+										<div className="text-gray-400">{item.contractTitle}</div>
+										<samp className="text-xs">{item.shortDescription}</samp>
+									</div>
+								</div>
+							))}
+						</div>
+					}
+				/>
+			</div>
+		</div>
+	);
 }

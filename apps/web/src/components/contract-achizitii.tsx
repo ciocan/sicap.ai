@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { ExternalLink } from "lucide-react";
 
 import { moneyRon } from "@/utils";
@@ -6,7 +7,13 @@ import { formatDate, getContractAchizitii } from "@sicap/api";
 import { RowItem } from "./utils";
 
 export async function ContractAchizitii({ id }: { id: string }) {
-  const contract = await getContractAchizitii(id);
+  let contract: Awaited<ReturnType<typeof getContractAchizitii>>;
+  try {
+    contract = await getContractAchizitii(id);
+  } catch {
+    return notFound();
+  }
+
   const {
     closingValue,
     publicationDate,

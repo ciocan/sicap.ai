@@ -1,10 +1,13 @@
-import { formatNumber, moneyEur, moneyRon } from "@/utils";
+import { notFound } from "next/navigation";
+
 import { getCompanyAchizitii } from "@sicap/api";
+
+import { formatNumber, moneyEur, moneyRon } from "@/utils";
+import type { SLUG } from "@/utils/types";
+import type { SearchParams } from "./search-list";
 import { ListItem } from "./list-item";
 import { Pagination } from "./pagination";
-import { type SearchParams } from "./search-list";
 import { Chart } from "./chart";
-import { type SLUG } from "@/utils/types";
 import { PerPage } from "./per-page";
 import { CSVDownload } from "./csv-download";
 
@@ -22,7 +25,12 @@ export async function CompanyAchizitii({ id, slug, searchParams }: CompanyAchizi
     cpv: { cpvCode: id },
   };
   const companyProps = propMappings[slug];
-  const results = await getCompanyAchizitii({ ...companyProps, page, perPage });
+  let results: Awaited<ReturnType<typeof getCompanyAchizitii>>;
+  try {
+    results = await getCompanyAchizitii({ ...companyProps, page, perPage });
+  } catch {
+    return notFound();
+  }
   const { total, contractingAuthority, supplier, stats } = results;
   const { fiscalNumber, entityName, city, county } = contractingAuthority;
 
