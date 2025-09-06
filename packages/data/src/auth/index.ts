@@ -1,5 +1,6 @@
 import { betterAuth } from "better-auth";
 import { openAPI } from "better-auth/plugins";
+import { phoneNumber } from "better-auth/plugins";
 import { nextCookies } from "better-auth/next-js";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { Logger } from "next-axiom";
@@ -14,6 +15,7 @@ import {
 } from "../db/schema";
 import { addSubscriber, addSubscriberToLists, messageSubscriber } from "../lib/listmonk";
 import { env } from "../lib/env";
+import { sendVerificationSms } from "../lib/sms";
 
 const log = new Logger();
 
@@ -97,7 +99,16 @@ export const auth = betterAuth({
     debug: process.env.NODE_ENV !== "production",
     enabled: false,
   },
-  plugins: [openAPI(), nextCookies()], // make sure nextCookies is the last plugin in the array
+  plugins: [
+    openAPI(),
+    phoneNumber({
+      sendOTP: async ({ phoneNumber: phone, code }) => {
+        await sendVerificationSms(phone, code);
+      },
+      requireVerification: true,
+    }),
+    nextCookies(),
+  ], // make sure nextCookies is the last plugin in the array
   trustedOrigins: [env.NEXTAUTH_URL],
   advanced: {
     useSecureCookies: true,

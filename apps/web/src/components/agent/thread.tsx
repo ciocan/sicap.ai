@@ -41,6 +41,7 @@ import {
 import { ThreadWelcome } from "./welcome";
 import { MessageActions } from "./message-actions";
 import { SearchResults } from "./search-results";
+import { PhoneVerificationDialog } from "./phone-verification-dialog";
 
 import { useAgent } from "@/hooks/agent/use-agent";
 import { useIdentify } from "@/hooks/use-identify";
@@ -64,6 +65,10 @@ export default function Thread() {
     currentBranchIndex,
     handleThumbsDown,
     handleThumbsUp,
+    shouldOpenPhoneDialog,
+    setShouldOpenPhoneDialog,
+    pendingMessage,
+    submitMessageText,
   } = useAgent();
   const { user } = useIdentify();
 
@@ -173,7 +178,7 @@ export default function Thread() {
                                     items: Array<{
                                       id: string;
                                       index: string;
-                                      fields: any;
+                                      fields: Record<string, unknown>;
                                     }>;
                                   };
                                   return (
@@ -187,6 +192,7 @@ export default function Thread() {
                                       <SearchResults
                                         took={searchOutput.took}
                                         total={searchOutput.total}
+                                        // @ts-ignore FIXME: fix this
                                         items={searchOutput.items}
                                       />
                                     </div>
@@ -255,6 +261,17 @@ export default function Thread() {
           </div>
         </div>
       </div>
+      <PhoneVerificationDialog
+        open={shouldOpenPhoneDialog}
+        onOpenChange={(open) => {
+          setShouldOpenPhoneDialog(open);
+        }}
+        onVerified={() => {
+          if (pendingMessage) {
+            submitMessageText(pendingMessage);
+          }
+        }}
+      />
     </div>
   );
 }

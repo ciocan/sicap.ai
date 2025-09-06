@@ -30,7 +30,11 @@
     "LANGFUSE_BASEURL",
     "NEXT_PUBLIC_BASE_URL",
     "BETTER_AUTH_URL",
-    "BETTER_AUTH_SECRET"
+    "BETTER_AUTH_SECRET",
+    "SEND_SMS_API_KEY",
+    "SEND_SMS_USERNAME",
+    "TWILIO_ACCOUNT_SID",
+    "TWILIO_AUTH_TOKEN"
   ],
   "tasks": {
     "build": {
@@ -101,6 +105,9 @@
       "cache": false
     },
     "sitemap": {
+      "cache": false
+    },
+    "auth:generate": {
       "cache": false
     }
   }

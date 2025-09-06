@@ -1,5 +1,16 @@
-import { mastra } from "@/agent";
 import { HTTPException } from "hono/http-exception";
+
+import { mastra } from "@/agent";
+import { agentDBClient } from "@/agent/stores";
+
+export const countUserMessages = async (userId: string) => {
+  const result = await agentDBClient.execute(
+    "SELECT COUNT(*) as count FROM mastra_messages WHERE resourceId = ?",
+    [userId],
+  );
+
+  return result.rows[0]?.count ?? 0;
+};
 
 // Get Mastra agent instance
 export const getAgent = () => {

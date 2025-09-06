@@ -1,0 +1,1 @@
+export const MESSAGE_LIMIT_UNVERIFIED = 20;

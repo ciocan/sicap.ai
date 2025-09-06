@@ -6,6 +6,8 @@ import { DefaultChatTransport, type UIMessage } from "ai";
 import { useChat } from "@ai-sdk/react";
 
 import { toast } from "@sicap/ui";
+import { extractTransportError } from "@/agent/lib/errors";
+import { useState as useReactState } from "react";
 
 import { useThreadQuery, useThreadId, useGenerateThreadTitleMutation } from "./use-threads";
 import { useVoteMessageMutation } from "./use-messages";
@@ -28,6 +30,9 @@ export function useAgent() {
 
   const messagesBeforeRegenRef = useRef<UIMessage[]>([]);
   const messageIdToRegenRef = useRef<string | null>(null);
+
+  const [shouldOpenPhoneDialog, setShouldOpenPhoneDialog] = useReactState(false);
+  const [pendingMessage, setPendingMessage] = useReactState<string | null>(null);
 
   const { messages, sendMessage, status, setMessages, regenerate, stop } = useChat({
     id: threadId,
@@ -70,8 +75,15 @@ export function useAgent() {
         router.replace(`/agent?t=${newThreadId}`);
       }
     },
-    onError: (error) => {
-      toast.error(error.message);
+    onError: (error: Error) => {
+      const { code, message } = extractTransportError(error);
+
+      if (code === "PHONE_VERIFICATION_REQUIRED") {
+        setShouldOpenPhoneDialog(true);
+        return;
+      }
+
+      toast.error(message);
     },
   });
 
@@ -85,7 +97,7 @@ export function useAgent() {
     }
   }, [data, setMessages, router]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (status === "streaming" || status === "submitted") {
@@ -97,8 +109,15 @@ export function useAgent() {
       return;
     }
     const threadIdToUse = threadId || newThreadId;
+
+    setPendingMessage(input);
     sendMessage({ text: input }, { body: { threadId: threadIdToUse } });
     setInput("");
+  };
+
+  const submitMessageText = (text: string) => {
+    const threadIdToUse = threadId || newThreadId;
+    sendMessage({ text }, { body: { threadId: threadIdToUse } });
   };
 
   const handleRegenerate = (messageId: string) => {
@@ -135,5 +154,9 @@ export function useAgent() {
     currentBranchIndex,
     handleThumbsDown,
     handleThumbsUp,
+    submitMessageText,
+    shouldOpenPhoneDialog,
+    setShouldOpenPhoneDialog,
+    pendingMessage,
   };
 }

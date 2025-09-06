@@ -57,6 +57,13 @@
       "when": 1755334514967,
       "tag": "0007_warm_goliath",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1756907903403,
+      "tag": "0008_naive_the_hood",
+      "breakpoints": true
     }
   ]
 }

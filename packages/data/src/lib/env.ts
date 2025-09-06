@@ -21,6 +21,10 @@ export const env = createEnv({
     LANGFUSE_PUBLIC_KEY: z.string().optional(),
     LANGFUSE_SECRET_KEY: z.string().optional(),
     LANGFUSE_BASEURL: z.string().url().optional().default("https://cloud.langfuse.com"),
+    TWILIO_ACCOUNT_SID: z.string().min(1),
+    TWILIO_AUTH_TOKEN: z.string().min(1),
+    SEND_SMS_API_KEY: z.string().min(1),
+    SEND_SMS_USERNAME: z.string().min(1),
   },
   client: {
     NEXT_PUBLIC_FORMBRICKS_API_HOST: z.string().min(1),
@@ -67,5 +71,9 @@ export const env = createEnv({
     LANGFUSE_SECRET_KEY: process.env.LANGFUSE_SECRET_KEY,
     LANGFUSE_BASEURL: process.env.LANGFUSE_BASEURL,
     NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
+    TWILIO_ACCOUNT_SID: process.env.TWILIO_ACCOUNT_SID,
+    TWILIO_AUTH_TOKEN: process.env.TWILIO_AUTH_TOKEN,
+    SEND_SMS_API_KEY: process.env.SEND_SMS_API_KEY,
+    SEND_SMS_USERNAME: process.env.SEND_SMS_USERNAME,
   },
 });

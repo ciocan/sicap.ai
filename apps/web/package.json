@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --port=3042",
+    "dev": "next dev --turbopack --port=3042",
     "build": "next build",
     "mastra:dev": "mastra dev --dir src/agent",
     "mastra:build": "mastra build --dir src/agent",

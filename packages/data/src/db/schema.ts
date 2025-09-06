@@ -26,6 +26,8 @@ export const userTable = sqliteTable(
     updatedAt: integer("updatedAt", { mode: "timestamp" })
       .$defaultFn(() => /* @__PURE__ */ new Date())
       .notNull(),
+    phoneNumber: text("phoneNumber").unique(),
+    phoneNumberVerified: integer("phoneNumberVerified", { mode: "boolean" }),
   },
   (user) => [uniqueIndex("users__email__idx").on(user.email)],
 );

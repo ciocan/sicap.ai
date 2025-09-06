@@ -24,3 +24,7 @@ export * from "./ui/tabs.tsx";
 export * from "./ui/loader.tsx";
 export * from "./ui/alert-dialog.tsx";
 export * from "./ui/sonner.tsx";
+export * from "./ui/input-otp.tsx";
+export * from "./ui/command.tsx";
+export * from "./ui/popover.tsx";
+export * from "./ui/phone-input.tsx";

@@ -25,6 +25,7 @@
     "db:push": "cd packages/data && dotenv -e ../../.env -- pnpm db:push && cd ../..",
     "db:check": "cd packages/data && dotenv -e ../../.env -- pnpm db:check && cd ../..",
     "db:studio": "pnpm with-env turbo run --filter=@sicap/data db:studio",
+    "auth:generate": "pnpm with-env turbo --ui=stream run --filter=@sicap/data auth:generate",
     "db:dev": "turso dev --db-file=devdb",
     "db:dev:clean": "rm devdb*",
     "with-env": "dotenv -e .env --",

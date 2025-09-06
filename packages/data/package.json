@@ -22,7 +22,8 @@
     "db:up": "drizzle-kit up",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "auth:generate": "pnpm dlx @better-auth/cli generate --output ./src/db/schema.ts --config ./src/auth/index.ts --yes"
   },
   "devDependencies": {
     "@sicap/tsconfig": "workspace:*",
@@ -35,9 +36,11 @@
     "@t3-oss/env-nextjs": "^0.8.0",
     "better-auth": "^1.3.6",
     "drizzle-orm": "^0.44.4",
+    "ky": "^1.10.0",
     "libsql": "^0.5.17",
     "next-axiom": "^1.9.2",
     "tsup": "^8.5.0",
+    "twilio": "^5.9.0",
     "zod": "^3.25.76"
   }
 }

@@ -2,7 +2,9 @@ import type { Context, Next } from "hono";
 import { HTTPException } from "hono/http-exception";
 
 import { auth } from "@sicap/data";
-import type { ErrorResponse } from "./schemas";
+
+import { countUserMessages } from "@/agent/lib/utils";
+import { MESSAGE_LIMIT_UNVERIFIED } from "@/agent/lib/const";
 
 // Auth middleware
 export const authMiddleware = async (c: Context, next: Next) => {
@@ -21,23 +23,17 @@ export const authMiddleware = async (c: Context, next: Next) => {
   await next();
 };
 
-// Error handler middleware
 export const errorHandler = (err: Error, c: Context) => {
   console.error("API Error:", err);
 
   if (err instanceof HTTPException) {
-    const response: ErrorResponse = {
-      error: err.message,
-      code: err.status.toString(),
-    };
-    return c.json(response, err.status);
+    const status = err.status;
+    const message = err.message || "Error";
+    const cause = (err as unknown as { cause?: { code?: string } }).cause;
+    return c.json({ error: message, code: cause?.code }, status);
   }
 
-  const response: ErrorResponse = {
-    error: "Internal Server Error",
-    code: "500",
-  };
-  return c.json(response, 500);
+  return c.json({ error: "Internal Server Error" }, 500);
 };
 
 // CORS middleware
@@ -48,6 +44,29 @@ export const corsMiddleware = async (c: Context, next: Next) => {
 
   if (c.req.method === "OPTIONS") {
     return c.text("", 200);
+  }
+
+  await next();
+};
+
+// validate user middleware
+export const verifyUserMiddleware = async (c: Context, next: Next) => {
+  const userId = c.get("userId") as string;
+  const session = c.get("session");
+  const phoneVerified = Boolean(session?.user?.phoneNumberVerified);
+
+  if (phoneVerified) {
+    await next();
+    return;
+  }
+
+  const count = await countUserMessages(userId);
+
+  if (Number(count) >= MESSAGE_LIMIT_UNVERIFIED) {
+    throw new HTTPException(403, {
+      message: "Verificarea telefonului este necesară",
+      cause: { code: "PHONE_VERIFICATION_REQUIRED" },
+    });
   }
 
   await next();

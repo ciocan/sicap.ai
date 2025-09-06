@@ -15,12 +15,6 @@ export type JsonInputSchema<T extends z.ZodType> = {
   };
 };
 
-// Common schemas
-export const ErrorResponseSchema = z.object({
-  error: z.string(),
-  code: z.string().optional(),
-});
-
 export const SuccessResponseSchema = z.object({
   success: z.boolean(),
 });
@@ -82,7 +76,6 @@ export const VoteMessageRequestSchema = z.object({
 });
 
 // Type exports
-export type ErrorResponse = z.infer<typeof ErrorResponseSchema>;
 export type SuccessResponse = z.infer<typeof SuccessResponseSchema>;
 export type UIMessage = z.infer<typeof UIMessageSchema>;
 export type ChatRequest = z.infer<typeof ChatRequestSchema>;
