@@ -1,10 +1,23 @@
 import type { Context, Next } from "hono";
 import { HTTPException } from "hono/http-exception";
+import { rateLimiter } from "hono-rate-limiter";
+import { RedisStore } from "@hono-rate-limiter/redis";
 
 import { auth } from "@sicap/data";
 
 import { countUserMessages } from "@/agent/lib/utils";
 import { MESSAGE_LIMIT_UNVERIFIED } from "@/agent/lib/const";
+
+export const rateLimiterMiddleware = rateLimiter({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  limit: 50,
+  standardHeaders: "draft-6", // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
+  keyGenerator: (c: Context) => {
+    const userId = c.get("userId") as string;
+    console.log("------ rateLimiterMiddleware userId", userId);
+    return userId;
+  },
+});
 
 // Auth middleware
 export const authMiddleware = async (c: Context, next: Next) => {

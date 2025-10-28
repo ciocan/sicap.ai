@@ -21,6 +21,8 @@ export function chatHandler<
     runtimeContext.set("userId", userId);
     runtimeContext.set("threadId", threadId);
 
+    console.log("------ chatHandler rateLimit", c.get("rateLimit"));
+
     const stream = await agent.stream([message] as unknown as UIMessage[], {
       runId: threadId,
       runtimeContext,

@@ -35,6 +35,9 @@ importers:
       '@formbricks/js':
         specifier: 3.0.1
         version: 3.0.1(zod@3.25.76)
+      '@hono-rate-limiter/redis':
+        specifier: ^0.1.4
+        version: 0.1.4(hono-rate-limiter@0.4.2(hono@4.9.5))
       '@hono/zod-validator':
         specifier: ^0.7.2
         version: 0.7.2(hono@4.9.5)(zod@3.25.76)
@@ -143,6 +146,9 @@ importers:
       hono-openapi:
         specifier: ^0.4.8
         version: 0.4.8(@hono/zod-validator@0.7.2(hono@4.9.5)(zod@3.25.76))(hono@4.9.5)(openapi-types@12.1.3)(zod@3.25.76)
+      hono-rate-limiter:
+        specifier: ^0.4.2
+        version: 0.4.2(hono@4.9.5)
       import-in-the-middle:
         specifier: ^1.14.2
         version: 1.14.2
@@ -1220,6 +1226,11 @@ packages:
 
   '@hexagon/base64@1.1.28':
     resolution: {integrity: sha512-lhqDEAvWixy3bZ+UOYbPwUbBkwBq5C1LAJ/xPC8Oi+lL54oyakv/npbA0aU2hgCsx/1NUd4IBvV03+aUBWxerw==}
+
+  '@hono-rate-limiter/redis@0.1.4':
+    resolution: {integrity: sha512-RSrVX5N2Oo/xXApskegu667cBVHyr8RXGWnbRDGjU2py8pN4BttEKSHA0iKi3BAwh1xSkENgDRng4tpFD9DbKg==}
+    peerDependencies:
+      hono-rate-limiter: ^0.2.1
 
   '@hono/zod-validator@0.7.2':
     resolution: {integrity: sha512-ub5eL/NeZ4eLZawu78JpW/J+dugDAYhwqUIdp9KYScI6PZECij4Hx4UsrthlEUutqDDhPwRI0MscUfNkvn/mqQ==}
@@ -5033,6 +5044,11 @@ packages:
       zod-openapi:
         optional: true
 
+  hono-rate-limiter@0.4.2:
+    resolution: {integrity: sha512-AAtFqgADyrmbDijcRTT/HJfwqfvhalya2Zo+MgfdrMPas3zSMD8SU03cv+ZsYwRU1swv7zgVt0shwN059yzhjw==}
+    peerDependencies:
+      hono: ^4.1.1
+
   hono@4.9.5:
     resolution: {integrity: sha512-aLAVl5/67ifNnoFVxnhR89dpmSLsgwBprw/PT671ASwUpJqmd7Ne8KPTQo37DbRZfgpHaHeZ4bPVUvbOkeedMw==}
     engines: {node: '>=16.9.0'}
@@ -8209,6 +8225,10 @@ snapshots:
       yargs: 17.7.2
 
   '@hexagon/base64@1.1.28': {}
+
+  '@hono-rate-limiter/redis@0.1.4(hono-rate-limiter@0.4.2(hono@4.9.5))':
+    dependencies:
+      hono-rate-limiter: 0.4.2(hono@4.9.5)
 
   '@hono/zod-validator@0.7.2(hono@4.9.5)(zod@3.25.76)':
     dependencies:
@@ -12465,6 +12485,10 @@ snapshots:
       '@hono/zod-validator': 0.7.2(hono@4.9.5)(zod@3.25.76)
       hono: 4.9.5
       zod: 3.25.76
+
+  hono-rate-limiter@0.4.2(hono@4.9.5):
+    dependencies:
+      hono: 4.9.5
 
   hono@4.9.5: {}
 

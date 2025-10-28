@@ -1,8 +1,10 @@
+import type { RateLimitInfo } from "hono-rate-limiter";
 import { z } from "zod";
 
 export type Env = {
   Variables: {
     userId: string;
+    rateLimit: RateLimitInfo;
   };
 };
 

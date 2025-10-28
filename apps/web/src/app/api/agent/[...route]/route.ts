@@ -8,6 +8,7 @@ import {
   errorHandler,
   corsMiddleware,
   verifyUserMiddleware,
+  rateLimiterMiddleware,
 } from "@/agent/lib/middleware";
 import { chatHandler } from "@/agent/lib/handlers/chat";
 import {
@@ -32,7 +33,13 @@ app.use("*", corsMiddleware);
 app.use("*", authMiddleware);
 app.onError(errorHandler);
 
-app.post("/chat", verifyUserMiddleware, zValidator("json", ChatRequestSchema), chatHandler());
+app.post(
+  "/chat",
+  verifyUserMiddleware,
+  rateLimiterMiddleware,
+  zValidator("json", ChatRequestSchema),
+  chatHandler(),
+);
 
 app.get("/threads", listThreadsHandler);
 app.get("/threads/:threadId", getThreadHandler);
