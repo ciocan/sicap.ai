@@ -1,0 +1,21 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - v2
+
+permissions:
+  contents: write
+  pull-requests: write
+  packages: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          target-branch: dev
+
