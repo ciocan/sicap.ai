@@ -1,12 +1,11 @@
-import remarkGfm from "remark-gfm";
-import createMDX from "@next/mdx";
 import { withAxiom } from "next-axiom";
 import { withBotId } from "botid/next/config";
 import type { NextConfig } from "next";
-import path from "path";
+import path from "node:path";
 
 const nextConfig: NextConfig = {
 	transpilePackages: ["@sicap/ui"],
+	// Webpack config for --webpack flag (required due to MDX plugin incompatibility with Turbopack)
 	webpack(config) {
 		config.resolve.alias = {
 			...(config.resolve.alias || {}),
@@ -15,8 +14,20 @@ const nextConfig: NextConfig = {
 		};
 		return config;
 	},
+	// Turbopack config for future use when MDX plugin becomes compatible
+	turbopack: {
+		resolveAlias: {
+			"@ui": "./../../packages/ui/src",
+			"@": "./src",
+		},
+	},
 	reactStrictMode: false,
 	pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
+	experimental: {
+		mdxRs: {
+			mdxType: "gfm",
+		},
+	},
 	async rewrites() {
 		return [
 			{
@@ -61,11 +72,4 @@ const nextConfig: NextConfig = {
 	},
 };
 
-const withMDX = createMDX({
-	options: {
-		remarkPlugins: [remarkGfm],
-		rehypePlugins: [],
-	},
-});
-
-export default withAxiom(withMDX(withBotId(nextConfig)));
+export default withAxiom(withBotId(nextConfig));
