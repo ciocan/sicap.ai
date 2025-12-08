@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
-<url><loc>https://sicap.ai/confidentialitate</loc><lastmod>2025-12-08T22:09:01.056Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://sicap.ai/despre</loc><lastmod>2025-12-08T22:09:01.057Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://sicap.ai/achizitii-offline/firma/777</loc><lastmod>2025-12-08T22:09:01.057Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://sicap.ai/achizitii-offline/contract/666666</loc><lastmod>2025-12-08T22:09:01.057Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://sicap.ai/achizitii/firma/777</loc><lastmod>2025-12-08T22:09:01.057Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://sicap.ai/achizitii/contract/666666</loc><lastmod>2025-12-08T22:09:01.057Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://sicap.ai/autentificare</loc><lastmod>2025-12-08T22:09:01.057Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://sicap.ai/cauta</loc><lastmod>2025-12-08T22:09:01.057Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://sicap.ai/eroare</loc><lastmod>2025-12-08T22:09:01.057Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://sicap.ai/licitatii/firma/placeholder</loc><lastmod>2025-12-08T22:09:01.057Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://sicap.ai/licitatii/contract/placeholder</loc><lastmod>2025-12-08T22:09:01.057Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://sicap.ai</loc><lastmod>2025-12-08T22:09:01.057Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://sicap.ai/confidentialitate</loc><lastmod>2025-12-08T22:15:07.873Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://sicap.ai/despre</loc><lastmod>2025-12-08T22:15:07.874Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://sicap.ai/achizitii-offline/firma/666</loc><lastmod>2025-12-08T22:15:07.874Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://sicap.ai/achizitii-offline/contract/100666666</loc><lastmod>2025-12-08T22:15:07.874Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://sicap.ai/achizitii/firma/666</loc><lastmod>2025-12-08T22:15:07.874Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://sicap.ai/achizitii/contract/666666</loc><lastmod>2025-12-08T22:15:07.874Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://sicap.ai/autentificare</loc><lastmod>2025-12-08T22:15:07.874Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://sicap.ai/cauta</loc><lastmod>2025-12-08T22:15:07.874Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://sicap.ai/eroare</loc><lastmod>2025-12-08T22:15:07.874Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://sicap.ai/licitatii/firma/666</loc><lastmod>2025-12-08T22:15:07.874Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://sicap.ai/licitatii/contract/100420420</loc><lastmod>2025-12-08T22:15:07.874Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://sicap.ai</loc><lastmod>2025-12-08T22:15:07.874Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
 <url><loc>https://sicap.ai/despre</loc></url>
 <url><loc>https://sicap.ai/confidentialitate</loc></url>
 </urlset>
