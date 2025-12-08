@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.5.0](https://github.com/ciocan/sicap.ai/compare/sicap-v0.4.0...sicap-v0.5.0) (2025-12-08)
+
+
+### Features
+
+* implement caching for API queries and enhance sitemap generation ([c66a612](https://github.com/ciocan/sicap.ai/commit/c66a612b7793c57699b5a12b8f443bf69915236d))
+
+
+### Bug Fixes
+
+* update sitemap entries and correct route types import ([ba7de66](https://github.com/ciocan/sicap.ai/commit/ba7de66f71bc3e2ad6b98bbf525cb2cff7b0cc13))
+
 ## [0.4.0](https://github.com/ciocan/sicap.ai/compare/sicap-v0.3.0...sicap-v0.4.0) (2025-12-08)
 
 
