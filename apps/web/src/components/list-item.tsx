@@ -13,6 +13,27 @@ interface ListItemProps {
   fields: SearchItemPublic | SearchItemDirect | SearchItemOffline | undefined;
 }
 
+const indexConfig = {
+  [ES_INDEX_DIRECT]: {
+    text: "Achizitie directa",
+    borderColor: "border-l-blue-500",
+    badgeClass: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
+    dateColor: "text-blue-600 dark:text-blue-400",
+  },
+  [ES_INDEX_OFFLINE]: {
+    text: "Achizitie Offline",
+    borderColor: "border-l-amber-500",
+    badgeClass: "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200",
+    dateColor: "text-amber-600 dark:text-amber-400",
+  },
+  [ES_INDEX_PUBLIC]: {
+    text: "Licitatie publica",
+    borderColor: "border-l-emerald-500",
+    badgeClass: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200",
+    dateColor: "text-emerald-600 dark:text-emerald-400",
+  },
+} as const;
+
 export function ListItem({ id, index, fields }: ListItemProps) {
   if (!fields) {
     return null;
@@ -46,25 +67,24 @@ export function ListItem({ id, index, fields }: ListItemProps) {
   const year = getYear(date);
 
   const indexSlug = getIndexSlug(index);
+  const config = indexConfig[index];
 
   const contractLink = `/${indexSlug}/contract/${id}`;
   const cpvLink = `/${indexSlug}/cpv/${cpvCode}`;
   const ronValue = Number(value);
   const contractingAuthorityLink = `/${indexSlug}/autoritate/${contractingAuthorityId}`;
   const supplierLink = supplierId ? `/${indexSlug}/firma/${supplierId}` : "#";
-  const indexText =
-    index === ES_INDEX_DIRECT
-      ? "Achizitie directa"
-      : index === ES_INDEX_OFFLINE
-        ? "Achizitie Offline"
-        : "Licitatie publica";
 
   return (
-    <Card className="flex flex-col sm:flex-row justify-between hover:bg-slate-50 hover:dark:bg-slate-800">
+    <Card
+      className={`flex flex-col sm:flex-row justify-between hover:bg-slate-50 hover:dark:bg-slate-800 border-l-[3px] ${config.borderColor}`}
+    >
       <div className="flex flex-col w-full">
         <CardHeader className="pb-4 space-y-2">
           <span className="flex items-center gap-2 justify-between w-full">
-            <span className="text-xs text-primary">{indexText}</span>
+            <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${config.badgeClass}`}>
+              {config.text}
+            </span>
             {euFunds && <span className="text-xs text-primary">{euFunds}</span>}
           </span>
           <Link href={contractLink} prefetch={false}>
@@ -126,9 +146,9 @@ export function ListItem({ id, index, fields }: ListItemProps) {
       </div>
       <CardHeader className="flex justify-center sm:border-l-2 border-t-2 sm:border-t-0">
         <div className="flex gap-1 sm:flex-col text-center w-14">
-          <span className="sm:text-2xl sm:text-primary font-mono">{day}</span>
+          <span className={`sm:text-2xl font-mono ${config.dateColor}`}>{day}</span>
           <span className="sm:text-md sm:uppercase">{month}</span>
-          <span className="sm:text-sm font-mono">{year}</span>
+          <span className={`sm:text-sm font-mono ${config.dateColor}`}>{year}</span>
         </div>
       </CardHeader>
     </Card>

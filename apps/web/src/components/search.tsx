@@ -75,9 +75,6 @@ export function Search({ hideButton }: { hideButton?: boolean }) {
           </div>
           {!hideButton && (
             <div className="">
-              <span className="text-red-600 bg-yellow-50 dark:bg-yellow-200 dark:text-red-700 px-2 py-[2px] rounded-xl text-sm font-bold">
-                Nou
-              </span>
               <DialogTrigger asChild>
                 <Button
                   variant="link"
