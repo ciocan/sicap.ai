@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.1](https://github.com/ciocan/sicap.ai/compare/sicap-v0.6.0...sicap-v0.6.1) (2025-12-08)
+
+
+### Bug Fixes
+
+* improve layout and accessibility in main page and search component ([9ff5fe1](https://github.com/ciocan/sicap.ai/commit/9ff5fe1351c4ff9490415261a3e8bbb2f02a7c49))
+
 ## [0.6.0](https://github.com/ciocan/sicap.ai/compare/sicap-v0.5.0...sicap-v0.6.0) (2025-12-08)
 
 
