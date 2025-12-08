@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/ciocan/sicap.ai/compare/sicap-v0.5.0...sicap-v0.6.0) (2025-12-08)
+
+
+### Features
+
+* enhance ListItem component with index-based configuration ([650f258](https://github.com/ciocan/sicap.ai/commit/650f258b36060989b653be25879560250881e3ee))
+
 ## [0.5.0](https://github.com/ciocan/sicap.ai/compare/sicap-v0.4.0...sicap-v0.5.0) (2025-12-08)
 
 
