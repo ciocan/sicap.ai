@@ -99,25 +99,29 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <BotIdClient protect={protectedRoutes} />
       </head>
       <body className="min-h-screen bg-background font-sans antialiased">
-        <SessionProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <Suspense fallback={null}>
-              <FormbricksProvider>
-                <div className="relative flex min-h-screen flex-col">
-                  <Navbar />
-                  <div className="flex flex-col flex-1">{children}</div>
-                  <Footer />
-                </div>
-              </FormbricksProvider>
-            </Suspense>
-          </ThemeProvider>
-        </SessionProvider>
-        <OpenStatusProvider dsn={env.NEXT_PUBLIC_OPENSTATUS_RUM_DSN} />
+        <Suspense fallback={null}>
+          <SessionProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <Suspense fallback={null}>
+                <FormbricksProvider>
+                  <div className="relative flex min-h-screen flex-col">
+                    <Navbar />
+                    <div className="flex flex-col flex-1">{children}</div>
+                    <Footer />
+                  </div>
+                </FormbricksProvider>
+              </Suspense>
+            </ThemeProvider>
+          </SessionProvider>
+        </Suspense>
+        <Suspense fallback={null}>
+          <OpenStatusProvider dsn={env.NEXT_PUBLIC_OPENSTATUS_RUM_DSN} />
+        </Suspense>
       </body>
       <AxiomWebVitals />
     </html>

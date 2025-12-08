@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 
-import { getCompanyAchizitiiOffline } from "@sicap/api";
+import { getCachedCompanyAchizitiiOffline } from "@/lib/cached-queries";
 import { CompanyAchizitiiOffline } from "@/components/company-achizitii-offline";
 import { allowedSlugs, moneyRon } from "@/utils";
 import type { SearchParams } from "@/components";
@@ -15,6 +15,11 @@ export type PageProps = {
   }>;
   searchParams: Promise<SearchParams>;
 };
+
+// Provide a sample for Cache Components build-time validation
+export function generateStaticParams() {
+  return [{ slug: "firma", id: "666" }];
+}
 
 export async function generateMetadata({ params, searchParams }: PageProps) {
   const { id, slug } = await params;
@@ -33,7 +38,7 @@ export async function generateMetadata({ params, searchParams }: PageProps) {
 
   try {
     const { total, stats, contractingAuthority, supplier, details } =
-      await getCompanyAchizitiiOffline(companyProps);
+      await getCachedCompanyAchizitiiOffline(companyProps);
     const { noticeEntityAddress } = details;
 
     const totalValue = stats?.years.map((y) => y.value).reduce((a, b) => a + b, 0);
@@ -68,13 +73,24 @@ export async function generateMetadata({ params, searchParams }: PageProps) {
   }
 }
 
-export default async function Page({ params, searchParams }: PageProps) {
+async function PageContent({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string; slug: SLUG }>;
+  searchParams: Promise<SearchParams>;
+}) {
   const { id, slug } = await params;
+  const resolvedSearchParams = await searchParams;
 
+  return <CompanyAchizitiiOffline id={id} slug={slug} searchParams={resolvedSearchParams} />;
+}
+
+export default function Page({ params, searchParams }: PageProps) {
   return (
     <main className="container px-8 py-4 flex flex-col gap-2 lg:max-w-7xl">
       <Suspense fallback={<div className="text-sm">se incarca...</div>}>
-        <CompanyAchizitiiOffline id={id} slug={slug} searchParams={await searchParams} />
+        <PageContent params={params} searchParams={searchParams} />
       </Suspense>
     </main>
   );

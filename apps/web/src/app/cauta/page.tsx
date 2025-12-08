@@ -9,8 +9,6 @@ export type PageProps = {
 	searchParams: Promise<SearchParams>;
 };
 
-export const revalidate = 86400; // 24 * 3600;
-
 export async function generateMetadata({ searchParams }: PageProps) {
 	const { q: query } = await searchParams;
 

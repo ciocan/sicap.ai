@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 
-import { getCompanyLicitatii } from "@sicap/api";
+import { getCachedCompanyLicitatii } from "@/lib/cached-queries";
 
 import { formatNumber, moneyEur, moneyRon } from "@/utils";
 import type { SLUG } from "@/utils/types";
@@ -25,9 +25,9 @@ export async function CompanyLicitatii({ id, slug, searchParams }: CompanyLicita
     cpv: { cpvCode: id },
   };
   const companyProps = propMappings[slug];
-  let results: Awaited<ReturnType<typeof getCompanyLicitatii>>;
+  let results: Awaited<ReturnType<typeof getCachedCompanyLicitatii>>;
   try {
-    results = await getCompanyLicitatii({ ...companyProps, page, perPage });
+    results = await getCachedCompanyLicitatii({ ...companyProps, page, perPage });
   } catch {
     return notFound();
   }

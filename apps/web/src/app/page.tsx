@@ -1,12 +1,9 @@
-import { getTotal } from "@sicap/api";
+import { getCachedTotal } from "@/lib/cached-queries";
 import { Search } from "@/components";
 import { formatNumber } from "@/utils";
 
-export const revalidate = 0;
-export const dynamic = "force-dynamic";
-
 export default async function Page() {
-  const { licitatii, achizitii, offline } = await getTotal();
+  const { licitatii, achizitii, offline } = await getCachedTotal();
 
   return (
     <main className="my-auto p-4 flex flex-col gap-2 items-center">

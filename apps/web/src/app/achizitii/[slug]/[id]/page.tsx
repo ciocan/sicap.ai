@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 
-import { getCompanyAchizitii } from "@sicap/api";
+import { getCachedCompanyAchizitii } from "@/lib/cached-queries";
 import { CompanyAchizitii } from "@/components/company-achizitii";
 import { allowedSlugs, moneyRon } from "@/utils";
 import type { SearchParams } from "@/components";
@@ -15,6 +15,12 @@ export type PageProps = {
   }>;
   searchParams: Promise<SearchParams>;
 };
+
+// Provide a sample for Cache Components build-time validation
+// This placeholder will be validated at build time but won't generate actual pages
+export function generateStaticParams() {
+  return [{ slug: "firma", id: "666" }];
+}
 
 export async function generateMetadata(props: PageProps) {
   const { id, slug } = await props.params;
@@ -32,7 +38,7 @@ export async function generateMetadata(props: PageProps) {
 
   try {
     const { total, stats, contractingAuthority, supplier } =
-      await getCompanyAchizitii(companyProps);
+      await getCachedCompanyAchizitii(companyProps);
     const totalValue = stats?.years.map((y) => y.value).reduce((a, b) => a + b, 0);
     const totalValueRon = moneyRon(totalValue);
 
@@ -60,13 +66,24 @@ export async function generateMetadata(props: PageProps) {
   }
 }
 
-export default async function Page({ params, searchParams }: PageProps) {
+async function PageContent({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string; slug: SLUG }>;
+  searchParams: Promise<SearchParams>;
+}) {
   const { id, slug } = await params;
+  const resolvedSearchParams = await searchParams;
 
+  return <CompanyAchizitii id={id} slug={slug} searchParams={resolvedSearchParams} />;
+}
+
+export default function Page({ params, searchParams }: PageProps) {
   return (
     <main className="container px-8 py-4 flex flex-col gap-2 lg:max-w-7xl">
       <Suspense fallback={<div className="text-sm">se incarca...</div>}>
-        <CompanyAchizitii id={id} slug={slug} searchParams={await searchParams} />
+        <PageContent params={params} searchParams={searchParams} />
       </Suspense>
     </main>
   );

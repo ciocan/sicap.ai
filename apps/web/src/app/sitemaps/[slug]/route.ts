@@ -2,17 +2,15 @@ import { getServerSideSitemap } from "next-sitemap";
 import type { NextRequest } from "next/server";
 
 import {
-  getSitemapAchizitii,
-  getSitemapAchizitiiAutoritati,
-  getSitemapAchizitiiCpv,
-  getSitemapAchizitiiFirme,
-  getSitemapAchizitiiOffline,
-  getSitemapLicitatii,
-  getSitemapLicitatiiCpv,
-} from "@sicap/api";
+  getCachedSitemapAchizitii,
+  getCachedSitemapAchizitiiAutoritati,
+  getCachedSitemapAchizitiiCpv,
+  getCachedSitemapAchizitiiFirme,
+  getCachedSitemapAchizitiiOffline,
+  getCachedSitemapLicitatii,
+  getCachedSitemapLicitatiiCpv,
+} from "@/lib/cached-queries";
 import { env } from "@/lib/env";
-
-export const revalidate = 0;
 
 const siteUrl = env.BASE_URL;
 const allowedSlugs = [
@@ -27,8 +25,9 @@ const allowedSlugs = [
 
 const size = 50_000;
 
-export async function GET(request: NextRequest, { params }: any) {
-  const slug = params.slug.replace(/\.xml$/, "") as (typeof allowedSlugs)[number];
+export async function GET(_request: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
+  const { slug: rawSlug } = await params;
+  const slug = rawSlug.replace(/\.xml$/, "") as (typeof allowedSlugs)[number];
 
   if (!allowedSlugs.includes(slug)) {
     return new Response("Not found", { status: 404 });
@@ -38,25 +37,25 @@ export async function GET(request: NextRequest, { params }: any) {
 
   switch (slug) {
     case "licitatii":
-      data = await getSitemapLicitatii(size);
+      data = await getCachedSitemapLicitatii(size);
       break;
     case "achizitii":
-      data = await getSitemapAchizitii(size);
+      data = await getCachedSitemapAchizitii(size);
       break;
     case "licitatii.cpv":
-      data = await getSitemapLicitatiiCpv(size);
+      data = await getCachedSitemapLicitatiiCpv(size);
       break;
     case "achizitii.cpv":
-      data = await getSitemapAchizitiiCpv(size);
+      data = await getCachedSitemapAchizitiiCpv(size);
       break;
     case "achizitii.firme":
-      data = await getSitemapAchizitiiFirme(size);
+      data = await getCachedSitemapAchizitiiFirme(size);
       break;
     case "achizitii.autoritati":
-      data = await getSitemapAchizitiiAutoritati(size);
+      data = await getCachedSitemapAchizitiiAutoritati(size);
       break;
     case "achizitii-offline":
-      data = await getSitemapAchizitiiOffline(size);
+      data = await getCachedSitemapAchizitiiOffline(size);
   }
 
   const sitemap = data

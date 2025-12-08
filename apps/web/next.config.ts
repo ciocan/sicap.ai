@@ -5,7 +5,29 @@ import path from "node:path";
 
 const nextConfig: NextConfig = {
 	transpilePackages: ["@sicap/ui"],
-	// Webpack config for --webpack flag (required due to MDX plugin incompatibility with Turbopack)
+	cacheComponents: true,
+	cacheLife: {
+		totals: {
+			stale: 3600,
+			revalidate: 86400,
+			expire: 604800,
+		},
+		search: {
+			stale: 300,
+			revalidate: 86400,
+			expire: 604800,
+		},
+		contracts: {
+			stale: 3600,
+			revalidate: 172800,
+			expire: 604800,
+		},
+		sitemaps: {
+			stale: 3600,
+			revalidate: 86400,
+			expire: 604800,
+		},
+	},
 	webpack(config) {
 		config.resolve.alias = {
 			...(config.resolve.alias || {}),
@@ -14,7 +36,6 @@ const nextConfig: NextConfig = {
 		};
 		return config;
 	},
-	// Turbopack config for future use when MDX plugin becomes compatible
 	turbopack: {
 		resolveAlias: {
 			"@ui": "./../../packages/ui/src",

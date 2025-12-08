@@ -1,0 +1,196 @@
+import { cacheLife, cacheTag } from "next/cache";
+import {
+  getTotal,
+  searchContracts,
+  getCompanyAchizitii,
+  getCompanyLicitatii,
+  getCompanyAchizitiiOffline,
+  getContractAchizitii,
+  getContractLicitatii,
+  getContractAchizitiiOffline,
+  getSitemapAchizitii,
+  getSitemapAchizitiiAutoritati,
+  getSitemapAchizitiiCpv,
+  getSitemapAchizitiiFirme,
+  getSitemapAchizitiiOffline,
+  getSitemapLicitatii,
+  getSitemapLicitatiiCpv,
+  type SearchProps,
+  type Args,
+} from "@sicap/api";
+
+/**
+ * Cached wrapper for getTotal - fetches total counts for all indices
+ * Uses "totals" cache profile (24h revalidation)
+ */
+export async function getCachedTotal() {
+  "use cache";
+  cacheLife("totals");
+  cacheTag("totals");
+  return getTotal();
+}
+
+/**
+ * Cached wrapper for searchContracts - full-text search across indices
+ * Uses "search" cache profile (24h revalidation)
+ */
+export async function getCachedSearchResults(props: SearchProps) {
+  "use cache";
+  cacheLife("search");
+  cacheTag("search", `search-${props.query}-${props.page}`);
+  return searchContracts(props);
+}
+
+/**
+ * Cached wrapper for getCompanyAchizitii - get direct acquisitions by company/authority/cpv
+ * Uses "search" cache profile (24h revalidation)
+ */
+export async function getCachedCompanyAchizitii(args: Args) {
+  "use cache";
+  cacheLife("search");
+  const key = args.supplierId || args.authorityId || args.cpvCode || "unknown";
+  cacheTag("company-achizitii", `achizitii-${key}-${args.page || 1}`);
+  return getCompanyAchizitii(args);
+}
+
+/**
+ * Cached wrapper for getCompanyLicitatii - get public tenders by company/authority/cpv
+ * Uses "search" cache profile (24h revalidation)
+ */
+export async function getCachedCompanyLicitatii(args: Args) {
+  "use cache";
+  cacheLife("search");
+  const key = args.supplierId || args.authorityId || args.cpvCode || "unknown";
+  cacheTag("company-licitatii", `licitatii-${key}-${args.page || 1}`);
+  return getCompanyLicitatii(args);
+}
+
+/**
+ * Cached wrapper for getCompanyAchizitiiOffline - get offline acquisitions by company/authority/cpv
+ * Uses "search" cache profile (24h revalidation)
+ */
+export async function getCachedCompanyAchizitiiOffline(args: Args) {
+  "use cache";
+  cacheLife("search");
+  const key = args.supplierId || args.authorityId || args.cpvCode || "unknown";
+  cacheTag(
+    "company-achizitii-offline",
+    `achizitii-offline-${key}-${args.page || 1}`,
+  );
+  return getCompanyAchizitiiOffline(args);
+}
+
+/**
+ * Cached wrapper for getContractAchizitii - get single direct acquisition contract
+ * Uses "contracts" cache profile (48h revalidation)
+ */
+export async function getCachedContractAchizitii(id: string) {
+  "use cache";
+  cacheLife("contracts");
+  cacheTag("contract-achizitii", `contract-achizitii-${id}`);
+  return getContractAchizitii(id);
+}
+
+/**
+ * Cached wrapper for getContractLicitatii - get single public tender contract
+ * Uses "contracts" cache profile (48h revalidation)
+ */
+export async function getCachedContractLicitatii(id: string) {
+  "use cache";
+  cacheLife("contracts");
+  cacheTag("contract-licitatii", `contract-licitatii-${id}`);
+  return getContractLicitatii(id);
+}
+
+/**
+ * Cached wrapper for getContractAchizitiiOffline - get single offline acquisition contract
+ * Uses "contracts" cache profile (48h revalidation)
+ */
+export async function getCachedContractAchizitiiOffline(id: string) {
+  "use cache";
+  cacheLife("contracts");
+  cacheTag("contract-achizitii-offline", `contract-achizitii-offline-${id}`);
+  return getContractAchizitiiOffline(id);
+}
+
+// ============================================================================
+// Sitemap cached functions
+// ============================================================================
+
+/**
+ * Cached wrapper for getSitemapAchizitii
+ * Uses "sitemaps" cache profile (24h revalidation)
+ */
+export async function getCachedSitemapAchizitii(size: number) {
+  "use cache";
+  cacheLife("sitemaps");
+  cacheTag("sitemap-achizitii");
+  return getSitemapAchizitii(size);
+}
+
+/**
+ * Cached wrapper for getSitemapLicitatii
+ * Uses "sitemaps" cache profile (24h revalidation)
+ */
+export async function getCachedSitemapLicitatii(size: number) {
+  "use cache";
+  cacheLife("sitemaps");
+  cacheTag("sitemap-licitatii");
+  return getSitemapLicitatii(size);
+}
+
+/**
+ * Cached wrapper for getSitemapAchizitiiCpv
+ * Uses "sitemaps" cache profile (24h revalidation)
+ */
+export async function getCachedSitemapAchizitiiCpv(size: number) {
+  "use cache";
+  cacheLife("sitemaps");
+  cacheTag("sitemap-achizitii-cpv");
+  return getSitemapAchizitiiCpv(size);
+}
+
+/**
+ * Cached wrapper for getSitemapLicitatiiCpv
+ * Uses "sitemaps" cache profile (24h revalidation)
+ */
+export async function getCachedSitemapLicitatiiCpv(size: number) {
+  "use cache";
+  cacheLife("sitemaps");
+  cacheTag("sitemap-licitatii-cpv");
+  return getSitemapLicitatiiCpv(size);
+}
+
+/**
+ * Cached wrapper for getSitemapAchizitiiFirme
+ * Uses "sitemaps" cache profile (24h revalidation)
+ */
+export async function getCachedSitemapAchizitiiFirme(size: number) {
+  "use cache";
+  cacheLife("sitemaps");
+  cacheTag("sitemap-achizitii-firme");
+  return getSitemapAchizitiiFirme(size);
+}
+
+/**
+ * Cached wrapper for getSitemapAchizitiiAutoritati
+ * Uses "sitemaps" cache profile (24h revalidation)
+ */
+export async function getCachedSitemapAchizitiiAutoritati(size: number) {
+  "use cache";
+  cacheLife("sitemaps");
+  cacheTag("sitemap-achizitii-autoritati");
+  return getSitemapAchizitiiAutoritati(size);
+}
+
+/**
+ * Cached wrapper for getSitemapAchizitiiOffline
+ * Uses "sitemaps" cache profile (24h revalidation)
+ */
+export async function getCachedSitemapAchizitiiOffline(size: number) {
+  "use cache";
+  cacheLife("sitemaps");
+  cacheTag("sitemap-achizitii-offline");
+  return getSitemapAchizitiiOffline(size);
+}
+
