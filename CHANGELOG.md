@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/ciocan/sicap.ai/compare/sicap-v0.3.0...sicap-v0.4.0) (2025-12-08)
+
+
+### Features
+
+* upgrade Next.js to v16 and related dependencies ([5fd2ec6](https://github.com/ciocan/sicap.ai/commit/5fd2ec61773eff72d8f86877e64c23fde6241647))
+
 ## [0.3.0](https://github.com/ciocan/sicap.ai/compare/sicap-v0.2.0...sicap-v0.3.0) (2025-12-08)
 
 
