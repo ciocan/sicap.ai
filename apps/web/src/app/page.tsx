@@ -8,10 +8,10 @@ export default async function Page() {
   return (
     <main className="my-auto p-4 flex flex-col gap-2 items-center">
       <div className="flex flex-col gap-4">
-        <h1 className="text-6xl text-center text-primary">
+        <h1 className="text-6xl text-center text-primary mb-6">
           <span className="font-bold">SICAP</span>.ai
         </h1>
-        <h2 className="text-xs text-center">
+        <h2 className="text-xs text-center mb-1">
           <span className="font-mono font-bold">{formatNumber(licitatii)}</span> licitatii publice,{" "}
           <span className="font-mono font-bold">{formatNumber(achizitii)}</span> achizitii directe
           si <span className="font-mono font-bold">{formatNumber(offline)}</span> achizitii offline

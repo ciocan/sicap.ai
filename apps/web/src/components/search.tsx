@@ -51,6 +51,7 @@ export function Search({ hideButton }: { hideButton?: boolean }) {
               onKeyDown={(e) => e.key === "Enter" && handleSearch("input")}
               placeholder="cauta achizitii publice..."
               className="w-full"
+              autoFocus
             />
             {!hideButton && <Button onClick={() => handleSearch("button")}>Cautǎ</Button>}
             {hideButton && (
