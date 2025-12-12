@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.7.1...sicap-v0.8.0) (2025-12-12)
+
+
+### Features
+
+* add embed functionality for public acquisitions ([4bafd8e](https://github.com/ciocan/SICAP.ai/commit/4bafd8eaf087978b061e3a772a22478d2333fb6f))
+
 ## [0.7.1](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.7.0...sicap-v0.7.1) (2025-12-12)
 
 
