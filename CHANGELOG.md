@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.1](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.7.0...sicap-v0.7.1) (2025-12-12)
+
+
+### Bug Fixes
+
+* theme switcher ([fa2f0b6](https://github.com/ciocan/SICAP.ai/commit/fa2f0b6fd5bd598f5ae69c4e8b31eae411d3223f))
+
 ## [0.7.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.6.1...sicap-v0.7.0) (2025-12-12)
 
 
