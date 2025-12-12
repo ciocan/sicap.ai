@@ -15,6 +15,7 @@ import {
   getSitemapAchizitiiOffline,
   getSitemapLicitatii,
   getSitemapLicitatiiCpv,
+  getEmbedAchizitii,
   type SearchProps,
   type Args,
 } from "@sicap/api";
@@ -192,5 +193,20 @@ export async function getCachedSitemapAchizitiiOffline(size: number) {
   cacheLife("sitemaps");
   cacheTag("sitemap-achizitii-offline");
   return getSitemapAchizitiiOffline(size);
+}
+
+// ============================================================================
+// Embed cached functions
+// ============================================================================
+
+/**
+ * Cached wrapper for getEmbedAchizitii - get latest acquisitions for embed widget
+ * Uses "search" cache profile (24h revalidation)
+ */
+export async function getCachedEmbedAchizitii(fiscalNumber: string) {
+  "use cache";
+  cacheLife("search");
+  cacheTag("embed-achizitii", `embed-${fiscalNumber}`);
+  return getEmbedAchizitii({ fiscalNumber });
 }
 

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { StatusWidget } from "./openstatus";
 import { DarkMode } from "./dark-mode";
 import { HostingLink } from "./hosting-link";
-import { Terminal } from "lucide-react";
+import { Terminal, Code2 } from "lucide-react";
 
 export async function Footer() {
   return (
@@ -35,6 +35,12 @@ export async function Footer() {
             <Link href="https://api.sicap.ai" className="hover:underline" target="_blank">
               <Terminal className="w-4 h-4 inline-block mr-1" />
               API
+            </Link>
+          </li>
+          <li>
+            <Link href="/integreaza" className="hover:underline">
+              <Code2 className="w-4 h-4 inline-block mr-1" />
+              Embed
             </Link>
           </li>
         </ul>

@@ -15,3 +15,4 @@ export * from "./es/get-sitemaps";
 export * from "./es/save-search";
 export * from "./es/pointInTime";
 export * from "./es/authority";
+export * from "./es/embed";

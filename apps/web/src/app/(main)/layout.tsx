@@ -11,7 +11,7 @@ import "@/app/globals.css";
 import { siteConfig } from "@/config/site";
 import { Navbar, Footer, ThemeProvider } from "@/components";
 import { Suspense } from "react";
-import FormbricksProvider from "./formbricks";
+import FormbricksProvider from "../formbricks";
 import { env } from "@/lib/env";
 
 export const viewport: Viewport = {
@@ -51,7 +51,7 @@ export const metadata = {
   },
 };
 
-interface RootLayoutProps {
+interface MainLayoutProps {
   children: React.ReactNode;
 }
 
@@ -78,7 +78,7 @@ const protectedRoutes = [
   },
 ];
 
-export default function RootLayout({ children }: RootLayoutProps) {
+export default function MainLayout({ children }: MainLayoutProps) {
   return (
     <html
       lang="en"
