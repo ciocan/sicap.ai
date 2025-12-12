@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.6.1...sicap-v0.7.0) (2025-12-12)
+
+
+### Features
+
+* update searchContracts to use romanian stemming fields ([2dd4e45](https://github.com/ciocan/SICAP.ai/commit/2dd4e45064dcb6f58681703457a4029ed1944533))
+
 ## [0.6.1](https://github.com/ciocan/sicap.ai/compare/sicap-v0.6.0...sicap-v0.6.1) (2025-12-08)
 
 
