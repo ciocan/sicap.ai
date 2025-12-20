@@ -16,6 +16,7 @@ import {
   getSitemapLicitatii,
   getSitemapLicitatiiCpv,
   getEmbedAchizitii,
+  getAuthorityByNationalId,
   type SearchProps,
   type Args,
 } from "@sicap/api";
@@ -208,5 +209,26 @@ export async function getCachedEmbedAchizitii(fiscalNumber: string) {
   cacheLife("search");
   cacheTag("embed-achizitii", `embed-${fiscalNumber}`);
   return getEmbedAchizitii({ fiscalNumber });
+}
+
+// ============================================================================
+// Authority cached functions
+// ============================================================================
+
+interface AuthorityByNationalIdArgs {
+  nationalId: string;
+  page?: number;
+  perPage?: number;
+}
+
+/**
+ * Cached wrapper for getAuthorityByNationalId - get all tender types by authority fiscal number
+ * Uses "search" cache profile (24h revalidation)
+ */
+export async function getCachedAuthorityByNationalId(args: AuthorityByNationalIdArgs) {
+  "use cache";
+  cacheLife("search");
+  cacheTag("authority-all", `authority-${args.nationalId}-${args.page || 1}`);
+  return getAuthorityByNationalId(args);
 }
 
