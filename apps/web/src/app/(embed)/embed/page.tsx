@@ -61,8 +61,8 @@ async function EmbedContent({ searchParams }: { searchParams: Promise<{ cui?: st
     const results = await getCachedEmbedAchizitii(cui);
     const { items, authority, total } = results;
 
-    const authorityLink = authority?.entityId
-      ? `https://sicap.ai/achizitii/autoritate/${authority.entityId}`
+    const authorityLink = authority
+      ? `https://sicap.ai/autoritate/${authority.fiscalNumber}`
       : `https://sicap.ai/cauta?q=${cui}`;
 
     return (
