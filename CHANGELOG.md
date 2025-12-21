@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.11.0...sicap-v0.12.0) (2025-12-21)
+
+
+### Features
+
+* add Top Authorities component with charts and detailed list ([ed41d0e](https://github.com/ciocan/SICAP.ai/commit/ed41d0e6d4d81fa7010931661a1be2604ce93031))
+
 ## [0.11.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.10.0...sicap-v0.11.0) (2025-12-21)
 
 
