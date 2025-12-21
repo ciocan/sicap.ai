@@ -29,11 +29,13 @@ export function transformItem(
           fields["supplier.entityId"]?.[0] ||
           `${fields["details.noticeEntityAddress.fiscalNumber"]?.[0]}?isFiscal=true`,
         supplierName: fields["item.supplier"]?.[0],
+        supplierFiscalNumber: fields["details.noticeEntityAddress.fiscalNumber"]?.[0],
         localitySupplier: fields["details.noticeEntityAddress.city"]?.[0],
         countrySupplier: fields["details.noticeEntityAddress.country.text"]?.[0],
         countySupplier: fields["supplier.county"]?.[0],
         contractingAuthorityId: fields["details.contractingAuthorityID"]?.[0],
         contractingAuthorityName: fields["item.contractingAuthority"]?.[0],
+        authorityFiscalNumber: fields["authority.numericFiscalNumber"]?.[0],
         localityAuthority: fields["authority.city"]?.[0],
         countyAuthority: fields["authority.county"]?.[0],
         state: fields["item.sysNoticeState.text"]?.[0],
@@ -52,10 +54,12 @@ export function transformItem(
         value: fields["item.closingValue"]?.[0] || 0,
         supplierId: fields["publicDirectAcquisition.supplierId"]?.[0],
         supplierName: fields["item.supplier"]?.[0],
+        supplierFiscalNumber: fields["supplier.numericFiscalNumber"]?.[0],
         localitySupplier: fields["supplier.city"]?.[0],
         countySupplier: fields["supplier.county"]?.[0],
         contractingAuthorityId: fields["publicDirectAcquisition.contractingAuthorityID"]?.[0],
         contractingAuthorityName: fields["item.contractingAuthority"]?.[0],
+        authorityFiscalNumber: fields["authority.numericFiscalNumber"]?.[0],
         localityAuthority: fields["authority.city"]?.[0],
         countyAuthority: fields["authority.county"]?.[0],
         state: fields["item.sysDirectAcquisitionState.text"]?.[0],
@@ -74,13 +78,14 @@ export function transformItem(
         value: fields["item.ronContractValue"]?.[0] || 0,
         supplierId: fields["noticeContracts.items.winner.entityId"]?.[0],
         supplierName: fields["noticeContracts.items.winner.name"]?.[0],
-        supplierFiscalNumber: fields["noticeContracts.items.winner.fiscalNumber"]?.[0],
+        supplierFiscalNumber: fields["noticeContracts.items.winner.fiscalNumberInt"]?.[0],
         localitySupplier: fields["noticeContracts.items.winner.address.city"]?.[0],
         countySupplier:
           fields["noticeContracts.items.winner.address.nutsCodeItem.text"]?.[0] ||
           fields["noticeContracts.items.winner.address.county.text"]?.[0],
         contractingAuthorityId: fields["publicNotice.entityId"]?.[0],
         contractingAuthorityName: fields["item.contractingAuthorityNameAndFN"]?.[0],
+        authorityFiscalNumber: fields["item.nationalId"]?.[0],
         localityAuthority:
           fields["publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.city"]?.[0] ||
           fields["publicNotice.caNoticeEdit_New_U.section1_New_U.section1_1.caAddress.city"]?.[0],
@@ -137,8 +142,10 @@ export const fieldsAchizitii = [
   "publicDirectAcquisition.sysEuropeanFund.text",
   "authority.city",
   "authority.county",
+  "authority.numericFiscalNumber",
   "supplier.city",
   "supplier.county",
+  "supplier.numericFiscalNumber",
 ] as const;
 
 export const fieldsAchizitiiOffline = [
@@ -162,6 +169,7 @@ export const fieldsAchizitiiOffline = [
   "details.sysEuropeanFund.text",
   "authority.city",
   "authority.county",
+  "authority.numericFiscalNumber",
   "supplier.entityId",
   "supplier.city",
   "supplier.county",
@@ -182,6 +190,7 @@ export const filedsLicitatii = [
   "item.sysProcedureState.*",
   "item.cpvCodeAndName",
   "item.noticeStateDate",
+  "item.nationalId",
   "publicNotice.entityId",
   "publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.city",
   "publicNotice.caNoticeEdit_New_U.section1_New_U.section1_1.caAddress.city",

@@ -33,10 +33,12 @@ export interface SearchItemDirect {
   value: string;
   supplierId: string;
   supplierName: string;
+  supplierFiscalNumber: string;
   localitySupplier: string;
   countySupplier: string;
   contractingAuthorityId: string;
   contractingAuthorityName: string;
+  authorityFiscalNumber: string;
   localityAuthority: string;
   countyAuthority: string;
   state: string;
@@ -51,7 +53,6 @@ export interface SearchItemPublic extends SearchItemDirect {
   procedureTypeId: string;
   assigmentType: string;
   assigmentTypeId: string;
-  supplierFiscalNumber: string;
 }
 
 export interface SearchItemOffline extends SearchItemDirect {}

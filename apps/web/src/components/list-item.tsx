@@ -47,11 +47,11 @@ export function ListItem({ id, index, fields }: ListItemProps) {
     cpvCode,
     cpvCodeAndName,
     contractingAuthorityName,
-    contractingAuthorityId,
+    authorityFiscalNumber,
     localityAuthority,
     countyAuthority,
     supplierName,
-    supplierId,
+    supplierFiscalNumber,
     localitySupplier,
     countySupplier,
     state,
@@ -72,8 +72,10 @@ export function ListItem({ id, index, fields }: ListItemProps) {
   const contractLink = `/${indexSlug}/contract/${id}`;
   const cpvLink = `/${indexSlug}/cpv/${cpvCode}`;
   const ronValue = Number(value);
-  const contractingAuthorityLink = `/${indexSlug}/autoritate/${contractingAuthorityId}`;
-  const supplierLink = supplierId ? `/${indexSlug}/firma/${supplierId}` : "#";
+  const contractingAuthorityLink = authorityFiscalNumber
+    ? `/autoritate/${authorityFiscalNumber}`
+    : "#";
+  const supplierLink = supplierFiscalNumber ? `/firma/${supplierFiscalNumber}` : "#";
   const authorityLocalityLink =
     localityAuthority && countyAuthority
       ? `/localitate/${slugify(countyAuthority)}/${slugify(localityAuthority)}`
@@ -110,7 +112,7 @@ export function ListItem({ id, index, fields }: ListItemProps) {
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col">
-          <Link href={contractingAuthorityLink} prefetch={false} className="py-2">
+          <Link href={contractingAuthorityLink} prefetch={false} className="py-2" target="_blank">
             <p className="flex items-center gap-2 text-sm">
               <span>
                 <Building className="h-[1.2rem] w-[1.2rem] text-gray-500" />
@@ -146,7 +148,7 @@ export function ListItem({ id, index, fields }: ListItemProps) {
               <span>{countyAuthority ?? "-"}</span>
             )}
           </p>
-          <Link href={supplierLink} prefetch={false} className="py-2">
+          <Link href={supplierLink} prefetch={false} className="py-2" target="_blank">
             <p className="flex items-center gap-2 text-sm">
               <span>
                 <Briefcase className="h-[1.2rem] w-[1.2rem] text-gray-500" />
