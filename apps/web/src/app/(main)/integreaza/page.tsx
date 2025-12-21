@@ -39,6 +39,13 @@ export default function IntegreazaPage() {
 
   const embedCodeMinimal = `<iframe src="https://sicap.ai/embed?cui=YOUR_CUI" width="100%" height="600" frameborder="0"></iframe>`;
 
+  const embedCodeWithTheme = `<iframe 
+  src="https://sicap.ai/embed?cui=YOUR_CUI&theme=dark" 
+  width="100%" 
+  height="600" 
+  frameborder="0">
+</iframe>`;
+
   return (
     <main className="container max-w-4xl mx-auto py-12 px-4 space-y-12">
       <div className="text-center space-y-4">
@@ -72,6 +79,41 @@ export default function IntegreazaPage() {
             className="border-0"
             title="Demo widget SICAP.ai"
           />
+        </div>
+      </section>
+
+      <section className="space-y-4">
+        <h3 className="text-lg font-medium">Teme disponibile</h3>
+        <p className="text-muted-foreground">
+          Widget-ul suportă trei teme: light, dark și system (implicit). Poți specifica tema
+          folosind parametrul{" "}
+          <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono">theme</code> în URL.
+        </p>
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <p className="text-sm font-medium">Light</p>
+            <div className="border rounded-lg overflow-hidden bg-background">
+              <iframe
+                src={`/embed?cui=${DEMO_CUI}&theme=light`}
+                width="100%"
+                height="400"
+                className="border-0"
+                title="Demo widget SICAP.ai - Light theme"
+              />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <p className="text-sm font-medium">Dark</p>
+            <div className="border rounded-lg overflow-hidden bg-background">
+              <iframe
+                src={`/embed?cui=${DEMO_CUI}&theme=dark`}
+                width="100%"
+                height="400"
+                className="border-0"
+                title="Demo widget SICAP.ai - Dark theme"
+              />
+            </div>
+          </div>
         </div>
       </section>
 
@@ -127,6 +169,15 @@ export default function IntegreazaPage() {
       <section className="space-y-4">
         <h3 className="text-lg font-medium">Exemplu complet cu stilizare</h3>
         <CodeBlock code={embedCode} />
+      </section>
+
+      <section className="space-y-4">
+        <h3 className="text-lg font-medium">Exemplu cu temă personalizată</h3>
+        <p className="text-muted-foreground">
+          Poți specifica tema widget-ului adăugând parametrul{" "}
+          <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono">theme</code>:
+        </p>
+        <CodeBlock code={embedCodeWithTheme} />
       </section>
 
       <section className="space-y-6">
@@ -194,6 +245,19 @@ export default function IntegreazaPage() {
                 <td className="p-3 text-muted-foreground">string</td>
                 <td className="p-3 text-muted-foreground">
                   CUI-ul (codul fiscal) al autorității contractante. <strong>Obligatoriu.</strong>
+                </td>
+              </tr>
+              <tr>
+                <td className="p-3">
+                  <code className="bg-muted px-1.5 py-0.5 rounded font-mono">theme</code>
+                </td>
+                <td className="p-3 text-muted-foreground">string</td>
+                <td className="p-3 text-muted-foreground">
+                  Tema widget-ului:{" "}
+                  <code className="bg-muted px-1 py-0.5 rounded text-xs font-mono">light</code>,{" "}
+                  <code className="bg-muted px-1 py-0.5 rounded text-xs font-mono">dark</code>, sau{" "}
+                  <code className="bg-muted px-1 py-0.5 rounded text-xs font-mono">system</code>{" "}
+                  (implicit).
                 </td>
               </tr>
             </tbody>

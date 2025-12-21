@@ -1,4 +1,5 @@
 export * from "./theme-provider";
+export * from "./embed-theme-handler";
 
 export * from "./navbar";
 export * from "./footer";
