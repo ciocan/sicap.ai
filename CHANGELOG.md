@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.8.0...sicap-v0.9.0) (2025-12-20)
+
+
+### Features
+
+* add authority page with links like /autoritate/nationalId ([151fff7](https://github.com/ciocan/SICAP.ai/commit/151fff7568daa4dca37d0c09bae4a71bcfb90c90))
+
 ## [0.8.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.7.1...sicap-v0.8.0) (2025-12-12)
 
 
