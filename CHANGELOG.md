@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.12.0...sicap-v0.13.0) (2025-12-21)
+
+
+### Features
+
+* implement page for city (localitate) ([69809a0](https://github.com/ciocan/SICAP.ai/commit/69809a04c4ca3db2e4ce3099f9346a155fec8a26))
+
 ## [0.12.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.11.0...sicap-v0.12.0) (2025-12-21)
 
 
