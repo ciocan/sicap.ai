@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.13.0...sicap-v0.14.0) (2025-12-21)
+
+
+### Features
+
+* enhance ListItem component with locality links ([a39044b](https://github.com/ciocan/SICAP.ai/commit/a39044b75b31d04ab244a6a2950c77ac374fd750))
+
 ## [0.13.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.12.0...sicap-v0.13.0) (2025-12-21)
 
 
