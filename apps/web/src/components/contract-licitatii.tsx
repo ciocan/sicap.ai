@@ -30,6 +30,7 @@ export async function ContractLicitatii({ id }: { id: string }) {
     shortDescription,
     descriptionList,
     winner,
+    lotWinners,
     istoric,
     cNotice,
     nationalIDNumber,
@@ -135,21 +136,47 @@ export async function ContractLicitatii({ id }: { id: string }) {
           label="Loturi:"
           value={
             <div>
-              {descriptionList?.map((item) => (
-                <div
-                  key={item.lotNumber}
-                  className="mb-2 border-b dark:border-b-gray-700 border-b-gray-100"
-                >
-                  {item.estimatedValue && (
-                    <div className="font-semibold font-mono">{moneyRon(item.estimatedValue)}</div>
-                  )}
-                  <div className="mb-3">
-                    <div className="text-gray-400">{item.mainLocation}</div>
-                    <div className="text-gray-400">{item.contractTitle}</div>
-                    <samp className="text-xs">{item.shortDescription}</samp>
+              {descriptionList?.map((item) => {
+                const lotWinner = lotWinners?.find((lw) => lw.lotNumber === item.lotNumber);
+                return (
+                  <div
+                    key={item.lotNumber}
+                    className="mb-2 border-b dark:border-b-gray-700 border-b-gray-100"
+                  >
+                    {item.estimatedValue && (
+                      <div className="font-semibold font-mono">{moneyRon(item.estimatedValue)}</div>
+                    )}
+                    <div className="mb-3">
+                      <div className="text-gray-400">{item.mainLocation}</div>
+                      <div className="text-gray-400">{item.contractTitle}</div>
+                      <samp className="text-xs">{item.shortDescription}</samp>
+                      {lotWinner?.winners && lotWinner.winners.length > 0 && (
+                        <div className="mt-2">
+                          <span className="text-sm font-medium">Câștigători: </span>
+                          {lotWinner.winners.map((w, idx) => {
+                            const winnerFiscalNumber = w.fiscalNumberInt || w.fiscalNumber;
+                            const winnerUrl = winnerFiscalNumber
+                              ? `/firma/${winnerFiscalNumber}`
+                              : "#";
+                            return (
+                              <span key={w.fiscalNumber || idx}>
+                                {idx > 0 && <span>, </span>}
+                                <Link
+                                  href={winnerUrl}
+                                  className="underline text-primary font-semibold"
+                                  target="_blank"
+                                >
+                                  {w.name}
+                                </Link>
+                              </span>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           }
         />

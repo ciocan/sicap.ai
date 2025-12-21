@@ -67,6 +67,17 @@ export async function getContractLicitatii(id: string) {
       winners: contract._source?.noticeContracts?.items[0]?.winners?.map((winner) => ({
         ...pick(["entityId", "name", "fiscalNumber", "fiscalNumberInt"], winner || {}),
       })),
+      lotWinners: contract._source?.noticeContracts?.items?.map((item) => ({
+        lotNumber: item.lotsNoCaption,
+        lotsCaption: item.lotsCaption,
+        contractTitle: item.contractTitle,
+        contractValue: item.contractValue,
+        winners: item.winners?.map((winner) => ({
+          name: winner.name,
+          fiscalNumber: winner.fiscalNumber,
+          fiscalNumberInt: winner.fiscalNumberInt,
+        })),
+      })),
       istoric: contract._source.istoric,
       cNotice:
         contract._source.publicNotice?.caNoticeEdit_New?.publicationDetailsModel ||
