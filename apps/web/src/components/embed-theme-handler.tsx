@@ -20,8 +20,9 @@ export function EmbedThemeProvider({ children, ...props }: EmbedThemeProviderPro
     <ThemeProvider
       {...props}
       forcedTheme={forcedTheme}
-      // Disable storage to prevent cross-iframe conflicts
-      storageKey={undefined}
+      // Use empty string to prevent cross-iframe localStorage conflicts
+      // Note: undefined falls back to default "theme" key, empty string isolates storage
+      storageKey=""
     >
       {children}
     </ThemeProvider>
