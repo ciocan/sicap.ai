@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.4](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.16.3...sicap-v0.16.4) (2025-12-21)
+
+
+### Bug Fixes
+
+* enhance contract component to display lot winners ([d88eba8](https://github.com/ciocan/SICAP.ai/commit/d88eba8ba0d6ca803c5178876386217d8bcae357))
+
 ## [0.16.3](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.16.2...sicap-v0.16.3) (2025-12-21)
 
 
