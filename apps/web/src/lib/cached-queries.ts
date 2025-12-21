@@ -17,6 +17,7 @@ import {
   getSitemapLicitatiiCpv,
   getEmbedAchizitii,
   getAuthorityByNationalId,
+  getAuthorityTopSuppliers,
   getCompanyByNationalId,
   type SearchProps,
   type Args,
@@ -252,5 +253,25 @@ export async function getCachedCompanyByNationalId(args: CompanyByNationalIdArgs
   cacheLife("search");
   cacheTag("company-all", `company-${args.nationalId}-${args.page || 1}`);
   return getCompanyByNationalId(args);
+}
+
+// ============================================================================
+// Authority top suppliers cached functions
+// ============================================================================
+
+interface AuthorityTopSuppliersArgs {
+  nationalId: string;
+  limit?: number;
+}
+
+/**
+ * Cached wrapper for getAuthorityTopSuppliers - get top 10 suppliers for an authority in the past 12 months
+ * Uses "search" cache profile (24h revalidation)
+ */
+export async function getCachedAuthorityTopSuppliers(args: AuthorityTopSuppliersArgs) {
+  "use cache";
+  cacheLife("search");
+  cacheTag("authority-top-suppliers", `authority-top-suppliers-${args.nationalId}`);
+  return getAuthorityTopSuppliers(args);
 }
 
