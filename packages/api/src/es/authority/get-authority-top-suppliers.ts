@@ -48,6 +48,8 @@ export async function getAuthorityTopSuppliers({
   const suppliersMap = new Map<string, SupplierData>();
 
   // Query PUBLIC index (licitatii) - uses fiscalNumberInt which is numeric
+  // Use top_hits instead of terms for supplier_name to get the actual document
+  // and correlate the name with the correct fiscalNumberInt (fixes array flattening issue)
   const publicQuery = {
     index: ES_INDEX_PUBLIC,
     body: {
@@ -71,10 +73,12 @@ export async function getAuthorityTopSuppliers({
             total_value: {
               sum: { field: "item.ronContractValue" },
             },
-            supplier_name: {
-              terms: {
-                field: "noticeContracts.items.winner.name.keyword",
+            top_hit: {
+              top_hits: {
                 size: 1,
+                _source: {
+                  includes: ["noticeContracts.items.winner"],
+                },
               },
             },
             by_type: {
@@ -209,7 +213,22 @@ export async function getAuthorityTopSuppliers({
           key: number;
           doc_count: number;
           total_value: { value: number };
-          supplier_name: { buckets: Array<{ key: string }> };
+          top_hit: {
+            hits: {
+              hits: Array<{
+                _source: {
+                  noticeContracts?: {
+                    items?: Array<{
+                      winner?: {
+                        fiscalNumberInt?: number;
+                        name?: string;
+                      };
+                    }>;
+                  };
+                };
+              }>;
+            };
+          };
           by_type: { buckets: Array<{ key: string; doc_count: number; value: { value: number } }> };
         }>;
       };
@@ -218,6 +237,11 @@ export async function getAuthorityTopSuppliers({
     for (const bucket of aggs.top_suppliers.buckets) {
       const fiscalNumber = String(bucket.key);
       if (fiscalNumber === "0") { continue };
+
+      // Extract the correct winner name by finding the winner whose fiscalNumberInt matches the bucket key
+      const items = bucket.top_hit?.hits?.hits?.[0]?._source?.noticeContracts?.items || [];
+      const matchingWinner = items.find((item) => item.winner?.fiscalNumberInt === bucket.key);
+      const supplierName = matchingWinner?.winner?.name || "Necunoscut";
 
       const existing = suppliersMap.get(fiscalNumber);
       if (existing) {
@@ -241,7 +265,7 @@ export async function getAuthorityTopSuppliers({
           byType.set(typeItem.key, { count: typeItem.doc_count, value: typeItem.value.value });
         }
         suppliersMap.set(fiscalNumber, {
-          name: bucket.supplier_name.buckets[0]?.key || "Necunoscut",
+          name: supplierName,
           totalValue: bucket.total_value.value,
           contractCount: bucket.doc_count,
           byIndex,

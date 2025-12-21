@@ -40,3 +40,4 @@ dist/
 .vercel
 devdb*
 tsconfig.tsbuildinfo
+debug.log
