@@ -60,12 +60,12 @@ export async function getContractLicitatii(id: string) {
       ...pick(["contractDate", "contractValue"], contract._source?.noticeContracts?.items[0] || {}),
       winner: {
         ...pick(
-          ["name", "fiscalNumber", "entityId"],
+          ["name", "fiscalNumber", "fiscalNumberInt", "entityId"],
           contract._source?.noticeContracts?.items[0]?.winner || {},
         ),
       },
       winners: contract._source?.noticeContracts?.items[0]?.winners?.map((winner) => ({
-        ...pick(["entityId", "name", "fiscalNumber"], winner || {}),
+        ...pick(["entityId", "name", "fiscalNumber", "fiscalNumberInt"], winner || {}),
       })),
       istoric: contract._source.istoric,
       cNotice:

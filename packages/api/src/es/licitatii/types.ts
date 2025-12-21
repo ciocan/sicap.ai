@@ -16,6 +16,7 @@ export interface NoticeContractItem {
     caNoticeId: number;
     name: string;
     fiscalNumber: string;
+    fiscalNumberInt: string;
     noticeEntityAddressId: number;
     entityId: number;
     isSME: boolean | null;
@@ -73,6 +74,7 @@ export interface Winner {
   caNoticeId: number;
   name: string;
   fiscalNumber: string;
+  fiscalNumberInt: string;
   noticeEntityAddressId: number;
   entityId: number;
   isSME: boolean | null;
