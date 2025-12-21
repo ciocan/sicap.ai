@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.15.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.14.0...sicap-v0.15.0) (2025-12-21)
+
+
+### Features
+
+* enhance ListItem component with improved layout and new external link icons ([4ffb40f](https://github.com/ciocan/SICAP.ai/commit/4ffb40f8855d3cfce3fa995b0678464c73ff42ec))
+* redesign footer component for improved layout and accessibility ([5d7e1e1](https://github.com/ciocan/SICAP.ai/commit/5d7e1e110f623f44a22c1a98bb27ab9dd2fc687c))
+* update ListItem and API types to include new authority / company pages using fiscal numbers ([5904878](https://github.com/ciocan/SICAP.ai/commit/59048789f02005e2d7af67ff4557077c1632385f))
+
 ## [0.14.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.13.0...sicap-v0.14.0) (2025-12-21)
 
 
