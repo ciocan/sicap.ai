@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.15.1](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.15.0...sicap-v0.15.1) (2025-12-21)
+
+
+### Bug Fixes
+
+* ensure proper header usage in Footer component for Next.js Server Components ([83dc0b4](https://github.com/ciocan/SICAP.ai/commit/83dc0b43efa54dcb3a6b2afa857949e8a24b98a7))
+
 ## [0.15.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.14.0...sicap-v0.15.0) (2025-12-21)
 
 
