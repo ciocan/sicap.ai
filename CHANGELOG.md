@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.16.3](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.16.2...sicap-v0.16.3) (2025-12-21)
+
+
+### Bug Fixes
+
+* add nationalIDNumber to caNoticeEdit_New_U__section1_New_U__section1_1__caAddress ([ee8b725](https://github.com/ciocan/SICAP.ai/commit/ee8b725e189c4b9d4780c1bfc0b36e57e479d2ad))
+* enhance contract component to support fiscalNumberInt for winners ([440d1e0](https://github.com/ciocan/SICAP.ai/commit/440d1e011ff24b8a14ba7a8e19df8e1c8d051349))
+* improve winner selection logic in getCompanyByNationalId function ([1695ac2](https://github.com/ciocan/SICAP.ai/commit/1695ac2c65668cc4b7b30d332e266b7a4ce8120c))
+* update link generation for authorities and suppliers in contract pages ([0804966](https://github.com/ciocan/SICAP.ai/commit/080496661dfdfb5dd28e7167cf66df8d90c3a916))
+
 ## [0.16.2](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.16.1...sicap-v0.16.2) (2025-12-21)
 
 
