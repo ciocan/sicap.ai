@@ -9,6 +9,7 @@ import { Pagination } from "./pagination";
 import { Chart } from "./chart";
 import { PerPage } from "./per-page";
 import { CSVDownload } from "./csv-download";
+import { TopAuthorities } from "./top-authorities";
 
 interface CompanyAllProps {
   nationalId: string;
@@ -50,6 +51,7 @@ export async function CompanyAll({ nationalId, searchParams }: CompanyAllProps) 
         </p>
       </div>
       <Chart stats={stats} />
+      <TopAuthorities nationalId={nationalId} />
       <div className="space-y-4">
         <div className="flex justify-between items-center">
           <h3 className="text-xs">
@@ -75,4 +77,3 @@ export async function CompanyAll({ nationalId, searchParams }: CompanyAllProps) 
     </div>
   );
 }
-

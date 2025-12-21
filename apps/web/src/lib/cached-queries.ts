@@ -19,6 +19,7 @@ import {
   getAuthorityByNationalId,
   getAuthorityTopSuppliers,
   getCompanyByNationalId,
+  getCompanyTopAuthorities,
   type SearchProps,
   type Args,
 } from "@sicap/api";
@@ -273,5 +274,25 @@ export async function getCachedAuthorityTopSuppliers(args: AuthorityTopSuppliers
   cacheLife("search");
   cacheTag("authority-top-suppliers", `authority-top-suppliers-${args.nationalId}`);
   return getAuthorityTopSuppliers(args);
+}
+
+// ============================================================================
+// Company top authorities cached functions
+// ============================================================================
+
+interface CompanyTopAuthoritiesArgs {
+  nationalId: string;
+  limit?: number;
+}
+
+/**
+ * Cached wrapper for getCompanyTopAuthorities - get top 10 authorities for a company in the past 12 months
+ * Uses "search" cache profile (24h revalidation)
+ */
+export async function getCachedCompanyTopAuthorities(args: CompanyTopAuthoritiesArgs) {
+  "use cache";
+  cacheLife("search");
+  cacheTag("company-top-authorities", `company-top-authorities-${args.nationalId}`);
+  return getCompanyTopAuthorities(args);
 }
 

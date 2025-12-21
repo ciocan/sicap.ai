@@ -16,7 +16,7 @@ import {
 
 import { moneyRon, formatNumber } from "@/utils";
 
-interface TopSupplier {
+interface TopAuthority {
   fiscalNumber: string;
   name: string;
   totalValue: number;
@@ -33,8 +33,8 @@ interface TopSupplier {
   }>;
 }
 
-interface TopCompaniesChartsProps {
-  suppliers: TopSupplier[];
+interface TopAuthoritiesChartsProps {
+  authorities: TopAuthority[];
 }
 
 // Vibrant colors that work well in both light and dark mode
@@ -107,21 +107,21 @@ const PieTooltip = ({
   return null;
 };
 
-export function TopCompaniesCharts({ suppliers }: TopCompaniesChartsProps) {
+export function TopAuthoritiesCharts({ authorities }: TopAuthoritiesChartsProps) {
   const barData = useMemo(() => {
-    return suppliers.map((supplier) => ({
-      name: supplier.name.length > 28 ? `${supplier.name.slice(0, 28)}...` : supplier.name,
-      fullName: supplier.name,
-      totalValue: supplier.totalValue,
-      contractCount: supplier.contractCount,
+    return authorities.map((authority) => ({
+      name: authority.name.length > 28 ? `${authority.name.slice(0, 28)}...` : authority.name,
+      fullName: authority.name,
+      totalValue: authority.totalValue,
+      contractCount: authority.contractCount,
     }));
-  }, [suppliers]);
+  }, [authorities]);
 
   const pieData = useMemo(() => {
     const typeAggregation: Record<string, { value: number; count: number }> = {};
 
-    for (const supplier of suppliers) {
-      for (const typeItem of supplier.byType) {
+    for (const authority of authorities) {
+      for (const typeItem of authority.byType) {
         if (!typeAggregation[typeItem.type]) {
           typeAggregation[typeItem.type] = { value: 0, count: 0 };
         }
@@ -138,9 +138,9 @@ export function TopCompaniesCharts({ suppliers }: TopCompaniesChartsProps) {
         fill: typeColors[name] || typeColors.Necunoscut,
       }))
       .sort((a, b) => b.value - a.value);
-  }, [suppliers]);
+  }, [authorities]);
 
-  if (suppliers.length === 0) {
+  if (authorities.length === 0) {
     return null;
   }
 
@@ -158,7 +158,9 @@ export function TopCompaniesCharts({ suppliers }: TopCompaniesChartsProps) {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Horizontal Bar Chart */}
       <div className="space-y-2">
-        <h4 className="text-sm font-medium text-muted-foreground">Top firme dupa valoare (RON)</h4>
+        <h4 className="text-sm font-medium text-muted-foreground">
+          Top autoritati dupa valoare (RON)
+        </h4>
         <div className="h-[300px] sm:h-[350px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
