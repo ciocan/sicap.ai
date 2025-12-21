@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.16.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.15.1...sicap-v0.16.0) (2025-12-21)
+
+
+### Features
+
+* enhance embed widget with theme support ([7568a8b](https://github.com/ciocan/SICAP.ai/commit/7568a8b5c85d08802054721f8778c9e991c22b53))
+
+
+### Bug Fixes
+
+* authority comapnies list with same name and different CUI ([c9cf398](https://github.com/ciocan/SICAP.ai/commit/c9cf398e4571c011c7afa94b6ed101e061079084))
+* update authority link generation in EmbedContent component ([94ece30](https://github.com/ciocan/SICAP.ai/commit/94ece30d7e210a7e4d6694dac5f242b50e224ad0))
+
 ## [0.15.1](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.15.0...sicap-v0.15.1) (2025-12-21)
 
 
