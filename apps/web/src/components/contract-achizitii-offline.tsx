@@ -52,7 +52,7 @@ export async function ContractAchizitiiOffline({ id }: { id: string }) {
 		istoric ? "istoric." : ""
 	}e-licitatie.ro/pub/direct-acquisition/award-notice/view/${id}`;
 
-	const supplierId = supplier.entityId || `${fiscalNumber}?isFiscal=true`;
+	const supplierFiscalNumber = supplier.numericFiscalNumber || fiscalNumber;
 	const supplierName = supplier.entityId
 		? `${supplier.numericFiscalNumber} - ${supplier.entityName}`
 		: `${fiscalNumber} - ${organization}`;
@@ -119,8 +119,9 @@ export async function ContractAchizitiiOffline({ id }: { id: string }) {
 					label="Autoritatea contractanta"
 					value={
 						<Link
-							href={`/achizitii-offline/autoritate/${entityId}`}
+							href={`/autoritate/${numericFiscalNumber}`}
 							className="underline text-primary font-semibold"
+							target="_blank"
 						>
 							{numericFiscalNumber} - {entityName}
 						</Link>
@@ -131,8 +132,9 @@ export async function ContractAchizitiiOffline({ id }: { id: string }) {
 					label="Ofertant"
 					value={
 						<Link
-							href={`/achizitii-offline/firma/${supplierId}`}
+							href={`/firma/${supplierFiscalNumber}`}
 							className="underline text-primary font-semibold"
+							target="_blank"
 						>
 							{supplierName}
 						</Link>

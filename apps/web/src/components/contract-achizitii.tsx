@@ -78,8 +78,9 @@ export async function ContractAchizitii({ id }: { id: string }) {
 					label="Autoritatea contractanta"
 					value={
 						<Link
-							href={`/achizitii/autoritate/${entityId}`}
+							href={`/autoritate/${numericFiscalNumber}`}
 							className="underline text-primary font-semibold"
+							target="_blank"
 						>
 							{numericFiscalNumber} - {entityName}
 						</Link>
@@ -90,8 +91,9 @@ export async function ContractAchizitii({ id }: { id: string }) {
 					label="Furnizor"
 					value={
 						<Link
-							href={`/achizitii/firma/${supplier.entityId}`}
+							href={`/firma/${supplier.numericFiscalNumber}`}
 							className="underline text-primary font-semibold"
+							target="_blank"
 						>
 							{supplier.numericFiscalNumber} - {supplier.entityName}
 						</Link>

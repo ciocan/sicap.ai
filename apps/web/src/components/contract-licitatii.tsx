@@ -32,6 +32,7 @@ export async function ContractLicitatii({ id }: { id: string }) {
 		winner,
 		istoric,
 		cNotice,
+		nationalIDNumber,
 	} = contract;
 
 	const hasCNotice = !!cNotice.noticeNo && !!cNotice.publicationDate;
@@ -40,7 +41,7 @@ export async function ContractLicitatii({ id }: { id: string }) {
 		istoric ? "istoric." : ""
 	}e-licitatie.ro/pub/notices/ca-notices/view-c/${id}`;
 
-	const supplierUrl = winner.entityId ? `/licitatii/firma/${winner.entityId}` : "#";
+	const supplierUrl = winner.fiscalNumber ? `/firma/${winner.fiscalNumber}` : "#";
 
 	return (
 		<div className="border dark:border-secondary p-4 rounded-sm">
@@ -107,8 +108,9 @@ export async function ContractLicitatii({ id }: { id: string }) {
 					label="Autoritatea contractanta"
 					value={
 						<Link
-							href={`/licitatii/autoritate/${contract.entityId}`}
+							href={`/autoritate/${nationalIDNumber}`}
 							className="underline text-primary font-semibold"
+							target="_blank"
 						>
 							{contractingAuthorityNameAndFN}
 						</Link>
@@ -124,6 +126,7 @@ export async function ContractLicitatii({ id }: { id: string }) {
 						<Link
 							href={supplierUrl}
 							className="underline text-primary font-semibold"
+							target="_blank"
 						>
 							{winner.fiscalNumber} - {winner.name}
 						</Link>
