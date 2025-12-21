@@ -47,13 +47,13 @@ export async function getAuthorityTopSuppliers({
   // Map to accumulate supplier data across indices
   const suppliersMap = new Map<string, SupplierData>();
 
-  // Query PUBLIC index (licitatii) - uses fiscalNumberInt which is numeric
-  // Use top_hits instead of terms for supplier_name to get the actual document
-  // and correlate the name with the correct fiscalNumberInt (fixes array flattening issue)
+  // Query PUBLIC index (licitatii) - fetch documents and process in code
+  // We can't use aggregations because noticeContracts.items is a flattened array,
+  // and ES can't correlate winner.fiscalNumberInt with the correct contractValue
   const publicQuery = {
     index: ES_INDEX_PUBLIC,
     body: {
-      size: 0,
+      size: 500, // Fetch documents to process in code
       query: {
         bool: {
           filter: [
@@ -62,36 +62,14 @@ export async function getAuthorityTopSuppliers({
           ],
         },
       },
-      aggs: {
-        top_suppliers: {
-          terms: {
-            field: "noticeContracts.items.winner.fiscalNumberInt",
-            size: limit * 2,
-            order: { total_value: "desc" },
-          },
-          aggs: {
-            total_value: {
-              sum: { field: "item.ronContractValue" },
-            },
-            top_hit: {
-              top_hits: {
-                size: 1,
-                _source: {
-                  includes: ["noticeContracts.items.winner"],
-                },
-              },
-            },
-            by_type: {
-              terms: {
-                field: "item.sysAcquisitionContractType.text.keyword",
-                size: 10,
-              },
-              aggs: {
-                value: { sum: { field: "item.ronContractValue" } },
-              },
-            },
-          },
-        },
+      _source: {
+        includes: [
+          "noticeContracts.items.winner.fiscalNumberInt",
+          "noticeContracts.items.winner.name",
+          "noticeContracts.items.contractValue",
+          "item.ronContractValue",
+          "item.sysAcquisitionContractType.text",
+        ],
       },
     },
   };
@@ -205,72 +183,68 @@ export async function getAuthorityTopSuppliers({
     esClient.search(offlineQuery).catch(() => null),
   ]);
 
-  // Process PUBLIC results
-  if (publicResult?.aggregations) {
-    const aggs = publicResult.aggregations as {
-      top_suppliers: {
-        buckets: Array<{
-          key: number;
-          doc_count: number;
-          total_value: { value: number };
-          top_hit: {
-            hits: {
-              hits: Array<{
-                _source: {
-                  noticeContracts?: {
-                    items?: Array<{
-                      winner?: {
-                        fiscalNumberInt?: number;
-                        name?: string;
-                      };
-                    }>;
-                  };
-                };
-              }>;
+  // Process PUBLIC results - iterate through documents and their items
+  if (publicResult?.hits?.hits) {
+    interface PublicHit {
+      _source: {
+        noticeContracts?: {
+          items?: Array<{
+            winner?: {
+              fiscalNumberInt?: number;
+              name?: string;
             };
+            contractValue?: number;
+          }>;
+        };
+        item?: {
+          ronContractValue?: number;
+          sysAcquisitionContractType?: {
+            text?: string;
           };
-          by_type: { buckets: Array<{ key: string; doc_count: number; value: { value: number } }> };
-        }>;
+        };
       };
-    };
+    }
 
-    for (const bucket of aggs.top_suppliers.buckets) {
-      const fiscalNumber = String(bucket.key);
-      if (fiscalNumber === "0") { continue };
+    for (const hit of publicResult.hits.hits as PublicHit[]) {
+      const source = hit._source;
+      const items = source.noticeContracts?.items || [];
+      const contractType = source.item?.sysAcquisitionContractType?.text || "Necunoscut";
+      const docValue = source.item?.ronContractValue || 0;
 
-      // Extract the correct winner name by finding the winner whose fiscalNumberInt matches the bucket key
-      const items = bucket.top_hit?.hits?.hits?.[0]?._source?.noticeContracts?.items || [];
-      const matchingWinner = items.find((item) => item.winner?.fiscalNumberInt === bucket.key);
-      const supplierName = matchingWinner?.winner?.name || "Necunoscut";
+      // Process each winner in the items array
+      for (const item of items) {
+        const winner = item.winner;
+        if (!winner?.fiscalNumberInt || winner.fiscalNumberInt === 0) { continue };
 
-      const existing = suppliersMap.get(fiscalNumber);
-      if (existing) {
-        existing.totalValue += bucket.total_value.value;
-        existing.contractCount += bucket.doc_count;
-        const indexData = existing.byIndex.get(ES_INDEX_PUBLIC) || { count: 0, value: 0 };
-        indexData.count += bucket.doc_count;
-        indexData.value += bucket.total_value.value;
-        existing.byIndex.set(ES_INDEX_PUBLIC, indexData);
-        for (const typeItem of bucket.by_type.buckets) {
-          const typeData = existing.byType.get(typeItem.key) || { count: 0, value: 0 };
-          typeData.count += typeItem.doc_count;
-          typeData.value += typeItem.value.value;
-          existing.byType.set(typeItem.key, typeData);
+        const fiscalNumber = String(winner.fiscalNumberInt);
+        // Use item-level contractValue if available, otherwise fallback to document-level value divided by items count
+        const itemValue = item.contractValue || (items.length > 0 ? docValue / items.length : docValue);
+
+        const existing = suppliersMap.get(fiscalNumber);
+        if (existing) {
+          existing.totalValue += itemValue;
+          existing.contractCount += 1;
+          const indexData = existing.byIndex.get(ES_INDEX_PUBLIC) || { count: 0, value: 0 };
+          indexData.count += 1;
+          indexData.value += itemValue;
+          existing.byIndex.set(ES_INDEX_PUBLIC, indexData);
+          const typeData = existing.byType.get(contractType) || { count: 0, value: 0 };
+          typeData.count += 1;
+          typeData.value += itemValue;
+          existing.byType.set(contractType, typeData);
+        } else {
+          const byIndex = new Map<string, { count: number; value: number }>();
+          byIndex.set(ES_INDEX_PUBLIC, { count: 1, value: itemValue });
+          const byType = new Map<string, { count: number; value: number }>();
+          byType.set(contractType, { count: 1, value: itemValue });
+          suppliersMap.set(fiscalNumber, {
+            name: winner.name || "Necunoscut",
+            totalValue: itemValue,
+            contractCount: 1,
+            byIndex,
+            byType,
+          });
         }
-      } else {
-        const byIndex = new Map<string, { count: number; value: number }>();
-        byIndex.set(ES_INDEX_PUBLIC, { count: bucket.doc_count, value: bucket.total_value.value });
-        const byType = new Map<string, { count: number; value: number }>();
-        for (const typeItem of bucket.by_type.buckets) {
-          byType.set(typeItem.key, { count: typeItem.doc_count, value: typeItem.value.value });
-        }
-        suppliersMap.set(fiscalNumber, {
-          name: supplierName,
-          totalValue: bucket.total_value.value,
-          contractCount: bucket.doc_count,
-          byIndex,
-          byType,
-        });
       }
     }
   }
