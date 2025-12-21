@@ -5,7 +5,7 @@ import { Card, CardHeader, CardContent, CardDescription, CardTitle, Badge } from
 import type { SearchItemDirect, SearchItemPublic, IndexName, SearchItemOffline } from "@sicap/api";
 import { getDay, getMonth, getYear } from "@sicap/api";
 import { ES_INDEX_DIRECT, ES_INDEX_PUBLIC, ES_INDEX_OFFLINE } from "@sicap/api/dist/es/utils.mjs";
-import { getIndexSlug, moneyEur, moneyRon } from "@/utils";
+import { getIndexSlug, moneyEur, moneyRon, slugify } from "@/utils";
 
 interface ListItemProps {
   id: string;
@@ -74,6 +74,14 @@ export function ListItem({ id, index, fields }: ListItemProps) {
   const ronValue = Number(value);
   const contractingAuthorityLink = `/${indexSlug}/autoritate/${contractingAuthorityId}`;
   const supplierLink = supplierId ? `/${indexSlug}/firma/${supplierId}` : "#";
+  const authorityLocalityLink =
+    localityAuthority && countyAuthority
+      ? `/localitate/${slugify(countyAuthority)}/${slugify(localityAuthority)}`
+      : null;
+  const supplierLocalityLink =
+    localitySupplier && countySupplier
+      ? `/localitate/${slugify(countySupplier)}/${slugify(localitySupplier)}`
+      : null;
 
   return (
     <Card
@@ -112,9 +120,31 @@ export function ListItem({ id, index, fields }: ListItemProps) {
           </Link>
           <p className="flex items-center gap-2 text-xs">
             <span className="text-gray-500">Localitate:</span>
-            <span>{localityAuthority ?? "-"}</span>
+            {authorityLocalityLink ? (
+              <Link
+                href={authorityLocalityLink}
+                className="text-primary hover:underline"
+                target="_blank"
+                prefetch={false}
+              >
+                {localityAuthority}
+              </Link>
+            ) : (
+              <span>{localityAuthority ?? "-"}</span>
+            )}
             <span className="text-gray-500">Judet:</span>
-            <span>{countyAuthority ?? "-"}</span>
+            {authorityLocalityLink ? (
+              <Link
+                href={authorityLocalityLink}
+                className="text-primary hover:underline"
+                target="_blank"
+                prefetch={false}
+              >
+                {countyAuthority}
+              </Link>
+            ) : (
+              <span>{countyAuthority ?? "-"}</span>
+            )}
           </p>
           <Link href={supplierLink} prefetch={false} className="py-2">
             <p className="flex items-center gap-2 text-sm">
@@ -126,9 +156,31 @@ export function ListItem({ id, index, fields }: ListItemProps) {
           </Link>
           <p className="flex items-center gap-2 text-xs">
             <span className="text-gray-500">Localitate:</span>
-            <span>{localitySupplier ?? "-"}</span>
+            {supplierLocalityLink ? (
+              <Link
+                href={supplierLocalityLink}
+                className="text-primary hover:underline"
+                target="_blank"
+                prefetch={false}
+              >
+                {localitySupplier}
+              </Link>
+            ) : (
+              <span>{localitySupplier ?? "-"}</span>
+            )}
             <span className="text-gray-500">Judet:</span>
-            <span>{countySupplier ?? "-"}</span>
+            {supplierLocalityLink ? (
+              <Link
+                href={supplierLocalityLink}
+                className="text-primary hover:underline"
+                target="_blank"
+                prefetch={false}
+              >
+                {countySupplier}
+              </Link>
+            ) : (
+              <span>{countySupplier ?? "-"}</span>
+            )}
           </p>
         </CardContent>
         <CardContent className="flex sm:flex-row flex-col gap-2">
