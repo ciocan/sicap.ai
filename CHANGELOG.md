@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.2](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.16.1...sicap-v0.16.2) (2025-12-21)
+
+
+### Bug Fixes
+
+* same amount value for suppliers list on the authority page ([9e332d5](https://github.com/ciocan/SICAP.ai/commit/9e332d5db6b61b6ab7c38d64da9852704cd585e2))
+
 ## [0.16.1](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.16.0...sicap-v0.16.1) (2025-12-21)
 
 
