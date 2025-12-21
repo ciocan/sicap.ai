@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.11.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.10.0...sicap-v0.11.0) (2025-12-21)
+
+
+### Features
+
+* add Top Companies component with charts and detailed list on authority page ([2a8cce8](https://github.com/ciocan/SICAP.ai/commit/2a8cce8cc4ce532f5999248f0e27176da485b665))
+
+
+### Bug Fixes
+
+* add optional chaining to prevent errors in totalValue calculation ([60ceaf5](https://github.com/ciocan/SICAP.ai/commit/60ceaf5aaea83a66ac7e7a6ab9b68a0fbcd16eac))
+
 ## [0.10.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.9.0...sicap-v0.10.0) (2025-12-21)
 
 
