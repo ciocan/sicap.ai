@@ -227,7 +227,12 @@ export async function getCompanyByNationalId({
     } else if (hit._index === ES_INDEX_PUBLIC) {
       const noticeContracts = source.noticeContracts as Record<string, unknown> | undefined;
       const items = noticeContracts?.items as Record<string, unknown>[] | undefined;
-      const winner = items?.[0]?.winner as Record<string, unknown> | undefined;
+      // Find the winner that matches the nationalId we're searching for
+      const matchingItem = items?.find((item) => {
+        const w = item?.winner as Record<string, unknown> | undefined;
+        return w?.fiscalNumberInt?.toString() === nationalId;
+      });
+      const winner = (matchingItem?.winner ?? items?.[0]?.winner) as Record<string, unknown> | undefined;
       if (winner) {
         const address = winner.address as Record<string, unknown> | undefined;
         company = {
