@@ -10,3 +10,4 @@ export * from "./per-page";
 export * from "./search-list";
 export * from "./dark-mode";
 export * from "./authority-all";
+export * from "./company-all";

@@ -17,6 +17,7 @@ import {
   getSitemapLicitatiiCpv,
   getEmbedAchizitii,
   getAuthorityByNationalId,
+  getCompanyByNationalId,
   type SearchProps,
   type Args,
 } from "@sicap/api";
@@ -230,5 +231,26 @@ export async function getCachedAuthorityByNationalId(args: AuthorityByNationalId
   cacheLife("search");
   cacheTag("authority-all", `authority-${args.nationalId}-${args.page || 1}`);
   return getAuthorityByNationalId(args);
+}
+
+// ============================================================================
+// Company cached functions
+// ============================================================================
+
+interface CompanyByNationalIdArgs {
+  nationalId: string;
+  page?: number;
+  perPage?: number;
+}
+
+/**
+ * Cached wrapper for getCompanyByNationalId - get all tender types by company/supplier fiscal number
+ * Uses "search" cache profile (24h revalidation)
+ */
+export async function getCachedCompanyByNationalId(args: CompanyByNationalIdArgs) {
+  "use cache";
+  cacheLife("search");
+  cacheTag("company-all", `company-${args.nationalId}-${args.page || 1}`);
+  return getCompanyByNationalId(args);
 }
 
