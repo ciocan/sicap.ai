@@ -31,7 +31,7 @@ export async function CompanyAll({ nationalId, searchParams }: CompanyAllProps) 
 
   const { total, company, stats } = results;
 
-  const totalValue = stats?.years.map((y) => y.value).reduce((a, b) => a + b, 0);
+  const totalValue = stats?.years?.map((y) => y.value).reduce((a, b) => a + b, 0);
   const totalValueRon = moneyRon(totalValue);
   const totalValueEur = moneyEur(totalValue);
 

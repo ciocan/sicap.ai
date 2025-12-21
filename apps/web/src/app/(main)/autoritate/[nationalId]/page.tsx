@@ -26,7 +26,7 @@ export async function generateMetadata(props: PageProps) {
     const { total, stats, authority } = await getCachedAuthorityByNationalId({
       nationalId,
     });
-    const totalValue = stats?.years.map((y) => y.value).reduce((a, b) => a + b, 0);
+    const totalValue = stats?.years?.map((y) => y.value).reduce((a, b) => a + b, 0);
     const totalValueRon = moneyRon(totalValue);
 
     const title = authority
