@@ -340,6 +340,7 @@ export interface Source {
             county: {
               text: string;
             };
+            nationalIDNumber: string;
           };
         };
       };

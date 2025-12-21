@@ -28,6 +28,7 @@ export const caNoticeEdit_New_U__section1_New_U__section1_1__caAddress = [
   "cityItem",
   "city",
   "county",
+  "nationalIDNumber",
 ] as const;
 
 export const caNoticeEdit_New_U__section2_New_U__section2_1_New_U = ["shortDescription"] as const;
