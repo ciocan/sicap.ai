@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 import { Github, Terminal, Code2 } from "lucide-react";
 
 import { StatusWidget } from "./openstatus";
@@ -6,6 +7,7 @@ import { DarkMode } from "./dark-mode";
 import { HostingLink } from "./hosting-link";
 
 export async function Footer() {
+  await headers(); // Required before using new Date() in Next.js Server Components
   const currentYear = new Date().getFullYear();
 
   return (
