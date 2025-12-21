@@ -17,3 +17,4 @@ export * from "./es/pointInTime";
 export * from "./es/authority";
 export * from "./es/company";
 export * from "./es/embed";
+export * from "./es/locality";

@@ -23,8 +23,8 @@
     "clean": "pnpm dlx rimraf node_modules .turbo .dist"
   },
   "peerDependencies": {
-    "react": "^19.2.3",
-    "next-themes": ">=0.4.6"
+    "next-themes": ">=0.4.6",
+    "react": "^19.2.3"
   },
   "devDependencies": {
     "@sicap/tailwind-config": "workspace:*",
@@ -50,12 +50,13 @@
     "@radix-ui/react-select": "^2.0.0",
     "@radix-ui/react-separator": "^1.0.3",
     "@radix-ui/react-slot": "^1.0.2",
+    "@radix-ui/react-tabs": "^1.1.13",
     "@radix-ui/react-toast": "^1.1.5",
     "@radix-ui/react-tooltip": "^1.0.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
-    "react-hook-form": "^7.60.0",
     "lucide-react": "^0.482.0",
+    "react-hook-form": "^7.60.0",
     "tailwind-merge": "^1.14.0",
     "zod": "^3.22.4"
   }

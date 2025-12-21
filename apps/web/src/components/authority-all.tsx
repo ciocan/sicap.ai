@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 
 import { getCachedAuthorityByNationalId } from "@/lib/cached-queries";
 
-import { formatNumber, moneyEur, moneyRon } from "@/utils";
+import { formatNumber, moneyEur, moneyRon, slugify } from "@/utils";
 import type { SearchParams } from "./search-list";
 import { ListItem } from "./list-item";
 import { Pagination } from "./pagination";
@@ -37,13 +38,37 @@ export async function AuthorityAll({ nationalId, searchParams }: AuthorityAllPro
   const totalValueEur = moneyEur(totalValue);
 
   const title = authority
-    ? `${authority.fiscalNumber} / ${authority.entityName} / ${authority.city}${authority.county ? `, ${authority.county}` : ""}`
+    ? `${authority.fiscalNumber} / ${authority.entityName}`
     : `Autoritate: ${nationalId}`;
+
+  const localityLink =
+    authority?.city && authority?.county
+      ? `/localitate/${slugify(authority.county)}/${slugify(authority.city)}`
+      : null;
 
   return (
     <div className="space-y-8">
       <div className="space-y-2">
         <h1 className="font-semibold text-lg">{title}</h1>
+        {authority?.city && (
+          <p className="text-sm text-muted-foreground">
+            {localityLink ? (
+              <Link
+                href={localityLink}
+                className="hover:text-primary hover:underline"
+                target="_blank"
+              >
+                {authority.city}
+                {authority.county ? `, ${authority.county}` : ""}
+              </Link>
+            ) : (
+              <>
+                {authority.city}
+                {authority.county ? `, ${authority.county}` : ""}
+              </>
+            )}
+          </p>
+        )}
         <p className="text-sm">
           {formatNumber(total)} achizitii publice in valoare de{" "}
           <span className="text-primary font-mono">{totalValueRon}</span> /{" "}

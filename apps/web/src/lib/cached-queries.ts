@@ -20,6 +20,11 @@ import {
   getAuthorityTopSuppliers,
   getCompanyByNationalId,
   getCompanyTopAuthorities,
+  getLocalityStats,
+  getLocalityTopAuthorities,
+  getLocalityTopCompanies,
+  getLocalityTopCpv,
+  getRelatedLocalities,
   type SearchProps,
   type Args,
 } from "@sicap/api";
@@ -294,5 +299,87 @@ export async function getCachedCompanyTopAuthorities(args: CompanyTopAuthorities
   cacheLife("search");
   cacheTag("company-top-authorities", `company-top-authorities-${args.nationalId}`);
   return getCompanyTopAuthorities(args);
+}
+
+// ============================================================================
+// Locality cached functions
+// ============================================================================
+
+interface LocalityStatsArgs {
+  city: string;
+  county: string;
+}
+
+/**
+ * Cached wrapper for getLocalityStats - get summary statistics and spending over time for a locality
+ * Uses "search" cache profile (24h revalidation)
+ */
+export async function getCachedLocalityStats(args: LocalityStatsArgs) {
+  "use cache";
+  cacheLife("search");
+  cacheTag("locality-stats", `locality-stats-${args.county}-${args.city}`);
+  return getLocalityStats(args);
+}
+
+interface LocalityTopEntitiesArgs {
+  city: string;
+  county: string;
+  limit?: number;
+}
+
+/**
+ * Cached wrapper for getLocalityTopAuthorities - get top authorities in a locality
+ * Uses "search" cache profile (24h revalidation)
+ */
+export async function getCachedLocalityTopAuthorities(args: LocalityTopEntitiesArgs) {
+  "use cache";
+  cacheLife("search");
+  cacheTag("locality-top-authorities", `locality-top-authorities-${args.county}-${args.city}`);
+  return getLocalityTopAuthorities(args);
+}
+
+/**
+ * Cached wrapper for getLocalityTopCompanies - get top companies in a locality
+ * Uses "search" cache profile (24h revalidation)
+ */
+export async function getCachedLocalityTopCompanies(args: LocalityTopEntitiesArgs) {
+  "use cache";
+  cacheLife("search");
+  cacheTag("locality-top-companies", `locality-top-companies-${args.county}-${args.city}`);
+  return getLocalityTopCompanies(args);
+}
+
+interface LocalityTopCpvArgs {
+  city: string;
+  county: string;
+  limit?: number;
+}
+
+/**
+ * Cached wrapper for getLocalityTopCpv - get top CPV categories in a locality
+ * Uses "search" cache profile (24h revalidation)
+ */
+export async function getCachedLocalityTopCpv(args: LocalityTopCpvArgs) {
+  "use cache";
+  cacheLife("search");
+  cacheTag("locality-top-cpv", `locality-top-cpv-${args.county}-${args.city}`);
+  return getLocalityTopCpv(args);
+}
+
+interface RelatedLocalitiesArgs {
+  county: string;
+  currentCity: string;
+  limit?: number;
+}
+
+/**
+ * Cached wrapper for getRelatedLocalities - get other cities in the same county
+ * Uses "search" cache profile (24h revalidation)
+ */
+export async function getCachedRelatedLocalities(args: RelatedLocalitiesArgs) {
+  "use cache";
+  cacheLife("search");
+  cacheTag("related-localities", `related-localities-${args.county}`);
+  return getRelatedLocalities(args);
 }
 

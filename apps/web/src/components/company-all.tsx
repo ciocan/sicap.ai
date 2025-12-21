@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 
 import { getCachedCompanyByNationalId } from "@/lib/cached-queries";
 
-import { formatNumber, moneyEur, moneyRon } from "@/utils";
+import { formatNumber, moneyEur, moneyRon, slugify } from "@/utils";
 import type { SearchParams } from "./search-list";
 import { ListItem } from "./list-item";
 import { Pagination } from "./pagination";
@@ -37,13 +38,37 @@ export async function CompanyAll({ nationalId, searchParams }: CompanyAllProps) 
   const totalValueEur = moneyEur(totalValue);
 
   const title = company
-    ? `${company.fiscalNumber} / ${company.entityName} / ${company.city}${company.county ? `, ${company.county}` : ""}`
+    ? `${company.fiscalNumber} / ${company.entityName}`
     : `Firma: ${nationalId}`;
+
+  const localityLink =
+    company?.city && company?.county
+      ? `/localitate/${slugify(company.county)}/${slugify(company.city)}`
+      : null;
 
   return (
     <div className="space-y-8">
       <div className="space-y-2">
         <h1 className="font-semibold text-lg">{title}</h1>
+        {company?.city && (
+          <p className="text-sm text-muted-foreground">
+            {localityLink ? (
+              <Link
+                href={localityLink}
+                className="hover:text-primary hover:underline"
+                target="_blank"
+              >
+                {company.city}
+                {company.county ? `, ${company.county}` : ""}
+              </Link>
+            ) : (
+              <>
+                {company.city}
+                {company.county ? `, ${company.county}` : ""}
+              </>
+            )}
+          </p>
+        )}
         <p className="text-sm">
           {formatNumber(total)} contracte in valoare de{" "}
           <span className="text-primary font-mono">{totalValueRon}</span> /{" "}

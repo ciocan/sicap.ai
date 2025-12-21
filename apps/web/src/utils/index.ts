@@ -87,3 +87,16 @@ export const escapeCsvString = (input?: string): string => {
     return match;
   });
 };
+
+/**
+ * Convert a string to a URL-friendly slug
+ * Removes diacritics, converts to lowercase, replaces spaces with hyphens
+ */
+export const slugify = (text: string): string => {
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // Remove diacritics
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+};
