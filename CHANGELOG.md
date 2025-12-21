@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.1](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.16.0...sicap-v0.16.1) (2025-12-21)
+
+
+### Bug Fixes
+
+* update storageKey handling in EmbedThemeProvider ([7c05b30](https://github.com/ciocan/SICAP.ai/commit/7c05b3092040bf4629a2d6c2bdd9f4b48f1b56e9))
+
 ## [0.16.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.15.1...sicap-v0.16.0) (2025-12-21)
 
 
