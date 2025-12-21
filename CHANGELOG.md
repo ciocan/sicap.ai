@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.9.0...sicap-v0.10.0) (2025-12-21)
+
+
+### Features
+
+* add company details page with links like /firma/nationalId ([d57f976](https://github.com/ciocan/SICAP.ai/commit/d57f9761f49d122bdc38fc7483e7ce333c02a35e))
+
 ## [0.9.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.8.0...sicap-v0.9.0) (2025-12-20)
 
 
