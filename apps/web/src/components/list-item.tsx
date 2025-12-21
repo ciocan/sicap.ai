@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Building, Briefcase } from "lucide-react";
+import { Building, Briefcase, ExternalLink } from "lucide-react";
 
 import { Card, CardHeader, CardContent, CardDescription, CardTitle, Badge } from "@sicap/ui";
 import type { SearchItemDirect, SearchItemPublic, IndexName, SearchItemOffline } from "@sicap/api";
@@ -85,107 +85,153 @@ export function ListItem({ id, index, fields }: ListItemProps) {
       ? `/localitate/${slugify(countySupplier)}/${slugify(localitySupplier)}`
       : null;
 
+  const contractTitle = `${code} - ${name}`;
+
   return (
     <Card
-      className={`flex flex-col sm:flex-row justify-between hover:bg-slate-50 hover:dark:bg-slate-800 border-l-[3px] ${config.borderColor}`}
+      className={`flex flex-col sm:flex-row justify-between border-l-[3px] ${config.borderColor} transition-all duration-200 ease-out hover:bg-slate-50/80 hover:shadow-md hover:dark:bg-slate-800/80`}
     >
       <div className="flex flex-col w-full">
-        <CardHeader className="pb-4 space-y-2">
-          <span className="flex items-center gap-2 justify-between w-full">
-            <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${config.badgeClass}`}>
+        <CardHeader className="pb-3 space-y-3">
+          {/* Type badge and EU funds row */}
+          <div className="flex items-center gap-2 justify-between w-full">
+            <span
+              className={`text-xs font-medium px-2.5 py-1 rounded-full ${config.badgeClass} transition-colors`}
+            >
               {config.text}
             </span>
-            {euFunds && <span className="text-xs text-primary">{euFunds}</span>}
-          </span>
-          <Link href={contractLink} prefetch={false}>
-            <CardTitle className="text-md font-normal">
-              {code} - {name}
+            {euFunds && (
+              <span className="text-xs text-primary font-medium truncate max-w-[200px]">
+                {euFunds}
+              </span>
+            )}
+          </div>
+
+          {/* Contract title - clickable with truncation */}
+          <Link href={contractLink} prefetch={false} className="group block">
+            <CardTitle
+              className="text-base font-medium leading-snug line-clamp-2 group-hover:text-primary transition-colors"
+              title={contractTitle}
+            >
+              <span className="font-mono text-sm text-muted-foreground tracking-tight">{code}</span>
+              <span className="mx-1.5 text-muted-foreground/50">—</span>
+              <span>{name}</span>
             </CardTitle>
           </Link>
-          <CardDescription className="flex sm:flex-row flex-col gap-2">
-            <Badge variant="secondary" className="font-mono">
+
+          {/* Value and CPV badges */}
+          <CardDescription className="flex flex-wrap items-center gap-2">
+            <Badge
+              variant="secondary"
+              className="font-mono text-sm font-semibold px-3 py-1 bg-slate-100 dark:bg-slate-800"
+            >
               {moneyRon(ronValue)} / {moneyEur(ronValue)}
             </Badge>
-            <Link href={cpvLink} prefetch={false}>
-              <Badge variant="outline">{cpvCodeAndName}</Badge>
+            <Link
+              href={cpvLink}
+              prefetch={false}
+              className="transition-transform hover:scale-[1.02] flex items-center group"
+              target="_blank"
+            >
+              <Badge
+                variant="outline"
+                className="line-clamp-1 max-w-[280px] sm:max-w-none py-1 inline-flex items-center gap-1.5"
+                title={cpvCodeAndName}
+              >
+                {cpvCodeAndName}
+                <ExternalLink className="h-3 w-3 opacity-60 shrink-0" />
+              </Badge>
             </Link>
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col">
-          <Link href={contractingAuthorityLink} prefetch={false} className="py-2" target="_blank">
-            <p className="flex items-center gap-2 text-sm">
-              <span>
-                <Building className="h-[1.2rem] w-[1.2rem] text-gray-500" />
-              </span>
-              <span>{contractingAuthorityName}</span>
-            </p>
+
+        {/* Authority section */}
+        <CardContent className="flex flex-col pt-0 pb-2">
+          <Link
+            href={contractingAuthorityLink}
+            prefetch={false}
+            className="group flex items-center gap-2 py-2.5 min-h-11 rounded-md -mx-2 px-2 transition-colors hover:bg-slate-100/80 dark:hover:bg-slate-700/50"
+            target="_blank"
+          >
+            <Building className="h-4 w-4 text-slate-400 shrink-0" />
+            <span
+              className="text-sm font-medium truncate group-hover:text-primary transition-colors"
+              title={contractingAuthorityName}
+            >
+              {contractingAuthorityName}
+            </span>
+            <ExternalLink className="h-3.5 w-3.5 text-slate-400 shrink-0 opacity-0 sm:group-hover:opacity-100 max-sm:opacity-60 transition-opacity ml-auto" />
           </Link>
-          <p className="flex items-center gap-2 text-xs">
-            <span className="text-gray-500">Localitate:</span>
-            {authorityLocalityLink ? (
-              <Link
-                href={authorityLocalityLink}
-                className="text-primary hover:underline"
-                target="_blank"
-                prefetch={false}
-              >
-                {localityAuthority}
-              </Link>
-            ) : (
-              <span>{localityAuthority ?? "-"}</span>
-            )}
-            <span className="text-gray-500">Judet:</span>
-            {authorityLocalityLink ? (
-              <Link
-                href={authorityLocalityLink}
-                className="text-primary hover:underline"
-                target="_blank"
-                prefetch={false}
-              >
-                {countyAuthority}
-              </Link>
-            ) : (
+
+          <div className="flex items-center gap-x-3 gap-y-1 flex-wrap text-xs text-muted-foreground pl-6">
+            <span className="flex items-center gap-1.5">
+              <span className="text-slate-400">Localitate:</span>
+              {authorityLocalityLink ? (
+                <Link
+                  href={authorityLocalityLink}
+                  className="text-primary hover:underline inline-flex items-center gap-1"
+                  target="_blank"
+                  prefetch={false}
+                >
+                  {localityAuthority}
+                  <ExternalLink className="h-3 w-3 opacity-60" />
+                </Link>
+              ) : (
+                <span>{localityAuthority ?? "-"}</span>
+              )}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="text-slate-400">Judet:</span>
               <span>{countyAuthority ?? "-"}</span>
-            )}
-          </p>
-          <Link href={supplierLink} prefetch={false} className="py-2" target="_blank">
-            <p className="flex items-center gap-2 text-sm">
-              <span>
-                <Briefcase className="h-[1.2rem] w-[1.2rem] text-gray-500" />
-              </span>
-              <span>{supplierName ?? "-"}</span>
-            </p>
+            </span>
+          </div>
+
+          {/* Divider */}
+          <div className="h-px bg-slate-100 dark:bg-slate-800 my-2 mx-0" />
+
+          {/* Supplier section */}
+          <Link
+            href={supplierLink}
+            prefetch={false}
+            className="group flex items-center gap-2 py-2.5 min-h-11 rounded-md -mx-2 px-2 transition-colors hover:bg-slate-100/80 dark:hover:bg-slate-700/50"
+            target="_blank"
+          >
+            <Briefcase className="h-4 w-4 text-slate-400 shrink-0" />
+            <span
+              className="text-sm font-medium truncate group-hover:text-primary transition-colors"
+              title={supplierName ?? undefined}
+            >
+              {supplierName ?? "-"}
+            </span>
+            <ExternalLink className="h-3.5 w-3.5 text-slate-400 shrink-0 opacity-0 sm:group-hover:opacity-100 max-sm:opacity-60 transition-opacity ml-auto" />
           </Link>
-          <p className="flex items-center gap-2 text-xs">
-            <span className="text-gray-500">Localitate:</span>
-            {supplierLocalityLink ? (
-              <Link
-                href={supplierLocalityLink}
-                className="text-primary hover:underline"
-                target="_blank"
-                prefetch={false}
-              >
-                {localitySupplier}
-              </Link>
-            ) : (
-              <span>{localitySupplier ?? "-"}</span>
-            )}
-            <span className="text-gray-500">Judet:</span>
-            {supplierLocalityLink ? (
-              <Link
-                href={supplierLocalityLink}
-                className="text-primary hover:underline"
-                target="_blank"
-                prefetch={false}
-              >
-                {countySupplier}
-              </Link>
-            ) : (
+
+          <div className="flex items-center gap-x-3 gap-y-1 flex-wrap text-xs text-muted-foreground pl-6">
+            <span className="flex items-center gap-1.5">
+              <span className="text-slate-400">Localitate:</span>
+              {supplierLocalityLink ? (
+                <Link
+                  href={supplierLocalityLink}
+                  className="text-primary hover:underline inline-flex items-center gap-1"
+                  target="_blank"
+                  prefetch={false}
+                >
+                  {localitySupplier}
+                  <ExternalLink className="h-3 w-3 opacity-60" />
+                </Link>
+              ) : (
+                <span>{localitySupplier ?? "-"}</span>
+              )}
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="text-slate-400">Judet:</span>
               <span>{countySupplier ?? "-"}</span>
-            )}
-          </p>
+            </span>
+          </div>
         </CardContent>
-        <CardContent className="flex sm:flex-row flex-col gap-2">
+
+        {/* Status badges */}
+        <CardContent className="flex flex-wrap gap-2 pt-2">
           {index === ES_INDEX_DIRECT && state && (
             <Badge variant={[5, 7].includes(stateId) ? "secondary" : "destructive"}>{state}</Badge>
           )}
@@ -198,11 +244,13 @@ export function ListItem({ id, index, fields }: ListItemProps) {
           {assigmentType && <Badge variant="outline">{assigmentType}</Badge>}
         </CardContent>
       </div>
-      <CardHeader className="flex justify-center sm:border-l-2 border-t-2 sm:border-t-0">
-        <div className="flex gap-1 sm:flex-col text-center w-14">
-          <span className={`sm:text-2xl font-mono ${config.dateColor}`}>{day}</span>
-          <span className="sm:text-md sm:uppercase">{month}</span>
-          <span className={`sm:text-sm font-mono ${config.dateColor}`}>{year}</span>
+
+      {/* Date section */}
+      <CardHeader className="flex justify-center items-center sm:border-l border-t sm:border-t-0 border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 sm:bg-transparent sm:dark:bg-transparent">
+        <div className="flex items-center gap-1.5 sm:flex-col text-center sm:w-16 py-1">
+          <span className={`text-2xl font-mono font-bold ${config.dateColor}`}>{day}</span>
+          <span className="text-sm uppercase font-medium text-muted-foreground">{month}</span>
+          <span className={`text-sm font-mono ${config.dateColor}`}>{year}</span>
         </div>
       </CardHeader>
     </Card>
