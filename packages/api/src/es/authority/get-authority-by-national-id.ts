@@ -181,8 +181,17 @@ export async function getAuthorityByNationalId({
       from: (page - 1) * perPage,
       size: perPage,
     },
-    fields: [...fieldsAchizitii, ...filedsLicitatii, ...fieldsAchizitiiOffline],
-    _source: true,
+    fields: [
+      ...fieldsAchizitii,
+      ...filedsLicitatii,
+      ...fieldsAchizitiiOffline,
+      // Additional fields for authority info extraction (avoiding _source)
+      "authority.entityName",
+      "authority.fiscalNumber",
+      "authority.entityId",
+      "publicNotice.entityId",
+    ],
+    _source: false,
   };
 
   const result = await esClient.search(searchParams);
@@ -193,49 +202,44 @@ export async function getAuthorityByNationalId({
     throw new Error(`Nu s-au găsit rezultate pentru CUI: ${nationalId}`);
   }
 
-  // Extract authority info from the first result
+  // Extract authority info from the first result using fields (not _source)
   let authority: AuthorityInfo | null = null;
 
   for (const hit of hits) {
-    const source = hit._source as Record<string, unknown>;
+    const fields = hit.fields as Fields | undefined;
+
+    // Skip if no fields (defensive check)
+    if (!fields) {
+      continue;
+    }
 
     if (hit._index === ES_INDEX_DIRECT || hit._index === ES_INDEX_OFFLINE) {
-      const authorityData = source.authority as Record<string, unknown> | undefined;
-      if (authorityData) {
+      // Achizitii directe/offline - authority info from fields
+      const entityName = fields["authority.entityName"]?.[0] || fields["item.contractingAuthority"]?.[0];
+      if (entityName) {
         authority = {
-          entityName: authorityData.entityName as string,
-          fiscalNumber: authorityData.fiscalNumber as string,
-          city: authorityData.city as string,
-          county: authorityData.county as string,
-          entityId: authorityData.entityId as number,
+          entityName: entityName as string,
+          fiscalNumber: (fields["authority.fiscalNumber"]?.[0] || fields["authority.numericFiscalNumber"]?.[0] || nationalId) as string,
+          city: (fields["authority.city"]?.[0] || "") as string,
+          county: (fields["authority.county"]?.[0] || "") as string,
+          entityId: fields["authority.entityId"]?.[0] as number | undefined,
         };
         break;
       }
     } else if (hit._index === ES_INDEX_PUBLIC) {
-      const item = source.item as Record<string, unknown> | undefined;
-      const publicNotice = source.publicNotice as Record<string, unknown> | undefined;
-      if (item) {
-        const contractingAuthorityNameAndFN = item.contractingAuthorityNameAndFN as string;
-        // Extract city/county from publicNotice
-        const caNoticeEdit = publicNotice?.caNoticeEdit_New as Record<string, unknown> | undefined;
-        const caNoticeEditU = publicNotice?.caNoticeEdit_New_U as Record<string, unknown> | undefined;
-        const section1 = caNoticeEdit?.section1_New as Record<string, unknown> | undefined;
-        const section1U = caNoticeEditU?.section1_New_U as Record<string, unknown> | undefined;
-        const section1_1 = (section1?.section1_1 || section1U?.section1_1) as
-          | Record<string, unknown>
-          | undefined;
-        const caAddress = section1_1?.caAddress as Record<string, unknown> | undefined;
-
+      // Licitatii publice - authority info from fields
+      const contractingAuthorityNameAndFN = fields["item.contractingAuthorityNameAndFN"]?.[0] as string | undefined;
+      if (contractingAuthorityNameAndFN) {
         authority = {
-          entityName:
-            contractingAuthorityNameAndFN?.split(" - ")?.[1] || contractingAuthorityNameAndFN || "",
+          entityName: contractingAuthorityNameAndFN?.split(" - ")?.[1] || contractingAuthorityNameAndFN || "",
           fiscalNumber: nationalId,
-          city: (caAddress?.city as string) || "",
-          county:
-            ((caAddress?.nutsCodeItem as Record<string, unknown>)?.text as string) ||
-            ((caAddress?.county as Record<string, unknown>)?.text as string) ||
-            "",
-          entityId: publicNotice?.entityId as number,
+          city: (fields["publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.city"]?.[0] ||
+            fields["publicNotice.caNoticeEdit_New_U.section1_New_U.section1_1.caAddress.city"]?.[0] || "") as string,
+          county: (fields["publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.nutsCodeItem.text"]?.[0] ||
+            fields["publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.county.text"]?.[0] ||
+            fields["publicNotice.caNoticeEdit_New_U.section1_New_U.section1_1.caAddress.nutsCodeItem.text"]?.[0] ||
+            fields["publicNotice.caNoticeEdit_New_U.section1_New_U.section1_1.caAddress.county.text"]?.[0] || "") as string,
+          entityId: fields["publicNotice.entityId"]?.[0] as number | undefined,
         };
         break;
       }
@@ -260,8 +264,7 @@ export async function getAuthorityByNationalId({
     items: hits.map((hit) => ({
       id: hit._id as string,
       index: hit._index as IndexName,
-      fields: transformItem(hit._index, hit.fields as Fields, {} as Fields),
+      fields: transformItem(hit._index, (hit.fields || {}) as Fields, {} as Fields),
     })),
   };
 }
-
