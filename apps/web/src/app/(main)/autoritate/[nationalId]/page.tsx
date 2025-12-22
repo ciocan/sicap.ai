@@ -59,8 +59,6 @@ async function PageContent({
 }) {
   const { nationalId } = await params;
   const resolvedSearchParams = await searchParams;
-  console.log("nationalId", nationalId);
-  console.log("resolvedSearchParams", resolvedSearchParams);
 
   return <AuthorityAll nationalId={nationalId} searchParams={resolvedSearchParams} />;
 }

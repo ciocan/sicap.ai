@@ -1,7 +1,6 @@
 import { cacheLife, cacheTag } from "next/cache";
 import {
   getTotal,
-  searchContracts,
   getCompanyAchizitii,
   getCompanyLicitatii,
   getCompanyAchizitiiOffline,
@@ -25,7 +24,6 @@ import {
   getLocalityTopCompanies,
   getLocalityTopCpv,
   getRelatedLocalities,
-  type SearchProps,
   type Args,
 } from "@sicap/api";
 
@@ -38,17 +36,6 @@ export async function getCachedTotal() {
   cacheLife("totals");
   cacheTag("totals");
   return getTotal();
-}
-
-/**
- * Cached wrapper for searchContracts - full-text search across indices
- * Uses "search" cache profile (24h revalidation)
- */
-export async function getCachedSearchResults(props: SearchProps) {
-  "use cache";
-  cacheLife("search");
-  cacheTag("search", `search-${props.query}-${props.page}`);
-  return searchContracts(props);
 }
 
 /**

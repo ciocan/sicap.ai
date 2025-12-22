@@ -1,6 +1,6 @@
 import { dbIds, formatNumber } from "@/utils";
 import type { IndexName } from "@sicap/api";
-import { getCachedSearchResults } from "@/lib/cached-queries";
+import { searchContracts } from "@sicap/api";
 
 import { ListItem } from "./list-item";
 import { Pagination } from "./pagination";
@@ -70,7 +70,7 @@ export async function SearchList({ searchParams }: SearchListProps) {
     euFunds: euFunds === "true" ? true : false,
   };
 
-  const results = await getCachedSearchResults({
+  const results = await searchContracts({
     query,
     page,
     perPage,

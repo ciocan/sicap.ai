@@ -8,22 +8,17 @@ const nextConfig: NextConfig = {
 	cacheComponents: true,
 	cacheLife: {
 		totals: {
-			stale: 3600,
+			stale: 86400, // 24h - totals don't change frequently
 			revalidate: 86400,
-			expire: 604800,
-		},
-		search: {
-			stale: 300,
-			revalidate: 86400,
-			expire: 604800,
+			expire: 604_800,
 		},
 		contracts: {
-			stale: 3600,
-			revalidate: 172800,
-			expire: 604800,
+			stale: 2_592_000, // 30d - contracts are immutable once created
+			revalidate: 2_592_000,
+			expire: 2_592_000,
 		},
 		sitemaps: {
-			stale: 3600,
+			stale: 43200, // 12h - sitemaps don't need frequent updates
 			revalidate: 86400,
 			expire: 604800,
 		},
