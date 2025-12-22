@@ -24,11 +24,7 @@ const typeColors: Record<string, string> = {
 
 export function LocalityTopCompaniesList({ companies }: LocalityTopCompaniesListProps) {
   if (companies.length === 0) {
-    return (
-      <div className="text-sm text-muted-foreground py-8 text-center">
-        Nu exista firme
-      </div>
-    );
+    return <div className="text-sm text-muted-foreground py-8 text-center">Nu exista firme</div>;
   }
 
   return (
@@ -63,13 +59,9 @@ export function LocalityTopCompaniesList({ companies }: LocalityTopCompaniesList
                   >
                     {company.name}
                   </Link>
-                  <div className="text-xs text-muted-foreground">
-                    CUI: {company.fiscalNumber}
-                  </div>
+                  <div className="text-xs text-muted-foreground">CUI: {company.fiscalNumber}</div>
                 </td>
-                <td className="py-3 pr-4 text-right font-mono">
-                  {moneyRon(company.totalValue)}
-                </td>
+                <td className="py-3 pr-4 text-right font-mono">{moneyRon(company.totalValue)}</td>
                 <td className="py-3 pr-4 text-right font-mono">
                   {formatNumber(company.contractCount)}
                 </td>
@@ -120,16 +112,12 @@ export function LocalityTopCompaniesList({ companies }: LocalityTopCompaniesList
               </div>
             </div>
 
-            <div className="text-xs text-muted-foreground mb-3">
-              CUI: {company.fiscalNumber}
-            </div>
+            <div className="text-xs text-muted-foreground mb-3">CUI: {company.fiscalNumber}</div>
 
             <div className="grid grid-cols-2 gap-2 mb-3">
               <div>
                 <div className="text-xs text-muted-foreground">Valoare</div>
-                <div className="font-mono text-sm font-medium">
-                  {moneyRon(company.totalValue)}
-                </div>
+                <div className="font-mono text-sm font-medium">{moneyRon(company.totalValue)}</div>
               </div>
               <div>
                 <div className="text-xs text-muted-foreground">Contracte</div>
@@ -170,4 +158,3 @@ export function LocalityTopCompaniesList({ companies }: LocalityTopCompaniesList
     </div>
   );
 }
-

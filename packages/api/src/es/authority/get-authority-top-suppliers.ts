@@ -214,11 +214,14 @@ export async function getAuthorityTopSuppliers({
       // Process each winner in the items array
       for (const item of items) {
         const winner = item.winner;
-        if (!winner?.fiscalNumberInt || winner.fiscalNumberInt === 0) { continue };
+        if (!winner?.fiscalNumberInt || winner.fiscalNumberInt === 0) {
+          continue;
+        }
 
         const fiscalNumber = String(winner.fiscalNumberInt);
         // Use item-level contractValue if available, otherwise fallback to document-level value divided by items count
-        const itemValue = item.contractValue || (items.length > 0 ? docValue / items.length : docValue);
+        const itemValue =
+          item.contractValue || (items.length > 0 ? docValue / items.length : docValue);
 
         const existing = suppliersMap.get(fiscalNumber);
         if (existing) {
@@ -266,8 +269,11 @@ export async function getAuthorityTopSuppliers({
 
     for (const bucket of aggs.top_suppliers.buckets) {
       // For DIRECT, try to use fiscal_number if available, otherwise use entityId
-      const fiscalNumber = bucket.fiscal_number?.buckets[0]?.key?.replace(/[^0-9]/g, "") || String(bucket.key);
-      if (fiscalNumber === "0" || !fiscalNumber) { continue };
+      const fiscalNumber =
+        bucket.fiscal_number?.buckets[0]?.key?.replace(/[^0-9]/g, "") || String(bucket.key);
+      if (fiscalNumber === "0" || !fiscalNumber) {
+        continue;
+      }
 
       const existing = suppliersMap.get(fiscalNumber);
       if (existing) {
@@ -318,8 +324,11 @@ export async function getAuthorityTopSuppliers({
 
     for (const bucket of aggs.top_suppliers.buckets) {
       // For OFFLINE, try to use fiscal_number if available, otherwise use entityId
-      const fiscalNumber = bucket.fiscal_number?.buckets[0]?.key?.replace(/[^0-9]/g, "") || String(bucket.key);
-      if (fiscalNumber === "0" || !fiscalNumber) { continue };
+      const fiscalNumber =
+        bucket.fiscal_number?.buckets[0]?.key?.replace(/[^0-9]/g, "") || String(bucket.key);
+      if (fiscalNumber === "0" || !fiscalNumber) {
+        continue;
+      }
 
       const existing = suppliersMap.get(fiscalNumber);
       if (existing) {

@@ -51,9 +51,7 @@ export async function getLocalityTopCompanies({
       size: 0,
       query: {
         bool: {
-          filter: [
-            { match_phrase: { "supplier.city": cityLower } },
-          ],
+          filter: [{ match_phrase: { "supplier.city": cityLower } }],
         },
       },
       aggs: {
@@ -101,9 +99,7 @@ export async function getLocalityTopCompanies({
       size: 0,
       query: {
         bool: {
-          filter: [
-            { match_phrase: { "supplier.city": cityLower } },
-          ],
+          filter: [{ match_phrase: { "supplier.city": cityLower } }],
         },
       },
       aggs: {
@@ -151,9 +147,7 @@ export async function getLocalityTopCompanies({
       size: 0,
       query: {
         bool: {
-          filter: [
-            { match_phrase: { "noticeContracts.items.winner.address.city": cityLower } },
-          ],
+          filter: [{ match_phrase: { "noticeContracts.items.winner.address.city": cityLower } }],
         },
       },
       aggs: {
@@ -211,8 +205,11 @@ export async function getLocalityTopCompanies({
     };
 
     for (const bucket of aggs.top_companies.buckets) {
-      const fiscalNumber = bucket.fiscal_number?.buckets[0]?.key?.replace(/[^0-9]/g, "") || String(bucket.key);
-      if (!fiscalNumber || fiscalNumber === "0") { continue; }
+      const fiscalNumber =
+        bucket.fiscal_number?.buckets[0]?.key?.replace(/[^0-9]/g, "") || String(bucket.key);
+      if (!fiscalNumber || fiscalNumber === "0") {
+        continue;
+      }
 
       const existing = companiesMap.get(fiscalNumber);
       if (existing) {
@@ -262,8 +259,11 @@ export async function getLocalityTopCompanies({
     };
 
     for (const bucket of aggs.top_companies.buckets) {
-      const fiscalNumber = bucket.fiscal_number?.buckets[0]?.key?.replace(/[^0-9]/g, "") || String(bucket.key);
-      if (!fiscalNumber || fiscalNumber === "0") { continue; }
+      const fiscalNumber =
+        bucket.fiscal_number?.buckets[0]?.key?.replace(/[^0-9]/g, "") || String(bucket.key);
+      if (!fiscalNumber || fiscalNumber === "0") {
+        continue;
+      }
 
       const existing = companiesMap.get(fiscalNumber);
       if (existing) {
@@ -313,7 +313,9 @@ export async function getLocalityTopCompanies({
 
     for (const bucket of aggs.top_companies.buckets) {
       const fiscalNumber = String(bucket.key);
-      if (fiscalNumber === "0") { continue; }
+      if (fiscalNumber === "0") {
+        continue;
+      }
 
       const existing = companiesMap.get(fiscalNumber);
       if (existing) {
@@ -370,4 +372,3 @@ export async function getLocalityTopCompanies({
 
   return companies;
 }
-

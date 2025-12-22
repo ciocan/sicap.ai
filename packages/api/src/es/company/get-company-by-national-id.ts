@@ -125,7 +125,9 @@ export async function getCompanyByNationalId({
                     bool: {
                       filter: [
                         { match_phrase: { _index: ES_INDEX_OFFLINE } },
-                        { match_phrase: { "details.noticeEntityAddress.fiscalNumber": nationalId } },
+                        {
+                          match_phrase: { "details.noticeEntityAddress.fiscalNumber": nationalId },
+                        },
                       ],
                     },
                   },
@@ -135,7 +137,9 @@ export async function getCompanyByNationalId({
                       filter: [{ match_phrase: { _index: ES_INDEX_PUBLIC } }],
                       should: [
                         {
-                          match_phrase: { "noticeContracts.items.winner.fiscalNumberInt": nationalId },
+                          match_phrase: {
+                            "noticeContracts.items.winner.fiscalNumberInt": nationalId,
+                          },
                         },
                         {
                           match_phrase: {
@@ -278,7 +282,9 @@ export async function getCompanyByNationalId({
       if (entityName) {
         company = {
           entityName: entityName as string,
-          fiscalNumber: (fields["supplier.fiscalNumber"]?.[0] || fields["supplier.numericFiscalNumber"]?.[0] || nationalId) as string,
+          fiscalNumber: (fields["supplier.fiscalNumber"]?.[0] ||
+            fields["supplier.numericFiscalNumber"]?.[0] ||
+            nationalId) as string,
           city: (fields["supplier.city"]?.[0] || "") as string,
           county: (fields["supplier.county"]?.[0] || "") as string,
           entityId: fields["supplier.entityId"]?.[0] as number | undefined,
@@ -287,11 +293,13 @@ export async function getCompanyByNationalId({
       }
     } else if (hit._index === ES_INDEX_OFFLINE) {
       // Achizitii offline - supplier info from fields
-      const entityName = fields["details.noticeEntityAddress.organization"]?.[0] || fields["item.supplier"]?.[0];
+      const entityName =
+        fields["details.noticeEntityAddress.organization"]?.[0] || fields["item.supplier"]?.[0];
       if (entityName) {
         company = {
           entityName: entityName as string,
-          fiscalNumber: (fields["details.noticeEntityAddress.fiscalNumber"]?.[0] || nationalId) as string,
+          fiscalNumber: (fields["details.noticeEntityAddress.fiscalNumber"]?.[0] ||
+            nationalId) as string,
           city: (fields["details.noticeEntityAddress.city"]?.[0] || "") as string,
           county: "",
           entityId: undefined,
@@ -307,16 +315,16 @@ export async function getCompanyByNationalId({
       const winnersFiscalNumbers = fields["noticeContracts.items.winners.fiscalNumberInt"] || [];
 
       // Check if our nationalId is in the primary winner(s)
-      const winnerIndex = winnerFiscalNumbers.findIndex(
-        (fn) => fn?.toString() === nationalId
-      );
+      const winnerIndex = winnerFiscalNumbers.findIndex((fn) => fn?.toString() === nationalId);
 
       if (winnerIndex !== -1) {
         // Found in primary winner - use winner fields
         const winnerNames = fields["noticeContracts.items.winner.name"] || [];
         const winnerCities = fields["noticeContracts.items.winner.address.city"] || [];
-        const winnerCounties = fields["noticeContracts.items.winner.address.nutsCodeItem.text"] ||
-          fields["noticeContracts.items.winner.address.county.text"] || [];
+        const winnerCounties =
+          fields["noticeContracts.items.winner.address.nutsCodeItem.text"] ||
+          fields["noticeContracts.items.winner.address.county.text"] ||
+          [];
         const winnerEntityIds = fields["noticeContracts.items.winner.entityId"] || [];
 
         company = {
@@ -330,16 +338,16 @@ export async function getCompanyByNationalId({
       }
 
       // Check if our nationalId is in the winners array
-      const winnersIndex = winnersFiscalNumbers.findIndex(
-        (fn) => fn?.toString() === nationalId
-      );
+      const winnersIndex = winnersFiscalNumbers.findIndex((fn) => fn?.toString() === nationalId);
 
       if (winnersIndex !== -1) {
         // Found in winners array - use winners fields
         const winnersNames = fields["noticeContracts.items.winners.name"] || [];
         const winnersCities = fields["noticeContracts.items.winners.address.city"] || [];
-        const winnersCounties = fields["noticeContracts.items.winners.address.nutsCodeItem.text"] ||
-          fields["noticeContracts.items.winners.address.county.text"] || [];
+        const winnersCounties =
+          fields["noticeContracts.items.winners.address.nutsCodeItem.text"] ||
+          fields["noticeContracts.items.winners.address.county.text"] ||
+          [];
         const winnersEntityIds = fields["noticeContracts.items.winners.entityId"] || [];
 
         company = {
@@ -354,18 +362,21 @@ export async function getCompanyByNationalId({
 
       // Fallback: use first available winner info if we couldn't find a match
       // (this can happen if the document matched but field extraction differs)
-      const fallbackName = fields["noticeContracts.items.winner.name"]?.[0] ||
+      const fallbackName =
+        fields["noticeContracts.items.winner.name"]?.[0] ||
         fields["noticeContracts.items.winners.name"]?.[0];
       if (fallbackName) {
         company = {
           entityName: fallbackName as string,
           fiscalNumber: nationalId,
           city: (fields["noticeContracts.items.winner.address.city"]?.[0] ||
-            fields["noticeContracts.items.winners.address.city"]?.[0] || "") as string,
+            fields["noticeContracts.items.winners.address.city"]?.[0] ||
+            "") as string,
           county: (fields["noticeContracts.items.winner.address.nutsCodeItem.text"]?.[0] ||
             fields["noticeContracts.items.winner.address.county.text"]?.[0] ||
             fields["noticeContracts.items.winners.address.nutsCodeItem.text"]?.[0] ||
-            fields["noticeContracts.items.winners.address.county.text"]?.[0] || "") as string,
+            fields["noticeContracts.items.winners.address.county.text"]?.[0] ||
+            "") as string,
           entityId: (fields["noticeContracts.items.winner.entityId"]?.[0] ||
             fields["noticeContracts.items.winners.entityId"]?.[0]) as number | undefined,
         };

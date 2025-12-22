@@ -108,8 +108,17 @@ export async function getLocalityTopCpv({
       query: {
         bool: {
           should: [
-            { match_phrase: { "publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.city": cityLower } },
-            { match_phrase: { "publicNotice.caNoticeEdit_New_U.section1_New_U.section1_1.caAddress.city": cityLower } },
+            {
+              match_phrase: {
+                "publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.city": cityLower,
+              },
+            },
+            {
+              match_phrase: {
+                "publicNotice.caNoticeEdit_New_U.section1_New_U.section1_1.caAddress.city":
+                  cityLower,
+              },
+            },
             { match_phrase: { "noticeContracts.items.winner.address.city": cityLower } },
           ],
           minimum_should_match: 1,
@@ -160,7 +169,9 @@ export async function getLocalityTopCpv({
 
     for (const bucket of aggs.top_cpv.buckets) {
       const code = bucket.key;
-      if (!code) { continue; }
+      if (!code) {
+        continue;
+      }
 
       const existing = cpvMap.get(code);
       const name = bucket.cpv_name.buckets[0]?.key || code;
@@ -192,7 +203,9 @@ export async function getLocalityTopCpv({
 
     for (const bucket of aggs.top_cpv.buckets) {
       const code = bucket.key;
-      if (!code) { continue; }
+      if (!code) {
+        continue;
+      }
 
       const existing = cpvMap.get(code);
       const name = bucket.cpv_name.buckets[0]?.key || code;
@@ -224,7 +237,9 @@ export async function getLocalityTopCpv({
 
     for (const bucket of aggs.top_cpv.buckets) {
       const code = bucket.key;
-      if (!code) { continue; }
+      if (!code) {
+        continue;
+      }
 
       const existing = cpvMap.get(code);
       const name = bucket.cpv_name.buckets[0]?.key || code;
@@ -254,4 +269,3 @@ export async function getLocalityTopCpv({
 
   return cpvCategories;
 }
-

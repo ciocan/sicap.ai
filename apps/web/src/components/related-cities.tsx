@@ -34,4 +34,3 @@ export function RelatedCities({ cities, county, countySlug }: RelatedCitiesProps
     </div>
   );
 }
-

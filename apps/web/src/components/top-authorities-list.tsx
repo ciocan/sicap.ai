@@ -121,7 +121,9 @@ export function TopAuthoritiesList({ authorities }: TopAuthoritiesListProps) {
             <div className="grid grid-cols-2 gap-2 mb-3">
               <div>
                 <div className="text-xs text-muted-foreground">Valoare</div>
-                <div className="font-mono text-sm font-medium">{moneyRon(authority.totalValue)}</div>
+                <div className="font-mono text-sm font-medium">
+                  {moneyRon(authority.totalValue)}
+                </div>
               </div>
               <div>
                 <div className="text-xs text-muted-foreground">Contracte</div>
@@ -162,4 +164,3 @@ export function TopAuthoritiesList({ authorities }: TopAuthoritiesListProps) {
     </div>
   );
 }
-

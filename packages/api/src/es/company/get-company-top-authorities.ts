@@ -217,11 +217,15 @@ export async function getCompanyTopAuthorities({
 
     for (const bucket of aggs.top_authorities.buckets) {
       const fiscalNumber = String(bucket.key);
-      if (fiscalNumber === "0") { continue };
+      if (fiscalNumber === "0") {
+        continue;
+      }
 
       // Extract name from contractingAuthorityNameAndFN (format: "CUI - Name")
       const rawName = bucket.authority_name.buckets[0]?.key || "";
-      const name = rawName.includes(" - ") ? rawName.split(" - ").slice(1).join(" - ") : rawName || "Necunoscut";
+      const name = rawName.includes(" - ")
+        ? rawName.split(" - ").slice(1).join(" - ")
+        : rawName || "Necunoscut";
 
       const existing = authoritiesMap.get(fiscalNumber);
       if (existing) {
@@ -272,8 +276,11 @@ export async function getCompanyTopAuthorities({
 
     for (const bucket of aggs.top_authorities.buckets) {
       // For DIRECT, try to use fiscal_number if available, otherwise use entityId
-      const fiscalNumber = bucket.fiscal_number?.buckets[0]?.key?.replace(/[^0-9]/g, "") || String(bucket.key);
-      if (fiscalNumber === "0" || !fiscalNumber) { continue };
+      const fiscalNumber =
+        bucket.fiscal_number?.buckets[0]?.key?.replace(/[^0-9]/g, "") || String(bucket.key);
+      if (fiscalNumber === "0" || !fiscalNumber) {
+        continue;
+      }
 
       const existing = authoritiesMap.get(fiscalNumber);
       if (existing) {
@@ -324,8 +331,11 @@ export async function getCompanyTopAuthorities({
 
     for (const bucket of aggs.top_authorities.buckets) {
       // For OFFLINE, try to use fiscal_number if available, otherwise use entityId
-      const fiscalNumber = bucket.fiscal_number?.buckets[0]?.key?.replace(/[^0-9]/g, "") || String(bucket.key);
-      if (fiscalNumber === "0" || !fiscalNumber) { continue };
+      const fiscalNumber =
+        bucket.fiscal_number?.buckets[0]?.key?.replace(/[^0-9]/g, "") || String(bucket.key);
+      if (fiscalNumber === "0" || !fiscalNumber) {
+        continue;
+      }
 
       const existing = authoritiesMap.get(fiscalNumber);
       if (existing) {
@@ -383,4 +393,3 @@ export async function getCompanyTopAuthorities({
   // Ensure the result is fully serializable (strips any ES client internal properties)
   return JSON.parse(JSON.stringify(authorities));
 }
-

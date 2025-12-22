@@ -41,9 +41,7 @@ export async function getRelatedLocalities({
       size: 0,
       query: {
         bool: {
-          filter: [
-            { match_phrase: { "authority.county": countyLower } },
-          ],
+          filter: [{ match_phrase: { "authority.county": countyLower } }],
         },
       },
       aggs: {
@@ -84,4 +82,3 @@ export async function getRelatedLocalities({
 
   return cities;
 }
-

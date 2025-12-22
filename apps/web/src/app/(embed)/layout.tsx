@@ -56,9 +56,7 @@ export default function EmbedLayout({ children }: EmbedLayoutProps) {
       className={`${GeistSans.variable} ${GeistMono.variable}`}
     >
       <head>
-        <script
-          dangerouslySetInnerHTML={{ __html: themeScript }}
-        />
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className="min-h-screen bg-background font-sans antialiased">
         <Suspense fallback={null}>
@@ -75,4 +73,3 @@ export default function EmbedLayout({ children }: EmbedLayoutProps) {
     </html>
   );
 }
-

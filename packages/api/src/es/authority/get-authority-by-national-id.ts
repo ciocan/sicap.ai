@@ -215,11 +215,14 @@ export async function getAuthorityByNationalId({
 
     if (hit._index === ES_INDEX_DIRECT || hit._index === ES_INDEX_OFFLINE) {
       // Achizitii directe/offline - authority info from fields
-      const entityName = fields["authority.entityName"]?.[0] || fields["item.contractingAuthority"]?.[0];
+      const entityName =
+        fields["authority.entityName"]?.[0] || fields["item.contractingAuthority"]?.[0];
       if (entityName) {
         authority = {
           entityName: entityName as string,
-          fiscalNumber: (fields["authority.fiscalNumber"]?.[0] || fields["authority.numericFiscalNumber"]?.[0] || nationalId) as string,
+          fiscalNumber: (fields["authority.fiscalNumber"]?.[0] ||
+            fields["authority.numericFiscalNumber"]?.[0] ||
+            nationalId) as string,
           city: (fields["authority.city"]?.[0] || "") as string,
           county: (fields["authority.county"]?.[0] || "") as string,
           entityId: fields["authority.entityId"]?.[0] as number | undefined,
@@ -228,17 +231,34 @@ export async function getAuthorityByNationalId({
       }
     } else if (hit._index === ES_INDEX_PUBLIC) {
       // Licitatii publice - authority info from fields
-      const contractingAuthorityNameAndFN = fields["item.contractingAuthorityNameAndFN"]?.[0] as string | undefined;
+      const contractingAuthorityNameAndFN = fields["item.contractingAuthorityNameAndFN"]?.[0] as
+        | string
+        | undefined;
       if (contractingAuthorityNameAndFN) {
         authority = {
-          entityName: contractingAuthorityNameAndFN?.split(" - ")?.[1] || contractingAuthorityNameAndFN || "",
+          entityName:
+            contractingAuthorityNameAndFN?.split(" - ")?.[1] || contractingAuthorityNameAndFN || "",
           fiscalNumber: nationalId,
-          city: (fields["publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.city"]?.[0] ||
-            fields["publicNotice.caNoticeEdit_New_U.section1_New_U.section1_1.caAddress.city"]?.[0] || "") as string,
-          county: (fields["publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.nutsCodeItem.text"]?.[0] ||
-            fields["publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.county.text"]?.[0] ||
-            fields["publicNotice.caNoticeEdit_New_U.section1_New_U.section1_1.caAddress.nutsCodeItem.text"]?.[0] ||
-            fields["publicNotice.caNoticeEdit_New_U.section1_New_U.section1_1.caAddress.county.text"]?.[0] || "") as string,
+          city: (fields[
+            "publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.city"
+          ]?.[0] ||
+            fields[
+              "publicNotice.caNoticeEdit_New_U.section1_New_U.section1_1.caAddress.city"
+            ]?.[0] ||
+            "") as string,
+          county: (fields[
+            "publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.nutsCodeItem.text"
+          ]?.[0] ||
+            fields[
+              "publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.county.text"
+            ]?.[0] ||
+            fields[
+              "publicNotice.caNoticeEdit_New_U.section1_New_U.section1_1.caAddress.nutsCodeItem.text"
+            ]?.[0] ||
+            fields[
+              "publicNotice.caNoticeEdit_New_U.section1_New_U.section1_1.caAddress.county.text"
+            ]?.[0] ||
+            "") as string,
           entityId: fields["publicNotice.entityId"]?.[0] as number | undefined,
         };
         break;

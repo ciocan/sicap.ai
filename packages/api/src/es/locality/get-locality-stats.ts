@@ -55,16 +55,12 @@ export async function getLocalityStats({
                       should: [
                         {
                           bool: {
-                            must: [
-                              { match_phrase: { "authority.city": cityLower } },
-                            ],
+                            must: [{ match_phrase: { "authority.city": cityLower } }],
                           },
                         },
                         {
                           bool: {
-                            must: [
-                              { match_phrase: { "supplier.city": cityLower } },
-                            ],
+                            must: [{ match_phrase: { "supplier.city": cityLower } }],
                           },
                         },
                       ],
@@ -84,16 +80,12 @@ export async function getLocalityStats({
                       should: [
                         {
                           bool: {
-                            must: [
-                              { match_phrase: { "authority.city": cityLower } },
-                            ],
+                            must: [{ match_phrase: { "authority.city": cityLower } }],
                           },
                         },
                         {
                           bool: {
-                            must: [
-                              { match_phrase: { "supplier.city": cityLower } },
-                            ],
+                            must: [{ match_phrase: { "supplier.city": cityLower } }],
                           },
                         },
                       ],
@@ -114,8 +106,18 @@ export async function getLocalityStats({
                         {
                           bool: {
                             should: [
-                              { match_phrase: { "publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.city": cityLower } },
-                              { match_phrase: { "publicNotice.caNoticeEdit_New_U.section1_New_U.section1_1.caAddress.city": cityLower } },
+                              {
+                                match_phrase: {
+                                  "publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.city":
+                                    cityLower,
+                                },
+                              },
+                              {
+                                match_phrase: {
+                                  "publicNotice.caNoticeEdit_New_U.section1_New_U.section1_1.caAddress.city":
+                                    cityLower,
+                                },
+                              },
                             ],
                             minimum_should_match: 1,
                           },
@@ -281,4 +283,3 @@ export async function getLocalityStats({
     },
   };
 }
-

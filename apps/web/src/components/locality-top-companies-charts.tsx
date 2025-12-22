@@ -156,9 +156,7 @@ export function LocalityTopCompaniesCharts({ companies }: LocalityTopCompaniesCh
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Horizontal Bar Chart */}
       <div className="space-y-2">
-        <h4 className="text-sm font-medium text-muted-foreground">
-          Top firme dupa valoare (RON)
-        </h4>
+        <h4 className="text-sm font-medium text-muted-foreground">Top firme dupa valoare (RON)</h4>
         <div className="h-[400px] sm:h-[500px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
@@ -216,4 +214,3 @@ export function LocalityTopCompaniesCharts({ companies }: LocalityTopCompaniesCh
     </div>
   );
 }
-

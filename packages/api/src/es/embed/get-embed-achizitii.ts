@@ -128,7 +128,8 @@ export async function getEmbedAchizitii({ fiscalNumber }: EmbedArgs) {
       if (item) {
         const contractingAuthorityNameAndFN = item.contractingAuthorityNameAndFN as string;
         authority = {
-          entityName: contractingAuthorityNameAndFN?.split(" - ")?.[1] || contractingAuthorityNameAndFN || "",
+          entityName:
+            contractingAuthorityNameAndFN?.split(" - ")?.[1] || contractingAuthorityNameAndFN || "",
           fiscalNumber: fiscalNumber,
           city: "",
           county: "",
@@ -149,4 +150,3 @@ export async function getEmbedAchizitii({ fiscalNumber }: EmbedArgs) {
     })),
   };
 }
-

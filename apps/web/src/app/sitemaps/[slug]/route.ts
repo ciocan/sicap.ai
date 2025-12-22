@@ -25,7 +25,10 @@ const allowedSlugs = [
 
 const size = 50_000;
 
-export async function GET(_request: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
+export async function GET(
+  _request: NextRequest,
+  { params }: { params: Promise<{ slug: string }> },
+) {
   const { slug: rawSlug } = await params;
   const slug = rawSlug.replace(/\.xml$/, "") as (typeof allowedSlugs)[number];
 

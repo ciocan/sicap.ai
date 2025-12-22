@@ -63,13 +63,9 @@ export function LocalityTopAuthoritiesList({ authorities }: LocalityTopAuthoriti
                   >
                     {authority.name}
                   </Link>
-                  <div className="text-xs text-muted-foreground">
-                    CUI: {authority.fiscalNumber}
-                  </div>
+                  <div className="text-xs text-muted-foreground">CUI: {authority.fiscalNumber}</div>
                 </td>
-                <td className="py-3 pr-4 text-right font-mono">
-                  {moneyRon(authority.totalValue)}
-                </td>
+                <td className="py-3 pr-4 text-right font-mono">{moneyRon(authority.totalValue)}</td>
                 <td className="py-3 pr-4 text-right font-mono">
                   {formatNumber(authority.contractCount)}
                 </td>
@@ -120,9 +116,7 @@ export function LocalityTopAuthoritiesList({ authorities }: LocalityTopAuthoriti
               </div>
             </div>
 
-            <div className="text-xs text-muted-foreground mb-3">
-              CUI: {authority.fiscalNumber}
-            </div>
+            <div className="text-xs text-muted-foreground mb-3">CUI: {authority.fiscalNumber}</div>
 
             <div className="grid grid-cols-2 gap-2 mb-3">
               <div>
@@ -170,4 +164,3 @@ export function LocalityTopAuthoritiesList({ authorities }: LocalityTopAuthoriti
     </div>
   );
 }
-

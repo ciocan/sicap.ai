@@ -33,4 +33,3 @@ export async function TopAuthorities({ nationalId }: TopAuthoritiesProps) {
     </div>
   );
 }
-

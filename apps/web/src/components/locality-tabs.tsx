@@ -59,4 +59,3 @@ export function LocalityTabs({ authorities, companies }: LocalityTabsProps) {
     </div>
   );
 }
-

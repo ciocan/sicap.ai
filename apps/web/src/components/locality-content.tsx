@@ -20,11 +20,7 @@ interface LocalityContentProps {
   countySlug: string;
 }
 
-export async function LocalityContent({
-  city,
-  county,
-  countySlug,
-}: LocalityContentProps) {
+export async function LocalityContent({ city, county, countySlug }: LocalityContentProps) {
   // Fetch all data in parallel
   const [stats, authorities, companies, cpvCategories, relatedCities] = await Promise.all([
     getCachedLocalityStats({ city, county }).catch(() => null),
@@ -45,9 +41,12 @@ export async function LocalityContent({
     <div className="space-y-8">
       {/* Header */}
       <div className="space-y-2">
-        <h1 className="font-semibold text-2xl">{city}, {county}</h1>
+        <h1 className="font-semibold text-2xl">
+          {city}, {county}
+        </h1>
         <p className="text-muted-foreground">
-          Achizitii publice in care sunt implicate autoritati contractante sau firme din aceasta localitate
+          Achizitii publice in care sunt implicate autoritati contractante sau firme din aceasta
+          localitate
         </p>
       </div>
 
@@ -74,13 +73,8 @@ export async function LocalityContent({
 
       {/* Related Cities */}
       {relatedCities.length > 0 && (
-        <RelatedCities
-          cities={relatedCities}
-          county={county}
-          countySlug={countySlug}
-        />
+        <RelatedCities cities={relatedCities} county={county} countySlug={countySlug} />
       )}
     </div>
   );
 }
-

@@ -68,10 +68,7 @@ export async function getCachedCompanyLicitatii(args: Args) {
 export async function getCachedCompanyAchizitiiOffline(args: Args) {
   "use cache";
   const key = args.supplierId || args.authorityId || args.cpvCode || "unknown";
-  cacheTag(
-    "company-achizitii-offline",
-    `achizitii-offline-${key}-${args.page || 1}`,
-  );
+  cacheTag("company-achizitii-offline", `achizitii-offline-${key}-${args.page || 1}`);
   return getCompanyAchizitiiOffline(args);
 }
 
@@ -358,4 +355,3 @@ export async function getCachedRelatedLocalities(args: RelatedLocalitiesArgs) {
   cacheTag("related-localities", `related-localities-${args.county}`);
   return getRelatedLocalities(args);
 }
-

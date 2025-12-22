@@ -216,4 +216,3 @@ export function LocalityTopAuthoritiesCharts({ authorities }: LocalityTopAuthori
     </div>
   );
 }
-
