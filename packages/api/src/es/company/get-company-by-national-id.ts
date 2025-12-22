@@ -23,6 +23,46 @@ interface CompanyInfo {
   entityId?: number;
 }
 
+interface NoticeContractItem {
+  winner?: { fiscalNumberInt?: string; fiscalNumber?: string };
+  winners?: Array<{ fiscalNumberInt?: string; fiscalNumber?: string }>;
+  contractValue?: number;
+}
+
+/**
+ * Calculate the total winning value for a company in a licitatii contract.
+ * This sums the contractValue of all lots where the company is a winner
+ * (either as primary winner or in the winners array).
+ */
+export function calculateLicitatiiWinningValue(
+  noticeContractsItems: NoticeContractItem[] | undefined,
+  nationalId: string,
+): number {
+  if (!noticeContractsItems || !nationalId) {
+    return 0;
+  }
+
+  return noticeContractsItems.reduce((total, item) => {
+    const contractValue = item.contractValue || 0;
+
+    // Check if company is the primary winner
+    const isPrimaryWinner =
+      item.winner?.fiscalNumberInt?.toString() === nationalId ||
+      item.winner?.fiscalNumber === nationalId;
+
+    // Check if company is in the winners array
+    const isInWinnersArray = item.winners?.some(
+      (w) => w?.fiscalNumberInt?.toString() === nationalId || w?.fiscalNumber === nationalId,
+    );
+
+    if (isPrimaryWinner || isInWinnersArray) {
+      return total + contractValue;
+    }
+
+    return total;
+  }, 0);
+}
+
 interface CompanyByNationalIdArgs {
   nationalId: string;
   page?: number;
@@ -39,6 +79,29 @@ export async function getCompanyByNationalId({
   }
 
   // Query all three indices for the given supplier fiscal number
+  //
+  // NOTE on licitatii value aggregation:
+  // For licitatii with multiple lots where the company won only some lots, the aggregation
+  // uses item.ronContractValue (total contract value) instead of the sum of won lot values.
+  // This is because Painless scripts in ES aggregations can only access doc values,
+  // not the nested noticeContracts.items[].contractValue structure.
+  // For accurate per-item values, use calculateLicitatiiWinningValue() on the returned items.
+  const valueAggScript = `
+    // Licitatii publice - use ronContractValue (see NOTE above for lot-based limitation)
+    if (doc.containsKey('item.ronContractValue') && doc['item.ronContractValue'].size() > 0) {
+      return doc['item.ronContractValue'].value;
+    }
+    // Achizitii directe - use closingValue
+    if (doc.containsKey('item.closingValue') && doc['item.closingValue'].size() > 0) {
+      return doc['item.closingValue'].value;
+    }
+    // Achizitii offline - use awardedValue
+    if (doc.containsKey('item.awardedValue') && doc['item.awardedValue'].size() > 0) {
+      return doc['item.awardedValue'].value;
+    }
+    return 0;
+  `;
+
   const searchParams = {
     index: [ES_INDEX_DIRECT, ES_INDEX_OFFLINE, ES_INDEX_PUBLIC],
     body: {
@@ -66,13 +129,21 @@ export async function getCompanyByNationalId({
                       ],
                     },
                   },
-                  // Licitatii publice - by winner fiscal number
+                  // Licitatii publice - by winner fiscal number (check both winner and winners array)
                   {
                     bool: {
-                      filter: [
-                        { match_phrase: { _index: ES_INDEX_PUBLIC } },
-                        { match_phrase: { "noticeContracts.items.winner.fiscalNumberInt": nationalId } },
+                      filter: [{ match_phrase: { _index: ES_INDEX_PUBLIC } }],
+                      should: [
+                        {
+                          match_phrase: { "noticeContracts.items.winner.fiscalNumberInt": nationalId },
+                        },
+                        {
+                          match_phrase: {
+                            "noticeContracts.items.winners.fiscalNumberInt": nationalId,
+                          },
+                        },
                       ],
+                      minimum_should_match: 1,
                     },
                   },
                 ],
@@ -123,17 +194,7 @@ export async function getCompanyByNationalId({
             sales: {
               sum: {
                 script: {
-                  source: `
-                    if (doc.containsKey('item.ronContractValue') && doc['item.ronContractValue'].size() > 0) {
-                      return doc['item.ronContractValue'].value;
-                    } else if (doc.containsKey('item.closingValue') && doc['item.closingValue'].size() > 0) {
-                      return doc['item.closingValue'].value;
-                    } else if (doc.containsKey('item.awardedValue') && doc['item.awardedValue'].size() > 0) {
-                      return doc['item.awardedValue'].value;
-                    } else {
-                      return 0;
-                    }
-                  `,
+                  source: valueAggScript,
                   lang: "painless",
                 },
               },
@@ -160,17 +221,7 @@ export async function getCompanyByNationalId({
             sales: {
               sum: {
                 script: {
-                  source: `
-                    if (doc.containsKey('item.ronContractValue') && doc['item.ronContractValue'].size() > 0) {
-                      return doc['item.ronContractValue'].value;
-                    } else if (doc.containsKey('item.closingValue') && doc['item.closingValue'].size() > 0) {
-                      return doc['item.closingValue'].value;
-                    } else if (doc.containsKey('item.awardedValue') && doc['item.awardedValue'].size() > 0) {
-                      return doc['item.awardedValue'].value;
-                    } else {
-                      return 0;
-                    }
-                  `,
+                  source: valueAggScript,
                   lang: "painless",
                 },
               },
@@ -181,8 +232,17 @@ export async function getCompanyByNationalId({
       from: (page - 1) * perPage,
       size: perPage,
     },
-    fields: [...fieldsAchizitii, ...filedsLicitatii, ...fieldsAchizitiiOffline],
-    _source: true,
+    fields: [
+      ...fieldsAchizitii,
+      ...filedsLicitatii,
+      ...fieldsAchizitiiOffline,
+      // Additional fields for company info extraction (avoiding _source)
+      "supplier.entityName",
+      "supplier.fiscalNumber",
+      "supplier.entityId",
+      "details.noticeEntityAddress.organization",
+    ],
+    _source: false,
   };
 
   const result = await esClient.search(searchParams);
@@ -193,57 +253,56 @@ export async function getCompanyByNationalId({
     throw new Error(`Nu s-au găsit rezultate pentru CUI: ${nationalId}`);
   }
 
-  // Extract company/supplier info from the first result
+  // Extract company/supplier info from the first result using fields (not _source)
   let company: CompanyInfo | null = null;
 
   for (const hit of hits) {
-    const source = hit._source as Record<string, unknown>;
+    const fields = hit.fields as Fields | undefined;
+
+    // Skip if no fields (defensive check)
+    if (!fields) {
+      continue;
+    }
 
     if (hit._index === ES_INDEX_DIRECT) {
-      const supplierData = source.supplier as Record<string, unknown> | undefined;
-      if (supplierData) {
+      // Achizitii directe - supplier info from fields
+      const entityName = fields["supplier.entityName"]?.[0] || fields["item.supplier"]?.[0];
+      if (entityName) {
         company = {
-          entityName: supplierData.entityName as string,
-          fiscalNumber: supplierData.fiscalNumber as string,
-          city: supplierData.city as string,
-          county: supplierData.county as string,
-          entityId: supplierData.entityId as number,
+          entityName: entityName as string,
+          fiscalNumber: (fields["supplier.fiscalNumber"]?.[0] || fields["supplier.numericFiscalNumber"]?.[0] || nationalId) as string,
+          city: (fields["supplier.city"]?.[0] || "") as string,
+          county: (fields["supplier.county"]?.[0] || "") as string,
+          entityId: fields["supplier.entityId"]?.[0] as number | undefined,
         };
         break;
       }
     } else if (hit._index === ES_INDEX_OFFLINE) {
-      const details = source.details as Record<string, unknown> | undefined;
-      const noticeEntityAddress = details?.noticeEntityAddress as Record<string, unknown> | undefined;
-      if (noticeEntityAddress) {
+      // Achizitii offline - supplier info from fields
+      const entityName = fields["details.noticeEntityAddress.organization"]?.[0] || fields["item.supplier"]?.[0];
+      if (entityName) {
         company = {
-          entityName: noticeEntityAddress.organization as string,
-          fiscalNumber: noticeEntityAddress.fiscalNumber as string,
-          city: noticeEntityAddress.city as string,
+          entityName: entityName as string,
+          fiscalNumber: (fields["details.noticeEntityAddress.fiscalNumber"]?.[0] || nationalId) as string,
+          city: (fields["details.noticeEntityAddress.city"]?.[0] || "") as string,
           county: "",
           entityId: undefined,
         };
         break;
       }
     } else if (hit._index === ES_INDEX_PUBLIC) {
-      const noticeContracts = source.noticeContracts as Record<string, unknown> | undefined;
-      const items = noticeContracts?.items as Record<string, unknown>[] | undefined;
-      // Find the winner that matches the nationalId we're searching for
-      const matchingItem = items?.find((item) => {
-        const w = item?.winner as Record<string, unknown> | undefined;
-        return w?.fiscalNumberInt?.toString() === nationalId;
-      });
-      const winner = (matchingItem?.winner ?? items?.[0]?.winner) as Record<string, unknown> | undefined;
-      if (winner) {
-        const address = winner.address as Record<string, unknown> | undefined;
+      // Licitatii publice - winner info from fields
+      const winnerName = fields["noticeContracts.items.winner.name"]?.[0];
+      if (winnerName) {
         company = {
-          entityName: winner.name as string,
-          fiscalNumber: (winner.fiscalNumber as string) || nationalId,
-          city: (address?.city as string) || "",
-          county:
-            ((address?.nutsCodeItem as Record<string, unknown>)?.text as string) ||
-            ((address?.county as Record<string, unknown>)?.text as string) ||
-            "",
-          entityId: winner.entityId as number,
+          entityName: winnerName as string,
+          fiscalNumber: (fields["noticeContracts.items.winner.fiscalNumber"]?.[0] ||
+            fields["noticeContracts.items.winner.fiscalNumberInt"]?.[0] ||
+            nationalId) as string,
+          city: (fields["noticeContracts.items.winner.address.city"]?.[0] || "") as string,
+          county: (fields["noticeContracts.items.winner.address.nutsCodeItem.text"]?.[0] ||
+            fields["noticeContracts.items.winner.address.county.text"]?.[0] || "") as string,
+          entityId: fields["noticeContracts.items.winner.entityId"]?.[0] as number | undefined,
         };
         break;
       }
@@ -261,15 +320,16 @@ export async function getCompanyByNationalId({
     };
   }
 
+  const items = hits.map((hit) => ({
+    id: hit._id as string,
+    index: hit._index as IndexName,
+    fields: transformItem(hit._index, (hit.fields || {}) as Fields, {} as Fields),
+  }));
+
   return {
     total: total.value,
     company,
     stats,
-    items: hits.map((hit) => ({
-      id: hit._id as string,
-      index: hit._index as IndexName,
-      fields: transformItem(hit._index, hit.fields as Fields, {} as Fields),
-    })),
+    items,
   };
 }
-
