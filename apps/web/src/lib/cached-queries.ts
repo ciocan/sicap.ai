@@ -1,4 +1,5 @@
 import { cacheLife, cacheTag } from "next/cache";
+
 import {
   getTotal,
   getCompanyAchizitii,
@@ -217,6 +218,7 @@ interface AuthorityByNationalIdArgs {
  * Uses "search" cache profile (24h revalidation)
  */
 export async function getCachedAuthorityByNationalId(args: AuthorityByNationalIdArgs) {
+  // await connection(); // Signals this is dynamic, allows Date.now()
   "use cache";
   cacheTag("authority-all", `authority-${args.nationalId}-${args.page || 1}`);
   return getAuthorityByNationalId(args);
