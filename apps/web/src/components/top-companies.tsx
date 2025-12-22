@@ -33,4 +33,3 @@ export async function TopCompanies({ nationalId }: TopCompaniesProps) {
     </div>
   );
 }
-

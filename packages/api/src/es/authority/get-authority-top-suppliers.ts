@@ -374,5 +374,6 @@ export async function getAuthorityTopSuppliers({
     .sort((a, b) => b.totalValue - a.totalValue)
     .slice(0, limit);
 
-  return suppliers;
+  // Ensure the result is fully serializable (strips any ES client internal properties)
+  return JSON.parse(JSON.stringify(suppliers));
 }

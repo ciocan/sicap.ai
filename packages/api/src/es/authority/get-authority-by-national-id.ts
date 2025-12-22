@@ -257,7 +257,7 @@ export async function getAuthorityByNationalId({
     };
   }
 
-  return {
+  const result_data = {
     total: total.value,
     authority,
     stats,
@@ -267,4 +267,7 @@ export async function getAuthorityByNationalId({
       fields: transformItem(hit._index, (hit.fields || {}) as Fields, {} as Fields),
     })),
   };
+
+  // Ensure the result is fully serializable (strips any ES client internal properties)
+  return JSON.parse(JSON.stringify(result_data));
 }

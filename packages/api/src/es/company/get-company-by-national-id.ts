@@ -391,10 +391,13 @@ export async function getCompanyByNationalId({
     fields: transformItem(hit._index, (hit.fields || {}) as Fields, {} as Fields),
   }));
 
-  return {
+  const result_data = {
     total: total.value,
     company,
     stats,
     items,
   };
+
+  // Ensure the result is fully serializable (strips any ES client internal properties)
+  return JSON.parse(JSON.stringify(result_data));
 }
