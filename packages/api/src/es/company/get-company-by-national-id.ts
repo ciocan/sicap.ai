@@ -241,6 +241,14 @@ export async function getCompanyByNationalId({
       "supplier.fiscalNumber",
       "supplier.entityId",
       "details.noticeEntityAddress.organization",
+      // Winners array fields for licitatii (when company is in winners array, not primary winner)
+      "noticeContracts.items.winners.name",
+      "noticeContracts.items.winners.fiscalNumber",
+      "noticeContracts.items.winners.fiscalNumberInt",
+      "noticeContracts.items.winners.entityId",
+      "noticeContracts.items.winners.address.city",
+      "noticeContracts.items.winners.address.county.text",
+      "noticeContracts.items.winners.address.nutsCodeItem.text",
     ],
     _source: false,
   };
@@ -291,18 +299,75 @@ export async function getCompanyByNationalId({
         break;
       }
     } else if (hit._index === ES_INDEX_PUBLIC) {
-      // Licitatii publice - winner info from fields
-      const winnerName = fields["noticeContracts.items.winner.name"]?.[0];
-      if (winnerName) {
+      // Licitatii publice - check both winner and winners array
+      // ES fields API returns flattened arrays, so we need to find the matching entry
+
+      // Get all winner fiscal numbers (from both winner and winners)
+      const winnerFiscalNumbers = fields["noticeContracts.items.winner.fiscalNumberInt"] || [];
+      const winnersFiscalNumbers = fields["noticeContracts.items.winners.fiscalNumberInt"] || [];
+
+      // Check if our nationalId is in the primary winner(s)
+      const winnerIndex = winnerFiscalNumbers.findIndex(
+        (fn) => fn?.toString() === nationalId
+      );
+
+      if (winnerIndex !== -1) {
+        // Found in primary winner - use winner fields
+        const winnerNames = fields["noticeContracts.items.winner.name"] || [];
+        const winnerCities = fields["noticeContracts.items.winner.address.city"] || [];
+        const winnerCounties = fields["noticeContracts.items.winner.address.nutsCodeItem.text"] ||
+          fields["noticeContracts.items.winner.address.county.text"] || [];
+        const winnerEntityIds = fields["noticeContracts.items.winner.entityId"] || [];
+
         company = {
-          entityName: winnerName as string,
-          fiscalNumber: (fields["noticeContracts.items.winner.fiscalNumber"]?.[0] ||
-            fields["noticeContracts.items.winner.fiscalNumberInt"]?.[0] ||
-            nationalId) as string,
-          city: (fields["noticeContracts.items.winner.address.city"]?.[0] || "") as string,
+          entityName: (winnerNames[winnerIndex] || winnerNames[0] || "") as string,
+          fiscalNumber: nationalId,
+          city: (winnerCities[winnerIndex] || winnerCities[0] || "") as string,
+          county: (winnerCounties[winnerIndex] || winnerCounties[0] || "") as string,
+          entityId: (winnerEntityIds[winnerIndex] || winnerEntityIds[0]) as number | undefined,
+        };
+        break;
+      }
+
+      // Check if our nationalId is in the winners array
+      const winnersIndex = winnersFiscalNumbers.findIndex(
+        (fn) => fn?.toString() === nationalId
+      );
+
+      if (winnersIndex !== -1) {
+        // Found in winners array - use winners fields
+        const winnersNames = fields["noticeContracts.items.winners.name"] || [];
+        const winnersCities = fields["noticeContracts.items.winners.address.city"] || [];
+        const winnersCounties = fields["noticeContracts.items.winners.address.nutsCodeItem.text"] ||
+          fields["noticeContracts.items.winners.address.county.text"] || [];
+        const winnersEntityIds = fields["noticeContracts.items.winners.entityId"] || [];
+
+        company = {
+          entityName: (winnersNames[winnersIndex] || winnersNames[0] || "") as string,
+          fiscalNumber: nationalId,
+          city: (winnersCities[winnersIndex] || winnersCities[0] || "") as string,
+          county: (winnersCounties[winnersIndex] || winnersCounties[0] || "") as string,
+          entityId: (winnersEntityIds[winnersIndex] || winnersEntityIds[0]) as number | undefined,
+        };
+        break;
+      }
+
+      // Fallback: use first available winner info if we couldn't find a match
+      // (this can happen if the document matched but field extraction differs)
+      const fallbackName = fields["noticeContracts.items.winner.name"]?.[0] ||
+        fields["noticeContracts.items.winners.name"]?.[0];
+      if (fallbackName) {
+        company = {
+          entityName: fallbackName as string,
+          fiscalNumber: nationalId,
+          city: (fields["noticeContracts.items.winner.address.city"]?.[0] ||
+            fields["noticeContracts.items.winners.address.city"]?.[0] || "") as string,
           county: (fields["noticeContracts.items.winner.address.nutsCodeItem.text"]?.[0] ||
-            fields["noticeContracts.items.winner.address.county.text"]?.[0] || "") as string,
-          entityId: fields["noticeContracts.items.winner.entityId"]?.[0] as number | undefined,
+            fields["noticeContracts.items.winner.address.county.text"]?.[0] ||
+            fields["noticeContracts.items.winners.address.nutsCodeItem.text"]?.[0] ||
+            fields["noticeContracts.items.winners.address.county.text"]?.[0] || "") as string,
+          entityId: (fields["noticeContracts.items.winner.entityId"]?.[0] ||
+            fields["noticeContracts.items.winners.entityId"]?.[0]) as number | undefined,
         };
         break;
       }

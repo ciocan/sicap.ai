@@ -194,7 +194,7 @@ export const filedsLicitatii = [
   "publicNotice.entityId",
   "publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.city",
   "publicNotice.caNoticeEdit_New_U.section1_New_U.section1_1.caAddress.city",
-  "publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.county",
+  "publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.county.text",
   "publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.nutsCodeItem.text",
   "publicNotice.caNoticeEdit_New_U.section1_New_U.section1_1.caAddress.county.text",
   "publicNotice.caNoticeEdit_New_U.section1_New_U.section1_1.caAddress.nutsCodeItem.text",
