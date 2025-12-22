@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.16.5](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.16.4...sicap-v0.16.5) (2025-12-22)
+
+
+### Bug Fixes
+
+* add calculateLicitatiiWinningValue function and enhance getCompanyByNationalId ([47c3162](https://github.com/ciocan/SICAP.ai/commit/47c31623cb67774d724a0125344116906d647e46))
+* enhance getAuthorityByNationalId function to improve field extraction ([d172008](https://github.com/ciocan/SICAP.ai/commit/d172008a61d5a82c1a8780435cc00b059156e020))
+* enhance getCompanyByNationalId to support winners array and improve field extraction ([d2b58b6](https://github.com/ciocan/SICAP.ai/commit/d2b58b619bdadf7e5af6e49bb3c23ad724382e67))
+* ensure API responses are fully serializable ([6bee978](https://github.com/ciocan/SICAP.ai/commit/6bee97856b39bfb553666f2a3f982d942535c1fd))
+* update caching strategy and clean up unused code ([d78d442](https://github.com/ciocan/SICAP.ai/commit/d78d442d2e78d8756acac8ccd1b984eb682e2899))
+
 ## [0.16.4](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.16.3...sicap-v0.16.4) (2025-12-21)
 
 
