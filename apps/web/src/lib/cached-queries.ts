@@ -44,7 +44,6 @@ export async function getCachedTotal() {
  */
 export async function getCachedCompanyAchizitii(args: Args) {
   "use cache";
-  cacheLife("search");
   const key = args.supplierId || args.authorityId || args.cpvCode || "unknown";
   cacheTag("company-achizitii", `achizitii-${key}-${args.page || 1}`);
   return getCompanyAchizitii(args);
@@ -56,7 +55,6 @@ export async function getCachedCompanyAchizitii(args: Args) {
  */
 export async function getCachedCompanyLicitatii(args: Args) {
   "use cache";
-  cacheLife("search");
   const key = args.supplierId || args.authorityId || args.cpvCode || "unknown";
   cacheTag("company-licitatii", `licitatii-${key}-${args.page || 1}`);
   return getCompanyLicitatii(args);
@@ -68,7 +66,6 @@ export async function getCachedCompanyLicitatii(args: Args) {
  */
 export async function getCachedCompanyAchizitiiOffline(args: Args) {
   "use cache";
-  cacheLife("search");
   const key = args.supplierId || args.authorityId || args.cpvCode || "unknown";
   cacheTag(
     "company-achizitii-offline",
@@ -201,7 +198,6 @@ export async function getCachedSitemapAchizitiiOffline(size: number) {
  */
 export async function getCachedEmbedAchizitii(fiscalNumber: string) {
   "use cache";
-  cacheLife("search");
   cacheTag("embed-achizitii", `embed-${fiscalNumber}`);
   return getEmbedAchizitii({ fiscalNumber });
 }
@@ -222,7 +218,6 @@ interface AuthorityByNationalIdArgs {
  */
 export async function getCachedAuthorityByNationalId(args: AuthorityByNationalIdArgs) {
   "use cache";
-  cacheLife("search");
   cacheTag("authority-all", `authority-${args.nationalId}-${args.page || 1}`);
   return getAuthorityByNationalId(args);
 }
@@ -243,7 +238,6 @@ interface CompanyByNationalIdArgs {
  */
 export async function getCachedCompanyByNationalId(args: CompanyByNationalIdArgs) {
   "use cache";
-  cacheLife("search");
   cacheTag("company-all", `company-${args.nationalId}-${args.page || 1}`);
   return getCompanyByNationalId(args);
 }
@@ -263,7 +257,6 @@ interface AuthorityTopSuppliersArgs {
  */
 export async function getCachedAuthorityTopSuppliers(args: AuthorityTopSuppliersArgs) {
   "use cache";
-  cacheLife("search");
   cacheTag("authority-top-suppliers", `authority-top-suppliers-${args.nationalId}`);
   return getAuthorityTopSuppliers(args);
 }
@@ -283,7 +276,6 @@ interface CompanyTopAuthoritiesArgs {
  */
 export async function getCachedCompanyTopAuthorities(args: CompanyTopAuthoritiesArgs) {
   "use cache";
-  cacheLife("search");
   cacheTag("company-top-authorities", `company-top-authorities-${args.nationalId}`);
   return getCompanyTopAuthorities(args);
 }
@@ -303,7 +295,6 @@ interface LocalityStatsArgs {
  */
 export async function getCachedLocalityStats(args: LocalityStatsArgs) {
   "use cache";
-  cacheLife("search");
   cacheTag("locality-stats", `locality-stats-${args.county}-${args.city}`);
   return getLocalityStats(args);
 }
@@ -320,7 +311,6 @@ interface LocalityTopEntitiesArgs {
  */
 export async function getCachedLocalityTopAuthorities(args: LocalityTopEntitiesArgs) {
   "use cache";
-  cacheLife("search");
   cacheTag("locality-top-authorities", `locality-top-authorities-${args.county}-${args.city}`);
   return getLocalityTopAuthorities(args);
 }
@@ -331,7 +321,6 @@ export async function getCachedLocalityTopAuthorities(args: LocalityTopEntitiesA
  */
 export async function getCachedLocalityTopCompanies(args: LocalityTopEntitiesArgs) {
   "use cache";
-  cacheLife("search");
   cacheTag("locality-top-companies", `locality-top-companies-${args.county}-${args.city}`);
   return getLocalityTopCompanies(args);
 }
@@ -348,7 +337,6 @@ interface LocalityTopCpvArgs {
  */
 export async function getCachedLocalityTopCpv(args: LocalityTopCpvArgs) {
   "use cache";
-  cacheLife("search");
   cacheTag("locality-top-cpv", `locality-top-cpv-${args.county}-${args.city}`);
   return getLocalityTopCpv(args);
 }
@@ -365,7 +353,6 @@ interface RelatedLocalitiesArgs {
  */
 export async function getCachedRelatedLocalities(args: RelatedLocalitiesArgs) {
   "use cache";
-  cacheLife("search");
   cacheTag("related-localities", `related-localities-${args.county}`);
   return getRelatedLocalities(args);
 }
