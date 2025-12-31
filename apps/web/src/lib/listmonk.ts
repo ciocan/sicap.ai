@@ -35,7 +35,7 @@ function listmonkRequest({
     url: `${env.LISTMONK_API_URL}${endpoint}`,
     body: data,
     headers: {
-      Authorization: `Basic ${env.LISTMONK_API_KEY}`,
+      Authorization: `token ${env.LISTMONK_API_KEY}`,
     },
   });
 }
@@ -87,7 +87,7 @@ export async function getSubscriberInfo(email: string) {
     endpoint: `/subscribers?query=subscribers.email='${email}'`,
   })) as { data: { results: ListmonkSubscriber[] } };
 
-  const [subscriber] = res.data.results;
+  const [subscriber] = res.data.results || [];
   return subscriber;
 }
 
