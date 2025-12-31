@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.6](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.16.5...sicap-v0.16.6) (2025-12-31)
+
+
+### Bug Fixes
+
+* update authorization method and handle empty subscriber results ([43e148e](https://github.com/ciocan/SICAP.ai/commit/43e148e869f11f540c8edf151ffb5271f75921ce))
+
 ## [0.16.5](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.16.4...sicap-v0.16.5) (2025-12-22)
 
 

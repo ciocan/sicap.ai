@@ -1,6 +1,6 @@
 {
   "name": "sicap",
-  "version": "0.16.5",
+  "version": "0.16.6",
   "description": "Motor de cautare pentru achizitii publice",
   "workspaces": [
     "apps/*",
