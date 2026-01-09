@@ -1,4 +1,6 @@
-import { cacheLife, cacheTag } from "next/cache";
+// NOTE: Caching temporarily disabled to reduce Vercel ISR write costs
+// To re-enable, add back: import { cacheLife, cacheTag } from "next/cache";
+// and restore "use cache" directives with cacheLife/cacheTag calls
 
 import {
   getTotal,
@@ -29,179 +31,135 @@ import {
 } from "@sicap/api";
 
 /**
- * Cached wrapper for getTotal - fetches total counts for all indices
- * Uses "totals" cache profile (24h revalidation)
+ * Wrapper for getTotal - fetches total counts for all indices
+ * Caching temporarily disabled
  */
 export async function getCachedTotal() {
-  "use cache";
-  cacheLife("totals");
-  cacheTag("totals");
   return getTotal();
 }
 
 /**
- * Cached wrapper for getCompanyAchizitii - get direct acquisitions by company/authority/cpv
- * Uses "search" cache profile (24h revalidation)
+ * Wrapper for getCompanyAchizitii - get direct acquisitions by company/authority/cpv
+ * Caching temporarily disabled
  */
 export async function getCachedCompanyAchizitii(args: Args) {
-  "use cache";
-  const key = args.supplierId || args.authorityId || args.cpvCode || "unknown";
-  cacheTag("company-achizitii", `achizitii-${key}-${args.page || 1}`);
   return getCompanyAchizitii(args);
 }
 
 /**
- * Cached wrapper for getCompanyLicitatii - get public tenders by company/authority/cpv
- * Uses "search" cache profile (24h revalidation)
+ * Wrapper for getCompanyLicitatii - get public tenders by company/authority/cpv
+ * Caching temporarily disabled
  */
 export async function getCachedCompanyLicitatii(args: Args) {
-  "use cache";
-  const key = args.supplierId || args.authorityId || args.cpvCode || "unknown";
-  cacheTag("company-licitatii", `licitatii-${key}-${args.page || 1}`);
   return getCompanyLicitatii(args);
 }
 
 /**
- * Cached wrapper for getCompanyAchizitiiOffline - get offline acquisitions by company/authority/cpv
- * Uses "search" cache profile (24h revalidation)
+ * Wrapper for getCompanyAchizitiiOffline - get offline acquisitions by company/authority/cpv
+ * Caching temporarily disabled
  */
 export async function getCachedCompanyAchizitiiOffline(args: Args) {
-  "use cache";
-  const key = args.supplierId || args.authorityId || args.cpvCode || "unknown";
-  cacheTag("company-achizitii-offline", `achizitii-offline-${key}-${args.page || 1}`);
   return getCompanyAchizitiiOffline(args);
 }
 
 /**
- * Cached wrapper for getContractAchizitii - get single direct acquisition contract
- * Uses "contracts" cache profile (48h revalidation)
+ * Wrapper for getContractAchizitii - get single direct acquisition contract
+ * Caching temporarily disabled
  */
 export async function getCachedContractAchizitii(id: string) {
-  "use cache";
-  cacheLife("contracts");
-  cacheTag("contract-achizitii", `contract-achizitii-${id}`);
   return getContractAchizitii(id);
 }
 
 /**
- * Cached wrapper for getContractLicitatii - get single public tender contract
- * Uses "contracts" cache profile (48h revalidation)
+ * Wrapper for getContractLicitatii - get single public tender contract
+ * Caching temporarily disabled
  */
 export async function getCachedContractLicitatii(id: string) {
-  "use cache";
-  cacheLife("contracts");
-  cacheTag("contract-licitatii", `contract-licitatii-${id}`);
   return getContractLicitatii(id);
 }
 
 /**
- * Cached wrapper for getContractAchizitiiOffline - get single offline acquisition contract
- * Uses "contracts" cache profile (48h revalidation)
+ * Wrapper for getContractAchizitiiOffline - get single offline acquisition contract
+ * Caching temporarily disabled
  */
 export async function getCachedContractAchizitiiOffline(id: string) {
-  "use cache";
-  cacheLife("contracts");
-  cacheTag("contract-achizitii-offline", `contract-achizitii-offline-${id}`);
   return getContractAchizitiiOffline(id);
 }
 
 // ============================================================================
-// Sitemap cached functions
+// Sitemap functions
 // ============================================================================
 
 /**
- * Cached wrapper for getSitemapAchizitii
- * Uses "sitemaps" cache profile (24h revalidation)
+ * Wrapper for getSitemapAchizitii
+ * Caching temporarily disabled
  */
 export async function getCachedSitemapAchizitii(size: number) {
-  "use cache";
-  cacheLife("sitemaps");
-  cacheTag("sitemap-achizitii");
   return getSitemapAchizitii(size);
 }
 
 /**
- * Cached wrapper for getSitemapLicitatii
- * Uses "sitemaps" cache profile (24h revalidation)
+ * Wrapper for getSitemapLicitatii
+ * Caching temporarily disabled
  */
 export async function getCachedSitemapLicitatii(size: number) {
-  "use cache";
-  cacheLife("sitemaps");
-  cacheTag("sitemap-licitatii");
   return getSitemapLicitatii(size);
 }
 
 /**
- * Cached wrapper for getSitemapAchizitiiCpv
- * Uses "sitemaps" cache profile (24h revalidation)
+ * Wrapper for getSitemapAchizitiiCpv
+ * Caching temporarily disabled
  */
 export async function getCachedSitemapAchizitiiCpv(size: number) {
-  "use cache";
-  cacheLife("sitemaps");
-  cacheTag("sitemap-achizitii-cpv");
   return getSitemapAchizitiiCpv(size);
 }
 
 /**
- * Cached wrapper for getSitemapLicitatiiCpv
- * Uses "sitemaps" cache profile (24h revalidation)
+ * Wrapper for getSitemapLicitatiiCpv
+ * Caching temporarily disabled
  */
 export async function getCachedSitemapLicitatiiCpv(size: number) {
-  "use cache";
-  cacheLife("sitemaps");
-  cacheTag("sitemap-licitatii-cpv");
   return getSitemapLicitatiiCpv(size);
 }
 
 /**
- * Cached wrapper for getSitemapAchizitiiFirme
- * Uses "sitemaps" cache profile (24h revalidation)
+ * Wrapper for getSitemapAchizitiiFirme
+ * Caching temporarily disabled
  */
 export async function getCachedSitemapAchizitiiFirme(size: number) {
-  "use cache";
-  cacheLife("sitemaps");
-  cacheTag("sitemap-achizitii-firme");
   return getSitemapAchizitiiFirme(size);
 }
 
 /**
- * Cached wrapper for getSitemapAchizitiiAutoritati
- * Uses "sitemaps" cache profile (24h revalidation)
+ * Wrapper for getSitemapAchizitiiAutoritati
+ * Caching temporarily disabled
  */
 export async function getCachedSitemapAchizitiiAutoritati(size: number) {
-  "use cache";
-  cacheLife("sitemaps");
-  cacheTag("sitemap-achizitii-autoritati");
   return getSitemapAchizitiiAutoritati(size);
 }
 
 /**
- * Cached wrapper for getSitemapAchizitiiOffline
- * Uses "sitemaps" cache profile (24h revalidation)
+ * Wrapper for getSitemapAchizitiiOffline
+ * Caching temporarily disabled
  */
 export async function getCachedSitemapAchizitiiOffline(size: number) {
-  "use cache";
-  cacheLife("sitemaps");
-  cacheTag("sitemap-achizitii-offline");
   return getSitemapAchizitiiOffline(size);
 }
 
 // ============================================================================
-// Embed cached functions
+// Embed functions
 // ============================================================================
 
 /**
- * Cached wrapper for getEmbedAchizitii - get latest acquisitions for embed widget
- * Uses "search" cache profile (24h revalidation)
+ * Wrapper for getEmbedAchizitii - get latest acquisitions for embed widget
+ * Caching temporarily disabled
  */
 export async function getCachedEmbedAchizitii(fiscalNumber: string) {
-  "use cache";
-  cacheTag("embed-achizitii", `embed-${fiscalNumber}`);
   return getEmbedAchizitii({ fiscalNumber });
 }
 
 // ============================================================================
-// Authority cached functions
+// Authority functions
 // ============================================================================
 
 interface AuthorityByNationalIdArgs {
@@ -211,18 +169,15 @@ interface AuthorityByNationalIdArgs {
 }
 
 /**
- * Cached wrapper for getAuthorityByNationalId - get all tender types by authority fiscal number
- * Uses "search" cache profile (24h revalidation)
+ * Wrapper for getAuthorityByNationalId - get all tender types by authority fiscal number
+ * Caching temporarily disabled
  */
 export async function getCachedAuthorityByNationalId(args: AuthorityByNationalIdArgs) {
-  // await connection(); // Signals this is dynamic, allows Date.now()
-  "use cache";
-  cacheTag("authority-all", `authority-${args.nationalId}-${args.page || 1}`);
   return getAuthorityByNationalId(args);
 }
 
 // ============================================================================
-// Company cached functions
+// Company functions
 // ============================================================================
 
 interface CompanyByNationalIdArgs {
@@ -232,17 +187,15 @@ interface CompanyByNationalIdArgs {
 }
 
 /**
- * Cached wrapper for getCompanyByNationalId - get all tender types by company/supplier fiscal number
- * Uses "search" cache profile (24h revalidation)
+ * Wrapper for getCompanyByNationalId - get all tender types by company/supplier fiscal number
+ * Caching temporarily disabled
  */
 export async function getCachedCompanyByNationalId(args: CompanyByNationalIdArgs) {
-  "use cache";
-  cacheTag("company-all", `company-${args.nationalId}-${args.page || 1}`);
   return getCompanyByNationalId(args);
 }
 
 // ============================================================================
-// Authority top suppliers cached functions
+// Authority top suppliers functions
 // ============================================================================
 
 interface AuthorityTopSuppliersArgs {
@@ -251,17 +204,15 @@ interface AuthorityTopSuppliersArgs {
 }
 
 /**
- * Cached wrapper for getAuthorityTopSuppliers - get top 10 suppliers for an authority in the past 12 months
- * Uses "search" cache profile (24h revalidation)
+ * Wrapper for getAuthorityTopSuppliers - get top 10 suppliers for an authority in the past 12 months
+ * Caching temporarily disabled
  */
 export async function getCachedAuthorityTopSuppliers(args: AuthorityTopSuppliersArgs) {
-  "use cache";
-  cacheTag("authority-top-suppliers", `authority-top-suppliers-${args.nationalId}`);
   return getAuthorityTopSuppliers(args);
 }
 
 // ============================================================================
-// Company top authorities cached functions
+// Company top authorities functions
 // ============================================================================
 
 interface CompanyTopAuthoritiesArgs {
@@ -270,17 +221,15 @@ interface CompanyTopAuthoritiesArgs {
 }
 
 /**
- * Cached wrapper for getCompanyTopAuthorities - get top 10 authorities for a company in the past 12 months
- * Uses "search" cache profile (24h revalidation)
+ * Wrapper for getCompanyTopAuthorities - get top 10 authorities for a company in the past 12 months
+ * Caching temporarily disabled
  */
 export async function getCachedCompanyTopAuthorities(args: CompanyTopAuthoritiesArgs) {
-  "use cache";
-  cacheTag("company-top-authorities", `company-top-authorities-${args.nationalId}`);
   return getCompanyTopAuthorities(args);
 }
 
 // ============================================================================
-// Locality cached functions
+// Locality functions
 // ============================================================================
 
 interface LocalityStatsArgs {
@@ -289,12 +238,10 @@ interface LocalityStatsArgs {
 }
 
 /**
- * Cached wrapper for getLocalityStats - get summary statistics and spending over time for a locality
- * Uses "search" cache profile (24h revalidation)
+ * Wrapper for getLocalityStats - get summary statistics and spending over time for a locality
+ * Caching temporarily disabled
  */
 export async function getCachedLocalityStats(args: LocalityStatsArgs) {
-  "use cache";
-  cacheTag("locality-stats", `locality-stats-${args.county}-${args.city}`);
   return getLocalityStats(args);
 }
 
@@ -305,22 +252,18 @@ interface LocalityTopEntitiesArgs {
 }
 
 /**
- * Cached wrapper for getLocalityTopAuthorities - get top authorities in a locality
- * Uses "search" cache profile (24h revalidation)
+ * Wrapper for getLocalityTopAuthorities - get top authorities in a locality
+ * Caching temporarily disabled
  */
 export async function getCachedLocalityTopAuthorities(args: LocalityTopEntitiesArgs) {
-  "use cache";
-  cacheTag("locality-top-authorities", `locality-top-authorities-${args.county}-${args.city}`);
   return getLocalityTopAuthorities(args);
 }
 
 /**
- * Cached wrapper for getLocalityTopCompanies - get top companies in a locality
- * Uses "search" cache profile (24h revalidation)
+ * Wrapper for getLocalityTopCompanies - get top companies in a locality
+ * Caching temporarily disabled
  */
 export async function getCachedLocalityTopCompanies(args: LocalityTopEntitiesArgs) {
-  "use cache";
-  cacheTag("locality-top-companies", `locality-top-companies-${args.county}-${args.city}`);
   return getLocalityTopCompanies(args);
 }
 
@@ -331,12 +274,10 @@ interface LocalityTopCpvArgs {
 }
 
 /**
- * Cached wrapper for getLocalityTopCpv - get top CPV categories in a locality
- * Uses "search" cache profile (24h revalidation)
+ * Wrapper for getLocalityTopCpv - get top CPV categories in a locality
+ * Caching temporarily disabled
  */
 export async function getCachedLocalityTopCpv(args: LocalityTopCpvArgs) {
-  "use cache";
-  cacheTag("locality-top-cpv", `locality-top-cpv-${args.county}-${args.city}`);
   return getLocalityTopCpv(args);
 }
 
@@ -347,11 +288,9 @@ interface RelatedLocalitiesArgs {
 }
 
 /**
- * Cached wrapper for getRelatedLocalities - get other cities in the same county
- * Uses "search" cache profile (24h revalidation)
+ * Wrapper for getRelatedLocalities - get other cities in the same county
+ * Caching temporarily disabled
  */
 export async function getCachedRelatedLocalities(args: RelatedLocalitiesArgs) {
-  "use cache";
-  cacheTag("related-localities", `related-localities-${args.county}`);
   return getRelatedLocalities(args);
 }
