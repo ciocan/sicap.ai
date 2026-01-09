@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 import Link from "next/link";
 
 import { getCachedAuthorityByNationalId } from "@/lib/cached-queries";
@@ -18,6 +19,7 @@ interface AuthorityAllProps {
 }
 
 export async function AuthorityAll({ nationalId, searchParams }: AuthorityAllProps) {
+  await connection();
   const { p: page = 1, perPage = 20 } = searchParams;
 
   let results: Awaited<ReturnType<typeof getCachedAuthorityByNationalId>>;

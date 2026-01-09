@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 
 import { getCachedCompanyAchizitiiOffline } from "@/lib/cached-queries";
 
@@ -22,6 +23,7 @@ export async function CompanyAchizitiiOffline({
   slug,
   searchParams,
 }: CompanyAchizitiiOfflineProps) {
+  await connection();
   const { p: page = 1, perPage = 20, isFiscal } = searchParams;
 
   const propMappings = {

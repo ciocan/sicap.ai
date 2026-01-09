@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import { connection } from "next/server";
 
 import { getCachedLocalityStats } from "@/lib/cached-queries";
 import { moneyRon } from "@/utils";
@@ -27,6 +28,7 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata(props: PageProps) {
+  await connection();
   const params = await props.params;
   const city = formatDisplayName(params.city);
   const county = formatDisplayName(params.county);

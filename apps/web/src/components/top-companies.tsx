@@ -1,3 +1,4 @@
+import { connection } from "next/server";
 import { getCachedAuthorityTopSuppliers } from "@/lib/cached-queries";
 import { TopCompaniesList } from "./top-companies-list";
 import { TopCompaniesCharts } from "./top-companies-charts";
@@ -7,6 +8,7 @@ interface TopCompaniesProps {
 }
 
 export async function TopCompanies({ nationalId }: TopCompaniesProps) {
+  await connection();
   let suppliers: Awaited<ReturnType<typeof getCachedAuthorityTopSuppliers>> = [];
 
   try {

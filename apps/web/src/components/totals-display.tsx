@@ -1,7 +1,9 @@
+import { connection } from "next/server";
 import { getCachedTotal } from "@/lib/cached-queries";
 import { formatNumber } from "@/utils";
 
 export async function TotalsDisplay() {
+  await connection();
   const totals = await getCachedTotal();
   const licitatii = formatNumber(totals.licitatii);
   const achizitii = formatNumber(totals.achizitii);

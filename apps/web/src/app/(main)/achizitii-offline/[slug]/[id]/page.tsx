@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 
 import { getCachedCompanyAchizitiiOffline } from "@/lib/cached-queries";
 import { CompanyAchizitiiOffline } from "@/components/company-achizitii-offline";
@@ -22,6 +23,7 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params, searchParams }: PageProps) {
+  await connection();
   const { id, slug } = await params;
   const { isFiscal } = await searchParams;
 

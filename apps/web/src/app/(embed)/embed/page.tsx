@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { connection } from "next/server";
 import { ExternalLink, AlertCircle } from "lucide-react";
 
 import { getCachedEmbedAchizitii } from "@/lib/cached-queries";
@@ -46,6 +47,7 @@ function PoweredByFooter() {
 }
 
 async function EmbedContent({ searchParams }: { searchParams: Promise<{ cui?: string }> }) {
+  await connection();
   const { cui } = await searchParams;
 
   if (!cui) {

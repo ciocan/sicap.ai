@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 
 import { getCachedCompanyAchizitii } from "@/lib/cached-queries";
 
@@ -18,6 +19,7 @@ interface CompanyAchizitiiProps {
 }
 
 export async function CompanyAchizitii({ id, slug, searchParams }: CompanyAchizitiiProps) {
+  await connection();
   const { p: page = 1, perPage = 20 } = searchParams;
   const propMappings = {
     autoritate: { authorityId: id },

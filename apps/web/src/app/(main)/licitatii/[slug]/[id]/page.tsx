@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 
 import { getCachedCompanyLicitatii } from "@/lib/cached-queries";
 import { allowedSlugs, moneyRon } from "@/utils";
@@ -22,6 +23,7 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: PageProps) {
+  await connection();
   const { id, slug } = await params;
 
   if (!allowedSlugs.includes(slug)) {

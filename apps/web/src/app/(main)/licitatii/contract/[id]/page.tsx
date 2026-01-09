@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 
 import { ContractLicitatii } from "@/components/contract-licitatii";
 import { getCachedContractLicitatii } from "@/lib/cached-queries";
@@ -17,6 +18,7 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata(props: PageProps) {
+  await connection();
   const { id } = await props.params;
   try {
     const contract = await getCachedContractLicitatii(id);

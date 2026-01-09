@@ -1,4 +1,5 @@
 import { getServerSideSitemap } from "next-sitemap";
+import { connection } from "next/server";
 import type { NextRequest } from "next/server";
 
 import {
@@ -29,6 +30,7 @@ export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ slug: string }> },
 ) {
+  await connection();
   const { slug: rawSlug } = await params;
   const slug = rawSlug.replace(/\.xml$/, "") as (typeof allowedSlugs)[number];
 

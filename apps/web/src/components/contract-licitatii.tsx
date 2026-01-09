@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 
 import { moneyRon } from "@/utils";
 import { formatDate, formatDateTime } from "@sicap/api";
@@ -8,6 +9,7 @@ import { getCachedContractLicitatii } from "@/lib/cached-queries";
 import { RowItem } from "./utils";
 
 export async function ContractLicitatii({ id }: { id: string }) {
+  await connection();
   let contract: Awaited<ReturnType<typeof getCachedContractLicitatii>>;
   try {
     contract = await getCachedContractLicitatii(id);

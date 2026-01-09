@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 
 import { getCachedAuthorityByNationalId } from "@/lib/cached-queries";
 import { AuthorityAll } from "@/components/authority-all";
@@ -20,6 +21,7 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata(props: PageProps) {
+  await connection();
   const { nationalId } = await props.params;
 
   try {

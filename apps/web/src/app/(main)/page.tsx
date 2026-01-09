@@ -1,8 +1,10 @@
+import { connection } from "next/server";
 import { getCachedTotal } from "@/lib/cached-queries";
 import { Search } from "@/components";
 import { formatNumber } from "@/utils";
 
 export default async function Page() {
+  await connection();
   const { licitatii, achizitii, offline } = await getCachedTotal();
 
   return (

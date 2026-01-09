@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 
 import {
   getCachedLocalityStats,
@@ -21,6 +22,7 @@ interface LocalityContentProps {
 }
 
 export async function LocalityContent({ city, county, countySlug }: LocalityContentProps) {
+  await connection();
   // Fetch all data in parallel
   const [stats, authorities, companies, cpvCategories, relatedCities] = await Promise.all([
     getCachedLocalityStats({ city, county }).catch(() => null),
