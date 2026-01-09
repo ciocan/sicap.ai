@@ -22,7 +22,8 @@ const toHex = (arrayBuffer: ArrayBuffer) => {
 
 export async function GET(request: NextRequest, { params }: any) {
   const { searchParams } = new URL(request.url);
-  const [first, second] = params.slug;
+  const resolvedParams = await params;
+  const [first, second] = resolvedParams.slug;
   const title = searchParams.get("title");
 
   const id = second ? first : first?.split("/")[0];
@@ -63,6 +64,9 @@ export async function GET(request: NextRequest, { params }: any) {
     {
       width: 1200,
       height: 630,
+      headers: {
+        "Cache-Control": "public, max-age=86400, s-maxage=604800, stale-while-revalidate=86400",
+      },
     },
   );
 }
