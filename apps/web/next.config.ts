@@ -5,7 +5,7 @@ import path from "node:path";
 
 const nextConfig: NextConfig = {
 	transpilePackages: ["@sicap/ui"],
-	cacheComponents: true,
+	cacheComponents: false,
 	cacheLife: {
 		totals: {
 			stale: 86400, // 24h - totals don't change frequently
