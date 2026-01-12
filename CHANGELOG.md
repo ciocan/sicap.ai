@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.17.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.16.6...sicap-v0.17.0) (2026-01-12)
+
+
+### Features
+
+* integrate connection handling across components ([9a38795](https://github.com/ciocan/SICAP.ai/commit/9a38795d2f9e83c40382d758c46181a6ea8ea462))
+
+
+### Bug Fixes
+
+* disable component caching in Next.js configuration ([b5b5b78](https://github.com/ciocan/SICAP.ai/commit/b5b5b782f78d74fd5e8f67e8df8fe7a4e67ad657))
+* resolve parameter handling and enhance caching headers in OG route ([51f4d9d](https://github.com/ciocan/SICAP.ai/commit/51f4d9d1aaefd7460ee278089eb4278c2aa49d29))
+
 ## [0.16.6](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.16.5...sicap-v0.16.6) (2025-12-31)
 
 
