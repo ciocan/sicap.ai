@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.17.0...sicap-v0.18.0) (2026-01-15)
+
+
+### Features
+
+* enhance search functionality with CUI support ([dc2e61e](https://github.com/ciocan/SICAP.ai/commit/dc2e61ef43f937e3e106c85726deaf95a66627a1))
+
 ## [0.17.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.16.6...sicap-v0.17.0) (2026-01-12)
 
 
