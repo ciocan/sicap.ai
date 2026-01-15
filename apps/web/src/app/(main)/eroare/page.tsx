@@ -1,6 +1,4 @@
-export default async function ErrorPage(props: {
-  searchParams: Promise<{ error?: string }>;
-}) {
+export default async function ErrorPage(props: { searchParams: Promise<{ error?: string }> }) {
   const searchParams = await props.searchParams;
   return (
     <div className="grid flex-1 place-items-center p-8">

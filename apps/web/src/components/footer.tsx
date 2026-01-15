@@ -12,9 +12,9 @@ export async function Footer() {
 
   return (
     <footer className="mt-auto border-t border-border/40 bg-muted/30">
-      <div className="mx-auto w-full max-w-screen-xl px-6 py-6">
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-          <div className="space-y-2">
+      <div className="mx-auto w-full max-w-screen-xl px-4 py-4 sm:px-6 sm:py-6">
+        <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3">
+          <div className="col-span-2 md:col-span-1 space-y-2">
             <Link href="/" className="inline-block">
               <h3 className="text-base font-semibold tracking-tight">SICAP.ai</h3>
             </Link>
@@ -88,7 +88,7 @@ export async function Footer() {
           </div>
         </div>
 
-        <div className="mt-6 flex flex-col items-center justify-between gap-3 border-t border-border/40 pt-4 text-sm text-muted-foreground sm:flex-row">
+        <div className="mt-4 sm:mt-6 flex flex-col items-center justify-between gap-2 sm:gap-3 border-t border-border/40 pt-3 sm:pt-4 text-sm text-muted-foreground sm:flex-row">
           <p>© 2020 - {currentYear} SICAP.ai</p>
           <HostingLink />
         </div>

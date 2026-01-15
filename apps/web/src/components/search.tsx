@@ -75,10 +75,11 @@ export function Search({ hideButton }: { hideButton?: boolean }) {
             )}
           </div>
           {!hideButton && (
-            <div className="">
+            <div>
               <DialogTrigger asChild>
                 <Button
                   variant="link"
+                  className="text-xs sm:text-sm h-auto py-1"
                   onClick={() => captureOpenAdvancedSearchModal({ type: "link" })}
                 >
                   cautare avansata
