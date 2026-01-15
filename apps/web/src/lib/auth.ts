@@ -54,12 +54,10 @@ export const { handlers, auth } = NextAuth({
         });
         await addSubscriberToLists({ email, lists: ["users"] });
         await messageSubscriber({ email, template: "welcome" });
-      } catch (e) {
-        console.error(e);
-      }
+      } catch (_e) {}
     },
 
-    async signIn({ user, isNewUser }) {
+    async signIn({ user, isNewUser: _isNewUser }) {
       log.info("User signed in", { userId: user.id });
       await db
         .update(users)

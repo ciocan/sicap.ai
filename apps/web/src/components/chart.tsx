@@ -47,17 +47,19 @@ const CustomTooltip = ({ active, payload }) => {
 };
 
 export function Chart({ stats }: Props) {
-  if (!stats) {
-    return null;
-  }
-
   const [activeChartType, setActiveChartType] = useState("value");
   const [activeInterval, setActiveInterval] = useState("years");
   const [data, setData] = useState<StatItem[]>([]);
 
   useEffect(() => {
-    setData(stats.years.map((y) => ({ ...y, key: formatDateAs(y.key, "YYYY") })));
+    if (stats) {
+      setData(stats.years.map((y) => ({ ...y, key: formatDateAs(y.key, "YYYY") })));
+    }
   }, [stats]);
+
+  if (!stats) {
+    return null;
+  }
 
   const handleChangeChartType = (type) => {
     setActiveChartType(type);

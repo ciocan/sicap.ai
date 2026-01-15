@@ -1,7 +1,7 @@
-import { NextRequest } from "next/server";
+import type { NextRequest } from "next/server";
 
 import { env } from "@/lib/env";
-import { NextHandler } from "./types";
+import type { NextHandler } from "./types";
 
 export const withBearerToken = (handler: NextHandler) => {
   // The wrapped function must conform to the Next.js Route Handler signature:

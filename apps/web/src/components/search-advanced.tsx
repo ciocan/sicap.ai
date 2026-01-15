@@ -1,6 +1,6 @@
 "use client";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 import {
   DialogContent,
@@ -126,15 +126,14 @@ export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
   const db = searchParams.get("db");
   const { formbricks } = useFormbricks();
 
-  const params = {
-    ...Object.fromEntries(searchParams.entries()),
-    db: db ? db.split(",") : dbIds,
-    euFunds: searchParams.get("euFunds") === "true",
-  };
-
-  useEffect(() => {
-    form.reset({ ...defaultValues, q: query, ...params });
-  }, [searchParams]);
+  const params = useMemo(
+    () => ({
+      ...Object.fromEntries(searchParams.entries()),
+      db: db ? db.split(",") : dbIds,
+      euFunds: searchParams.get("euFunds") === "true",
+    }),
+    [searchParams, db],
+  );
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -144,6 +143,10 @@ export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
       ...params,
     },
   });
+
+  useEffect(() => {
+    form.reset({ ...defaultValues, q: query, ...params });
+  }, [form, params, query]);
 
   function handleReset() {
     form.reset({ ...defaultValues, q: query });

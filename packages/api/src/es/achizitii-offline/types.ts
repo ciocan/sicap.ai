@@ -1,4 +1,4 @@
-import { Authority, CpvCode, Supplier } from "../achizitii/types";
+import type { Authority, CpvCode, Supplier } from "../achizitii/types";
 
 export interface RootObject {
   _source: Source;

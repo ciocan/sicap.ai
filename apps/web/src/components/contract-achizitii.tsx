@@ -32,7 +32,7 @@ export async function ContractAchizitii({ id }: { id: string }) {
     cpvCode,
     istoric,
   } = contract;
-  const { entityId, numericFiscalNumber, entityName, city, county } = contractingAuthority;
+  const { numericFiscalNumber, entityName, city, county } = contractingAuthority;
 
   const seapUrl = `https://${
     istoric ? "istoric." : ""

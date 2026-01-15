@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { withAxiom } from "next-axiom";
 
-import { createPointInTime, ES_INDICES, ES_INDICES_TYPE } from "@sicap/api";
+import { createPointInTime, ES_INDICES, type ES_INDICES_TYPE } from "@sicap/api";
 import { withBearerToken } from "../middleware/withBearerToken";
 
 export const GET = withBearerToken(

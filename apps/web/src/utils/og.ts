@@ -1,4 +1,4 @@
-import { createHmac } from "crypto";
+import { createHmac } from "node:crypto";
 
 import { baseUrl } from "@/config/site";
 import { env } from "@/lib/env";

@@ -102,4 +102,10 @@ Required in `.env`:
 - Main branch: `v2`
 - Use `"use client"` directive only for interactive components
 - Server Components are the default in Next.js 16
-- Biome handles linting and formatting (run `pnpm fmt` before commits)
+- Biome handles linting and formatting
+- **After making code changes, always run:**
+  ```bash
+  pnpm lint      # Check for lint errors and warnings
+  pnpm fmt       # Format code according to Biome rules
+  pnpm typecheck # Verify TypeScript types
+  ```

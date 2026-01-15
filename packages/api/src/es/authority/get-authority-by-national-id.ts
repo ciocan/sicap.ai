@@ -267,7 +267,9 @@ export async function getAuthorityByNationalId({
   }
 
   // Build stats from aggregations
-  let stats = undefined;
+  let stats:
+    | { years: ReturnType<typeof mapBucket>[]; months: ReturnType<typeof mapBucket>[] }
+    | undefined;
   if (result.aggregations) {
     const years = result.aggregations.years as Buckets;
     const months = result.aggregations.months as Buckets;

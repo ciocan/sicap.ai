@@ -20,7 +20,10 @@ const toHex = (arrayBuffer: ArrayBuffer) => {
     .join("");
 };
 
-export async function GET(request: NextRequest, { params }: any) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ slug: string[] }> },
+) {
   const { searchParams } = new URL(request.url);
   const resolvedParams = await params;
   const [first, second] = resolvedParams.slug;
@@ -50,11 +53,12 @@ export async function GET(request: NextRequest, { params }: any) {
       }}
     >
       <div tw="flex flex-col bg-gray-50 p-16">
+        {/* biome-ignore lint/a11y/useAltText: OG image generation requires img element */}
+        {/* biome-ignore lint/performance/noImgElement: next/image cannot be used in OG image generation */}
         <img
           width="96"
           height="96"
           src={`${baseUrl}/windows11/Square44x44Logo.altform-unplated_targetsize-96.png`}
-          alt="logo"
         />
         <div tw="flex flex-col w-full">
           <h1 tw="text-xl sm:text-2xl font-bold text-left">{title}</h1>

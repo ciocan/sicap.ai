@@ -35,13 +35,7 @@ export async function ContractAchizitiiOffline({ id }: { id: string }) {
     acquisitionType,
     noticeEntityAddress,
   } = contract;
-  const {
-    entityId,
-    numericFiscalNumber,
-    entityName,
-    city: cityAuthority,
-    county,
-  } = contractingAuthority;
+  const { numericFiscalNumber, entityName, city: cityAuthority, county } = contractingAuthority;
   const {
     country: countrySupplier,
     city: citySupplier,
@@ -49,7 +43,7 @@ export async function ContractAchizitiiOffline({ id }: { id: string }) {
     fiscalNumber,
   } = noticeEntityAddress;
 
-  const istoric = Number(id) < 100_000_000 ? true : false;
+  const istoric = Number(id) < 100_000_000;
   const seapUrl = `https://${
     istoric ? "istoric." : ""
   }e-licitatie.ro/pub/direct-acquisition/award-notice/view/${id}`;

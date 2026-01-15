@@ -1,16 +1,16 @@
-import { SearchTotalHits } from "@elastic/elasticsearch/lib/api/types";
+import type { SearchTotalHits } from "@elastic/elasticsearch/lib/api/types";
 
 import { esClient } from "../config";
 import {
   ES_INDEX_PUBLIC,
-  Fields,
+  type Fields,
   RESULTS_PER_PAGE,
   filedsLicitatii,
   mapBucket,
   transformItem,
 } from "../utils";
-import { RootObject } from "./types";
-import { Args, Buckets, IndexName } from "../types";
+import type { RootObject } from "./types";
+import type { Args, Buckets, IndexName } from "../types";
 import { decode } from "../../utils";
 
 const getQueryForSupplierId = (id: string | undefined) => {
@@ -120,7 +120,9 @@ export async function getCompanyLicitatii(args: Args) {
     throw new Error("Identificator invalid");
   }
 
-  let stats = undefined;
+  let stats:
+    | { years: ReturnType<typeof mapBucket>[]; months: ReturnType<typeof mapBucket>[] }
+    | undefined;
   if (result.aggregations) {
     const years = result.aggregations.years as Buckets;
     const months = result.aggregations.months as Buckets;

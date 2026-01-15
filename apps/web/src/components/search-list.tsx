@@ -67,7 +67,7 @@ export async function SearchList({ searchParams }: SearchListProps) {
     supplier,
     localitySupplier,
     countySupplier,
-    euFunds: euFunds === "true" ? true : false,
+    euFunds: euFunds === "true",
   };
 
   const results = await searchContracts({

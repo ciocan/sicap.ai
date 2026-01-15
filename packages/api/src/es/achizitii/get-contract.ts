@@ -2,7 +2,7 @@ import { pick } from "ramda";
 
 import { esClient } from "../config";
 import { ES_INDEX_DIRECT } from "../utils";
-import { RootObject } from "./types";
+import type { RootObject } from "./types";
 import { authorityProps, itemProps, publicDirectAcquisitionProps, supplierProps } from "./common";
 
 export async function getContractAchizitii(id: string) {

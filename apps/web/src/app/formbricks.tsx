@@ -63,7 +63,9 @@ export default function FormbricksProvider({ children }: { children: React.React
   }, [userId, isAuthenticated, email, name, isLoading, isDone]);
 
   useEffect(() => {
-    formbricksRef.current?.registerRouteChange().then(() => {});
+    if (pathname || searchParams) {
+      formbricksRef.current?.registerRouteChange().then(() => {});
+    }
   }, [pathname, searchParams]);
 
   return (

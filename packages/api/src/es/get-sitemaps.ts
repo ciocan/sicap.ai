@@ -1,4 +1,4 @@
-import { SearchRequest } from "@elastic/elasticsearch/lib/api/types";
+import type { SearchRequest } from "@elastic/elasticsearch/lib/api/types";
 
 import { ES_INDEX_DIRECT, ES_INDEX_OFFLINE, ES_INDEX_PUBLIC } from "./utils";
 import { esClient } from "./config";
@@ -173,57 +173,47 @@ interface AggsResponse {
 }
 
 export async function getSitemapAchizitiiCpv(size = 100) {
-  try {
-    const result = (await esClient.search({
-      index: ES_INDEX_DIRECT,
-      body: {
-        size: 0,
-        aggs: {
-          cpv: {
-            terms: {
-              field: "publicDirectAcquisition.cpvCode.localeKey.keyword",
-              size,
-            },
+  const result = (await esClient.search({
+    index: ES_INDEX_DIRECT,
+    body: {
+      size: 0,
+      aggs: {
+        cpv: {
+          terms: {
+            field: "publicDirectAcquisition.cpvCode.localeKey.keyword",
+            size,
           },
         },
       },
-    })) as AggsResponse;
+    },
+  })) as AggsResponse;
 
-    return result.aggregations.cpv.buckets.map(({ key }) => ({
-      id: key,
-      date: new Date().toISOString(),
-    }));
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
+  return result.aggregations.cpv.buckets.map(({ key }) => ({
+    id: key,
+    date: new Date().toISOString(),
+  }));
 }
 
 export async function getSitemapLicitatiiCpv(size = 100) {
-  try {
-    const result = (await esClient.search({
-      index: ES_INDEX_PUBLIC,
-      body: {
-        size: 0,
-        aggs: {
-          cpv: {
-            terms: {
-              field: "item.cpvCode.keyword",
-              size,
-            },
+  const result = (await esClient.search({
+    index: ES_INDEX_PUBLIC,
+    body: {
+      size: 0,
+      aggs: {
+        cpv: {
+          terms: {
+            field: "item.cpvCode.keyword",
+            size,
           },
         },
       },
-    })) as AggsResponse;
+    },
+  })) as AggsResponse;
 
-    return result.aggregations.cpv.buckets.map(({ key }) => ({
-      id: key,
-      date: new Date().toISOString(),
-    }));
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
+  return result.aggregations.cpv.buckets.map(({ key }) => ({
+    id: key,
+    date: new Date().toISOString(),
+  }));
 }
 
 export async function getSitemapAchizitiiOffline(size = 1000) {

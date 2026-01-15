@@ -101,7 +101,6 @@ export async function addSubscriberToLists({
   const subscriber = await getSubscriberInfo(email);
 
   if (!subscriber) {
-    console.error(`addSubscriberToList: Subscriber ${email} not found`);
     return;
   }
 

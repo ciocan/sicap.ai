@@ -1,4 +1,4 @@
-import { withAxiom, AxiomRequest } from "next-axiom";
+import { withAxiom, type AxiomRequest } from "next-axiom";
 
 import { auth } from "@/lib/auth";
 import { dbIds } from "@/utils";

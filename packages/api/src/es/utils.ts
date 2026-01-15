@@ -14,7 +14,7 @@ export const RESULTS_PER_PAGE = 20;
 export function transformItem(
   index: string,
   fields: Fields,
-  highlight: Fields,
+  _highlight: Fields,
 ): SearchItemDirect | SearchItemPublic | SearchItemOffline {
   switch (index) {
     case ES_INDEX_OFFLINE:

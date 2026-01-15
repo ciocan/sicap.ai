@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { stringify } from "csv-stringify/sync";
 
-import { getCompanyLicitatii } from "@sicap/api";
+import type { getCompanyLicitatii } from "@sicap/api";
 import type { Awaited } from "@/utils/types";
 import { captureCSVDownloadButtonClick } from "@/lib/telemetry";
 import { escapeCsvString } from "@/utils";

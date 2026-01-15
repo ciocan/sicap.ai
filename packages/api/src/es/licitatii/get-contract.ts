@@ -2,7 +2,7 @@ import { pick } from "ramda";
 
 import { esClient } from "../config";
 import { ES_INDEX_PUBLIC } from "../utils";
-import { RootObject } from "./types";
+import type { RootObject } from "./types";
 
 import {
   noticeProps,

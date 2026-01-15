@@ -3,7 +3,7 @@ import {
   ES_INDEX_DIRECT,
   ES_INDEX_OFFLINE,
   ES_INDEX_PUBLIC,
-  Fields,
+  type Fields,
   fieldsAchizitii,
   fieldsAchizitiiOffline,
   filedsLicitatii,

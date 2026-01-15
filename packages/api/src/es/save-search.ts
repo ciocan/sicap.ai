@@ -13,7 +13,5 @@ export async function saveSearch(props: Props) {
         "@timestamp": new Date(),
       },
     })
-    .catch((err) => {
-      console.error(err);
-    });
+    .catch((_err) => {});
 }

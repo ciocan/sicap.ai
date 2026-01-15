@@ -2,7 +2,7 @@ import { pick } from "ramda";
 
 import { esClient } from "../config";
 import { ES_INDEX_OFFLINE } from "../utils";
-import { RootObject } from "./types";
+import type { RootObject } from "./types";
 import { authorityProps, itemProps, detailsProps, supplierProps } from "./common";
 
 export async function getContractAchizitiiOffline(id: string) {
