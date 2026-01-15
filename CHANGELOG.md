@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.18.1](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.18.0...sicap-v0.18.1) (2026-01-15)
+
+
+### Bug Fixes
+
+* enhance CUI filtering in search functionality ([9bd3663](https://github.com/ciocan/SICAP.ai/commit/9bd3663141ad1942b9a498cf76faa5601de0b7f1))
+* update ErrorPage to handle async search parameters ([3c7df3b](https://github.com/ciocan/SICAP.ai/commit/3c7df3b1ad7c1a068c4d042a66c2b4620f5a4eb1))
+
 ## [0.18.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.17.0...sicap-v0.18.0) (2026-01-15)
 
 
