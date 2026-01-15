@@ -49,10 +49,57 @@ const KEYWORD_SEARCH_FIELDS = {
   ],
 } as const;
 
+// Fields containing fiscal numbers (CUI/CIF) for each index
+const CUI_SEARCH_FIELDS = {
+  [ES_INDEX_PUBLIC]: [
+    "noticeContracts.items.winner.fiscalNumberInt",
+    "noticeContracts.items.winner.fiscalNumber",
+    "noticeContracts.items.winners.fiscalNumberInt",
+    "noticeContracts.items.winners.fiscalNumber",
+    "item.nationalId",
+  ],
+  [ES_INDEX_DIRECT]: [
+    "supplier.numericFiscalNumber",
+    "supplier.fiscalNumber",
+    "authority.numericFiscalNumber",
+    "authority.fiscalNumber",
+  ],
+  [ES_INDEX_OFFLINE]: [
+    "details.noticeEntityAddress.fiscalNumber",
+    "authority.numericFiscalNumber",
+    "authority.fiscalNumber",
+  ],
+} as const;
+
+// Detects if query is a CUI and returns both numeric and RO-prefixed versions
+function getCuiSearchTerms(query: string): { isCui: boolean; terms: string[] } {
+  const normalized = query.trim().toUpperCase();
+
+  // Check if query is "RO" + digits (6-10 chars)
+  const roMatch = normalized.match(/^RO(\d{6,10})$/);
+  if (roMatch) {
+    return { isCui: true, terms: [roMatch[1], normalized] };
+  }
+
+  // Check if query is just digits (6-10 chars)
+  const numericMatch = normalized.match(/^(\d{6,10})$/);
+  if (numericMatch) {
+    return { isCui: true, terms: [numericMatch[1], `RO${numericMatch[1]}`] };
+  }
+
+  return { isCui: false, terms: [] };
+}
+
 const getAllSearchFields = () => [
   ...KEYWORD_SEARCH_FIELDS[ES_INDEX_PUBLIC],
   ...KEYWORD_SEARCH_FIELDS[ES_INDEX_DIRECT],
   ...KEYWORD_SEARCH_FIELDS[ES_INDEX_OFFLINE],
+];
+
+const getAllCuiFields = () => [
+  ...CUI_SEARCH_FIELDS[ES_INDEX_PUBLIC],
+  ...CUI_SEARCH_FIELDS[ES_INDEX_DIRECT],
+  ...CUI_SEARCH_FIELDS[ES_INDEX_OFFLINE],
 ];
 
 export async function searchContracts({
@@ -84,36 +131,48 @@ export async function searchContracts({
   }
 
   const searchFields = getAllSearchFields();
+  const cuiFields = getAllCuiFields();
+  const cuiInfo = query ? getCuiSearchTerms(query) : { isCui: false, terms: [] };
+
+  // Build CUI search clauses if query looks like a CUI
+  // Use match_phrase which works across different field types (consistent with get-company-by-national-id)
+  const cuiSearchClauses = cuiInfo.isCui
+    ? cuiInfo.terms.flatMap((term) =>
+        cuiFields.map((field) => ({ match_phrase: { [field]: term } })),
+      )
+    : [];
 
   const querySearch = {
     bool: {
       must: [
         query
           ? {
-              bool: {
-                should: [
-                  {
-                    multi_match: {
-                      query: query,
-                      fields: searchFields,
-                      type: "best_fields",
-                      operator: "and",
-                      lenient: true,
-                    },
+            bool: {
+              should: [
+                {
+                  multi_match: {
+                    query: query,
+                    fields: searchFields,
+                    type: "best_fields",
+                    operator: "and",
+                    lenient: true,
                   },
-                  {
-                    multi_match: {
-                      query: query,
-                      fields: searchFields,
-                      type: "phrase",
-                      boost: 3,
-                      lenient: true,
-                    },
+                },
+                {
+                  multi_match: {
+                    query: query,
+                    fields: searchFields,
+                    type: "phrase",
+                    boost: 3,
+                    lenient: true,
                   },
-                ],
-                minimum_should_match: 1,
-              },
-            }
+                },
+                // Add CUI search clauses when query looks like a CUI
+                ...cuiSearchClauses,
+              ],
+              minimum_should_match: 1,
+            },
+          }
           : undefined,
       ].filter(Boolean),
       filter: [
@@ -134,137 +193,137 @@ export async function searchContracts({
                     },
                     valueFrom || valueTo
                       ? {
-                          range: {
-                            "noticeContracts.items.contractValue": {
-                              gte: valueFrom ?? 0,
-                              lte: valueTo ?? Number.MAX_SAFE_INTEGER,
-                            },
+                        range: {
+                          "noticeContracts.items.contractValue": {
+                            gte: valueFrom ?? 0,
+                            lte: valueTo ?? Number.MAX_SAFE_INTEGER,
                           },
-                        }
+                        },
+                      }
                       : undefined,
                     authority
                       ? {
-                          match_phrase: {
-                            "item.contractingAuthorityNameAndFN": authority,
-                          },
-                        }
+                        match_phrase: {
+                          "item.contractingAuthorityNameAndFN": authority,
+                        },
+                      }
                       : undefined,
                     localityAuthority
                       ? {
-                          bool: {
-                            should: [
-                              {
-                                match_phrase: {
-                                  "publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.city":
-                                    localityAuthority,
-                                },
+                        bool: {
+                          should: [
+                            {
+                              match_phrase: {
+                                "publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.city":
+                                  localityAuthority,
                               },
-                              {
-                                match_phrase: {
-                                  "publicNotice.caNoticeEdit_New_U.section1_New_U.section1_1.caAddress.city":
-                                    localityAuthority,
-                                },
+                            },
+                            {
+                              match_phrase: {
+                                "publicNotice.caNoticeEdit_New_U.section1_New_U.section1_1.caAddress.city":
+                                  localityAuthority,
                               },
-                            ],
-                            minimum_should_match: 1,
-                          },
-                        }
+                            },
+                          ],
+                          minimum_should_match: 1,
+                        },
+                      }
                       : undefined,
                     countyAuthority
                       ? {
-                          bool: {
-                            should: [
-                              {
-                                match_phrase: {
-                                  "publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.county.text":
-                                    countyAuthority,
-                                },
+                        bool: {
+                          should: [
+                            {
+                              match_phrase: {
+                                "publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.county.text":
+                                  countyAuthority,
                               },
-                              {
-                                match_phrase: {
-                                  "publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.nutsCodeItem.text":
-                                    countyAuthority,
-                                },
+                            },
+                            {
+                              match_phrase: {
+                                "publicNotice.caNoticeEdit_New.section1_New.section1_1.caAddress.nutsCodeItem.text":
+                                  countyAuthority,
                               },
-                              {
-                                match_phrase: {
-                                  "publicNotice.caNoticeEdit_New_U.section1_New_U.section1_1.caAddress.nutsCodeItem.text":
-                                    countyAuthority,
-                                },
+                            },
+                            {
+                              match_phrase: {
+                                "publicNotice.caNoticeEdit_New_U.section1_New_U.section1_1.caAddress.nutsCodeItem.text":
+                                  countyAuthority,
                               },
-                              {
-                                match_phrase: {
-                                  "publicNotice.caNoticeEdit_New_U.section1_New_U.section1_1.caAddress.county.text":
-                                    countyAuthority,
-                                },
+                            },
+                            {
+                              match_phrase: {
+                                "publicNotice.caNoticeEdit_New_U.section1_New_U.section1_1.caAddress.county.text":
+                                  countyAuthority,
                               },
-                            ],
-                            minimum_should_match: 1,
-                          },
-                        }
+                            },
+                          ],
+                          minimum_should_match: 1,
+                        },
+                      }
                       : undefined,
                     supplier
                       ? {
-                          match_phrase: {
-                            "noticeContracts.items.winner.name": supplier,
-                          },
-                        }
+                        match_phrase: {
+                          "noticeContracts.items.winner.name": supplier,
+                        },
+                      }
                       : undefined,
                     localitySupplier
                       ? {
-                          match_phrase: {
-                            "noticeContracts.items.winner.address.city": localitySupplier,
-                          },
-                        }
+                        match_phrase: {
+                          "noticeContracts.items.winner.address.city": localitySupplier,
+                        },
+                      }
                       : undefined,
                     countySupplier
                       ? {
-                          bool: {
-                            should: [
-                              {
-                                match_phrase: {
-                                  "noticeContracts.items.winner.address.county.text":
-                                    countySupplier,
-                                },
+                        bool: {
+                          should: [
+                            {
+                              match_phrase: {
+                                "noticeContracts.items.winner.address.county.text":
+                                  countySupplier,
                               },
-                              {
-                                match_phrase: {
-                                  "noticeContracts.items.winner.address.nutsCodeItem.text":
-                                    countySupplier,
-                                },
+                            },
+                            {
+                              match_phrase: {
+                                "noticeContracts.items.winner.address.nutsCodeItem.text":
+                                  countySupplier,
                               },
-                            ],
-                            minimum_should_match: 1,
-                          },
-                        }
+                            },
+                          ],
+                          minimum_should_match: 1,
+                        },
+                      }
                       : undefined,
                     cpv
                       ? {
-                          match_phrase: {
-                            "item.cpvCodeAndName": cpv,
-                          },
-                        }
+                        match_phrase: {
+                          "item.cpvCodeAndName": cpv,
+                        },
+                      }
                       : undefined,
                     euFunds
                       ? {
-                          bool: {
-                            should: [
-                              {
-                                exists: {
-                                  field:
-                                    "publicNotice.caNoticeEdit_New.section2_New.section2_2_New.descriptionList.sysEuropeanFund.id",
-                                },
+                        bool: {
+                          should: [
+                            {
+                              exists: {
+                                field:
+                                  "publicNotice.caNoticeEdit_New.section2_New.section2_2_New.descriptionList.sysEuropeanFund.id",
                               },
-                              {
-                                exists: {
-                                  field:
-                                    "publicNotice.caNoticeEdit_New_U.section2_New_U.section2_2_New_U.descriptionList.sysEuropeanFund.id",
-                                },
+                            },
+                            {
+                              exists: {
+                                field:
+                                  "publicNotice.caNoticeEdit_New_U.section2_New_U.section2_2_New_U.descriptionList.sysEuropeanFund.id",
                               },
-                            ],
-                            minimum_should_match: 1,
-                          },
-                        }
+                            },
+                          ],
+                          minimum_should_match: 1,
+                        },
+                      }
                       : undefined,
                   ].filter(Boolean),
                 },
@@ -291,66 +350,66 @@ export async function searchContracts({
                     },
                     authority
                       ? {
-                          match_phrase: {
-                            "item.contractingAuthority": authority,
-                          },
-                        }
+                        match_phrase: {
+                          "item.contractingAuthority": authority,
+                        },
+                      }
                       : undefined,
                     localityAuthority
                       ? {
-                          match_phrase: {
-                            "authority.city": localityAuthority,
-                          },
-                        }
+                        match_phrase: {
+                          "authority.city": localityAuthority,
+                        },
+                      }
                       : undefined,
                     countyAuthority
                       ? {
-                          match_phrase: {
-                            "authority.county": countyAuthority,
-                          },
-                        }
+                        match_phrase: {
+                          "authority.county": countyAuthority,
+                        },
+                      }
                       : undefined,
                     supplier
                       ? {
-                          match_phrase: {
-                            "item.supplier": supplier,
-                          },
-                        }
+                        match_phrase: {
+                          "item.supplier": supplier,
+                        },
+                      }
                       : undefined,
                     localitySupplier
                       ? {
-                          match_phrase: {
-                            "supplier.city": localitySupplier,
-                          },
-                        }
+                        match_phrase: {
+                          "supplier.city": localitySupplier,
+                        },
+                      }
                       : undefined,
                     countySupplier
                       ? {
-                          match_phrase: {
-                            "supplier.county": countySupplier,
-                          },
-                        }
+                        match_phrase: {
+                          "supplier.county": countySupplier,
+                        },
+                      }
                       : undefined,
                     cpv
                       ? {
-                          match_phrase: {
-                            "item.cpvCode": cpv,
-                          },
-                        }
+                        match_phrase: {
+                          "item.cpvCode": cpv,
+                        },
+                      }
                       : undefined,
                     euFunds
                       ? {
-                          bool: {
-                            should: [
-                              {
-                                exists: {
-                                  field: "publicDirectAcquisition.sysEuropeanFund.id",
-                                },
+                        bool: {
+                          should: [
+                            {
+                              exists: {
+                                field: "publicDirectAcquisition.sysEuropeanFund.id",
                               },
-                            ],
-                            minimum_should_match: 1,
-                          },
-                        }
+                            },
+                          ],
+                          minimum_should_match: 1,
+                        },
+                      }
                       : undefined,
                   ].filter(Boolean),
                 },
@@ -377,66 +436,66 @@ export async function searchContracts({
                     },
                     authority
                       ? {
-                          match_phrase: {
-                            "item.contractingAuthority": authority,
-                          },
-                        }
+                        match_phrase: {
+                          "item.contractingAuthority": authority,
+                        },
+                      }
                       : undefined,
                     localityAuthority
                       ? {
-                          match_phrase: {
-                            "authority.city": localityAuthority,
-                          },
-                        }
+                        match_phrase: {
+                          "authority.city": localityAuthority,
+                        },
+                      }
                       : undefined,
                     countyAuthority
                       ? {
-                          match_phrase: {
-                            "authority.county": countyAuthority,
-                          },
-                        }
+                        match_phrase: {
+                          "authority.county": countyAuthority,
+                        },
+                      }
                       : undefined,
                     supplier
                       ? {
-                          match_phrase: {
-                            "item.supplier": supplier,
-                          },
-                        }
+                        match_phrase: {
+                          "item.supplier": supplier,
+                        },
+                      }
                       : undefined,
                     localitySupplier
                       ? {
-                          match_phrase: {
-                            "details.noticeEntityAddress.city": localitySupplier,
-                          },
-                        }
+                        match_phrase: {
+                          "details.noticeEntityAddress.city": localitySupplier,
+                        },
+                      }
                       : undefined,
                     countySupplier
                       ? {
-                          match_phrase: {
-                            "supplier.county": countySupplier,
-                          },
-                        }
+                        match_phrase: {
+                          "supplier.county": countySupplier,
+                        },
+                      }
                       : undefined,
                     cpv
                       ? {
-                          match_phrase: {
-                            "item.cpvCode": cpv,
-                          },
-                        }
+                        match_phrase: {
+                          "item.cpvCode": cpv,
+                        },
+                      }
                       : undefined,
                     euFunds
                       ? {
-                          bool: {
-                            should: [
-                              {
-                                exists: {
-                                  field: "details.sysEuropeanFund.id",
-                                },
+                        bool: {
+                          should: [
+                            {
+                              exists: {
+                                field: "details.sysEuropeanFund.id",
                               },
-                            ],
-                            minimum_should_match: 1,
-                          },
-                        }
+                            },
+                          ],
+                          minimum_should_match: 1,
+                        },
+                      }
                       : undefined,
                   ].filter(Boolean),
                 },
