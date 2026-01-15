@@ -71,6 +71,25 @@ const CUI_SEARCH_FIELDS = {
   ],
 } as const;
 
+// CUI fields for authority filter by index type
+const AUTHORITY_CUI_FIELDS = {
+  public: ["item.nationalId"],
+  direct: ["authority.numericFiscalNumber", "authority.fiscalNumber"],
+  offline: ["authority.numericFiscalNumber", "authority.fiscalNumber"],
+} as const;
+
+// CUI fields for supplier filter by index type
+const SUPPLIER_CUI_FIELDS = {
+  public: [
+    "noticeContracts.items.winner.fiscalNumberInt",
+    "noticeContracts.items.winner.fiscalNumber",
+    "noticeContracts.items.winners.fiscalNumberInt",
+    "noticeContracts.items.winners.fiscalNumber",
+  ],
+  direct: ["supplier.numericFiscalNumber", "supplier.fiscalNumber"],
+  offline: ["details.noticeEntityAddress.fiscalNumber"],
+} as const;
+
 // Detects if query is a CUI and returns both numeric and RO-prefixed versions
 function getCuiSearchTerms(query: string): { isCui: boolean; terms: string[] } {
   const normalized = query.trim().toUpperCase();
@@ -88,6 +107,38 @@ function getCuiSearchTerms(query: string): { isCui: boolean; terms: string[] } {
   }
 
   return { isCui: false, terms: [] };
+}
+
+// Creates a filter clause that handles both CUI and name searches
+function createCuiAwareFilter(
+  value: string | undefined,
+  nameField: string,
+  cuiFields: readonly string[],
+): object | undefined {
+  if (!value) {
+    return undefined;
+  }
+
+  const cuiInfo = getCuiSearchTerms(value);
+
+  if (cuiInfo.isCui) {
+    // Search CUI fields with both numeric and RO-prefixed versions
+    return {
+      bool: {
+        should: cuiInfo.terms.flatMap((term) =>
+          cuiFields.map((field) => ({ match_phrase: { [field]: term } })),
+        ),
+        minimum_should_match: 1,
+      },
+    };
+  }
+
+  // Not a CUI, search by name
+  return {
+    match_phrase: {
+      [nameField]: value,
+    },
+  };
 }
 
 const getAllSearchFields = () => [
@@ -201,13 +252,11 @@ export async function searchContracts({
                           },
                         }
                       : undefined,
-                    authority
-                      ? {
-                          match_phrase: {
-                            "item.contractingAuthorityNameAndFN": authority,
-                          },
-                        }
-                      : undefined,
+                    createCuiAwareFilter(
+                      authority,
+                      "item.contractingAuthorityNameAndFN",
+                      AUTHORITY_CUI_FIELDS.public,
+                    ),
                     localityAuthority
                       ? {
                           bool: {
@@ -262,13 +311,11 @@ export async function searchContracts({
                           },
                         }
                       : undefined,
-                    supplier
-                      ? {
-                          match_phrase: {
-                            "noticeContracts.items.winner.name": supplier,
-                          },
-                        }
-                      : undefined,
+                    createCuiAwareFilter(
+                      supplier,
+                      "noticeContracts.items.winner.name",
+                      SUPPLIER_CUI_FIELDS.public,
+                    ),
                     localitySupplier
                       ? {
                           match_phrase: {
@@ -348,13 +395,11 @@ export async function searchContracts({
                         },
                       },
                     },
-                    authority
-                      ? {
-                          match_phrase: {
-                            "item.contractingAuthority": authority,
-                          },
-                        }
-                      : undefined,
+                    createCuiAwareFilter(
+                      authority,
+                      "item.contractingAuthority",
+                      AUTHORITY_CUI_FIELDS.direct,
+                    ),
                     localityAuthority
                       ? {
                           match_phrase: {
@@ -369,13 +414,7 @@ export async function searchContracts({
                           },
                         }
                       : undefined,
-                    supplier
-                      ? {
-                          match_phrase: {
-                            "item.supplier": supplier,
-                          },
-                        }
-                      : undefined,
+                    createCuiAwareFilter(supplier, "item.supplier", SUPPLIER_CUI_FIELDS.direct),
                     localitySupplier
                       ? {
                           match_phrase: {
@@ -434,13 +473,11 @@ export async function searchContracts({
                         },
                       },
                     },
-                    authority
-                      ? {
-                          match_phrase: {
-                            "item.contractingAuthority": authority,
-                          },
-                        }
-                      : undefined,
+                    createCuiAwareFilter(
+                      authority,
+                      "item.contractingAuthority",
+                      AUTHORITY_CUI_FIELDS.offline,
+                    ),
                     localityAuthority
                       ? {
                           match_phrase: {
@@ -455,13 +492,7 @@ export async function searchContracts({
                           },
                         }
                       : undefined,
-                    supplier
-                      ? {
-                          match_phrase: {
-                            "item.supplier": supplier,
-                          },
-                        }
-                      : undefined,
+                    createCuiAwareFilter(supplier, "item.supplier", SUPPLIER_CUI_FIELDS.offline),
                     localitySupplier
                       ? {
                           match_phrase: {
