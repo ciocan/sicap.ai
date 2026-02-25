@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.19.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.18.1...sicap-v0.19.0) (2026-02-25)
+
+
+### Features
+
+* add non-awarded contracts data to authority and company components ([776c76c](https://github.com/ciocan/SICAP.ai/commit/776c76c36aeb86fb5b248d757a390e3b3583d16c))
+
 ## [0.18.1](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.18.0...sicap-v0.18.1) (2026-01-15)
 
 
