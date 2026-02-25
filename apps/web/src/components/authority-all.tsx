@@ -33,11 +33,14 @@ export async function AuthorityAll({ nationalId, searchParams }: AuthorityAllPro
     return notFound();
   }
 
-  const { total, authority, stats } = results;
+  const { total, authority, stats, nonAwarded } = results;
 
   const totalValue = stats?.years?.map((y) => y.value).reduce((a, b) => a + b, 0);
   const totalValueRon = moneyRon(totalValue);
   const totalValueEur = moneyEur(totalValue);
+
+  const nonAwardedValueRon = moneyRon(nonAwarded?.value);
+  const nonAwardedValueEur = moneyEur(nonAwarded?.value);
 
   const title = authority
     ? `${authority.fiscalNumber} / ${authority.entityName}`
@@ -72,12 +75,19 @@ export async function AuthorityAll({ nationalId, searchParams }: AuthorityAllPro
           </p>
         )}
         <p className="text-sm">
-          {formatNumber(total)} achizitii publice in valoare de{" "}
+          {formatNumber(total)} achizitii publice atribuite in valoare de{" "}
           <span className="text-primary font-mono">{totalValueRon}</span> /{" "}
           <span className="font-mono">{totalValueEur}</span>
         </p>
+        {nonAwarded && nonAwarded.total > 0 && (
+          <p className="text-sm text-muted-foreground">
+            {formatNumber(nonAwarded.total)} achizitii publice neatribuite in valoare de{" "}
+            <span className="font-mono">{nonAwardedValueRon}</span> /{" "}
+            <span className="font-mono">{nonAwardedValueEur}</span>
+          </p>
+        )}
       </div>
-      <Chart stats={stats} />
+      <Chart stats={stats} nonAwardedStats={nonAwarded?.stats} />
       <TopCompanies nationalId={nationalId} />
       <div className="space-y-4">
         <div className="flex justify-between items-center">

@@ -102,6 +102,16 @@ export async function getCompanyByNationalId({
     return 0;
   `;
 
+  const dateScript = `
+    if (doc.containsKey('item.noticeStateDate') && doc['item.noticeStateDate'].size() > 0) {
+      return doc['item.noticeStateDate'].value.getMillis();
+    } else if (doc.containsKey('item.publicationDate') && doc['item.publicationDate'].size() > 0) {
+      return doc['item.publicationDate'].value.getMillis();
+    } else {
+      return 0;
+    }
+  `;
+
   const searchParams = {
     index: [ES_INDEX_DIRECT, ES_INDEX_OFFLINE, ES_INDEX_PUBLIC],
     body: {
@@ -111,12 +121,13 @@ export async function getCompanyByNationalId({
             {
               bool: {
                 should: [
-                  // Achizitii directe - by supplier fiscal number
+                  // Achizitii directe - by supplier fiscal number (only awarded)
                   {
                     bool: {
                       filter: [
                         { match_phrase: { _index: ES_INDEX_DIRECT } },
                         { match_phrase: { "supplier.numericFiscalNumber": nationalId } },
+                        { term: { "item.sysDirectAcquisitionState.id": 7 } },
                       ],
                     },
                   },
@@ -131,10 +142,13 @@ export async function getCompanyByNationalId({
                       ],
                     },
                   },
-                  // Licitatii publice - by winner fiscal number (check both winner and winners array)
+                  // Licitatii publice - by winner fiscal number (only awarded, check both winner and winners array)
                   {
                     bool: {
-                      filter: [{ match_phrase: { _index: ES_INDEX_PUBLIC } }],
+                      filter: [
+                        { match_phrase: { _index: ES_INDEX_PUBLIC } },
+                        { term: { "item.sysProcedureState.id": 5 } },
+                      ],
                       should: [
                         {
                           match_phrase: {
@@ -162,15 +176,7 @@ export async function getCompanyByNationalId({
           _script: {
             type: "number",
             script: {
-              source: `
-                if (doc.containsKey('item.noticeStateDate') && doc['item.noticeStateDate'].size() > 0) {
-                  return doc['item.noticeStateDate'].value.getMillis();
-                } else if (doc.containsKey('item.publicationDate') && doc['item.publicationDate'].size() > 0) {
-                  return doc['item.publicationDate'].value.getMillis();
-                } else {
-                  return 0;
-                }
-              `,
+              source: dateScript,
               lang: "painless",
             },
             order: "desc",
@@ -181,15 +187,7 @@ export async function getCompanyByNationalId({
         months: {
           date_histogram: {
             script: {
-              source: `
-                if (doc.containsKey('item.noticeStateDate') && doc['item.noticeStateDate'].size() > 0) {
-                  return doc['item.noticeStateDate'].value.getMillis();
-                } else if (doc.containsKey('item.publicationDate') && doc['item.publicationDate'].size() > 0) {
-                  return doc['item.publicationDate'].value.getMillis();
-                } else {
-                  return 0;
-                }
-              `,
+              source: dateScript,
               lang: "painless",
             },
             calendar_interval: "month",
@@ -208,15 +206,7 @@ export async function getCompanyByNationalId({
         years: {
           date_histogram: {
             script: {
-              source: `
-                if (doc.containsKey('item.noticeStateDate') && doc['item.noticeStateDate'].size() > 0) {
-                  return doc['item.noticeStateDate'].value.getMillis();
-                } else if (doc.containsKey('item.publicationDate') && doc['item.publicationDate'].size() > 0) {
-                  return doc['item.publicationDate'].value.getMillis();
-                } else {
-                  return 0;
-                }
-              `,
+              source: dateScript,
               lang: "painless",
             },
             calendar_interval: "year",
@@ -257,13 +247,120 @@ export async function getCompanyByNationalId({
     _source: false,
   };
 
-  const result = await esClient.search(searchParams);
+  // Query for non-awarded contracts (count + total value)
+  const nonAwardedParams = {
+    index: [ES_INDEX_DIRECT, ES_INDEX_PUBLIC],
+    body: {
+      query: {
+        bool: {
+          filter: [
+            {
+              bool: {
+                should: [
+                  // Achizitii directe - not awarded
+                  {
+                    bool: {
+                      filter: [
+                        { match_phrase: { _index: ES_INDEX_DIRECT } },
+                        { match_phrase: { "supplier.numericFiscalNumber": nationalId } },
+                      ],
+                      must_not: [{ term: { "item.sysDirectAcquisitionState.id": 7 } }],
+                    },
+                  },
+                  // Licitatii publice - not awarded
+                  {
+                    bool: {
+                      filter: [{ match_phrase: { _index: ES_INDEX_PUBLIC } }],
+                      must_not: [{ term: { "item.sysProcedureState.id": 5 } }],
+                      should: [
+                        {
+                          match_phrase: {
+                            "noticeContracts.items.winner.fiscalNumberInt": nationalId,
+                          },
+                        },
+                        {
+                          match_phrase: {
+                            "noticeContracts.items.winners.fiscalNumberInt": nationalId,
+                          },
+                        },
+                      ],
+                      minimum_should_match: 1,
+                    },
+                  },
+                ],
+                minimum_should_match: 1,
+              },
+            },
+          ],
+        },
+      },
+      size: 0,
+      aggs: {
+        totalValue: {
+          sum: {
+            script: {
+              source: valueAggScript,
+              lang: "painless",
+            },
+          },
+        },
+        months: {
+          date_histogram: {
+            script: {
+              source: dateScript,
+              lang: "painless",
+            },
+            calendar_interval: "month",
+          },
+          aggs: {
+            sales: {
+              sum: {
+                script: {
+                  source: valueAggScript,
+                  lang: "painless",
+                },
+              },
+            },
+          },
+        },
+        years: {
+          date_histogram: {
+            script: {
+              source: dateScript,
+              lang: "painless",
+            },
+            calendar_interval: "year",
+          },
+          aggs: {
+            sales: {
+              sum: {
+                script: {
+                  source: valueAggScript,
+                  lang: "painless",
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  };
+
+  const [result, nonAwardedResult] = await Promise.all([
+    esClient.search(searchParams),
+    esClient.search(nonAwardedParams),
+  ]);
+
   const total = result.hits.total as SearchTotalHits;
   const hits = result.hits.hits;
 
   if (hits.length === 0) {
     throw new Error(`Nu s-au găsit rezultate pentru CUI: ${nationalId}`);
   }
+
+  const nonAwardedTotal = nonAwardedResult.hits.total as SearchTotalHits;
+  const nonAwardedValue =
+    (nonAwardedResult.aggregations?.totalValue as { value: number })?.value || 0;
 
   // Extract company/supplier info from the first result using fields (not _source)
   let company: CompanyInfo | null = null;
@@ -386,13 +483,25 @@ export async function getCompanyByNationalId({
   }
 
   // Build stats from aggregations
-  let stats:
-    | { years: ReturnType<typeof mapBucket>[]; months: ReturnType<typeof mapBucket>[] }
-    | undefined;
+  type StatBuckets = {
+    years: ReturnType<typeof mapBucket>[];
+    months: ReturnType<typeof mapBucket>[];
+  };
+  let stats: StatBuckets | undefined;
   if (result.aggregations) {
     const years = result.aggregations.years as Buckets;
     const months = result.aggregations.months as Buckets;
     stats = {
+      years: years.buckets.map(mapBucket),
+      months: months.buckets.map(mapBucket),
+    };
+  }
+
+  let nonAwardedStats: StatBuckets | undefined;
+  if (nonAwardedResult.aggregations) {
+    const years = nonAwardedResult.aggregations.years as Buckets;
+    const months = nonAwardedResult.aggregations.months as Buckets;
+    nonAwardedStats = {
       years: years.buckets.map(mapBucket),
       months: months.buckets.map(mapBucket),
     };
@@ -409,6 +518,11 @@ export async function getCompanyByNationalId({
     company,
     stats,
     items,
+    nonAwarded: {
+      total: nonAwardedTotal.value,
+      value: nonAwardedValue,
+      stats: nonAwardedStats,
+    },
   };
 
   // Ensure the result is fully serializable (strips any ES client internal properties)

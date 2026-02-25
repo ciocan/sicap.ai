@@ -8,6 +8,7 @@ import {
   Tooltip,
   ResponsiveContainer,
   CartesianGrid,
+  Legend,
 } from "recharts";
 
 import { Label, RadioGroup, RadioGroupItem } from "@sicap/ui";
@@ -20,18 +21,62 @@ interface StatItem {
   value: number;
 }
 
+interface Stats {
+  years: StatItem[];
+  months: StatItem[];
+}
+
 interface Props {
-  stats:
-    | {
-        years: StatItem[];
-        months: StatItem[];
+  stats: Stats | undefined;
+  nonAwardedStats?: Stats | undefined;
+}
+
+interface ChartDataItem {
+  key: string;
+  count: number;
+  value: number;
+  nonAwardedCount?: number;
+  nonAwardedValue?: number;
+}
+
+function mergeStats(
+  awarded: StatItem[],
+  nonAwarded: StatItem[] | undefined,
+  dateFormat: string,
+): ChartDataItem[] {
+  const map = new Map<string, ChartDataItem>();
+
+  for (const item of awarded) {
+    const key = formatDateAs(item.key, dateFormat);
+    map.set(key, { key, count: item.count, value: item.value });
+  }
+
+  if (nonAwarded) {
+    for (const item of nonAwarded) {
+      const key = formatDateAs(item.key, dateFormat);
+      const existing = map.get(key);
+      if (existing) {
+        existing.nonAwardedCount = item.count;
+        existing.nonAwardedValue = item.value;
+      } else {
+        map.set(key, {
+          key,
+          count: 0,
+          value: 0,
+          nonAwardedCount: item.count,
+          nonAwardedValue: item.value,
+        });
       }
-    | undefined;
+    }
+  }
+
+  return Array.from(map.values()).sort((a, b) => a.key.localeCompare(b.key));
 }
 
 const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     const [data] = payload;
+    const hasNonAwarded = data.payload.nonAwardedCount > 0 || data.payload.nonAwardedValue > 0;
     return (
       <div className="font-mono text-xs text-center bg-slate-50 dark:bg-slate-400 p-1 px-2 rounded-sm text-primary dark:text-secondary space-y-1">
         <p className="pb-1 border-b border-b-1 border-b-slate-200 dark:border-b-slate-500">
@@ -39,6 +84,14 @@ const CustomTooltip = ({ active, payload }) => {
         </p>
         <p>{`${formatNumber(data.payload.count)} contracte`}</p>
         <p>{moneyRon(data.payload.value)}</p>
+        {hasNonAwarded && (
+          <>
+            <p className="pt-1 border-t border-t-1 border-t-slate-200 dark:border-t-slate-500 opacity-60">
+              {`${formatNumber(data.payload.nonAwardedCount || 0)} neatribuite`}
+            </p>
+            <p className="opacity-60">{moneyRon(data.payload.nonAwardedValue || 0)}</p>
+          </>
+        )}
       </div>
     );
   }
@@ -46,16 +99,19 @@ const CustomTooltip = ({ active, payload }) => {
   return null;
 };
 
-export function Chart({ stats }: Props) {
+export function Chart({ stats, nonAwardedStats }: Props) {
   const [activeChartType, setActiveChartType] = useState("value");
   const [activeInterval, setActiveInterval] = useState("years");
-  const [data, setData] = useState<StatItem[]>([]);
+  const [data, setData] = useState<ChartDataItem[]>([]);
+
+  const hasNonAwarded =
+    nonAwardedStats && (nonAwardedStats.years.length > 0 || nonAwardedStats.months.length > 0);
 
   useEffect(() => {
     if (stats) {
-      setData(stats.years.map((y) => ({ ...y, key: formatDateAs(y.key, "YYYY") })));
+      setData(mergeStats(stats.years, nonAwardedStats?.years, "YYYY"));
     }
-  }, [stats]);
+  }, [stats, nonAwardedStats]);
 
   if (!stats) {
     return null;
@@ -67,13 +123,11 @@ export function Chart({ stats }: Props) {
 
   const handleChangeInterval = (interval) => {
     setActiveInterval(interval);
-    setData(
-      stats[interval].map((y) => ({
-        ...y,
-        key: formatDateAs(y.key, interval === "years" ? "YYYY" : "MM/YYYY"),
-      })),
-    );
+    const dateFormat = interval === "years" ? "YYYY" : "MM/YYYY";
+    setData(mergeStats(stats[interval], nonAwardedStats?.[interval], dateFormat));
   };
+
+  const nonAwardedDataKey = activeChartType === "value" ? "nonAwardedValue" : "nonAwardedCount";
 
   return (
     <div className="pb-2">
@@ -82,8 +136,27 @@ export function Chart({ stats }: Props) {
           <CartesianGrid strokeDasharray="5" opacity={0.3} />
           <XAxis dataKey="key" />
           <YAxis dataKey={activeChartType} />
-          <Line dataKey={activeChartType} type="monotone" activeDot={{ r: 4 }} dot={{ r: 2 }} />
+          <Line
+            dataKey={activeChartType}
+            name="atribuite"
+            type="monotone"
+            activeDot={{ r: 4 }}
+            dot={{ r: 2 }}
+          />
+          {hasNonAwarded && (
+            <Line
+              dataKey={nonAwardedDataKey}
+              name="neatribuite"
+              type="monotone"
+              stroke="#ef4444"
+              strokeDasharray="5 5"
+              activeDot={{ r: 3 }}
+              dot={{ r: 1.5 }}
+              opacity={0.6}
+            />
+          )}
           <Tooltip content={CustomTooltip} />
+          {hasNonAwarded && <Legend />}
         </LineChart>
       </ResponsiveContainer>
       <div className="flex flex-col sm:flex-row justify-between items-center gap-2">

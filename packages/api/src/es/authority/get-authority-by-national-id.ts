@@ -38,7 +38,29 @@ export async function getAuthorityByNationalId({
     throw new Error("CUI/CIF este obligatoriu");
   }
 
-  // Query all three indices for the given fiscal number
+  const valueAggScript = `
+    if (doc.containsKey('item.ronContractValue') && doc['item.ronContractValue'].size() > 0) {
+      return doc['item.ronContractValue'].value;
+    } else if (doc.containsKey('item.closingValue') && doc['item.closingValue'].size() > 0) {
+      return doc['item.closingValue'].value;
+    } else if (doc.containsKey('item.awardedValue') && doc['item.awardedValue'].size() > 0) {
+      return doc['item.awardedValue'].value;
+    } else {
+      return 0;
+    }
+  `;
+
+  const dateScript = `
+    if (doc.containsKey('item.noticeStateDate') && doc['item.noticeStateDate'].size() > 0) {
+      return doc['item.noticeStateDate'].value.getMillis();
+    } else if (doc.containsKey('item.publicationDate') && doc['item.publicationDate'].size() > 0) {
+      return doc['item.publicationDate'].value.getMillis();
+    } else {
+      return 0;
+    }
+  `;
+
+  // Query all three indices for the given fiscal number (only awarded contracts)
   const searchParams = {
     index: [ES_INDEX_DIRECT, ES_INDEX_OFFLINE, ES_INDEX_PUBLIC],
     body: {
@@ -48,12 +70,13 @@ export async function getAuthorityByNationalId({
             {
               bool: {
                 should: [
-                  // Achizitii directe - by authority fiscal number
+                  // Achizitii directe - by authority fiscal number (only awarded)
                   {
                     bool: {
                       filter: [
                         { match_phrase: { _index: ES_INDEX_DIRECT } },
                         { match_phrase: { "authority.numericFiscalNumber": nationalId } },
+                        { term: { "item.sysDirectAcquisitionState.id": 7 } },
                       ],
                     },
                   },
@@ -66,12 +89,13 @@ export async function getAuthorityByNationalId({
                       ],
                     },
                   },
-                  // Licitatii publice - by nationalId (fiscal number)
+                  // Licitatii publice - by nationalId (only awarded)
                   {
                     bool: {
                       filter: [
                         { match_phrase: { _index: ES_INDEX_PUBLIC } },
                         { match_phrase: { "item.nationalId": nationalId } },
+                        { term: { "item.sysProcedureState.id": 5 } },
                       ],
                     },
                   },
@@ -87,15 +111,7 @@ export async function getAuthorityByNationalId({
           _script: {
             type: "number",
             script: {
-              source: `
-                if (doc.containsKey('item.noticeStateDate') && doc['item.noticeStateDate'].size() > 0) {
-                  return doc['item.noticeStateDate'].value.getMillis();
-                } else if (doc.containsKey('item.publicationDate') && doc['item.publicationDate'].size() > 0) {
-                  return doc['item.publicationDate'].value.getMillis();
-                } else {
-                  return 0;
-                }
-              `,
+              source: dateScript,
               lang: "painless",
             },
             order: "desc",
@@ -106,15 +122,7 @@ export async function getAuthorityByNationalId({
         months: {
           date_histogram: {
             script: {
-              source: `
-                if (doc.containsKey('item.noticeStateDate') && doc['item.noticeStateDate'].size() > 0) {
-                  return doc['item.noticeStateDate'].value.getMillis();
-                } else if (doc.containsKey('item.publicationDate') && doc['item.publicationDate'].size() > 0) {
-                  return doc['item.publicationDate'].value.getMillis();
-                } else {
-                  return 0;
-                }
-              `,
+              source: dateScript,
               lang: "painless",
             },
             calendar_interval: "month",
@@ -123,17 +131,7 @@ export async function getAuthorityByNationalId({
             sales: {
               sum: {
                 script: {
-                  source: `
-                    if (doc.containsKey('item.ronContractValue') && doc['item.ronContractValue'].size() > 0) {
-                      return doc['item.ronContractValue'].value;
-                    } else if (doc.containsKey('item.closingValue') && doc['item.closingValue'].size() > 0) {
-                      return doc['item.closingValue'].value;
-                    } else if (doc.containsKey('item.awardedValue') && doc['item.awardedValue'].size() > 0) {
-                      return doc['item.awardedValue'].value;
-                    } else {
-                      return 0;
-                    }
-                  `,
+                  source: valueAggScript,
                   lang: "painless",
                 },
               },
@@ -143,15 +141,7 @@ export async function getAuthorityByNationalId({
         years: {
           date_histogram: {
             script: {
-              source: `
-                if (doc.containsKey('item.noticeStateDate') && doc['item.noticeStateDate'].size() > 0) {
-                  return doc['item.noticeStateDate'].value.getMillis();
-                } else if (doc.containsKey('item.publicationDate') && doc['item.publicationDate'].size() > 0) {
-                  return doc['item.publicationDate'].value.getMillis();
-                } else {
-                  return 0;
-                }
-              `,
+              source: dateScript,
               lang: "painless",
             },
             calendar_interval: "year",
@@ -160,17 +150,7 @@ export async function getAuthorityByNationalId({
             sales: {
               sum: {
                 script: {
-                  source: `
-                    if (doc.containsKey('item.ronContractValue') && doc['item.ronContractValue'].size() > 0) {
-                      return doc['item.ronContractValue'].value;
-                    } else if (doc.containsKey('item.closingValue') && doc['item.closingValue'].size() > 0) {
-                      return doc['item.closingValue'].value;
-                    } else if (doc.containsKey('item.awardedValue') && doc['item.awardedValue'].size() > 0) {
-                      return doc['item.awardedValue'].value;
-                    } else {
-                      return 0;
-                    }
-                  `,
+                  source: valueAggScript,
                   lang: "painless",
                 },
               },
@@ -194,13 +174,110 @@ export async function getAuthorityByNationalId({
     _source: false,
   };
 
-  const result = await esClient.search(searchParams);
+  // Query for non-awarded contracts (count + total value)
+  const nonAwardedParams = {
+    index: [ES_INDEX_DIRECT, ES_INDEX_PUBLIC],
+    body: {
+      query: {
+        bool: {
+          filter: [
+            {
+              bool: {
+                should: [
+                  // Achizitii directe - not awarded
+                  {
+                    bool: {
+                      filter: [
+                        { match_phrase: { _index: ES_INDEX_DIRECT } },
+                        { match_phrase: { "authority.numericFiscalNumber": nationalId } },
+                      ],
+                      must_not: [{ term: { "item.sysDirectAcquisitionState.id": 7 } }],
+                    },
+                  },
+                  // Licitatii publice - not awarded
+                  {
+                    bool: {
+                      filter: [
+                        { match_phrase: { _index: ES_INDEX_PUBLIC } },
+                        { match_phrase: { "item.nationalId": nationalId } },
+                      ],
+                      must_not: [{ term: { "item.sysProcedureState.id": 5 } }],
+                    },
+                  },
+                ],
+                minimum_should_match: 1,
+              },
+            },
+          ],
+        },
+      },
+      size: 0,
+      aggs: {
+        totalValue: {
+          sum: {
+            script: {
+              source: valueAggScript,
+              lang: "painless",
+            },
+          },
+        },
+        months: {
+          date_histogram: {
+            script: {
+              source: dateScript,
+              lang: "painless",
+            },
+            calendar_interval: "month",
+          },
+          aggs: {
+            sales: {
+              sum: {
+                script: {
+                  source: valueAggScript,
+                  lang: "painless",
+                },
+              },
+            },
+          },
+        },
+        years: {
+          date_histogram: {
+            script: {
+              source: dateScript,
+              lang: "painless",
+            },
+            calendar_interval: "year",
+          },
+          aggs: {
+            sales: {
+              sum: {
+                script: {
+                  source: valueAggScript,
+                  lang: "painless",
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  };
+
+  const [result, nonAwardedResult] = await Promise.all([
+    esClient.search(searchParams),
+    esClient.search(nonAwardedParams),
+  ]);
+
   const total = result.hits.total as SearchTotalHits;
   const hits = result.hits.hits;
 
   if (hits.length === 0) {
     throw new Error(`Nu s-au găsit rezultate pentru CUI: ${nationalId}`);
   }
+
+  const nonAwardedTotal = nonAwardedResult.hits.total as SearchTotalHits;
+  const nonAwardedValue =
+    (nonAwardedResult.aggregations?.totalValue as { value: number })?.value || 0;
 
   // Extract authority info from the first result using fields (not _source)
   let authority: AuthorityInfo | null = null;
@@ -267,13 +344,25 @@ export async function getAuthorityByNationalId({
   }
 
   // Build stats from aggregations
-  let stats:
-    | { years: ReturnType<typeof mapBucket>[]; months: ReturnType<typeof mapBucket>[] }
-    | undefined;
+  type StatBuckets = {
+    years: ReturnType<typeof mapBucket>[];
+    months: ReturnType<typeof mapBucket>[];
+  };
+  let stats: StatBuckets | undefined;
   if (result.aggregations) {
     const years = result.aggregations.years as Buckets;
     const months = result.aggregations.months as Buckets;
     stats = {
+      years: years.buckets.map(mapBucket),
+      months: months.buckets.map(mapBucket),
+    };
+  }
+
+  let nonAwardedStats: StatBuckets | undefined;
+  if (nonAwardedResult.aggregations) {
+    const years = nonAwardedResult.aggregations.years as Buckets;
+    const months = nonAwardedResult.aggregations.months as Buckets;
+    nonAwardedStats = {
       years: years.buckets.map(mapBucket),
       months: months.buckets.map(mapBucket),
     };
@@ -288,6 +377,11 @@ export async function getAuthorityByNationalId({
       index: hit._index as IndexName,
       fields: transformItem(hit._index, (hit.fields || {}) as Fields, {} as Fields),
     })),
+    nonAwarded: {
+      total: nonAwardedTotal.value,
+      value: nonAwardedValue,
+      stats: nonAwardedStats,
+    },
   };
 
   // Ensure the result is fully serializable (strips any ES client internal properties)
