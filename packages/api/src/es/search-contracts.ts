@@ -90,23 +90,39 @@ const SUPPLIER_CUI_FIELDS = {
   offline: ["details.noticeEntityAddress.fiscalNumber"],
 } as const;
 
+type CuiTerms = { numeric: string; roPrefixed: string };
+
 // Detects if query is a CUI and returns both numeric and RO-prefixed versions
-function getCuiSearchTerms(query: string): { isCui: boolean; terms: string[] } {
+function getCuiSearchTerms(query: string): { isCui: false } | ({ isCui: true } & CuiTerms) {
   const normalized = query.trim().toUpperCase();
 
-  // Check if query is "RO" + digits (6-10 chars)
   const roMatch = normalized.match(/^RO(\d{6,10})$/);
   if (roMatch) {
-    return { isCui: true, terms: [roMatch[1], normalized] };
+    return { isCui: true, numeric: roMatch[1], roPrefixed: normalized };
   }
 
-  // Check if query is just digits (6-10 chars)
   const numericMatch = normalized.match(/^(\d{6,10})$/);
   if (numericMatch) {
-    return { isCui: true, terms: [numericMatch[1], `RO${numericMatch[1]}`] };
+    return { isCui: true, numeric: numericMatch[1], roPrefixed: `RO${numericMatch[1]}` };
   }
 
-  return { isCui: false, terms: [] };
+  return { isCui: false };
+}
+
+// Long-mapped fields (e.g. fiscalNumberInt, numericFiscalNumber) reject non-digit input.
+function isNumericCuiField(field: string): boolean {
+  return field.endsWith("Int") || /(?:^|\.)numeric[A-Z]/.test(field);
+}
+
+function buildCuiClauses(terms: CuiTerms, fields: readonly string[]) {
+  return fields.flatMap((field) =>
+    isNumericCuiField(field)
+      ? [{ match_phrase: { [field]: terms.numeric } }]
+      : [
+          { match_phrase: { [field]: terms.numeric } },
+          { match_phrase: { [field]: terms.roPrefixed } },
+        ],
+  );
 }
 
 // Creates a filter clause that handles both CUI and name searches
@@ -122,18 +138,14 @@ function createCuiAwareFilter(
   const cuiInfo = getCuiSearchTerms(value);
 
   if (cuiInfo.isCui) {
-    // Search CUI fields with both numeric and RO-prefixed versions
     return {
       bool: {
-        should: cuiInfo.terms.flatMap((term) =>
-          cuiFields.map((field) => ({ match_phrase: { [field]: term } })),
-        ),
+        should: buildCuiClauses(cuiInfo, cuiFields),
         minimum_should_match: 1,
       },
     };
   }
 
-  // Not a CUI, search by name
   return {
     match_phrase: {
       [nameField]: value,
@@ -183,15 +195,9 @@ export async function searchContracts({
 
   const searchFields = getAllSearchFields();
   const cuiFields = getAllCuiFields();
-  const cuiInfo = query ? getCuiSearchTerms(query) : { isCui: false, terms: [] };
+  const cuiInfo = query ? getCuiSearchTerms(query) : { isCui: false as const };
 
-  // Build CUI search clauses if query looks like a CUI
-  // Use match_phrase which works across different field types (consistent with get-company-by-national-id)
-  const cuiSearchClauses = cuiInfo.isCui
-    ? cuiInfo.terms.flatMap((term) =>
-        cuiFields.map((field) => ({ match_phrase: { [field]: term } })),
-      )
-    : [];
+  const cuiSearchClauses = cuiInfo.isCui ? buildCuiClauses(cuiInfo, cuiFields) : [];
 
   const querySearch = {
     bool: {
