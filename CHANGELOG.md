@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.19.1](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.19.0...sicap-v0.19.1) (2026-05-05)
+
+
+### Bug Fixes
+
+* enhance CUI search handling in searchContracts ([116253e](https://github.com/ciocan/SICAP.ai/commit/116253e5791efdfa4dbfa58109924e11e03d37bd))
+
 ## [0.19.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.18.1...sicap-v0.19.0) (2026-02-25)
 
 
