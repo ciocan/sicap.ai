@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.19.2](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.19.1...sicap-v0.19.2) (2026-05-05)
+
+
+### Bug Fixes
+
+* improve session handling in authentication and search pages ([dac2518](https://github.com/ciocan/SICAP.ai/commit/dac25189d1d7f42dcad63ca5b8d689a57d4f777e))
+
 ## [0.19.1](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.19.0...sicap-v0.19.1) (2026-05-05)
 
 
