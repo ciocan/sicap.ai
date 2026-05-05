@@ -6,6 +6,8 @@ const ES_API_KEY = process.env.ES_API_KEY as string;
 export const esClient = new Client({
   auth: { apiKey: ES_API_KEY },
   node: ES_URL,
+  requestTimeout: 8000,
+  maxRetries: 1,
   tls: {
     rejectUnauthorized: false,
   },

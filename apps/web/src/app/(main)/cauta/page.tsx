@@ -5,6 +5,8 @@ import { SearchList, type SearchParams } from "@/components";
 import { checkSearchTerms } from "@/utils";
 import { auth } from "@/lib/auth";
 
+export const maxDuration = 30;
+
 export type PageProps = {
   searchParams: Promise<SearchParams>;
 };
@@ -19,7 +21,7 @@ export async function generateMetadata({ searchParams }: PageProps) {
 }
 
 export default async function Page({ searchParams }: PageProps) {
-  const session = await auth();
+  const session = await auth().catch(() => null);
 
   if (!session?.user && !checkSearchTerms(await searchParams)) {
     redirect("/autentificare");

@@ -83,19 +83,31 @@ export const { handlers, auth } = NextAuth({
       }
       return session;
     },
-    async jwt({ token, user }) {
-      const dbUser = await db
-        .select()
-        .from(users)
-        .where(eq(users.email, token.email as string))
-        .get();
+    async jwt({ token, user, trigger }) {
+      const shouldHydrate = Boolean(user) || !token.id || trigger === "update";
+      if (!shouldHydrate) {
+        return token;
+      }
+
+      const email = (user?.email ?? token.email) as string | undefined;
+      if (!email) {
+        if (user?.id) {
+          token.id = user.id;
+        }
+        return token;
+      }
+
+      const dbUser = await db.select().from(users).where(eq(users.email, email)).get();
 
       if (!dbUser) {
-        token.id = user!.id;
+        if (user?.id) {
+          token.id = user.id;
+        }
         return token;
       }
 
       return {
+        ...token,
         id: dbUser.id,
         name: dbUser.name,
         email: dbUser.email,
