@@ -28,7 +28,7 @@ Aplicație web care permite căutarea și vizualizarea achizițiilor publice din
 
 ### Autentificare & Servicii
 
-- **[NextAuth.js](https://next-auth.js.org/)** - Autentificare pentru Next.js
+- **[Better Auth](https://www.better-auth.com/)** - Autentificare pentru Next.js (+ provider OAuth pentru conectorul MCP)
 - **[PostHog](https://posthog.com/)** - Analiză produs
 - **[Formbricks](https://formbricks.com/)** - Sondaje și feedback
 - **[Listmonk](https://listmonk.app/)** - Email marketing self-hosted
@@ -54,6 +54,10 @@ sicap.ai/
     ├── tailwind-config/  # Configurație Tailwind partajată
     └── tsconfig/         # Configurații TypeScript partajate
 ```
+
+## Conector MCP (Claude / agenți AI)
+
+Utilizatorii autentificați pot interoga datele de achiziții publice direct din Claude sau din alți agenți compatibili [Model Context Protocol](https://modelcontextprotocol.io/), autentificându-se cu contul SICAP.ai (Google) — fără token-uri de copiat. Vezi pagina `/mcp` pentru URL-ul conectorului și pașii de configurare. Detalii tehnice: [`docs/architecture.md`](docs/architecture.md#mcp-server).
 
 ## Cerințe
 

@@ -52,7 +52,7 @@ pnpm clean            # Clean all build artifacts and node_modules
 - **Framework**: Next.js 16 with React 19, App Router, React Server Components
 - **Database**: Turso (distributed SQLite) with Drizzle ORM
 - **Search**: Elasticsearch 8.x
-- **Auth**: NextAuth.js v5 with Google OAuth
+- **Auth**: Better Auth with Google OAuth (database sessions); also the OAuth provider for the MCP server
 - **AI**: Mastra framework with OpenAI GPT-4o-mini
 - **Styling**: Tailwind CSS + Shadcn UI (Radix primitives)
 - **Linting**: Biome (100 char line width)
@@ -74,10 +74,13 @@ The app queries four indices via `packages/api/src/es/`:
 - `/firma/[nationalId]` - Company detail
 - `/autoritate/[nationalId]` - Authority detail
 - `/(embed)/embed` - Embeddable widget
+- `/api/mcp` - OAuth-authenticated MCP server for AI agents (see `docs/architecture.md`)
+- `/mcp` - Public MCP connector setup page
+- `/oauth/consent` - OAuth consent screen for MCP authorization
 
 ### Database Schema
 
-Located in `apps/web/src/db/schema.ts`. Tables: `users`, `accounts`, `sessions`, `verificationTokens`, `authenticators` (NextAuth).
+Located in `apps/web/src/db/schema.ts`. Better Auth tables: `user`, `session`, `account`, `verification`. MCP OAuth-provider tables: `oauthApplication`, `oauthAccessToken`, `oauthConsent`. MCP rate limiting: `mcp_rate_limit`.
 
 ### API Package Pattern
 
@@ -88,13 +91,18 @@ Elasticsearch queries in `packages/api/src/`:
 - `get-authority.ts` - Authority queries
 - `get-total.ts` - Index totals
 
+### MCP Server
+
+Authenticated users query the procurement data from Claude and other agents via an OAuth-authenticated MCP server at `/api/mcp` (Better Auth `mcp` plugin + `mcp-handler`, stateless Streamable HTTP). Six read-only tools (`search_contracts`, `get_contract`, `get_company`, `get_authority`, `get_locality_stats`, `get_totals`) wrap `packages/api`, with per-user rate limiting and Axiom telemetry. Deep dive: `docs/architecture.md`.
+
 ### Environment Variables
 
 Required in `.env`:
 - `ES_URL`, `ES_API_KEY` - Elasticsearch connection
 - `DATABASE_URL`, `DATABASE_AUTH_TOKEN` - Turso database
-- `NEXTAUTH_URL`, `AUTH_SECRET` - Auth configuration
+- `NEXTAUTH_URL`, `AUTH_SECRET` - Auth configuration (Better Auth)
 - `OG_SECRET` - OG image generation
+- `BASE_URL` - Public base URL (used for the MCP connector URL and result links)
 
 ## Code Conventions
 
