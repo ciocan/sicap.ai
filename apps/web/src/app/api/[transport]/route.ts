@@ -38,7 +38,7 @@ interface McpToolServer {
 }
 
 const asText = (data: unknown): ToolResult => ({
-  content: [{ type: "text", text: JSON.stringify(data, null, 2) }],
+  content: [{ type: "text", text: JSON.stringify(data) }],
 });
 
 const handler = withMcpAuth(auth, (req, session) => {
@@ -55,9 +55,9 @@ const handler = withMcpAuth(auth, (req, session) => {
       await enforceRateLimit(userId);
       const data = await fn();
       log.info("mcp.tool", {
+        ...meta,
         userId,
         tool,
-        ...meta,
         latencyMs: Date.now() - started,
         status: "ok",
       });
@@ -66,9 +66,9 @@ const handler = withMcpAuth(auth, (req, session) => {
     } catch (err) {
       const status = err instanceof RateLimitError ? "rate_limited" : "error";
       log.error("mcp.tool", {
+        ...meta,
         userId,
         tool,
-        ...meta,
         latencyMs: Date.now() - started,
         status,
         message: (err as Error).message,
