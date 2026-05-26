@@ -41,3 +41,5 @@ dist/
 devdb*
 tsconfig.tsbuildinfo
 debug.log
+
+.playwright*

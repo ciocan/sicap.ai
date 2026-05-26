@@ -41,7 +41,7 @@ const asText = (data: unknown): ToolResult => ({
   content: [{ type: "text", text: JSON.stringify(data) }],
 });
 
-const handler = withMcpAuth(auth, (req, session) => {
+const mcpHandler = withMcpAuth(auth, (req, session) => {
   const userId = session.userId;
   const log = new Logger();
 
@@ -211,5 +211,30 @@ const handler = withMcpAuth(auth, (req, session) => {
     { basePath: "/api", maxDuration: 60, verboseLogs: false },
   )(req);
 });
+
+// MCP clients (Inspector, claude.ai, Cursor) call this cross-origin from a browser, so the
+// transport endpoint must send CORS headers. createMcpHandler doesn't add them and Next's
+// auto-OPTIONS lacks Access-Control-Allow-Origin, which fails the preflight ("Failed to fetch").
+const CORS_HEADERS: Record<string, string> = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers":
+    "Authorization, Content-Type, mcp-protocol-version, mcp-session-id, last-event-id",
+  "Access-Control-Expose-Headers": "WWW-Authenticate, Mcp-Session-Id",
+  "Access-Control-Max-Age": "86400",
+};
+
+async function handler(req: Request): Promise<Response> {
+  const res = await mcpHandler(req);
+  const headers = new Headers(res.headers);
+  for (const [key, value] of Object.entries(CORS_HEADERS)) {
+    headers.set(key, value);
+  }
+  return new Response(res.body, { status: res.status, statusText: res.statusText, headers });
+}
+
+export function OPTIONS(): Response {
+  return new Response(null, { status: 204, headers: CORS_HEADERS });
+}
 
 export { handler as GET, handler as POST, handler as DELETE };
