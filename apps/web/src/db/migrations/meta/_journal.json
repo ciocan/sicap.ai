@@ -8,6 +8,13 @@
       "when": 1779805903088,
       "tag": "0000_black_red_wolf",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1779815274316,
+      "tag": "0001_woozy_mauler",
+      "breakpoints": true
     }
   ]
 }

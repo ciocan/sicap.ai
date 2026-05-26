@@ -1,10 +1,20 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
+import { mcp } from "better-auth/plugins";
 import { eq } from "drizzle-orm";
 import { Logger } from "next-axiom";
 
-import { account, db, session, user, verification } from "../db/schema";
+import {
+  account,
+  db,
+  oauthAccessToken,
+  oauthApplication,
+  oauthConsent,
+  session,
+  user,
+  verification,
+} from "../db/schema";
 import { addSubscriber, addSubscriberToLists, messageSubscriber } from "./listmonk";
 import { env } from "./env";
 
@@ -15,7 +25,15 @@ export const auth = betterAuth({
   secret: env.AUTH_SECRET,
   database: drizzleAdapter(db, {
     provider: "sqlite",
-    schema: { user, session, account, verification },
+    schema: {
+      user,
+      session,
+      account,
+      verification,
+      oauthApplication,
+      oauthAccessToken,
+      oauthConsent,
+    },
   }),
   socialProviders: {
     google: {
@@ -55,5 +73,14 @@ export const auth = betterAuth({
       },
     },
   },
-  plugins: [nextCookies()],
+  plugins: [
+    mcp({
+      loginPage: "/autentificare",
+      oidcConfig: {
+        loginPage: "/autentificare",
+        consentPage: "/oauth/consent",
+      },
+    }),
+    nextCookies(),
+  ],
 });
