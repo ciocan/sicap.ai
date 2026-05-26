@@ -15,6 +15,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx ./src/db/migrate.ts",
     "db:migrate:betterauth": "tsx ./src/db/migrate-to-better-auth.ts",
+    "db:rebaseline": "tsx ./src/db/rebaseline-ledger.ts",
     "db:studio": "drizzle-kit studio",
     "mastra:dev": "mastra dev"
   },

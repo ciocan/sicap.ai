@@ -2,9 +2,9 @@
   "extends": "@sicap/tsconfig/nextjs.json",
   "compilerOptions": {
     "plugins": [{ "name": "next" }],
-    "baseUrl": "./src/",
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"],
+      "@/*": ["./src/*"],
       "@ui/*": ["../../packages/ui/src/*"],
       "@sicap/ui/*": ["../../packages/ui/src/*"]
     }
