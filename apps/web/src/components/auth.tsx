@@ -37,10 +37,10 @@ export function SignOut() {
   );
 }
 
-export function SignIn() {
+export function SignIn({ callbackURL = "/" }: { callbackURL?: string }) {
   const handleSignIn = () => {
     captureGoogleSignInButtonClick();
-    signIn.social({ provider: "google", callbackURL: "/", errorCallbackURL: "/eroare" });
+    signIn.social({ provider: "google", callbackURL, errorCallbackURL: "/eroare" });
   };
 
   return (

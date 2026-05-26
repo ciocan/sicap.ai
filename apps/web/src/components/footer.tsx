@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { headers } from "next/headers";
-import { Github, Terminal, Code2 } from "lucide-react";
+import { Github, Terminal, Code2, Bot } from "lucide-react";
 
 import { StatusWidget } from "./openstatus";
 import { DarkMode } from "./dark-mode";
@@ -62,6 +62,15 @@ export async function Footer() {
                 >
                   <Terminal className="h-3.5 w-3.5" />
                   API
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/mcp"
+                  className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <Bot className="h-3.5 w-3.5" />
+                  MCP
                 </Link>
               </li>
               <li>

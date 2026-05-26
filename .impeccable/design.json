@@ -1,0 +1,189 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-26T13:00:00.000Z",
+  "title": "Design System: SICAP.ai",
+  "extensions": {
+    "colorMeta": {
+      "civic-blue": {
+        "role": "primary",
+        "displayName": "Civic Blue",
+        "canonical": "hsl(221.2 83.2% 53.3%)",
+        "tonalRamp": ["#1e3a8a", "#1e40af", "#1d4ed8", "#2563eb", "#3b82f6", "#60a5fa", "#93c5fd", "#bfdbfe"]
+      },
+      "civic-blue-contrast": {
+        "role": "primary",
+        "displayName": "Civic Blue Contrast",
+        "canonical": "hsl(210 40% 98%)",
+        "tonalRamp": ["#cbd5e1", "#e2e8f0", "#eef2f6", "#f1f5f9", "#f8fafc", "#fbfdfe", "#fdfefe", "#ffffff"]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "hsl(222.2 84% 4.9%)",
+        "tonalRamp": ["#020817", "#0f172a", "#1e293b", "#334155", "#475569", "#64748b", "#94a3b8", "#cbd5e1"]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "canonical": "hsl(0 0% 100%)",
+        "tonalRamp": ["#1e293b", "#334155", "#64748b", "#94a3b8", "#cbd5e1", "#e2e8f0", "#f1f5f9", "#ffffff"]
+      },
+      "slate-subtle": {
+        "role": "neutral",
+        "displayName": "Slate Subtle",
+        "canonical": "hsl(210 40% 96.1%)",
+        "tonalRamp": ["#0f172a", "#1e293b", "#334155", "#475569", "#64748b", "#94a3b8", "#cbd5e1", "#f1f5f9"]
+      },
+      "slate-strong": {
+        "role": "neutral",
+        "displayName": "Slate Strong",
+        "canonical": "hsl(222.2 47.4% 11.2%)",
+        "tonalRamp": ["#0f172a", "#1e293b", "#334155", "#475569", "#64748b", "#94a3b8", "#cbd5e1", "#e2e8f0"]
+      },
+      "muted-ink": {
+        "role": "neutral",
+        "displayName": "Muted Ink",
+        "canonical": "hsl(215.4 16.3% 46.9%)",
+        "tonalRamp": ["#0f172a", "#1e293b", "#334155", "#475569", "#64748b", "#94a3b8", "#cbd5e1", "#e2e8f0"]
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "hsl(214.3 31.8% 91.4%)",
+        "tonalRamp": ["#334155", "#475569", "#64748b", "#94a3b8", "#cbd5e1", "#e2e8f0", "#eef2f6", "#f8fafc"]
+      },
+      "danger": {
+        "role": "tertiary",
+        "displayName": "Danger Red",
+        "canonical": "hsl(0 84.2% 60.2%)",
+        "tonalRamp": ["#7f1d1d", "#991b1b", "#b91c1c", "#dc2626", "#ef4444", "#f87171", "#fca5a5", "#fecaca"]
+      },
+      "type-direct": {
+        "role": "secondary",
+        "displayName": "Direct Blue",
+        "canonical": "#3b82f6",
+        "tonalRamp": ["#1e3a8a", "#1e40af", "#1d4ed8", "#2563eb", "#3b82f6", "#60a5fa", "#93c5fd", "#dbeafe"]
+      },
+      "type-offline": {
+        "role": "secondary",
+        "displayName": "Offline Amber",
+        "canonical": "#f59e0b",
+        "tonalRamp": ["#78350f", "#92400e", "#b45309", "#d97706", "#f59e0b", "#fbbf24", "#fcd34d", "#fef3c7"]
+      },
+      "type-public": {
+        "role": "secondary",
+        "displayName": "Public Emerald",
+        "canonical": "#10b981",
+        "tonalRamp": ["#064e3b", "#065f46", "#047857", "#059669", "#10b981", "#34d399", "#6ee7b7", "#d1fae5"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "The home wordmark only: SICAP.ai, 48-60px, Civic Blue, centered." },
+      "headline": { "displayName": "Headline", "purpose": "Section and card titles in detail views (24px, weight 600)." },
+      "title": { "displayName": "Title", "purpose": "Result-row contract title; 16px, two-line clamp, turns Civic Blue on hover." },
+      "body": { "displayName": "Body", "purpose": "Default running text and inline metadata (14px). Cap measure at 65-75ch in prose." },
+      "label": { "displayName": "Label", "purpose": "Type pills, the result-row month, field captions (12px, sometimes uppercase)." },
+      "data": { "displayName": "Data (Mono)", "purpose": "Every figure: contract codes, RON/EUR values, CUI, dates. Geist Mono. Never used for prose." }
+    },
+    "shadows": [
+      { "name": "rest", "value": "0 1px 2px 0 rgb(0 0 0 / 0.05)", "purpose": "Default resting elevation for cards and the result row (Tailwind shadow-sm)." },
+      { "name": "hover-lift", "value": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)", "purpose": "Applied on hover of an interactive card, with a faint slate background wash (Tailwind shadow-md)." }
+    ],
+    "motion": [
+      { "name": "ease-out-standard", "value": "200ms cubic-bezier(0, 0, 0.2, 1)", "purpose": "Hover and state transitions on the result row (transition-all duration-200 ease-out)." },
+      { "name": "transition-colors", "value": "150ms cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "Color and background transitions on buttons, links, and badges." },
+      { "name": "accordion", "value": "200ms ease-out", "purpose": "Radix accordion open/close height transition." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" },
+      { "name": "2xl", "value": "1400px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The primary action, used for the search 'Caută' button. Civic Blue fill, mono-free label.",
+      "html": "<button class=\"ds-btn-primary\">Caută</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; height: 40px; padding: 0 16px; border: none; border-radius: 10px; background: #2563eb; color: #f8fafc; font-family: 'Geist Sans', ui-sans-serif, system-ui, sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: background-color .15s cubic-bezier(0.4,0,0.2,1); } .ds-btn-primary:hover { background: #1d4ed8; } .ds-btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #2563eb; }"
+    },
+    {
+      "name": "Outline Icon Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Secondary action; opens advanced search. Paper background, hairline border, fills slate on hover.",
+      "html": "<button class=\"ds-btn-icon\" aria-label=\"Cautare avansata\"><svg viewBox=\"0 0 24 24\" width=\"19\" height=\"19\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polygon points=\"22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3\"></polygon></svg></button>",
+      "css": ".ds-btn-icon { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 1px solid #e2e8f0; border-radius: 10px; background: #ffffff; color: #020817; cursor: pointer; transition: background-color .15s, color .15s; } .ds-btn-icon:hover { background: #f1f5f9; } .ds-btn-icon:focus-visible { outline: none; box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #2563eb; }"
+    },
+    {
+      "name": "Search Input",
+      "kind": "input",
+      "refersTo": "input-search",
+      "description": "The hero field. Autofocused on the home surface inside a centered max-w-lg column.",
+      "html": "<input class=\"ds-input-search\" type=\"search\" placeholder=\"cauta achizitii publice...\" />",
+      "css": ".ds-input-search { display: flex; width: 320px; max-width: 100%; height: 40px; padding: 0 12px; border: 1px solid #e2e8f0; border-radius: 10px; background: #ffffff; color: #020817; font-family: 'Geist Sans', ui-sans-serif, system-ui, sans-serif; font-size: 14px; box-sizing: border-box; } .ds-input-search::placeholder { color: #64748b; } .ds-input-search:focus-visible { outline: none; box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #2563eb; }"
+    },
+    {
+      "name": "Result Row",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "The atom of every listing. Type pill + mono code + name title + value badge + colored mono date block. Shown in the recommended form: type is carried by the pill and date numerals, not a side stripe.",
+      "html": "<article class=\"ds-result\"><div class=\"ds-result-main\"><span class=\"ds-type-pill ds-type-public\">Licitatie publica</span><h3 class=\"ds-result-title\"><span class=\"ds-code\">CN1054321</span> Servicii de proiectare si executie</h3><div class=\"ds-result-meta\"><span class=\"ds-badge-value\">1.250.000 RON</span><span class=\"ds-badge-outline\">71240000 - Servicii de arhitectura</span></div></div><div class=\"ds-result-date\"><span class=\"ds-date-day\">14</span><span class=\"ds-date-mon\">MAI</span><span class=\"ds-date-year\">2026</span></div></article>",
+      "css": ".ds-result { display: flex; justify-content: space-between; gap: 16px; padding: 24px; border: 1px solid #e2e8f0; border-radius: 12px; background: #ffffff; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); transition: box-shadow .2s ease-out, background-color .2s ease-out; } .ds-result:hover { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); background: rgba(248,250,252,0.8); } .ds-result-main { display: flex; flex-direction: column; gap: 12px; } .ds-type-pill { display: inline-flex; align-items: center; align-self: flex-start; border-radius: 9999px; padding: 4px 10px; font-family: 'Geist Sans', ui-sans-serif, system-ui, sans-serif; font-size: 12px; font-weight: 500; } .ds-type-public { background: #d1fae5; color: #065f46; } .ds-result-title { margin: 0; font-family: 'Geist Sans', ui-sans-serif, system-ui, sans-serif; font-size: 16px; font-weight: 500; line-height: 1.4; color: #020817; } .ds-code { font-family: 'Geist Mono', ui-monospace, monospace; font-size: 14px; color: #64748b; margin-right: 6px; } .ds-result-meta { display: flex; flex-wrap: wrap; gap: 8px; } .ds-badge-value { display: inline-flex; align-items: center; border-radius: 9999px; background: #f1f5f9; color: #0f172a; padding: 2px 12px; font-family: 'Geist Mono', ui-monospace, monospace; font-size: 14px; font-weight: 600; } .ds-badge-outline { display: inline-flex; align-items: center; border-radius: 9999px; border: 1px solid #e2e8f0; color: #020817; padding: 2px 10px; font-size: 12px; } .ds-result-date { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 64px; padding-left: 16px; border-left: 1px solid #f1f5f9; } .ds-date-day { font-family: 'Geist Mono', ui-monospace, monospace; font-size: 24px; font-weight: 700; color: #10b981; } .ds-date-mon { font-size: 12px; text-transform: uppercase; color: #64748b; } .ds-date-year { font-family: 'Geist Mono', ui-monospace, monospace; font-size: 14px; color: #10b981; }"
+    },
+    {
+      "name": "Value Badge",
+      "kind": "chip",
+      "refersTo": "badge-secondary",
+      "description": "Secondary pill for monetary values; mono per the Mono-for-Data rule.",
+      "html": "<span class=\"ds-badge-value\">1.250.000 RON / 251.000 EUR</span>",
+      "css": ".ds-badge-value { display: inline-flex; align-items: center; border-radius: 9999px; background: #f1f5f9; color: #0f172a; padding: 2px 12px; font-family: 'Geist Mono', ui-monospace, monospace; font-size: 14px; font-weight: 600; }"
+    },
+    {
+      "name": "Type Pills",
+      "kind": "chip",
+      "refersTo": "badge-secondary",
+      "description": "The procurement Type-Coding system: blue = direct, amber = offline, emerald = public. Rendered at the 100/800 tint pair.",
+      "html": "<div class=\"ds-pill-row\"><span class=\"ds-type-pill ds-type-direct\">Achizitie directa</span><span class=\"ds-type-pill ds-type-offline\">Achizitie offline</span><span class=\"ds-type-pill ds-type-public\">Licitatie publica</span></div>",
+      "css": ".ds-pill-row { display: flex; gap: 8px; flex-wrap: wrap; } .ds-type-pill { display: inline-flex; align-items: center; border-radius: 9999px; padding: 4px 10px; font-family: 'Geist Sans', ui-sans-serif, system-ui, sans-serif; font-size: 12px; font-weight: 500; } .ds-type-direct { background: #dbeafe; color: #1e40af; } .ds-type-offline { background: #fef3c7; color: #92400e; } .ds-type-public { background: #d1fae5; color: #065f46; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Public Record",
+    "overview": "SICAP.ai is a clean public ledger of where Romanian public money goes. The interface earns trust the way a good record does: by being accurate, legible, and free of anything that distracts from the facts. The data is the design; a contract code, a sum in lei, a contracting authority, a date are the protagonists, and the chrome stays quiet so they read first. It is built on a restrained Civic Blue and Slate base over near-white paper (deep slate-navy in dark mode), with color rationed to a single action accent plus a fixed three-hue code for procurement types. Surfaces are flat at rest and lift only on hover; typography splits cleanly into a grotesque for language and its monospace twin for every number.",
+    "keyCharacteristics": [
+      "Data-forward: numbers, codes, and dates are set in monospace and treated as first-class content.",
+      "Rationed color: one Civic Blue accent, plus a fixed blue/amber/emerald code for the three procurement types.",
+      "Flat by default: subtle rest shadows, a gentle lift on hover, depth carried mostly by tonal slate tints.",
+      "Search-first: the query field is the hero on the home surface and never buried elsewhere.",
+      "Bilingual discipline: Romanian UI copy with diacritics intact, English code."
+    ],
+    "rules": [
+      { "name": "The Civic Blue Rule", "body": "There is exactly one accent. Civic Blue appears on roughly a tenth of any screen: actions, links, focus, brand. Its scarcity is what makes a blue word obviously clickable. Do not introduce a second decorative accent.", "section": "colors" },
+      { "name": "The Type-Coding Rule", "body": "Blue means direct, amber means offline, emerald means public. Always, and only. These three hues are spoken for; never reuse them for decoration or emphasis unrelated to procurement type.", "section": "colors" },
+      { "name": "The Mono-for-Data Rule", "body": "Every figure that is data, a contract code, a sum, a CUI, a date, is set in Geist Mono. Prose is never monospace; data is never proportional. This single split is the most recognizable thing about the type system.", "section": "typography" },
+      { "name": "The Flat-By-Default Rule", "body": "Surfaces sit flat. A shadow heavier than shadow-sm may only appear as a response to state (hover, focus, an open popover or dialog). A card that floats at rest is wrong here.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep Civic Blue (#2563eb) to roughly 10% of a screen: actions, links, focus, brand.",
+      "Do set every figure (code, sum, CUI, date) in Geist Mono, and keep prose in Geist Sans.",
+      "Do signal procurement type with the fixed code: blue = direct, amber = offline, emerald = public.",
+      "Do keep surfaces flat at rest (shadow-sm) and reserve shadow-md for hover and open overlays.",
+      "Do preserve Romanian diacritics in all copy, and keep contrast and focus rings at WCAG 2.1 AA in both themes.",
+      "Do lead with the search field. It is the hero; never make a user hunt for it."
+    ],
+    "donts": [
+      "Don't use a colored left-border stripe thicker than 1px as a type marker; carry type through the tinted pill and colored date numerals instead.",
+      "Don't reproduce government-portal bloat: the cluttered, slow, bureaucratic, deep-nested feel of e-licitatie.ro.",
+      "Don't drift into hypey SaaS marketing: gradient blobs, gradient text, hero-metric templates, or emoji enthusiasm.",
+      "Don't go consumer-playful: no mascots, jokey microcopy, or gamified flourishes.",
+      "Don't settle into generic AI-dashboard sameness: identical card grids, purple gradients, or decorative glassmorphism.",
+      "Don't introduce a second accent hue, or spend the type-coding blue/amber/emerald on anything unrelated to procurement type.",
+      "Don't use em dashes in UI copy; prefer a spaced middot, comma, or colon."
+    ]
+  }
+}

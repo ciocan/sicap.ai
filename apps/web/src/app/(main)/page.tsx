@@ -1,4 +1,6 @@
 import { connection } from "next/server";
+import Link from "next/link";
+import { Badge } from "@sicap/ui";
 import { getCachedTotal } from "@/lib/cached-queries";
 import { Search } from "@/components";
 import { formatNumber } from "@/utils";
@@ -23,6 +25,18 @@ export default async function Page() {
       </div>
       <div className="px-2 max-w-lg w-full">
         <Search />
+      </div>
+      <div className="px-2 max-w-lg w-full mt-1 flex justify-center">
+        <Link
+          href="/mcp"
+          className="group inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <Badge className="shrink-0">Nou</Badge>
+          <span>
+            Interoghează SICAP.ai din Claude și alți agenți AI prin{" "}
+            <span className="font-medium text-foreground group-hover:text-primary">MCP</span>
+          </span>
+        </Link>
       </div>
     </main>
   );
