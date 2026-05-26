@@ -174,3 +174,16 @@ When spawning subagents (Agent/Task tool), the routing block is automatically in
 | `ctx stats` | Call the `ctx_stats` MCP tool and display the full output verbatim |
 | `ctx doctor` | Call the `ctx_doctor` MCP tool, run the returned shell command, display as checklist |
 | `ctx upgrade` | Call the `ctx_upgrade` MCP tool, run the returned shell command, display as checklist |
+
+## Design Context
+
+Design, UI, and frontend work in this repo is guided by [`PRODUCT.md`](./PRODUCT.md) (strategic) and [`DESIGN.md`](./DESIGN.md) (visual system). Read them before any design task.
+
+- **Register:** `product` (design serves the tool, not marketing).
+- **Core job:** find the right procurement record fast. Search is the hero.
+- **Primary users:** businesses & bidders, then journalists/watchdogs and researchers/analysts.
+- **Personality:** fast, trustworthy, clear. Feel references: Linear, Perplexity.
+- **Avoid:** government-portal bloat (e-licitatie.ro), hypey SaaS marketing, consumer-playful, generic AI-dashboard sameness.
+- **A11y bar:** WCAG 2.1 AA.
+
+The `/impeccable` skill reads these files automatically. Regenerate the visual spec with `/impeccable document`.
