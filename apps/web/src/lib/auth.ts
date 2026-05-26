@@ -1,131 +1,59 @@
-import NextAuth from "next-auth";
-import "next-auth/jwt";
-import Google from "next-auth/providers/google";
-import { DrizzleAdapter } from "@auth/drizzle-adapter";
+import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { nextCookies } from "better-auth/next-js";
 import { eq } from "drizzle-orm";
 import { Logger } from "next-axiom";
 
-import { accounts, db, sessions, users, verificationTokens } from "../db/schema";
+import { account, db, session, user, verification } from "../db/schema";
 import { addSubscriber, addSubscriberToLists, messageSubscriber } from "./listmonk";
 import { env } from "./env";
 
 const log = new Logger();
 
-export const { handlers, auth } = NextAuth({
-  debug: process.env.NODE_ENV === "development",
-  adapter: DrizzleAdapter(db, {
-    usersTable: users,
-    accountsTable: accounts,
-    sessionsTable: sessions,
-    verificationTokensTable: verificationTokens,
+export const auth = betterAuth({
+  baseURL: env.NEXTAUTH_URL,
+  secret: env.AUTH_SECRET,
+  database: drizzleAdapter(db, {
+    provider: "sqlite",
+    schema: { user, session, account, verification },
   }),
+  socialProviders: {
+    google: {
+      clientId: env.GOOGLE_ID ?? "",
+      clientSecret: env.GOOGLE_SECRET ?? "",
+    },
+  },
   session: {
-    strategy: "jwt",
-  },
-  providers: [
-    Google({
-      clientId: env.GOOGLE_ID,
-      clientSecret: env.GOOGLE_SECRET,
-    }),
-  ],
-  pages: {
-    signIn: "/autentificare",
-    newUser: "/",
-    error: "/eroare",
-  },
-  events: {
-    async createUser({ user }) {
-      const email = user.email!;
-      const name = user.name!;
-      const userId = user.id!;
-      log.info("User created", { userId });
-
-      try {
-        await db
-          .update(users)
-          .set({ createdAt: new Date().toISOString() })
-          .where(eq(users.id, userId))
-          .returning();
-
-        await addSubscriber({
-          email,
-          name,
-          attribs: { userId },
-        });
-        await addSubscriberToLists({ email, lists: ["users"] });
-        await messageSubscriber({ email, template: "welcome" });
-      } catch (_e) {}
-    },
-
-    async signIn({ user, isNewUser: _isNewUser }) {
-      log.info("User signed in", { userId: user.id });
-      await db
-        .update(users)
-        .set({ updatedAt: new Date().toISOString() })
-        .where(eq(users.id, user.id!))
-        .returning();
-    },
-    async signOut(message: { token: { id: string } }) {
-      const userId = message.token.id;
-      log.info("User signed out", { userId });
+    cookieCache: {
+      enabled: true,
+      maxAge: 300,
     },
   },
-  callbacks: {
-    redirect() {
-      return "/";
+  databaseHooks: {
+    user: {
+      create: {
+        after: async (createdUser) => {
+          const { id, email, name } = createdUser;
+          log.info("User created", { userId: id });
+          try {
+            await addSubscriber({ email, name: name ?? email, attribs: { userId: id } });
+            await addSubscriberToLists({ email, lists: ["users"] });
+            await messageSubscriber({ email, template: "welcome" });
+          } catch (_e) {
+            log.error("Listmonk sync failed on user create", { userId: id });
+          }
+        },
+      },
     },
-    async session({ session, token }) {
-      if (token?.accessToken) {
-        session.accessToken = token.accessToken;
-      }
-      if (token?.id) {
-        session.user.id = token.id;
-      }
-      return session;
-    },
-    async jwt({ token, user, trigger }) {
-      const shouldHydrate = Boolean(user) || !token.id || trigger === "update";
-      if (!shouldHydrate) {
-        return token;
-      }
-
-      const email = (user?.email ?? token.email) as string | undefined;
-      if (!email) {
-        if (user?.id) {
-          token.id = user.id;
-        }
-        return token;
-      }
-
-      const dbUser = await db.select().from(users).where(eq(users.email, email)).get();
-
-      if (!dbUser) {
-        if (user?.id) {
-          token.id = user.id;
-        }
-        return token;
-      }
-
-      return {
-        ...token,
-        id: dbUser.id,
-        name: dbUser.name,
-        email: dbUser.email,
-        picture: dbUser.image,
-      };
+    session: {
+      create: {
+        after: async (createdSession) => {
+          const { userId } = createdSession;
+          log.info("User signed in", { userId });
+          await db.update(user).set({ updatedAt: new Date() }).where(eq(user.id, userId));
+        },
+      },
     },
   },
+  plugins: [nextCookies()],
 });
-
-declare module "next-auth" {
-  interface Session {
-    accessToken?: string;
-  }
-}
-
-declare module "next-auth/jwt" {
-  interface JWT {
-    accessToken?: string;
-    id?: string;
-  }
-}
