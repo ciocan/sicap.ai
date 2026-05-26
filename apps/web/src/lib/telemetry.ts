@@ -81,6 +81,10 @@ export const captureAboutMenuClick = () => {
   capture("about menu clicked");
 };
 
+export const captureMcpMenuClick = (props = {}) => {
+  capture("mcp link clicked", props);
+};
+
 export const captureCloudifyLinkClick = () => {
   capture("cloudify link clicked");
 };

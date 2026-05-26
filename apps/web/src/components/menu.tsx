@@ -18,6 +18,7 @@ import {
   captureSignInMenuClick,
   captureSignOutMenuClick,
   captureToggleDarkModeButtonClick,
+  captureMcpMenuClick,
 } from "@/lib/telemetry";
 import { getInitials } from "@/utils";
 import { useFormbricks } from "@/app/formbricks";
@@ -102,6 +103,15 @@ export function Menu() {
       <DropdownMenuItem asChild>
         <Link href="/despre" className="w-full cursor-pointer" onClick={captureAboutMenuClick}>
           Despre
+        </Link>
+      </DropdownMenuItem>
+      <DropdownMenuItem asChild>
+        <Link
+          href="/mcp"
+          className="w-full cursor-pointer"
+          onClick={() => captureMcpMenuClick({ from: "menu" })}
+        >
+          MCP
         </Link>
       </DropdownMenuItem>
       <DropdownMenuItem

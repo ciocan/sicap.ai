@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu as MenuIcon, UserSquare2 } from "lucide-react";
+import { Bot, Menu as MenuIcon, UserSquare2 } from "lucide-react";
 
 import { Button, DropdownMenu, DropdownMenuTrigger, Separator, Toaster } from "@sicap/ui";
 import { Search } from "@/components/search";
@@ -26,6 +26,17 @@ export function Navbar() {
               </Link>
               {!isHome && <Search hideButton />}
             </div>
+            {!isHome && (
+              <div className="items-center gap-1.5 ml-auto mr-4 hidden sm:flex">
+                <Link
+                  href="/mcp"
+                  className="inline-flex items-center gap-1.5 text-primary font-medium hover:text-foreground transition-colors"
+                >
+                  <Bot className="size-5" />
+                  MCP
+                </Link>
+              </div>
+            )}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="icon" className="text-primary">

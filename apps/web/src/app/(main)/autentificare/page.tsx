@@ -17,8 +17,8 @@ const items = [
   },
   {
     id: 3,
-    text: "Statistici avansate pentru firme si autoritati contractante",
-    soon: true,
+    text: "Conector MCP pentru Claude / ChatGPT",
+    new: true,
   },
 ];
 
@@ -60,7 +60,7 @@ export default async function Page({
             <li key={item.id} className="flex gap-2 items-center">
               <Check className="h-[1rem] w-[1rem] text-primary" />
               {item.text}
-              {item.soon && <Badge>in curand</Badge>}
+              {item.new && <Badge>Nou</Badge>}
             </li>
           ))}
         </ul>
