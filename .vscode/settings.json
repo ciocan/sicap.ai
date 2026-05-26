@@ -1,6 +1,6 @@
 {
-  "window.zoomLevel": 3.5,
-  "editor.fontSize": 26,
+  "window.zoomLevel": 2,
+  "editor.fontSize": 17,
   "terminal.integrated.fontSize": 14,
   "prettier.useEditorConfig": false,
   "prettier.enable": false,
