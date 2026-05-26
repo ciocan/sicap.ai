@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.20.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.19.2...sicap-v0.20.0) (2026-05-26)
+
+
+### Features
+
+* migrate from NextAuth to Better Auth ([680de68](https://github.com/ciocan/SICAP.ai/commit/680de680a4131e162297e7d0bff037922501420b))
+
 ## [0.19.2](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.19.1...sicap-v0.19.2) (2026-05-05)
 
 
