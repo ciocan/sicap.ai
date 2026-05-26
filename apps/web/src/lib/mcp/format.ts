@@ -7,7 +7,9 @@ type AnyItem = SearchItemPublic | SearchItemDirect | SearchItemOffline;
 const DEFAULT_BASE_URL = "https://sicap.ai";
 
 export function clampPerPage(perPage?: number): number {
-  if (!perPage || perPage < 1) return 10;
+  if (!perPage || perPage < 1) {
+    return 10;
+  }
   return Math.min(perPage, 50);
 }
 
