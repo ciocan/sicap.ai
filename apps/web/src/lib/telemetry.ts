@@ -1,5 +1,14 @@
 import posthogJs from "posthog-js";
-import type { User } from "@auth/core/types";
+
+type BetterAuthUser = {
+  id: string;
+  name: string;
+  email: string;
+  image?: string | null;
+  emailVerified: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+};
 
 import { env } from "./env";
 
@@ -28,7 +37,7 @@ export const capture = (name: string, props = {}) => {
   posthog.capture(name, props);
 };
 
-export const identifyUser = (id: string, user: User = {} as User) => {
+export const identifyUser = (id: string, user: Partial<BetterAuthUser> = {}) => {
   posthog.identify(id, user);
 };
 

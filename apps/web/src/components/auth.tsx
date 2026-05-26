@@ -1,5 +1,5 @@
 "use client";
-import { signIn, signOut } from "next-auth/react";
+import { signIn, signOut } from "@/lib/auth-client";
 
 import { Button } from "@sicap/ui";
 import { captureGoogleSignInButtonClick } from "@/lib/telemetry";
@@ -40,7 +40,7 @@ export function SignOut() {
 export function SignIn() {
   const handleSignIn = () => {
     captureGoogleSignInButtonClick();
-    signIn("google");
+    signIn.social({ provider: "google", callbackURL: "/", errorCallbackURL: "/eroare" });
   };
 
   return (

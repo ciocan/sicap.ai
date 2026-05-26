@@ -1,5 +1,4 @@
 import type { Viewport } from "next";
-import { SessionProvider } from "next-auth/react";
 import { GeistSans, GeistMono } from "geist/font";
 import { AxiomWebVitals } from "next-axiom";
 import OpenStatusProvider from "@/components/openstatus-provider";
@@ -100,24 +99,22 @@ export default function MainLayout({ children }: MainLayoutProps) {
       </head>
       <body className="min-h-screen bg-background font-sans antialiased">
         <Suspense fallback={null}>
-          <SessionProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <Suspense fallback={null}>
-                <FormbricksProvider>
-                  <div className="relative flex min-h-screen flex-col">
-                    <Navbar />
-                    <div className="flex flex-col flex-1">{children}</div>
-                    <Footer />
-                  </div>
-                </FormbricksProvider>
-              </Suspense>
-            </ThemeProvider>
-          </SessionProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Suspense fallback={null}>
+              <FormbricksProvider>
+                <div className="relative flex min-h-screen flex-col">
+                  <Navbar />
+                  <div className="flex flex-col flex-1">{children}</div>
+                  <Footer />
+                </div>
+              </FormbricksProvider>
+            </Suspense>
+          </ThemeProvider>
         </Suspense>
         <Suspense fallback={null}>
           <OpenStatusProvider dsn={env.NEXT_PUBLIC_OPENSTATUS_RUM_DSN} />

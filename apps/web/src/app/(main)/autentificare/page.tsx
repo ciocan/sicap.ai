@@ -1,6 +1,7 @@
 import { SignIn } from "@/components/auth";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import { Check } from "lucide-react";
 
 import { Badge } from "@sicap/ui";
@@ -22,7 +23,7 @@ const items = [
 ];
 
 export default async function Page() {
-  const session = await auth().catch(() => null);
+  const session = await auth.api.getSession({ headers: await headers() }).catch(() => null);
 
   if (session?.user) {
     redirect("/");
