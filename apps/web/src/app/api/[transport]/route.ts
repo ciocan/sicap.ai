@@ -16,6 +16,7 @@ import {
 } from "@sicap/api";
 import { auth } from "@/lib/auth";
 import { getContractBySlug } from "@/lib/mcp/contracts";
+import { corsPreflight, withCors } from "@/lib/mcp/cors";
 import { type ContractSlug, clampPerPage, toCompactRow } from "@/lib/mcp/format";
 import { indexToSlug, slugToIndex } from "@/lib/mcp/index-map";
 import { enforceRateLimit, RateLimitError } from "@/lib/mcp/rate-limit";
@@ -212,29 +213,11 @@ const mcpHandler = withMcpAuth(auth, (req, session) => {
   )(req);
 });
 
-// MCP clients (Inspector, claude.ai, Cursor) call this cross-origin from a browser, so the
-// transport endpoint must send CORS headers. createMcpHandler doesn't add them and Next's
-// auto-OPTIONS lacks Access-Control-Allow-Origin, which fails the preflight ("Failed to fetch").
-const CORS_HEADERS: Record<string, string> = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
-  "Access-Control-Allow-Headers":
-    "Authorization, Content-Type, mcp-protocol-version, mcp-session-id, last-event-id",
-  "Access-Control-Expose-Headers": "WWW-Authenticate, Mcp-Session-Id",
-  "Access-Control-Max-Age": "86400",
-};
-
+// createMcpHandler doesn't add CORS; shared helpers in lib/mcp/cors keep the MCP transport and the
+// OAuth routes consistent (see cors.ts for why both preflight and actual responses need it).
 async function handler(req: Request): Promise<Response> {
-  const res = await mcpHandler(req);
-  const headers = new Headers(res.headers);
-  for (const [key, value] of Object.entries(CORS_HEADERS)) {
-    headers.set(key, value);
-  }
-  return new Response(res.body, { status: res.status, statusText: res.statusText, headers });
+  return withCors(await mcpHandler(req));
 }
 
-export function OPTIONS(): Response {
-  return new Response(null, { status: 204, headers: CORS_HEADERS });
-}
-
+export const OPTIONS = corsPreflight;
 export { handler as GET, handler as POST, handler as DELETE };
