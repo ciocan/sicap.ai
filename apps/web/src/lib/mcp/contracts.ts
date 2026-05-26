@@ -3,15 +3,15 @@ import {
   getContractAchizitiiOffline,
   getContractLicitatii,
 } from "@sicap/api";
-import type { ContractType } from "./format";
+import type { ContractSlug } from "./format";
 
-export function getContractByType(type: ContractType, id: string) {
-  switch (type) {
-    case "public":
+export function getContractBySlug(slug: ContractSlug, id: string) {
+  switch (slug) {
+    case "licitatii":
       return getContractLicitatii(id);
-    case "direct":
+    case "achizitii":
       return getContractAchizitii(id);
-    case "offline":
+    case "achizitii-offline":
       return getContractAchizitiiOffline(id);
   }
 }
