@@ -100,3 +100,5 @@ export const slugify = (text: string): string => {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 };
+
+export * from "./money";

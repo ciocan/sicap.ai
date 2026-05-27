@@ -4,6 +4,11 @@ export const ES_INDEX_PUBLIC = process.env.NEXT_PUBLIC_ES_INDEX_PUBLIC as string
 export const ES_INDEX_DIRECT = process.env.NEXT_PUBLIC_ES_INDEX_DIRECT as string;
 export const ES_INDEX_OFFLINE = process.env.NEXT_PUBLIC_ES_INDEX_OFFLINE as string;
 
+// ONRC trade-registry + MFP financials enrichment indices. Same names across envs
+// (full prod-scale data, no -test variant), so they default to the literal index names.
+export const ES_INDEX_ONRC = process.env.ES_INDEX_ONRC || "onrc";
+export const ES_INDEX_ONRC_FINANCIALS = process.env.ES_INDEX_ONRC_FINANCIALS || "onrc_financials";
+
 export const ES_INDICES = [ES_INDEX_PUBLIC, ES_INDEX_DIRECT, ES_INDEX_OFFLINE] as const;
 export type ES_INDICES_TYPE = (typeof ES_INDICES)[number];
 

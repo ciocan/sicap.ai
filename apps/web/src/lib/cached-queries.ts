@@ -22,6 +22,8 @@ import {
   getAuthorityTopSuppliers,
   getCompanyByNationalId,
   getCompanyTopAuthorities,
+  getCompanyRegistry,
+  getCompanyFinancials,
   getLocalityStats,
   getLocalityTopAuthorities,
   getLocalityTopCompanies,
@@ -226,6 +228,27 @@ interface CompanyTopAuthoritiesArgs {
  */
 export async function getCachedCompanyTopAuthorities(args: CompanyTopAuthoritiesArgs) {
   return getCompanyTopAuthorities(args);
+}
+
+// ============================================================================
+// ONRC trade-registry + MFP financials enrichment
+// ============================================================================
+
+/**
+ * Wrapper for getCompanyRegistry - ONRC trade-registry data by CUI.
+ * Caching disabled (matches the repo's ISR-cost stance); registry data is snapshot-based
+ * and a strong candidate for re-enabling caching later.
+ */
+export async function getCachedCompanyRegistry(nationalId: string) {
+  return getCompanyRegistry(nationalId);
+}
+
+/**
+ * Wrapper for getCompanyFinancials - MFP financial history by CUI.
+ * Caching disabled (see note above).
+ */
+export async function getCachedCompanyFinancials(nationalId: string) {
+  return getCompanyFinancials(nationalId);
 }
 
 // ============================================================================

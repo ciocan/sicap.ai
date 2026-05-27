@@ -1,14 +1,22 @@
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
-import Link from "next/link";
 
-import { getCachedCompanyByNationalId } from "@/lib/cached-queries";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@sicap/ui";
 
-import { formatNumber, moneyEur, moneyRon, slugify } from "@/utils";
+import {
+  getCachedCompanyByNationalId,
+  getCachedCompanyFinancials,
+  getCachedCompanyRegistry,
+} from "@/lib/cached-queries";
+
+import { formatNumber, moneyEur, moneyRon } from "@/utils";
 import type { SearchParams } from "./search-list";
 import { ListItem } from "./list-item";
 import { Pagination } from "./pagination";
 import { Chart } from "./chart";
+import { CompanyProfileBand } from "./company-profile-band";
+import { CompanyFinancials } from "./company-financials";
+import { CompanyRegistryDetails } from "./company-registry-details";
 import { PerPage } from "./per-page";
 import { CSVDownload } from "./csv-download";
 import { TopAuthorities } from "./top-authorities";
@@ -23,12 +31,15 @@ export async function CompanyAll({ nationalId, searchParams }: CompanyAllProps) 
   const { p: page = 1, perPage = 20 } = searchParams;
 
   let results: Awaited<ReturnType<typeof getCachedCompanyByNationalId>>;
+  let registry: Awaited<ReturnType<typeof getCachedCompanyRegistry>> = null;
+  let financials: Awaited<ReturnType<typeof getCachedCompanyFinancials>> = null;
   try {
-    results = await getCachedCompanyByNationalId({
-      nationalId,
-      page,
-      perPage,
-    });
+    // Procurement query drives notFound; ONRC/financials enrichment degrades to null.
+    [results, registry, financials] = await Promise.all([
+      getCachedCompanyByNationalId({ nationalId, page, perPage }),
+      getCachedCompanyRegistry(nationalId).catch(() => null),
+      getCachedCompanyFinancials(nationalId).catch(() => null),
+    ]);
   } catch {
     return notFound();
   }
@@ -42,58 +53,76 @@ export async function CompanyAll({ nationalId, searchParams }: CompanyAllProps) 
   const nonAwardedValueRon = moneyRon(nonAwarded?.value);
   const nonAwardedValueEur = moneyEur(nonAwarded?.value);
 
-  const title = company
-    ? `${company.fiscalNumber} / ${company.entityName}`
-    : `Firma: ${nationalId}`;
-
-  const localityLink =
-    company?.city && company?.county
-      ? `/localitate/${slugify(company.county)}/${slugify(company.city)}`
-      : null;
-
   return (
     <div className="space-y-8">
-      <div className="space-y-2">
-        <h1 className="font-semibold text-lg">{title}</h1>
-        {company?.city && (
-          <p className="text-sm text-muted-foreground">
-            {localityLink ? (
-              <Link
-                href={localityLink}
-                className="hover:text-primary hover:underline"
-                target="_blank"
-              >
-                {company.city}
-                {company.county ? `, ${company.county}` : ""}
-              </Link>
-            ) : (
-              <>
-                {company.city}
-                {company.county ? `, ${company.county}` : ""}
-              </>
+      {/* Identity (trade registry) — page header above the tabs. */}
+      <CompanyProfileBand
+        registry={registry}
+        nationalId={nationalId}
+        mainCaen={financials?.latest?.caen}
+        fallbackName={company?.entityName}
+        fallbackCity={company?.city}
+        fallbackCounty={company?.county}
+      />
+
+      {/* Detail split by source: procurement (e-licitatie) vs company record (ONRC). */}
+      <Tabs defaultValue="achizitii" className="gap-4">
+        <TabsList>
+          <TabsTrigger value="achizitii">Achiziții publice</TabsTrigger>
+          <TabsTrigger value="firma">Date financiare</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="achizitii" className="space-y-6">
+          <p className="text-xs text-muted-foreground">Date din e-licitatie.ro</p>
+
+          <div className="space-y-1">
+            <p className="text-sm">
+              {formatNumber(total)} contracte atribuite în valoare de{" "}
+              <span className="text-primary font-mono">{totalValueRon}</span> /{" "}
+              <span className="font-mono">{totalValueEur}</span>
+            </p>
+            {nonAwarded && nonAwarded.total > 0 && (
+              <p className="text-sm text-muted-foreground">
+                {formatNumber(nonAwarded.total)} contracte neatribuite în valoare de{" "}
+                <span className="font-mono">{nonAwardedValueRon}</span> /{" "}
+                <span className="font-mono">{nonAwardedValueEur}</span>
+              </p>
             )}
+          </div>
+
+          <Chart stats={stats} nonAwardedStats={nonAwarded?.stats} />
+          <TopAuthorities nationalId={nationalId} />
+        </TabsContent>
+
+        <TabsContent value="firma" className="space-y-8">
+          <p className="text-xs text-muted-foreground">
+            Date din Registrul Comerțului și Ministerul Finanțelor
           </p>
-        )}
-        <p className="text-sm">
-          {formatNumber(total)} contracte atribuite in valoare de{" "}
-          <span className="text-primary font-mono">{totalValueRon}</span> /{" "}
-          <span className="font-mono">{totalValueEur}</span>
-        </p>
-        {nonAwarded && nonAwarded.total > 0 && (
-          <p className="text-sm text-muted-foreground">
-            {formatNumber(nonAwarded.total)} contracte neatribuite in valoare de{" "}
-            <span className="font-mono">{nonAwardedValueRon}</span> /{" "}
-            <span className="font-mono">{nonAwardedValueEur}</span>
-          </p>
-        )}
-      </div>
-      <Chart stats={stats} nonAwardedStats={nonAwarded?.stats} />
-      <TopAuthorities nationalId={nationalId} />
-      <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <h3 className="text-xs">
-            Pagina {page} din {formatNumber(results.total)} rezultate
-          </h3>
+
+          <section className="space-y-4">
+            <h3 className="text-base font-semibold">Situație financiară</h3>
+            {financials !== null && financials.years.length > 0 ? (
+              <CompanyFinancials financials={financials} />
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                Nu există situații financiare publicate.
+              </p>
+            )}
+          </section>
+
+          {registry !== null && <CompanyRegistryDetails registry={registry} />}
+        </TabsContent>
+      </Tabs>
+
+      {/* Contract list — always visible, outside the tabs. */}
+      <section className="space-y-4 border-t pt-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="font-semibold text-lg">Contracte</h2>
+            <p className="text-xs text-muted-foreground">
+              Pagina {page} din {formatNumber(results.total)} rezultate
+            </p>
+          </div>
           <div className="flex gap-2">
             <CSVDownload items={results.items} />
             <PerPage total={perPage} pathname={`/firma/${nationalId}`} />
@@ -110,7 +139,7 @@ export async function CompanyAll({ nationalId, searchParams }: CompanyAllProps) 
           hasNextPage={page * perPage < results.total}
           pathname={`/firma/${nationalId}`}
         />
-      </div>
+      </section>
     </div>
   );
 }
