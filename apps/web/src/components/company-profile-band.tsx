@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { MapPin } from "lucide-react";
 
@@ -10,6 +11,8 @@ import {
 import { Badge } from "@sicap/ui";
 
 import { slugify } from "@/utils";
+
+import { CompanyRepresentativeLinks } from "./company-representative-links";
 
 interface Props {
   registry: CompanyRegistry | null;
@@ -164,6 +167,16 @@ export function CompanyProfileBand({
             </span>
           ))}
         </p>
+      )}
+
+      {canonical && (
+        <Suspense fallback={null}>
+          <CompanyRepresentativeLinks
+            reprezentanti={canonical.reprezentanti}
+            reprezentantiIf={canonical.reprezentanti_if}
+            cui={nationalId}
+          />
+        </Suspense>
       )}
     </div>
   );
