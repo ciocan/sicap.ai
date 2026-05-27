@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.21.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.20.0...sicap-v0.21.0) (2026-05-27)
+
+
+### Features
+
+* Add company representative related companies ([5a38e12](https://github.com/ciocan/SICAP.ai/commit/5a38e129e183691984c1e60a6e0a5d7c9cd95590))
+* Enhance company page with ONRC and MFP financial data integration ([eacc498](https://github.com/ciocan/SICAP.ai/commit/eacc498a009b68077651286e27f616effa5dd49f))
+* **mcp:** add compact-row projection and pagination clamp (TDD) ([d24a23a](https://github.com/ciocan/SICAP.ai/commit/d24a23ae63a72a890f6a2c3e1a4f7ec94e0d8ffa))
+* **mcp:** add contract-type dispatch helper ([a17ea6c](https://github.com/ciocan/SICAP.ai/commit/a17ea6c93af08e111a9b42d24c9cb9593dcd25b8))
+* **mcp:** add MCP route with 6 read-only procurement tools ([5f25f55](https://github.com/ciocan/SICAP.ai/commit/5f25f55e1f11df2d5b30317c9f4d3acca167155e))
+* **mcp:** add OAuth consent page ([e9ea919](https://github.com/ciocan/SICAP.ai/commit/e9ea9191fd125e7eafea8772f4c8f63cb6d56cf7))
+* **mcp:** add public /mcp connector docs page ([53e08d0](https://github.com/ciocan/SICAP.ai/commit/53e08d00f1c0648ad32a35da032d1f1e8e0f08fc))
+* **mcp:** add Turso-backed per-user rate limiter ([a4aa86d](https://github.com/ciocan/SICAP.ai/commit/a4aa86d2bda9e1c00453f4650744be8f674fd321))
+* **mcp:** enable Better Auth mcp plugin + OAuth/rate-limit schema ([a6a8ed6](https://github.com/ciocan/SICAP.ai/commit/a6a8ed6edb192e5b19d100c5284843932b81b525))
+* **mcp:** enhance MCP integration and UI components ([e633334](https://github.com/ciocan/SICAP.ai/commit/e63333471c50b1144b1809600120a92f2628aba5))
+* **mcp:** expose OAuth discovery + protected-resource metadata ([7910809](https://github.com/ciocan/SICAP.ai/commit/791080923b62baf97cdb8146d2c82b3c91f233be))
+* **mcp:** implement CORS support for OAuth and MCP endpoints ([373c129](https://github.com/ciocan/SICAP.ai/commit/373c129aad50300e2b82bc96c1f05be1a7fafe0a))
+
+
+### Bug Fixes
+
+* **mcp:** add CORS headers to the /api/mcp route ([d5e0643](https://github.com/ciocan/SICAP.ai/commit/d5e0643a4f07ac052642cc20536eff8050daceb9))
+* **mcp:** map ES index to slug for correct contract URLs and dispatch ([cbee842](https://github.com/ciocan/SICAP.ai/commit/cbee842cd3e49079f28cb9081cce4e95669ba683))
+
 ## [0.20.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.19.2...sicap-v0.20.0) (2026-05-26)
 
 
