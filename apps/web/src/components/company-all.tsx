@@ -20,6 +20,7 @@ import { CompanyRegistryDetails } from "./company-registry-details";
 import { PerPage } from "./per-page";
 import { CSVDownload } from "./csv-download";
 import { TopAuthorities } from "./top-authorities";
+import { ShareMethodologyTooltip } from "./share-methodology-tooltip";
 
 interface CompanyAllProps {
   nationalId: string;
@@ -76,11 +77,11 @@ export async function CompanyAll({ nationalId, searchParams }: CompanyAllProps) 
           <p className="text-xs text-muted-foreground">Date din e-licitatie.ro</p>
 
           <div className="space-y-1">
-            <p className="text-sm">
+            <div className="text-sm">
               {formatNumber(total)} contracte atribuite în valoare de{" "}
               <span className="text-primary font-mono">{totalValueRon}</span> /{" "}
-              <span className="font-mono">{totalValueEur}</span>
-            </p>
+              <span className="font-mono">{totalValueEur}</span> <ShareMethodologyTooltip />
+            </div>
             {nonAwarded && nonAwarded.total > 0 && (
               <p className="text-sm text-muted-foreground">
                 {formatNumber(nonAwarded.total)} contracte neatribuite în valoare de{" "}
