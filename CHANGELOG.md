@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.22.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.21.0...sicap-v0.22.0) (2026-05-28)
+
+
+### Features
+
+* Add ShareMethodologyTooltip component and integrate it into CompanyAll ([06cd451](https://github.com/ciocan/SICAP.ai/commit/06cd4517b832b0d6b0d9e11174c40b70d1281d39))
+* Enhance ListItem component with winners count and awarded value display ([ec37ff3](https://github.com/ciocan/SICAP.ai/commit/ec37ff3aac86601907d2c00721ac43057d5377ed))
+* Improve contract value aggregation logic in getCompanyByNationalId ([f85cf3b](https://github.com/ciocan/SICAP.ai/commit/f85cf3b684582c91b5d744285c4e61ff63bb8807))
+
 ## [0.21.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.20.0...sicap-v0.21.0) (2026-05-27)
 
 
