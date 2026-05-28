@@ -81,15 +81,36 @@ export async function getCompanyByNationalId({
   // Query all three indices for the given supplier fiscal number
   //
   // NOTE on licitatii value aggregation:
-  // For licitatii with multiple lots where the company won only some lots, the aggregation
-  // uses item.ronContractValue (total contract value) instead of the sum of won lot values.
-  // This is because Painless scripts in ES aggregations can only access doc values,
-  // not the nested noticeContracts.items[].contractValue structure.
-  // For accurate per-item values, use calculateLicitatiiWinningValue() on the returned items.
+  // The object-typed noticeContracts.items can't be queried as nested docs, but Painless can
+  // walk the doc-value arrays (flattened across lots). For each matching document we sum the
+  // per-lot contractValue at indices where the company is the primary winner. If the share is
+  // computable and consistent (sum <= ronContractValue) we use it; otherwise we fall back to
+  // the full contract value. That keeps consortium-only matches and framework agreements
+  // (where lot ceilings can exceed ronContractValue) from inflating the aggregate above the
+  // displayed contract total.
   const valueAggScript = `
-    // Licitatii publice - use ronContractValue (see NOTE above for lot-based limitation)
+    // Licitatii publice - prefer per-company share over the full contract total
     if (doc.containsKey('item.ronContractValue') && doc['item.ronContractValue'].size() > 0) {
-      return doc['item.ronContractValue'].value;
+      double total = doc['item.ronContractValue'].value;
+      if (doc.containsKey('noticeContracts.items.winner.fiscalNumberInt')
+          && doc.containsKey('noticeContracts.items.contractValue')) {
+        def fiscals = doc['noticeContracts.items.winner.fiscalNumberInt'];
+        def values  = doc['noticeContracts.items.contractValue'];
+        long target = params.target_cui;
+        double sum = 0;
+        boolean matched = false;
+        int n = (int) Math.min(fiscals.size(), values.size());
+        for (int i = 0; i < n; i++) {
+          if (fiscals.get(i) == target) {
+            sum += values.get(i);
+            matched = true;
+          }
+        }
+        if (matched && sum <= total) {
+          return sum;
+        }
+      }
+      return total;
     }
     // Achizitii directe - use closingValue
     if (doc.containsKey('item.closingValue') && doc['item.closingValue'].size() > 0) {
@@ -101,6 +122,7 @@ export async function getCompanyByNationalId({
     }
     return 0;
   `;
+  const valueAggParams = { target_cui: Number(nationalId) };
 
   const dateScript = `
     if (doc.containsKey('item.noticeStateDate') && doc['item.noticeStateDate'].size() > 0) {
@@ -197,6 +219,7 @@ export async function getCompanyByNationalId({
               sum: {
                 script: {
                   source: valueAggScript,
+                  params: valueAggParams,
                   lang: "painless",
                 },
               },
@@ -216,6 +239,7 @@ export async function getCompanyByNationalId({
               sum: {
                 script: {
                   source: valueAggScript,
+                  params: valueAggParams,
                   lang: "painless",
                 },
               },
@@ -292,6 +316,7 @@ export async function getCompanyByNationalId({
           sum: {
             script: {
               source: valueAggScript,
+              params: valueAggParams,
               lang: "painless",
             },
           },
@@ -309,6 +334,7 @@ export async function getCompanyByNationalId({
               sum: {
                 script: {
                   source: valueAggScript,
+                  params: valueAggParams,
                   lang: "painless",
                 },
               },
@@ -328,6 +354,7 @@ export async function getCompanyByNationalId({
               sum: {
                 script: {
                   source: valueAggScript,
+                  params: valueAggParams,
                   lang: "painless",
                 },
               },
