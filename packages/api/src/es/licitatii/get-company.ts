@@ -146,7 +146,10 @@ export async function getCompanyLicitatii(args: Args) {
     items: result?.hits.hits.map((hit) => ({
       id: hit._id,
       index: hit._index as IndexName,
-      fields: transformItem(hit._index, hit.fields as Fields, hit.highlight as Fields),
+      fields: transformItem(hit._index, hit.fields as Fields, hit.highlight as Fields, {
+        supplierFiscalNumber: supplierId,
+        supplierEntityId: supplierId,
+      }),
     })),
     stats,
   };

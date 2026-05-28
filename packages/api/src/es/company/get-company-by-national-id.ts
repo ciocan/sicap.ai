@@ -235,14 +235,6 @@ export async function getCompanyByNationalId({
       "supplier.fiscalNumber",
       "supplier.entityId",
       "details.noticeEntityAddress.organization",
-      // Winners array fields for licitatii (when company is in winners array, not primary winner)
-      "noticeContracts.items.winners.name",
-      "noticeContracts.items.winners.fiscalNumber",
-      "noticeContracts.items.winners.fiscalNumberInt",
-      "noticeContracts.items.winners.entityId",
-      "noticeContracts.items.winners.address.city",
-      "noticeContracts.items.winners.address.county.text",
-      "noticeContracts.items.winners.address.nutsCodeItem.text",
     ],
     _source: false,
   };
@@ -510,7 +502,9 @@ export async function getCompanyByNationalId({
   const items = hits.map((hit) => ({
     id: hit._id as string,
     index: hit._index as IndexName,
-    fields: transformItem(hit._index, (hit.fields || {}) as Fields, {} as Fields),
+    fields: transformItem(hit._index, (hit.fields || {}) as Fields, {} as Fields, {
+      supplierFiscalNumber: nationalId,
+    }),
   }));
 
   const result_data = {

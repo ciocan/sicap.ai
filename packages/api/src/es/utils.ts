@@ -16,10 +16,59 @@ export type Fields = Record<string, (string | number)[]>;
 
 export const RESULTS_PER_PAGE = 20;
 
+export type TransformItemContext = {
+  // When the caller is viewing a specific company (e.g. /firma/[nationalId]),
+  // pass its fiscal number / entityId so multi-winner licitatii pick the
+  // matching winner from noticeContracts.items[].winners[] instead of the
+  // first one ES happens to return.
+  supplierFiscalNumber?: string;
+  supplierEntityId?: string | number;
+};
+
+const findMatchingWinnerIndex = (
+  fields: Fields,
+  ctx: TransformItemContext | undefined,
+): { prefix: "winner" | "winners"; idx: number } => {
+  if (!ctx) {
+    return { prefix: "winner", idx: 0 };
+  }
+  const fiscal = ctx.supplierFiscalNumber?.toString();
+  const entityId = ctx.supplierEntityId?.toString();
+
+  const matches = (val: string | number | undefined) => {
+    if (val === undefined) {
+      return false;
+    }
+    const s = val.toString();
+    return (fiscal !== undefined && s === fiscal) || (entityId !== undefined && s === entityId);
+  };
+
+  const winnerFiscalNumbers = fields["noticeContracts.items.winner.fiscalNumberInt"] || [];
+  const winnerEntityIds = fields["noticeContracts.items.winner.entityId"] || [];
+  const winnerLen = Math.max(winnerFiscalNumbers.length, winnerEntityIds.length);
+  for (let i = 0; i < winnerLen; i++) {
+    if (matches(winnerFiscalNumbers[i]) || matches(winnerEntityIds[i])) {
+      return { prefix: "winner", idx: i };
+    }
+  }
+
+  const winnersFiscalNumbers = fields["noticeContracts.items.winners.fiscalNumberInt"] || [];
+  const winnersEntityIds = fields["noticeContracts.items.winners.entityId"] || [];
+  const winnersLen = Math.max(winnersFiscalNumbers.length, winnersEntityIds.length);
+  for (let i = 0; i < winnersLen; i++) {
+    if (matches(winnersFiscalNumbers[i]) || matches(winnersEntityIds[i])) {
+      return { prefix: "winners", idx: i };
+    }
+  }
+
+  return { prefix: "winner", idx: 0 };
+};
+
 export function transformItem(
   index: string,
   fields: Fields,
   _highlight: Fields,
+  ctx?: TransformItemContext,
 ): SearchItemDirect | SearchItemPublic | SearchItemOffline {
   switch (index) {
     case ES_INDEX_OFFLINE:
@@ -73,7 +122,62 @@ export function transformItem(
         typeId: fields["publicDirectAcquisition.sysAcquisitionContractType.id"]?.[0],
         euFunds: fields["publicDirectAcquisition.sysEuropeanFund.text"]?.[0],
       } as SearchItemDirect;
-    case ES_INDEX_PUBLIC:
+    case ES_INDEX_PUBLIC: {
+      const { prefix, idx } = findMatchingWinnerIndex(fields, ctx);
+      const base = `noticeContracts.items.${prefix}`;
+      const winnerIds = new Set<string>();
+      for (const v of fields["noticeContracts.items.winner.fiscalNumberInt"] || []) {
+        if (v !== undefined && v !== null) {
+          winnerIds.add(v.toString());
+        }
+      }
+      for (const v of fields["noticeContracts.items.winners.fiscalNumberInt"] || []) {
+        if (v !== undefined && v !== null) {
+          winnerIds.add(v.toString());
+        }
+      }
+      const winnersCount = winnerIds.size;
+
+      // Compute the company's share of the contract by summing per-lot
+      // contractValue at indices where the company is the *primary* winner.
+      // Co-winner allocations live in nested winners[] arrays that the ES
+      // fields API flattens, so per-lot attribution there isn't recoverable —
+      // leave awardedValue undefined in that case so the UI falls back to
+      // the full contract value.
+      //
+      // For framework agreements (acord-cadru), item.ronContractValue is the
+      // initial subscription value while noticeContracts.items.contractValue
+      // holds per-lot maximum ceilings. The two aren't comparable and a
+      // partial-winner share can legitimately exceed ronContractValue; bail
+      // in that case so we never render "Cota: X din Y" with X > Y.
+      let awardedValue: number | undefined;
+      const fiscal = ctx?.supplierFiscalNumber?.toString();
+      const entityId = ctx?.supplierEntityId?.toString();
+      if (fiscal !== undefined || entityId !== undefined) {
+        const primaryFiscals = fields["noticeContracts.items.winner.fiscalNumberInt"] || [];
+        const primaryEntityIds = fields["noticeContracts.items.winner.entityId"] || [];
+        const contractValues = fields["noticeContracts.items.contractValue"] || [];
+        const lotCount = Math.max(primaryFiscals.length, primaryEntityIds.length);
+        let sum = 0;
+        let matched = false;
+        for (let i = 0; i < lotCount; i++) {
+          const f = primaryFiscals[i]?.toString();
+          const e = primaryEntityIds[i]?.toString();
+          if (
+            (fiscal !== undefined && f === fiscal) ||
+            (entityId !== undefined && e === entityId)
+          ) {
+            const v = Number(contractValues[i]) || 0;
+            sum += v;
+            matched = true;
+          }
+        }
+        const ronContractValue = Number(fields["item.ronContractValue"]?.[0]) || 0;
+        if (matched && sum <= ronContractValue) {
+          awardedValue = sum;
+        }
+      }
+
       return {
         date: fields["item.noticeStateDate"]?.[0],
         name: fields["item.contractTitle"]?.[0],
@@ -81,13 +185,13 @@ export function transformItem(
         cpvCode: fields["item.cpvCode"]?.[0],
         cpvCodeAndName: fields["item.cpvCodeAndName"]?.[0],
         value: fields["item.ronContractValue"]?.[0] || 0,
-        supplierId: fields["noticeContracts.items.winner.entityId"]?.[0],
-        supplierName: fields["noticeContracts.items.winner.name"]?.[0],
-        supplierFiscalNumber: fields["noticeContracts.items.winner.fiscalNumberInt"]?.[0],
-        localitySupplier: fields["noticeContracts.items.winner.address.city"]?.[0],
+        supplierId: fields[`${base}.entityId`]?.[idx],
+        supplierName: fields[`${base}.name`]?.[idx],
+        supplierFiscalNumber: fields[`${base}.fiscalNumberInt`]?.[idx],
+        localitySupplier: fields[`${base}.address.city`]?.[idx],
         countySupplier:
-          fields["noticeContracts.items.winner.address.nutsCodeItem.text"]?.[0] ||
-          fields["noticeContracts.items.winner.address.county.text"]?.[0],
+          fields[`${base}.address.nutsCodeItem.text`]?.[idx] ||
+          fields[`${base}.address.county.text`]?.[idx],
         contractingAuthorityId: fields["publicNotice.entityId"]?.[0],
         contractingAuthorityName: fields["item.contractingAuthorityNameAndFN"]?.[0],
         authorityFiscalNumber: fields["item.nationalId"]?.[0],
@@ -122,7 +226,10 @@ export function transformItem(
           fields[
             "publicNotice.caNoticeEdit_New_U.section2_New_U.section2_2_New_U.descriptionList.sysEuropeanFund.text"
           ]?.[0],
+        winnersCount,
+        awardedValue,
       } as SearchItemPublic;
+    }
     default:
       throw new Error(`Invalid index: ${index}`);
   }
@@ -210,6 +317,13 @@ export const filedsLicitatii = [
   "noticeContracts.items.winner.address.city",
   "noticeContracts.items.winner.address.county.text",
   "noticeContracts.items.winner.address.nutsCodeItem.text",
+  "noticeContracts.items.winners.name",
+  "noticeContracts.items.winners.fiscalNumber",
+  "noticeContracts.items.winners.fiscalNumberInt",
+  "noticeContracts.items.winners.entityId",
+  "noticeContracts.items.winners.address.city",
+  "noticeContracts.items.winners.address.county.text",
+  "noticeContracts.items.winners.address.nutsCodeItem.text",
   "noticeContracts.items.contractValue",
   "publicNotice.caNoticeEdit_New.section2_New.section2_2_New.descriptionList.sysEuropeanFund.text",
   "publicNotice.caNoticeEdit_New_U.section2_New_U.section2_2_New_U.descriptionList.sysEuropeanFund.text",

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Building, Briefcase, ExternalLink } from "lucide-react";
+import { Building, Briefcase, ExternalLink, Users } from "lucide-react";
 
 import { Card, CardHeader, CardContent, CardDescription, CardTitle, Badge } from "@sicap/ui";
 import type { SearchItemDirect, SearchItemPublic, IndexName, SearchItemOffline } from "@sicap/api";
@@ -60,7 +60,11 @@ export function ListItem({ id, index, fields }: ListItemProps) {
     euFunds,
   } = fields;
 
-  const { procedureType, assigmentType } = fields as SearchItemPublic;
+  const { procedureType, assigmentType, winnersCount, awardedValue } = fields as SearchItemPublic;
+  const hasMultipleWinners = index === ES_INDEX_PUBLIC && (winnersCount ?? 0) > 1;
+  const showPartialValue =
+    index === ES_INDEX_PUBLIC && awardedValue !== undefined && awardedValue !== Number(value);
+  const awardedRon = showPartialValue ? (awardedValue as number) : 0;
 
   const day = getDay(date);
   const month = getMonth(date);
@@ -124,9 +128,20 @@ export function ListItem({ id, index, fields }: ListItemProps) {
             <Badge
               variant="secondary"
               className="font-mono text-sm font-semibold px-3 py-1 bg-slate-100 dark:bg-slate-800"
+              title={
+                showPartialValue
+                  ? `Cota firmei: ${moneyRon(awardedRon)} din ${moneyRon(ronValue)} valoare totala contract`
+                  : undefined
+              }
             >
-              {moneyRon(ronValue)} / {moneyEur(ronValue)}
+              {moneyRon(showPartialValue ? awardedRon : ronValue)} /{" "}
+              {moneyEur(showPartialValue ? awardedRon : ronValue)}
             </Badge>
+            {showPartialValue && (
+              <span className="font-mono text-xs text-muted-foreground">
+                din {moneyRon(ronValue)} total
+              </span>
+            )}
             <Link
               href={cpvLink}
               prefetch={false}
@@ -203,6 +218,14 @@ export function ListItem({ id, index, fields }: ListItemProps) {
             >
               {supplierName ?? "-"}
             </span>
+            {hasMultipleWinners && (
+              <span
+                className="inline-flex items-center gap-1 text-xs font-medium px-1.5 py-0.5 rounded-md border border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-300 shrink-0"
+                title={`Contract atribuit la ${winnersCount} firme`}
+              >
+                <Users className="h-3 w-3" />+{(winnersCount as number) - 1}
+              </span>
+            )}
             <ExternalLink className="h-3.5 w-3.5 text-slate-400 shrink-0 opacity-0 sm:group-hover:opacity-100 max-sm:opacity-60 transition-opacity ml-auto" />
           </Link>
 

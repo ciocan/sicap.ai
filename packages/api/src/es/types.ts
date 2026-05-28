@@ -53,6 +53,13 @@ export interface SearchItemPublic extends SearchItemDirect {
   procedureTypeId: string;
   assigmentType: string;
   assigmentTypeId: string;
+  // Total distinct winners on the contract. >1 means the contract is shared
+  // (multi-lot or consortium) and the supplier shown is one of several.
+  winnersCount?: number;
+  // Sum of contractValue across lots where the viewed company is the primary
+  // winner. Only set when a supplier context is provided AND at least one lot
+  // matched; undefined for co-winner-only matches where allocation is unknown.
+  awardedValue?: number;
 }
 
 export interface SearchItemOffline extends SearchItemDirect {}
