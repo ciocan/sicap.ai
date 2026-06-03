@@ -1,6 +1,6 @@
 import { dbIds, formatNumber } from "@/utils";
-import type { IndexName } from "@sicap/api";
-import { searchContracts } from "@sicap/api";
+import type { IndexName, SearchStatusOption, SearchStatusSelection } from "@sicap/api";
+import { getSearchStatusOptions, searchContracts } from "@sicap/api";
 
 import { ListItem } from "./list-item";
 import { Pagination } from "./pagination";
@@ -26,10 +26,30 @@ export interface SearchParams {
   countySupplier: string;
   isFiscal?: string;
   euFunds?: string;
+  status?: string | string[];
 }
 
 interface SearchListProps {
   searchParams: SearchParams;
+}
+
+function parseStatusSelections(
+  status: string | string[] | undefined,
+  options: SearchStatusOption[],
+): SearchStatusSelection[] | undefined {
+  const tokens = Array.isArray(status) ? status : status?.split(",");
+
+  if (!tokens?.length) {
+    return undefined;
+  }
+
+  const optionByToken = new Map(options.map((option) => [option.token, option]));
+  const selections = tokens
+    .map((token) => optionByToken.get(token))
+    .filter((option): option is SearchStatusOption => Boolean(option))
+    .map(({ index, stateId }) => ({ index, stateId }));
+
+  return selections.length > 0 ? selections : undefined;
 }
 
 export async function SearchList({ searchParams }: SearchListProps) {
@@ -50,6 +70,7 @@ export async function SearchList({ searchParams }: SearchListProps) {
     localitySupplier,
     countySupplier,
     euFunds,
+    status,
   } = searchParams;
 
   const dbs = ((Array.isArray(db) ? db : db?.split(",")) || dbIds) as IndexName[];
@@ -70,11 +91,19 @@ export async function SearchList({ searchParams }: SearchListProps) {
     euFunds: euFunds === "true",
   };
 
+  const statusOptions = await getSearchStatusOptions({
+    query,
+    filters,
+  });
+
   const results = await searchContracts({
     query,
     page,
     perPage,
-    filters,
+    filters: {
+      ...filters,
+      status: parseStatusSelections(status, statusOptions),
+    },
   });
 
   return (
@@ -83,7 +112,7 @@ export async function SearchList({ searchParams }: SearchListProps) {
         Pagina {page} din {formatNumber(results.total)} rezultate pentru <b>{query}</b>
       </h3>
       <div className="flex items-center gap-4 justify-between">
-        <FilterDetails searchParams={searchParams} />
+        <FilterDetails searchParams={searchParams} statusOptions={statusOptions} />
         <div className="flex gap-2">
           <CSVDownload items={results.items} />
           <PerPage total={perPage} />

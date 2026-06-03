@@ -2,6 +2,16 @@ import type { ES_INDEX_DIRECT, ES_INDEX_OFFLINE, ES_INDEX_PUBLIC } from "./utils
 
 export type IndexName = typeof ES_INDEX_PUBLIC | typeof ES_INDEX_DIRECT | typeof ES_INDEX_OFFLINE;
 
+export interface SearchStatusSelection {
+  index: IndexName;
+  stateId: number;
+}
+
+export interface SearchStatusOption extends SearchStatusSelection {
+  label: string;
+  token: string;
+}
+
 export interface SearchFilters {
   db?: IndexName[];
   dateFrom?: string;
@@ -16,6 +26,7 @@ export interface SearchFilters {
   localitySupplier?: string;
   countySupplier?: string;
   euFunds?: boolean;
+  status?: SearchStatusSelection[];
 }
 export interface SearchProps {
   query: string;

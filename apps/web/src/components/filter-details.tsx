@@ -1,14 +1,19 @@
 "use client";
 import { Filter } from "lucide-react";
+import { useState } from "react";
 
 import { databases, dbIds, moneyRon } from "@/utils";
-import type { IndexName } from "@sicap/api";
+import type { IndexName, SearchStatusOption } from "@sicap/api";
 import type { SearchParams } from "./search-list";
 import { Dialog, DialogTrigger } from "@sicap/ui";
 import { AdvancedSearch } from "./search-advanced";
-import { useState } from "react";
 
-export function FilterDetails({ searchParams }: { searchParams: SearchParams }) {
+interface FilterDetailsProps {
+  searchParams: SearchParams;
+  statusOptions: SearchStatusOption[];
+}
+
+export function FilterDetails({ searchParams, statusOptions }: FilterDetailsProps) {
   const [open, setOpen] = useState(false);
 
   const {
@@ -26,10 +31,23 @@ export function FilterDetails({ searchParams }: { searchParams: SearchParams }) 
     localitySupplier,
     countySupplier,
     euFunds,
+    status,
   } = searchParams;
 
   const dbs = ((Array.isArray(db) ? db : db?.split(",")) || dbIds) as IndexName[];
   const dbLabelsAsText = dbs.map((db) => databases.find((d) => d.id === db)?.label).join(", ");
+  const statusTokens = new Set(
+    ((Array.isArray(status) ? status : status?.split(",")) ?? []).filter(Boolean),
+  );
+  const selectedStatuses = statusOptions.filter((option) => statusTokens.has(option.token));
+  const statusLabelsAsText = selectedStatuses
+    .map((option) => {
+      const databaseLabel = databases.find((database) => database.id === option.index)?.label;
+      return databaseLabel ? `${databaseLabel}: ${option.label}` : option.label;
+    })
+    .join(", ");
+  const showStatusSummary =
+    selectedStatuses.length > 0 && selectedStatuses.length < statusOptions.length;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -52,7 +70,8 @@ export function FilterDetails({ searchParams }: { searchParams: SearchParams }) 
           countySupplier ||
           supplier ||
           localitySupplier ||
-          euFunds ? (
+          euFunds ||
+          showStatusSummary ? (
             <>
               {dateFrom && <span className="mr-1">{`de la ${dateFrom}`}</span>}
               {dateTo && <span className="mr-1">{`până la ${dateTo};`}</span>}
@@ -74,11 +93,12 @@ export function FilterDetails({ searchParams }: { searchParams: SearchParams }) 
                 <span className="mr-1">{`; judet firma: ${countySupplier}.`}</span>
               )}
               {euFunds === "true" && <span className="mr-1">Fonduri Europene: DA.</span>}
+              {showStatusSummary && <span className="mr-1">{`Status: ${statusLabelsAsText}.`}</span>}
             </>
           ) : null}
         </button>
       </DialogTrigger>
-      <AdvancedSearch query={q} setOpen={setOpen} />
+      <AdvancedSearch query={q} setOpen={setOpen} statusOptions={statusOptions} />
     </Dialog>
   );
 }

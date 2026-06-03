@@ -24,12 +24,14 @@ import {
   ScrollArea,
   ScrollBar,
 } from "@sicap/ui";
+import type { SearchStatusOption } from "@sicap/api";
 import { databases, dbIds } from "@/utils";
 import { captureAdvanceSearchButtonClick, captureClearFiltersButtonClick } from "@/lib/telemetry";
 import { useFormbricks } from "@/app/formbricks";
 
 const defaultValues = {
   db: dbIds,
+  status: [] as string[],
   q: "",
   dateFrom: "",
   dateTo: "",
@@ -50,6 +52,7 @@ const formSchema = z
     db: z.array(z.string()).refine((value) => value.some((item) => item), {
       message: "Selecteaza cel putin una.",
     }),
+    status: z.array(z.string()),
     q: z.string().optional(),
     dateFrom: z.string().optional(),
     dateTo: z.string().optional(),
@@ -118,21 +121,34 @@ const formSchema = z
 interface AdvancedSearchProps {
   query: string;
   setOpen: (open: boolean) => void;
+  statusOptions: SearchStatusOption[];
 }
 
-export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
+export function AdvancedSearch({ query, setOpen, statusOptions }: AdvancedSearchProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const db = searchParams.get("db");
   const { formbricks } = useFormbricks();
+  const defaultStatusTokens = useMemo(
+    () => statusOptions.map((option) => option.token),
+    [statusOptions],
+  );
+  const statusOptionsByDb = useMemo(() => {
+    return statusOptions.reduce<Record<string, SearchStatusOption[]>>((groups, option) => {
+      groups[option.index] ??= [];
+      groups[option.index].push(option);
+      return groups;
+    }, {});
+  }, [statusOptions]);
 
   const params = useMemo(
     () => ({
       ...Object.fromEntries(searchParams.entries()),
       db: db ? db.split(",") : dbIds,
+      status: searchParams.get("status")?.split(",") ?? defaultStatusTokens,
       euFunds: searchParams.get("euFunds") === "true",
     }),
-    [searchParams, db],
+    [searchParams, db, defaultStatusTokens],
   );
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -149,16 +165,29 @@ export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
   }, [form, params, query]);
 
   function handleReset() {
-    form.reset({ ...defaultValues, q: query });
+    form.reset({ ...defaultValues, q: query, status: defaultStatusTokens });
     captureClearFiltersButtonClick();
   }
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    if (statusOptions.length > 0 && values.status.length === 0) {
+      form.setError("status", {
+        type: "manual",
+        message: "Selecteaza cel putin un status.",
+      });
+      return;
+    }
+
+    const status =
+      values.status.length === defaultStatusTokens.length
+        ? undefined
+        : values.status.join(",");
     const params = new URLSearchParams(
       Array.from(
         Object.entries({
           ...values,
           db: values.db.join(","),
+          status,
         })
           .filter(([_, value]) => {
             return value !== "" && value !== undefined && value !== null;
@@ -255,6 +284,68 @@ export function AdvancedSearch({ query, setOpen }: AdvancedSearchProps) {
                   />
                 </div>
               </div>
+              {statusOptions.length > 0 && (
+                <div className="grid gap-4 py-4">
+                  <div className="grid grid-cols-4 items-start gap-4">
+                    <FormLabel htmlFor="status" className="text-right">
+                      Status
+                    </FormLabel>
+                    <FormField
+                      control={form.control}
+                      name="status"
+                      render={() => (
+                        <FormItem className="col-span-3">
+                          <div className="flex flex-col gap-4">
+                            {Object.entries(statusOptionsByDb).map(([databaseId, options]) => (
+                              <div key={databaseId} className="flex flex-col gap-2">
+                                <span className="text-xs font-medium text-muted-foreground">
+                                  {databases.find((database) => database.id === databaseId)?.label}
+                                </span>
+                                <div className="flex flex-col gap-2">
+                                  {options.map((option) => (
+                                    <FormField
+                                      key={option.token}
+                                      control={form.control}
+                                      name="status"
+                                      render={({ field }) => {
+                                        return (
+                                          <FormItem
+                                            key={option.token}
+                                            className="flex items-center space-x-2 space-y-0"
+                                          >
+                                            <FormControl>
+                                              <Checkbox
+                                                checked={field.value?.includes(option.token)}
+                                                onCheckedChange={(checked) => {
+                                                  return checked
+                                                    ? field.onChange([...field.value, option.token])
+                                                    : field.onChange(
+                                                        field.value?.filter(
+                                                          (value) => value !== option.token,
+                                                        ),
+                                                      );
+                                                }}
+                                              />
+                                            </FormControl>
+                                            <FormLabel className="text-right text-xs sm:text-sm">
+                                              {option.label}
+                                            </FormLabel>
+                                          </FormItem>
+                                        );
+                                      }}
+                                    />
+                                  ))}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                          <FormMessage withToast />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+              )}
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="dateFrom" className="text-right">
                   Data publicarii
