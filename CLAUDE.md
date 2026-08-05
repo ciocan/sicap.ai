@@ -22,6 +22,10 @@ pnpm lint             # Run Biome linter
 pnpm fmt              # Format code with Biome
 pnpm typecheck        # TypeScript type checking
 
+# Tests (Vitest, per package — no root-level test task)
+pnpm --filter @sicap/web test    # apps/web unit tests
+pnpm --filter @sicap/api test    # packages/api unit tests
+
 # Database
 pnpm db:generate      # Generate Drizzle migrations
 pnpm db:migrate       # Apply migrations

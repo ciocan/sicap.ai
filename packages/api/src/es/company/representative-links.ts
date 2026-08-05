@@ -192,7 +192,7 @@ export async function getRepresentativeLinks(
       if (!src?.cui || src.cui === currentCui) {
         continue;
       }
-      for (const matchedKey of matchedPersonKeys(src, keySet)) {
+      for (const matchedKey of Array.from(matchedPersonKeys(src, keySet))) {
         const byCui = companiesByKey.get(matchedKey) ?? new Map<string, string>();
         byCui.set(src.cui, src.denumire ?? src.cui);
         companiesByKey.set(matchedKey, byCui);

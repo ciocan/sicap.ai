@@ -11,6 +11,8 @@
     "dev": "tsup --watch",
     "check-types": "tsc --noEmit",
     "fmt": "biome format --write ./src",
+    "test": "vitest run --passWithNoTests",
+    "test:watch": "vitest",
     "clean": "pnpm dlx rimraf node_modules .turbo .dist"
   },
   "devDependencies": {
@@ -19,7 +21,8 @@
     "@types/node": "^20.8.8",
     "@types/ramda": "^0.29.7",
     "tsup": "^8.5.0",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.7"
   },
   "dependencies": {
     "@elastic/elasticsearch": "^8.10.0",

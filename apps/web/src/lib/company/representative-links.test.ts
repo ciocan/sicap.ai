@@ -92,7 +92,7 @@ describe("matchedPersonKeys", () => {
 
   it("matches when one representative element carries both the name and the dob", () => {
     const doc = { reprezentanti: [{ nume: "RUSU ALINA", data_nastere: "1972-11-20" }] };
-    expect([...matchedPersonKeys(doc, keys)]).toEqual(["RUSU ALINA|1972-11-20"]);
+    expect(Array.from(matchedPersonKeys(doc, keys))).toEqual(["RUSU ALINA|1972-11-20"]);
   });
 
   it("does not match when the name and dob come from different elements", () => {

@@ -37,7 +37,7 @@ async function main() {
     "write",
   );
 
-  console.log(
+  console.info(
     `Stamped ${migrations.length} baseline migration(s) as applied. Ledger is now in sync with the current schema.`,
   );
 }

@@ -14,7 +14,7 @@ async function main() {
   const accountInfo = await client.execute("SELECT name FROM pragma_table_info('account')");
   const hasOldSchema = accountInfo.rows.some((row) => row.name === "providerAccountId");
   if (!hasOldSchema) {
-    console.log(
+    console.info(
       "`account.providerAccountId` not found — database appears already migrated. Aborting without changes.",
     );
     return;
@@ -24,7 +24,7 @@ async function main() {
     ["SELECT count(*) AS n FROM user", "SELECT count(*) AS n FROM account"],
     "read",
   );
-  console.log("Before:", {
+  console.info("Before:", {
     users: before[0].rows[0]?.n,
     accounts: before[1].rows[0]?.n,
   });
@@ -125,11 +125,11 @@ async function main() {
     ["SELECT count(*) AS n FROM user", "SELECT count(*) AS n FROM account"],
     "read",
   );
-  console.log("After:", {
+  console.info("After:", {
     users: after[0].rows[0]?.n,
     accounts: after[1].rows[0]?.n,
   });
-  console.log("Migration complete.");
+  console.info("Migration complete.");
 }
 
 main()

@@ -17,9 +17,9 @@ export function ShareMethodologyTooltip() {
           </button>
         </TooltipTrigger>
         <TooltipContent className="max-w-sm text-xs leading-relaxed">
-          Sumăm doar loturile câștigate ca furnizor principal. La consorții și acorduri-cadru
-          afișăm valoarea totală a contractului — cota exactă a fiecărui membru nu poate fi
-          determinată din datele SEAP.
+          Sumăm doar loturile câștigate ca furnizor principal. La consorții și acorduri-cadru afișăm
+          valoarea totală a contractului — cota exactă a fiecărui membru nu poate fi determinată din
+          datele SEAP.
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

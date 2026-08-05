@@ -93,7 +93,7 @@ const SUPPLIER_CUI_FIELDS = {
 type CuiTerms = { numeric: string; roPrefixed: string };
 
 // Detects if query is a CUI and returns both numeric and RO-prefixed versions
-function getCuiSearchTerms(query: string): { isCui: false } | ({ isCui: true } & CuiTerms) {
+export function getCuiSearchTerms(query: string): { isCui: false } | ({ isCui: true } & CuiTerms) {
   const normalized = query.trim().toUpperCase();
 
   const roMatch = normalized.match(/^RO(\d{6,10})$/);
@@ -109,20 +109,19 @@ function getCuiSearchTerms(query: string): { isCui: false } | ({ isCui: true } &
   return { isCui: false };
 }
 
-// Long-mapped fields (e.g. fiscalNumberInt, numericFiscalNumber) reject non-digit input.
-function isNumericCuiField(field: string): boolean {
-  return field.endsWith("Int") || /(?:^|\.)numeric[A-Z]/.test(field);
-}
-
-function buildCuiClauses(terms: CuiTerms, fields: readonly string[]) {
-  return fields.flatMap((field) =>
-    isNumericCuiField(field)
-      ? [{ match_phrase: { [field]: terms.numeric } }]
-      : [
-          { match_phrase: { [field]: terms.numeric } },
-          { match_phrase: { [field]: terms.roPrefixed } },
-        ],
-  );
+// Some CUI fields are mapped as numbers (item.nationalId, *.fiscalNumberInt), so the
+// RO-prefixed form cannot be parsed against them. A strict match_phrase would raise
+// number_format_exception and fail the whole search request, so both terms go through a
+// lenient multi_match, which skips fields whose mapping cannot hold the term.
+export function buildCuiClauses(terms: CuiTerms, fields: readonly string[]) {
+  return [terms.numeric, terms.roPrefixed].map((query) => ({
+    multi_match: {
+      query,
+      fields: [...fields],
+      type: "phrase" as const,
+      lenient: true,
+    },
+  }));
 }
 
 // Creates a filter clause that handles both CUI and name searches
