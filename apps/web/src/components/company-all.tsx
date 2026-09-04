@@ -21,6 +21,7 @@ import { PerPage } from "./per-page";
 import { CSVDownload } from "./csv-download";
 import { TopAuthorities } from "./top-authorities";
 import { ShareMethodologyTooltip } from "./share-methodology-tooltip";
+import { HartaFirmelorCard } from "./harta-firmelor-card";
 
 interface CompanyAllProps {
   nationalId: string;
@@ -65,6 +66,10 @@ export async function CompanyAll({ nationalId, searchParams }: CompanyAllProps) 
         fallbackCity={company?.city}
         fallbackCounty={company?.county}
       />
+
+      {/* Trade-registry snapshot from harta-firmelor.ro. The framed document is
+          noindex,nofollow, so the outbound link is rebuilt in our own HTML. */}
+      <HartaFirmelorCard nationalId={nationalId} />
 
       {/* Detail split by source: procurement (e-licitatie) vs company record (ONRC). */}
       <Tabs defaultValue="achizitii" className="gap-4">
