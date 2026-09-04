@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.23.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.22.0...sicap-v0.23.0) (2026-09-04)
+
+
+### Features
+
+* **company:** embed the harta-firmelor.ro registry card ([6a9248f](https://github.com/ciocan/SICAP.ai/commit/6a9248fe52ed8dae6b0d5c35ff3a2cc4b4f3fdbe))
+* **company:** embed the harta-firmelor.ro registry card ([66dba37](https://github.com/ciocan/SICAP.ai/commit/66dba37ac7d03e5293c1c1aa3517b67e2d7ed096))
+
+
+### Bug Fixes
+
+* Eroare la cautare avansata dupa cui [#77](https://github.com/ciocan/SICAP.ai/issues/77) ([cb2598b](https://github.com/ciocan/SICAP.ai/commit/cb2598b11543dd0c109427c2b0f72693c7aa3282))
+
 ## [0.22.0](https://github.com/ciocan/SICAP.ai/compare/sicap-v0.21.0...sicap-v0.22.0) (2026-05-28)
 
 
